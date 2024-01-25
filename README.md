@@ -1,4 +1,4 @@
-# **GAME TITLE** by TEAM_NAME
+# **GAME TITLE** by CaNNeD
 ## IGME-106 Spring 2023
 
 _This README contains basic information about the project and its artifacts. If kept up to date, it will act as a primary dashboard for the project._
@@ -15,8 +15,8 @@ _This README contains basic information about the project and its artifacts. If 
 See [resources/README.md](resources/README.md) for details.
 
 ## Other Resources
-- [Task management Board](TBD) - Link to the team's project board based on this [Trello template](https://trello.com/b/FYbymkCg/template-gdd-project-board)
-- [Google Documentation](TBD) - Link to the team's Google Doc with written project documentation based on the [class template](https://docs.google.com/document/d/1Lom3OQ_XgbtvXoVCYa113UcY4q7x3yPT32sZIBy6vDo/edit?usp=share_link)
+- [Task management Board](https://trello.com/invite/b/K1940kLa/ATTI859ded88f7193e5a666b90eb7dbb547160019063/gamename) - Link to the team's project board.
+- [Google Documentation](https://docs.google.com/document/d/1uJJm4_qDsUwsmxwNp8UnmGaAvmm2EFWhmtiW6mAVZ3g/edit?usp=sharing) - Link to the team's Google Doc with written project documentation.
 - [MonoGame Documentation](http://www.monogame.net/documentation/?page=main)
 - [Course homepage](https://mycourses.rit.edu/d2l/home/1012413)
 - This [UML class diagram reference](http://agilemodeling.com/artifacts/classDiagram.htm) probably has more than you'll need, but it's a good starting point. (That site in general has a lot of great resources.)

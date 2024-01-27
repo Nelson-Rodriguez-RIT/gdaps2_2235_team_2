@@ -1,24 +1,31 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConceptDemo.classes;
+using ConceptDemo.classes.entities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.IO;
 
-namespace ConceptDemo {
+
+
+namespace ConceptDemo
+{
     public class GameMain : Game {
         // File Paths
         private const string textureIDsFilePath = "../texureIDs.csv";
-        private const string texturesFilePath = "";
-        private const string statsFilePath = "";
 
-        // Contains all loaded entities
+        /// <summary>
+        /// Contains all loaded entities that will be update several times a frame
+        /// </summary>
         private List<Entity> loadedEntities;
 
-        // Current state of the game
-        private string gameState;
+        // Functional classes that maintain core features such as gameplay or the camera
+        GameManager gameManager;
+        CameraManager cameraManager;
 
-        // Contains data loaded from file
-        private Dictionary<string, Stats> _loadedStats;
+        /// <summary>
+        /// Contains all preloaded textures gathered from PrepareEntityTextures
+        /// </summary>
         private Dictionary<string, Dictionary<string, Texture2D>> _loadedTextures;
 
         // Mono game specific
@@ -26,11 +33,15 @@ namespace ConceptDemo {
         private SpriteBatch _spriteBatch;
 
         public GameMain() {
+            // Prepare entities
             loadedEntities = new List<Entity>();
-            gameState = "initialize";
 
+            // Prepare functional classes
+            gameManager = new GameManager();
+            cameraManager = new CameraManager();
+
+            // Mono game specific
             _graphics = new GraphicsDeviceManager(this);
-            _loadedStats = new Dictionary<string, Stats>();
             _loadedTextures = new Dictionary<string, Dictionary<string, Texture2D>>();
 
             Content.RootDirectory = "Content";
@@ -38,30 +49,24 @@ namespace ConceptDemo {
         }
 
         protected override void Initialize() {
-            gameState = "overworld"; // Temp
+            
 
             base.Initialize();
         }
 
         protected override void LoadContent() {
+            // Load textures from ROM
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
             PrepareEntityTextures();
         }
 
         protected override void Update(GameTime gameTime) {
+            // Exit game upon an escape button press
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // Update each entity
-            foreach (Entity entity in loadedEntities)
-                entity.Update(gameTime, gameState, loadedEntities);
-
-            // Check for queued entity deletion
-            // A new list is made to avoid complications when deleting
-            foreach (Entity entity in new List<Entity>(loadedEntities))
-                if (entity.DeleteQueued)
-                    loadedEntities.Remove(entity);
+            // Updates the game state and any loadedentities
+            gameManager.Update(gameTime, loadedEntities);
 
             base.Update(gameTime);
         }
@@ -100,5 +105,20 @@ namespace ConceptDemo {
             }
 
         }
+    }
+
+    /// <summary>
+    /// Contains IDs related to the game's current state
+    /// </summary>
+    public enum GameStateID {
+        initialize,
+        overworld_test
+    }
+
+    /// <summary>
+    /// Contains all possible entity IDs
+    /// </summary>
+    public enum EntityID {
+        entity
     }
 }

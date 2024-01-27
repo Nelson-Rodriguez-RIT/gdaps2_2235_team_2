@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConceptDemo {
+namespace ConceptDemo.classes.entities
+{
     /// <summary>
     /// A controllable character object with basic functionality
     /// </summary>
-    internal class Character : Entity {
+    internal class Character : Entity
+    {
     }
 }

@@ -5,23 +5,45 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace ConceptDemo {
-    
+namespace ConceptDemo.classes.entities
+{
+
 
     /// <summary>
     /// Contains methods that gives all Entity derived classes universal functionality
     /// </summary>
-    internal class Entity {
-        protected enum TextureID {
-            Default,
+    internal class Entity
+    {
+        /// <summary>
+        /// ID of this entity
+        /// </summary>
+        protected const EntityID entityID = EntityID.entity;
+
+        /// <summary>
+        /// ID's of this entity's specific textures. Case-insensitive
+        /// </summary>
+        protected enum TextureID
+        {
+            temp
         }
 
         private bool deleteQueued;
 
-        protected const string id = "entity";
-        protected TextureID activeTextureID;
-        protected Vector2 position;
+        /// <summary>
+        /// Absolute position on a graphical plane
+        /// </summary>
+        protected Vector2 absPosition;
+
+        /// <summary>
+        /// Relative position to the camera (or from the top left corner of the screen)
+        /// </summary>
+        protected Vector2 relPosition;
+
+        /// <summary>
+        /// Maps texture IDs to their relevant Texture2D references
+        /// </summary>
         protected Dictionary<TextureID, Texture2D> textures;
+        protected TextureID activeTextureID;
 
         public bool DeleteQueued { get { return deleteQueued; } }
         public bool TexturesInitialized { get { return textures != null; } }
@@ -35,28 +57,32 @@ namespace ConceptDemo {
         /// Create an entity at a custom position
         /// </summary>
         /// <param name="position">Position to spawn entity</param>
-        public Entity(Vector2 position) {
+        public Entity(Vector2 absPosition)
+        {
 
-            this.position = position;
-            this.textures = null;
+            this.absPosition = absPosition;
+
+            // Textures are gathered after the first update cycle 
+            textures = null;
         }
-        
+
         /// <summary>
         /// Update this entity individually
         /// </summary>
         /// <param name="gameTime">Delta time</param>
         /// <param name="loadedEntities">List of currently loaded (interactable) entities</param>
         public virtual void Update(
-            GameTime gameTime, string gameState, List<Entity> loadedEntities) {
+            GameTime gameTime, GameStateID gameState, List<Entity> loadedEntities)
+        {
 
-            // Boilerplate
-            // switch(gameState) {}
+            // Update relPosition based on the camera's position
         }
 
         /// <summary>
         /// Deletes this entity at the end of the current update
         /// </summary>
-        public virtual void Delete() {
+        public virtual void Delete()
+        {
             deleteQueued = true;
         }
 
@@ -65,27 +91,30 @@ namespace ConceptDemo {
         /// </summary>
         /// <param name="preloadedTextures">Preloaded textures</param>
         /// <param name="spawnTextureArgument">Modify initial spawn texture</param>
-        public virtual void LoadTextures(List<Texture2D> preloadedTextures, string spawnTextureArgument) {
+        public virtual void LoadTextures(List<Texture2D> preloadedTextures, string spawnTextureArgument)
+        {
             // Set the initial texture to be used when entity is spawned in
-            activeTextureID = TextureID.Default;
+            activeTextureID = TextureID.temp;
 
             // Add preloaded textures to this entity's textures based on
             // all of its TextureIDs in decending order
-            List <Texture2D> copiedTextures = new List<Texture2D>(preloadedTextures);
+            List<Texture2D> copiedTextures = new List<Texture2D>(preloadedTextures);
 
-            foreach (TextureID textureID in Enum.GetValues<TextureID>()) {
-                textures.Add(textureID, copiedTextures.First<Texture2D>());
+            foreach (TextureID textureID in Enum.GetValues<TextureID>())
+            {
+                textures.Add(textureID, copiedTextures.First());
 
                 copiedTextures.RemoveAt(0);
             }
-                
+
         }
 
         /// <summary>
         /// Get this Entity's current Texture2D texture
         /// </summary>
         /// <returns>This Entity's current Texture2D texture</returns>
-        public virtual Texture2D GetTexture() {
+        public virtual Texture2D GetTexture()
+        {
             if (!textures.ContainsKey(activeTextureID)) // Check if texture exists
                 return null;
 

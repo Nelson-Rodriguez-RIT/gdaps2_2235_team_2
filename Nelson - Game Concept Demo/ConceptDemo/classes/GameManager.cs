@@ -30,7 +30,13 @@ namespace ConceptDemo.classes {
             this.gameState = gameState;
         }
 
-        public void Update(GameTime gameTime, List<Entity> loadedEntities) {
+
+        /// <summary>
+        /// Attempts to update all gameplay related elements
+        /// </summary>
+        /// <param name="gameTime">Delta time variable</param>
+        /// <param name="loadedEntities">Currently loaded and interactable entities</param>
+        public void Update(GameTime gameTime, List<Entity> loadedEntities, CameraManager camera) {
             switch (gameState) {
                 case GameStateID.initialize:
                     loadedEntities.Add(new Entity());
@@ -44,10 +50,9 @@ namespace ConceptDemo.classes {
 
             // Update each entity
             foreach (Entity entity in loadedEntities)
-                entity.Update(gameTime, gameState, loadedEntities);
+                entity.Update(gameTime, gameState, loadedEntities, camera);
 
             // Check for queued entity deletion
-            // A new list is made to avoid complications when deleting
             foreach (Entity entity in new List<Entity>(loadedEntities))
                 if (entity.DeleteQueued)
                     loadedEntities.Remove(entity);

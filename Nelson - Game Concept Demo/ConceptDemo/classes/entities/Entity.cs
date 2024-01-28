@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace ConceptDemo.classes.entities
 {
@@ -44,9 +45,11 @@ namespace ConceptDemo.classes.entities
         /// </summary>
         protected Dictionary<TextureID, Texture2D> textures;
         protected TextureID activeTextureID;
+        protected int drawHierarchy; // 0 is drawn first, 9 is drawn last (therefore on top)
 
         public bool DeleteQueued { get { return deleteQueued; } }
         public bool TexturesInitialized { get { return textures != null; } }
+        public int DrawHierarchy {  get { return drawHierarchy; } }
 
         /// <summary>
         /// Create an entity at 0, 0
@@ -72,10 +75,14 @@ namespace ConceptDemo.classes.entities
         /// <param name="gameTime">Delta time</param>
         /// <param name="loadedEntities">List of currently loaded (interactable) entities</param>
         public virtual void Update(
-            GameTime gameTime, GameStateID gameState, List<Entity> loadedEntities)
+            GameTime gameTime, GameStateID gameState, List<Entity> loadedEntities, CameraManager camera)
         {
 
             // Update relPosition based on the camera's position
+        }
+
+        public virtual void Draw(SpriteBatch _spriteBatch) {
+            _spriteBatch.Draw(textures[activeTextureID], relPosition, Color.White);
         }
 
         /// <summary>
@@ -110,15 +117,11 @@ namespace ConceptDemo.classes.entities
         }
 
         /// <summary>
-        /// Get this Entity's current Texture2D texture
+        /// Gets the position of this entity relative to the camera
         /// </summary>
-        /// <returns>This Entity's current Texture2D texture</returns>
-        public virtual Texture2D GetTexture()
-        {
-            if (!textures.ContainsKey(activeTextureID)) // Check if texture exists
-                return null;
+        /// <returns></returns>
+        public virtual Vector2 GetRelativePosition() {
 
-            return textures[activeTextureID];
         }
     }
 }

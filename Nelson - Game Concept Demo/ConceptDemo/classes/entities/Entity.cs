@@ -8,8 +8,6 @@ using System.Linq;
 
 namespace ConceptDemo.classes.entities
 {
-
-
     /// <summary>
     /// Contains methods that gives all Entity derived classes universal functionality
     /// </summary>
@@ -36,9 +34,10 @@ namespace ConceptDemo.classes.entities
         protected Vector2 absPosition;
 
         /// <summary>
-        /// Relative position to the camera (or from the top left corner of the screen)
+        /// Relative position to the camera (or from the top left corner of the screen).
+        /// Do not directly change this variable since it is relative to the camera
         /// </summary>
-        protected Vector2 relPosition;
+        private Vector2 relPosition;
 
         /// <summary>
         /// Maps texture IDs to their relevant Texture2D references
@@ -51,6 +50,7 @@ namespace ConceptDemo.classes.entities
         public bool TexturesInitialized { get { return textures != null; } }
         public int DrawHierarchy {  get { return drawHierarchy; } }
         public EntityID ID { get { return entityID; } }
+        public Vector2 RelPosition { get { return relPosition; } }
 
         /// <summary>
         /// Create an entity at 0, 0
@@ -81,6 +81,7 @@ namespace ConceptDemo.classes.entities
             GameTime gameTime, GameStateID gameState, List<Entity> loadedEntities, CameraManager camera)
         {
             // Update relPosition based on the camera's position
+            // Only time relPosition should be updated
             relPosition = camera.GetRelativePosition(absPosition);
         }
 

@@ -38,6 +38,7 @@ namespace ConceptDemo
         public GameMain() {
             // Prepare entities
             loadedEntities = new List<Entity>();
+            _loadedTextures = new Dictionary<EntityID, List<Texture2D>>();
 
             // Prepare functional classes
             gameManager = new GameManager(_loadedTextures);
@@ -45,7 +46,6 @@ namespace ConceptDemo
 
             // Mono game specific
             _graphics = new GraphicsDeviceManager(this);
-            _loadedTextures = new Dictionary<EntityID, List<Texture2D>>();
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -99,7 +99,7 @@ namespace ConceptDemo
         /// Loads all content based on the EntityContent.csv
         /// </summary>
         private void PrepareEntityContent() {
-            string fileInput;
+            string fileEntityID;
             string[] formatedFileInput;
             List<Texture2D> loadedTexture2D;
 
@@ -119,7 +119,7 @@ namespace ConceptDemo
             // This iterates through each entity
             foreach (EntityID entityID in Enum.GetValues<EntityID>()) {
                 // ID
-                reader.ReadLine(); // For file editing purposes only
+                fileEntityID = reader.ReadLine();
 
 
                 // TextureID
@@ -130,9 +130,8 @@ namespace ConceptDemo
 
                 // For each TextureID for this entity, find and load its corresponding file data
                 foreach (string textureID in formatedFileInput) {
-                    if (textureID != formatedFileInput[0])
-                        loadedTexture2D.Add(Content.Load<Texture2D>(
-                            $"textures/{formatedFileInput[0]}/{textureID}"));
+                    loadedTexture2D.Add(Content.Load<Texture2D>(
+                        $"textures/{fileEntityID}/{textureID}"));
                 }
             }
         }

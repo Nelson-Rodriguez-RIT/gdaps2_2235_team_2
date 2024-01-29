@@ -108,6 +108,7 @@ namespace ConceptDemo.classes.entities
         /// <param name="spawnTextureArgument">Modify initial spawn texture</param>
         public virtual void LoadTextures(List<Texture2D> preloadedTextures, string spawnTextureArgument)
         {
+            textures = new Dictionary<TextureID, Texture2D>();
 
             // Set the initial texture to be used when entity is spawned in
             switch (spawnTextureArgument) {

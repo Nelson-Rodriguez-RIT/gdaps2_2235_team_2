@@ -1,10 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using ConceptDemo.classes.entities;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace ConceptDemo.classes.entities
 {
@@ -50,6 +50,7 @@ namespace ConceptDemo.classes.entities
         public bool DeleteQueued { get { return deleteQueued; } }
         public bool TexturesInitialized { get { return textures != null; } }
         public int DrawHierarchy {  get { return drawHierarchy; } }
+        public EntityID ID { get { return entityID; } }
 
         /// <summary>
         /// Create an entity at 0, 0
@@ -62,8 +63,10 @@ namespace ConceptDemo.classes.entities
         /// <param name="position">Position to spawn entity</param>
         public Entity(Vector2 absPosition)
         {
+            drawHierarchy = 0;
 
             this.absPosition = absPosition;
+            relPosition = new Vector2(0, 0); // Updated after first update cycle
 
             // Textures are gathered after the first update cycle 
             textures = null;
@@ -77,11 +80,16 @@ namespace ConceptDemo.classes.entities
         public virtual void Update(
             GameTime gameTime, GameStateID gameState, List<Entity> loadedEntities, CameraManager camera)
         {
-
             // Update relPosition based on the camera's position
+            relPosition = camera.GetRelativePosition(absPosition);
         }
 
+        /// <summary>
+        /// Draw this entity's relevant textures to the screen
+        /// </summary>
+        /// <param name="_spriteBatch">Texture container (Sprite Batch)</param>
         public virtual void Draw(SpriteBatch _spriteBatch) {
+            // Entity is draw relative to the camera
             _spriteBatch.Draw(textures[activeTextureID], relPosition, Color.White);
         }
 
@@ -100,8 +108,14 @@ namespace ConceptDemo.classes.entities
         /// <param name="spawnTextureArgument">Modify initial spawn texture</param>
         public virtual void LoadTextures(List<Texture2D> preloadedTextures, string spawnTextureArgument)
         {
+
             // Set the initial texture to be used when entity is spawned in
-            activeTextureID = TextureID.temp;
+            switch (spawnTextureArgument) {
+                case "default":
+                    activeTextureID = TextureID.temp;
+                    break;
+            }
+            
 
             // Add preloaded textures to this entity's textures based on
             // all of its TextureIDs in decending order
@@ -113,15 +127,6 @@ namespace ConceptDemo.classes.entities
 
                 copiedTextures.RemoveAt(0);
             }
-
-        }
-
-        /// <summary>
-        /// Gets the position of this entity relative to the camera
-        /// </summary>
-        /// <returns></returns>
-        public virtual Vector2 GetRelativePosition() {
-
         }
     }
 }

@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System.IO;
+using System.Data;
+using System.Linq;
+using System;
 
 
 
@@ -12,7 +15,7 @@ namespace ConceptDemo
 {
     public class GameMain : Game {
         // File Paths
-        private const string textureIDsFilePath = "../texureIDs.csv";
+        private const string EntityContentFilePath = "../../../Content/EntityContent.csv";
 
         /// <summary>
         /// Contains all loaded entities that will be update several times a frame
@@ -24,9 +27,9 @@ namespace ConceptDemo
         private CameraManager camera;
 
         /// <summary>
-        /// Contains all preloaded textures gathered from PrepareEntityTextures
+        /// Contains all preloaded textures gathered from PrepareEntityContent
         /// </summary>
-        private Dictionary<string, Dictionary<string, Texture2D>> _loadedTextures;
+        private Dictionary<EntityID, List<Texture2D>> _loadedTextures;
 
         // Mono game specific
         private GraphicsDeviceManager _graphics;
@@ -37,12 +40,12 @@ namespace ConceptDemo
             loadedEntities = new List<Entity>();
 
             // Prepare functional classes
-            gameManager = new GameManager();
+            gameManager = new GameManager(_loadedTextures);
             camera = new CameraManager();
 
             // Mono game specific
             _graphics = new GraphicsDeviceManager(this);
-            _loadedTextures = new Dictionary<string, Dictionary<string, Texture2D>>();
+            _loadedTextures = new Dictionary<EntityID, List<Texture2D>>();
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -57,7 +60,7 @@ namespace ConceptDemo
         // Load textures and related functionality
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            PrepareEntityTextures();
+            PrepareEntityContent();
         }
 
         // Updates several times a frame
@@ -68,7 +71,6 @@ namespace ConceptDemo
 
             // Updates the game state and any loadedentities
             gameManager.Update(gameTime, loadedEntities, camera);
-
             base.Update(gameTime);
         }
 
@@ -85,7 +87,7 @@ namespace ConceptDemo
                     // Only draw textures if they're initialized
                     if (entity.TexturesInitialized && entity.DrawHierarchy == layer)
                         entity.Draw(_spriteBatch);
-            }
+                }
 
             _spriteBatch.End(); // End displaying textures
             base.Draw(gameTime);
@@ -94,46 +96,60 @@ namespace ConceptDemo
 
         // Non-mono methods ------------------------------------------------
         /// <summary>
-        /// Loads all textures based on the TextureID.csv
+        /// Loads all content based on the EntityContent.csv
         /// </summary>
-        private void PrepareEntityTextures() {
+        private void PrepareEntityContent() {
             string fileInput;
             string[] formatedFileInput;
+            List<Texture2D> loadedTexture2D;
+
+            /*
+            EntityContent.txt Formatting
+            
+            ID
+            TextureID
+
+            For the moment all entities should at least share the same amount
+            lines of information to properly carry over information.
+            */
 
             // Start reading repective file data
-            StreamReader textureReader = new StreamReader(textureIDsFilePath);
-            textureReader.ReadLine(); // Ignore first line descriptor
+            StreamReader reader = new StreamReader(EntityContentFilePath);
 
-            // Iterate through each group of textures
-            while ((fileInput = textureReader.ReadLine()) != null) {
-                formatedFileInput = fileInput.Split(',');
-                Dictionary<string, Texture2D> loadedTextures = new Dictionary<string, Texture2D>();
+            // This iterates through each entity
+            foreach (EntityID entityID in Enum.GetValues<EntityID>()) {
+                // ID
+                reader.ReadLine(); // For file editing purposes only
 
-                // For each textureID in this group, find and load its corresponding file data
+
+                // TextureID
+                formatedFileInput = reader.ReadLine().Split(',');
+
+                // Create a new list to store Texture2Ds with, add it to _loadedTextures
+                _loadedTextures.Add(entityID, (loadedTexture2D = new List<Texture2D>()));
+
+                // For each TextureID for this entity, find and load its corresponding file data
                 foreach (string textureID in formatedFileInput) {
                     if (textureID != formatedFileInput[0])
-                        loadedTextures.Add(textureID, Content.Load<Texture2D>($"{textureID}"));
+                        loadedTexture2D.Add(Content.Load<Texture2D>(
+                            $"textures/{formatedFileInput[0]}/{textureID}"));
                 }
-
-
-                _loadedTextures.Add(formatedFileInput[0], loadedTextures);
             }
-
         }
+    }
+
+    /// <summary>
+    /// Contains all possible entity IDs, must match EntityContent.txt order
+    /// </summary>
+    public enum EntityID {
+        entity
     }
 
     /// <summary>
     /// Contains IDs related to the game's current state
     /// </summary>
     public enum GameStateID {
-        initialize,
+        overworld_test_load, // Used to load assests
         overworld_test
-    }
-
-    /// <summary>
-    /// Contains all possible entity IDs
-    /// </summary>
-    public enum EntityID {
-        entity
     }
 }

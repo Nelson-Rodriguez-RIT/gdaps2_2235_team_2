@@ -7,12 +7,19 @@ using System.Data;
 using System.Linq;
 
 namespace ConceptDemo.classes {
+    /// <summary>
+    /// Controls gameplay related functionalities
+    /// </summary>
     internal class GameManager {
+        /// <summary>
+        /// Stores previously loaded textures. Treat as read-only
+        /// </summary>
+        private Dictionary<EntityID, List<Texture2D>> _loadedTextures;
+
         /// <summary>
         /// Current state of the game
         /// </summary>
         private GameStateID gameState;
-
 
         public GameStateID GameState { get { return gameState; } }
 
@@ -20,13 +27,17 @@ namespace ConceptDemo.classes {
         /// <summary>
         /// Initialize the game normally
         /// </summary>
-        public GameManager() : this(GameStateID.initialize) {}
+        public GameManager(Dictionary<EntityID, List<Texture2D>> _loadedTextures) : 
+            this(_loadedTextures, GameStateID.overworld_test_load) {}
 
         /// <summary>
         /// Initialize the game in a custom state
         /// </summary>
         /// <param name="gameState">State to initialize game in</param>
-        public GameManager(GameStateID gameState)  {
+        public GameManager(
+            Dictionary<EntityID, List<Texture2D>> _loadedTextures, GameStateID gameState)  {
+
+            this._loadedTextures = _loadedTextures;
             this.gameState = gameState;
         }
 
@@ -38,8 +49,8 @@ namespace ConceptDemo.classes {
         /// <param name="loadedEntities">Currently loaded and interactable entities</param>
         public void Update(GameTime gameTime, List<Entity> loadedEntities, CameraManager camera) {
             switch (gameState) {
-                case GameStateID.initialize:
-                    loadedEntities.Add(new Entity());
+                case GameStateID.overworld_test_load:
+                    loadedEntities.Add(InitializeEntity(new Entity()));
 
                     gameState = GameStateID.overworld_test;
                     break;
@@ -56,6 +67,12 @@ namespace ConceptDemo.classes {
             foreach (Entity entity in new List<Entity>(loadedEntities))
                 if (entity.DeleteQueued)
                     loadedEntities.Remove(entity);
+        }
+
+        private Entity InitializeEntity(Entity entity) {
+            entity.LoadTextures(_loadedTextures[entity.ID], "default");
+
+            return entity;
         }
     }
 }

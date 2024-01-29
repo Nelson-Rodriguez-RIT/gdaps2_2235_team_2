@@ -91,6 +91,8 @@ namespace ConceptDemo.classes.entities
         public virtual void Draw(SpriteBatch _spriteBatch) {
             // Entity is draw relative to the camera
             _spriteBatch.Draw(textures[activeTextureID], relPosition, Color.White);
+
+            // Animations will be done manually by each entity object
         }
 
         /// <summary>

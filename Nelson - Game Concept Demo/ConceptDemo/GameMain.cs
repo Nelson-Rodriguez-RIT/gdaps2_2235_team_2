@@ -81,7 +81,6 @@ namespace ConceptDemo
             _spriteBatch.Begin(); // Begin displaying textures
 
             // Update each entity and go through each layer
-            // TODO: Add animation capabilities
             for (int layer = 0; layer < 10; layer++)
                 foreach (Entity entity in loadedEntities) {
                     // Only draw textures if they're initialized

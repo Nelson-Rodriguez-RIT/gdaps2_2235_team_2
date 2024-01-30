@@ -9,7 +9,9 @@ using System.Data;
 using System.Linq;
 using System;
 
-
+// Coded by Nelson Rodriguez
+// Start Date: 1.30.2024
+// A demo showcasing potential ideas and features, possibly alongside implementations
 
 namespace ConceptDemo
 {
@@ -20,17 +22,11 @@ namespace ConceptDemo
         private const string TextureFilePath = "/textures";
         private const string MetadataFilePath = "/data.csv";
 
-        private Dictionary<string, List<Texture2D>> _loadedTextures;
+        private Dictionary<string, Dictionary<string, Texture2D>> _loadedTextures;
         private Dictionary<string, Dictionary<string, List<string>>> _loadedMetadata;
 
-        /// <summary>
-        /// Contains all loaded entities that will be update several times a frame
-        /// </summary>
-        private List<Entity> loadedEntities;
-
         // Functional classes that maintain core features such as gameplay or the camera
-        private GameManager gameManager;
-        private CameraManager camera;
+        private GameManager gm;
 
         // Mono game specific
         private GraphicsDeviceManager _graphics;
@@ -39,12 +35,11 @@ namespace ConceptDemo
 
         public GameMain() {
             // Prepare loaded content storage
-            _loadedTextures = new Dictionary<string, List<Texture2D>>();
+            _loadedTextures = new Dictionary<string, Dictionary<string, Texture2D>>();
             _loadedMetadata = new Dictionary<string, Dictionary<string, List<string>>>();
 
-            // Prepare loaded entities storage
-            loadedEntities = new List<Entity>();
-            
+            // Prepare functional classes
+            gm = new GameManager(_loadedMetadata, _loadedTextures);
 
             // Mono game specific
             _graphics = new GraphicsDeviceManager(this);
@@ -67,10 +62,6 @@ namespace ConceptDemo
 
         // Updates several times a frame
         protected override void Update(GameTime gameTime) {
-            // Exit game upon an escape button press
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             base.Update(gameTime);
         }
 
@@ -78,10 +69,13 @@ namespace ConceptDemo
         protected override void Draw(GameTime gameTime) {
             // Set background color
             GraphicsDevice.Clear(Color.CornflowerBlue);
+
             _spriteBatch.Begin(); // Begin displaying textures
 
 
+
             _spriteBatch.End(); // End displaying textures
+
             base.Draw(gameTime);
         }
 
@@ -89,7 +83,7 @@ namespace ConceptDemo
         // Non-mono methods ------------------------------------------------
         /// <summary>
         /// Loads textures and entity specific data (metadata) into memory. Final results of which
-        /// are stored in _loadedTextures and _loadedMetadata respectivly
+        /// are stored in _loadedTextures and _loadedMetadata respectivily
         /// </summary>
         private void PrepareContent() {
             // The starting folder is expected to be Content //
@@ -133,10 +127,10 @@ namespace ConceptDemo
 
                     // Get textures from textures directory
                     string[] textureFiles = Directory.GetFiles(path + TextureFilePath);
-                    List<Texture2D> bufferedTextures = new List<Texture2D>();
+                    Dictionary<string, Texture2D> bufferedTextures = new Dictionary<string, Texture2D>();
 
                     foreach (string fileName in textureFiles)
-                        bufferedTextures.Add(Content.Load<Texture2D>(path + TextureFilePath + fileName));
+                        bufferedTextures.Add(fileName, Content.Load<Texture2D>(path + TextureFilePath + fileName));
 
                     // Store textures
                     _loadedTextures.Add(entityID, bufferedTextures);

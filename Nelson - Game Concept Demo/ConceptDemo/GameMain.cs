@@ -15,10 +15,13 @@ namespace ConceptDemo
 {
     public class GameMain : Game {
         // Have it so a Dictionary<> is structured similar to the file system
-        private const string PathToContent = "../../../Content/";
+        private const string ContentFilePath = "../../../Content/";
+        private const string EntitiesFilePath = ContentFilePath + "Entities";
+        private const string TextureFilePath = "/textures";
+        private const string MetadataFilePath = "/data.csv";
 
         private Dictionary<string, List<Texture2D>> _loadedTextures;
-        private Dictionary<string, List<string>> _loadedMetadata;
+        private Dictionary<string, Dictionary<string, List<string>>> _loadedMetadata;
 
         /// <summary>
         /// Contains all loaded entities that will be update several times a frame
@@ -37,14 +40,11 @@ namespace ConceptDemo
         public GameMain() {
             // Prepare loaded content storage
             _loadedTextures = new Dictionary<string, List<Texture2D>>();
-            _loadedMetadata = new Dictionary<string, List<string>>();
+            _loadedMetadata = new Dictionary<string, Dictionary<string, List<string>>>();
 
             // Prepare loaded entities storage
             loadedEntities = new List<Entity>();
             
-            // Prepare functional classes
-            gameManager = new GameManager(_loadedEntityTextures);
-            camera = new CameraManager();
 
             // Mono game specific
             _graphics = new GraphicsDeviceManager(this);
@@ -62,8 +62,7 @@ namespace ConceptDemo
         // Load textures and related functionality
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // PrepareEntityContent();
+            PrepareContent();
         }
 
         // Updates several times a frame
@@ -72,8 +71,6 @@ namespace ConceptDemo
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // Updates the game state and any loadedentities
-            gameManager.Update(gameTime, loadedEntities, camera);
             base.Update(gameTime);
         }
 
@@ -83,13 +80,6 @@ namespace ConceptDemo
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _spriteBatch.Begin(); // Begin displaying textures
 
-            // Update each entity and go through each layer
-            for (int layer = 0; layer < 10; layer++)
-                foreach (Entity entity in loadedEntities) {
-                    // Only draw textures if they're initialized
-                    if (entity.TexturesInitialized && entity.DrawHierarchy == layer)
-                        entity.Draw(_spriteBatch);
-                }
 
             _spriteBatch.End(); // End displaying textures
             base.Draw(gameTime);
@@ -97,100 +87,66 @@ namespace ConceptDemo
 
 
         // Non-mono methods ------------------------------------------------
-        private void PrepareContent() {
-            
-        }
-
-
-
-
-
         /// <summary>
-        /// Loads all content based on the EntityContent.csv
+        /// Loads textures and entity specific data (metadata) into memory. Final results of which
+        /// are stored in _loadedTextures and _loadedMetadata respectivly
         /// </summary>
-        private void PrepareEntityContent() {
-            string fileEntityID; // ?
+        private void PrepareContent() {
+            // The starting folder is expected to be Content //
 
-            string fileInput;
-            string[] formatedFileInput;
+            // Load content for entities
+            StreamReader fileIn = null;
+            string[] contentDirectories = Directory.GetDirectories(EntitiesFilePath);
 
-            List<Texture2D> loadedTexture2D;
+            foreach (string path in contentDirectories) {
+                // Get an ID in order to properly store internally
+                string entityID = path.Split("\\")[1];
 
-            /*
-            EntityContent.txt Formatting
-            
-            ID=""
-            TextureID="","","", ... "" 
-            Size=#,#
+                try {
+                    // Get entity metadata from metadata.csv
+                    Dictionary<string, List<string>> bufferedMetadata = new Dictionary<string, List<string>>();
+                    fileIn = new StreamReader(path + MetadataFilePath);
+                    string metadata;
 
-            Entities do not need fill/have all this information. Only the bits
-            they plan on usings
+                    while ((metadata = fileIn.ReadLine()) != null) {
+                        // Comments are skipped over when reading from file
+                        if (metadata[0] == '/') continue;
 
-            Besides the headers, treat regular information as you would in a csv
-            */
+                        // Denotes the following line of metadata's purpose
+                        string dataHeader = metadata.Split('=')[0];
 
-            // Start reading repective file data
-            StreamReader fileIn = new StreamReader(EntityContentFilePath);
+                        // Get the actual metadata from the rest of the line
+                        string[] unsplitDataBody = metadata.Split('=')[1].Split(',');
 
-            // This iterates through each entity
-            foreach (EntityID entityID in Enum.GetValues<EntityID>()) {
-                while ((fileInput = fileIn.ReadLine()) != "$") {
-                    // Get the header to find out type of data in line
-                    string fileContentHeader = "";
-                    foreach (char c in fileInput)
-                        if (c == '=')
-                            break;
-                        else
-                            fileContentHeader += c;
+                        // Add each piece of data to a list so it can be stored with its header
+                        List<string> dataBody = new List<string>();
+                        foreach (string chunk in unsplitDataBody)
+                            dataBody.Add(chunk);
 
-                    // Get data after the header
-                    formatedFileInput = fileInput.TrimStart(new char[fileContentHeader.Length]).Split(',');
-
-                    // Associate related data
-                    switch (fileContentHeader) {
-                        case "ID":
-
+                        // Store this set of data with its header
+                        bufferedMetadata.Add(dataHeader, dataBody);
                     }
 
+                    // Store metadata
+                    _loadedMetadata.Add(entityID, bufferedMetadata);
+
+
+                    // Get textures from textures directory
+                    string[] textureFiles = Directory.GetFiles(path + TextureFilePath);
+                    List<Texture2D> bufferedTextures = new List<Texture2D>();
+
+                    foreach (string fileName in textureFiles)
+                        bufferedTextures.Add(Content.Load<Texture2D>(path + TextureFilePath + fileName));
+
+                    // Store textures
+                    _loadedTextures.Add(entityID, bufferedTextures);
                 }
-
-                /* Old File Systems
-
-
-                // ID
-                fileEntityID = reader.ReadLine();
-
-                // TextureID
-                formatedFileInput = reader.ReadLine().Split(',');
-
-                // Create a new list to store Texture2Ds with, add it to _loadedTextures
-                _loadedTextures.Add(entityID, (loadedTexture2D = new List<Texture2D>()));
-
-                // For each TextureID for this entity, find and load its corresponding file data
-                foreach (string textureID in formatedFileInput) {
-                    loadedTexture2D.Add(Content.Load<Texture2D>(
-                        $"textures/{fileEntityID}/{textureID}"));
+                catch { } // Have this error logged to a file
+                finally {
+                    if (fileIn != null)
+                        fileIn.Close();
                 }
-                */
             }
         }
-    }
-
-
-    /// <summary>
-    /// Contains all possible entity IDs, must match EntityContent.txt order
-    /// </summary>
-    public enum EntityID {
-        entity,
-        character
-    }
-
-    /// <summary>
-    /// Contains IDs related to the game's current state
-    /// </summary>
-    public enum GameStateID {
-        initialize,
-        overworld_test_load, // Used to load assests
-        overworld_test
-    }
+    } 
 }

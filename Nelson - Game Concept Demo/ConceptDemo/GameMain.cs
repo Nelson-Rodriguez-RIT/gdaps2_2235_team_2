@@ -29,7 +29,12 @@ namespace ConceptDemo
         /// <summary>
         /// Contains all preloaded textures gathered from PrepareEntityContent
         /// </summary>
-        private Dictionary<EntityID, List<Texture2D>> _loadedTextures;
+        private Dictionary<EntityID, List<Texture2D>> _loadedEntityTextures;
+
+        /// <summary>
+        /// Contains all reploaded entity information gathered from PrepareEntityContent
+        /// </summary>
+        private Dictionary<EntityID, List<string>> _loadedEntityContents;
 
         // Mono game specific
         private GraphicsDeviceManager _graphics;
@@ -38,10 +43,10 @@ namespace ConceptDemo
         public GameMain() {
             // Prepare entities
             loadedEntities = new List<Entity>();
-            _loadedTextures = new Dictionary<EntityID, List<Texture2D>>();
+            _loadedEntityTextures = new Dictionary<EntityID, List<Texture2D>>();
 
             // Prepare functional classes
-            gameManager = new GameManager(_loadedTextures);
+            gameManager = new GameManager(_loadedEntityTextures);
             camera = new CameraManager();
 
             // Mono game specific
@@ -98,28 +103,54 @@ namespace ConceptDemo
         /// Loads all content based on the EntityContent.csv
         /// </summary>
         private void PrepareEntityContent() {
-            string fileEntityID;
+            string fileEntityID; // ?
+
+            string fileInput;
             string[] formatedFileInput;
+
             List<Texture2D> loadedTexture2D;
 
             /*
             EntityContent.txt Formatting
             
-            ID
-            TextureID
+            ID=""
+            TextureID="","","", ... "" 
+            Size=#,#
 
-            For the moment all entities should at least share the same amount
-            lines of information to properly carry over information.
+            Entities do not need fill/have all this information. Only the bits
+            they plan on usings
+
+            Besides the headers, treat regular information as you would in a csv
             */
 
             // Start reading repective file data
-            StreamReader reader = new StreamReader(EntityContentFilePath);
+            StreamReader fileIn = new StreamReader(EntityContentFilePath);
 
             // This iterates through each entity
             foreach (EntityID entityID in Enum.GetValues<EntityID>()) {
+                while ((fileInput = fileIn.ReadLine()) != "$") {
+                    // Get the header to find out type of data in line
+                    string fileContentHeader = "";
+                    foreach (char c in fileInput)
+                        if (c == '=')
+                            break;
+                        else
+                            fileContentHeader += c;
+
+                    // Get data after the header
+                    formatedFileInput = fileInput.TrimStart(new char[fileContentHeader.Length]).Split(',');
+
+                    // Associate related data
+                    switch (fileContentHeader) {
+                        case "ID":
+
+                    }
+
+                }
+
+                /* Old File System
                 // ID
                 fileEntityID = reader.ReadLine();
-
 
                 // TextureID
                 formatedFileInput = reader.ReadLine().Split(',');
@@ -132,21 +163,25 @@ namespace ConceptDemo
                     loadedTexture2D.Add(Content.Load<Texture2D>(
                         $"textures/{fileEntityID}/{textureID}"));
                 }
+                */
             }
         }
     }
+
 
     /// <summary>
     /// Contains all possible entity IDs, must match EntityContent.txt order
     /// </summary>
     public enum EntityID {
-        entity
+        entity,
+        character
     }
 
     /// <summary>
     /// Contains IDs related to the game's current state
     /// </summary>
     public enum GameStateID {
+        initialize,
         overworld_test_load, // Used to load assests
         overworld_test
     }

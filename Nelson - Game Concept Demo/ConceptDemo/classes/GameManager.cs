@@ -27,17 +27,21 @@ namespace ConceptDemo.classes {
         /// <summary>
         /// Initialize the game normally
         /// </summary>
-        public GameManager(Dictionary<EntityID, List<Texture2D>> _loadedTextures) : 
-            this(_loadedTextures, GameStateID.overworld_test_load) {}
+        public GameManager(
+            Dictionary<EntityID, List<Texture2D>> _loadedEntityTextures,
+            Dictionary<EntityID, List<string>> _loadedEntityContents) : 
+            this(_loadedEntityTextures, GameStateID.initialize) {}
 
         /// <summary>
         /// Initialize the game in a custom state
         /// </summary>
         /// <param name="gameState">State to initialize game in</param>
         public GameManager(
-            Dictionary<EntityID, List<Texture2D>> _loadedTextures, GameStateID gameState)  {
+            Dictionary<EntityID, List<Texture2D>> _loadedEntityTextures,
+            Dictionary<EntityID, List<string>> _loadedEntityContents,
+            GameStateID gameState)  {
 
-            this._loadedTextures = _loadedTextures;
+            this._loadedTextures = _loadedEntityTextures;
             this.gameState = gameState;
         }
 
@@ -49,6 +53,10 @@ namespace ConceptDemo.classes {
         /// <param name="loadedEntities">Currently loaded and interactable entities</param>
         public void Update(GameTime gameTime, List<Entity> loadedEntities, CameraManager camera) {
             switch (gameState) {
+                case GameStateID.initialize:
+                    gameState = GameStateID.overworld_test_load;
+                    break;
+
                 case GameStateID.overworld_test_load:
                     loadedEntities.Add(InitializeEntity(new Entity()));
 
@@ -70,8 +78,9 @@ namespace ConceptDemo.classes {
         }
 
         private Entity InitializeEntity(Entity entity) {
-            entity.LoadTextures(_loadedTextures[entity.ID], "default");
-
+            entity.LoadTextures(_loadedEntityTextures[entity.ID], "default");
+            entity.LoadContent(_loadedEntityContent[entity.ID]);
+            
             return entity;
         }
     }

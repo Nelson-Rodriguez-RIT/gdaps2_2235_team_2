@@ -13,15 +13,27 @@ using System;
 // Start Date: 1.30.2024
 // A demo showcasing potential ideas and features, possibly alongside implementations
 
+
+/*
+ [ TODO ]
+    - Finish implementing Entity & GameManager
+    - Add a logger (at least for crashes/exceptions)
+    - Implement Character (maybe, don't know if its needed or that Entity would be more than enough)
+        Contains basic funtionality commonly shared amongst players/npc/enemy
+    - Implement Camera
+    - Implement animation functionality
+    - Implement user controls
+*/
+
 namespace ConceptDemo
 {
     public class GameMain : Game {
-        // Have it so a Dictionary<> is structured similar to the file system
         private const string ContentFilePath = "../../../Content/";
         private const string EntitiesFilePath = ContentFilePath + "Entities";
         private const string TextureFilePath = "/textures";
         private const string MetadataFilePath = "/data.csv";
 
+        // Stores data gathered from disk
         private Dictionary<string, Dictionary<string, Texture2D>> _loadedTextures;
         private Dictionary<string, Dictionary<string, List<string>>> _loadedMetadata;
 

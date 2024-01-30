@@ -34,5 +34,9 @@ namespace ConceptDemo.classes.entities
 
             absPosition = initialPosition;
         }
+
+        // Teleport()
+        // MoveTo()
+        // Collision()
     }
 }

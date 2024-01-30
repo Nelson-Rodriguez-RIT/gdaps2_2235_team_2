@@ -14,8 +14,11 @@ using System;
 namespace ConceptDemo
 {
     public class GameMain : Game {
-        // File Paths
-        private const string EntityContentFilePath = "../../../Content/EntityContent.csv";
+        // Have it so a Dictionary<> is structured similar to the file system
+        private const string PathToContent = "../../../Content/";
+
+        private Dictionary<string, List<Texture2D>> _loadedTextures;
+        private Dictionary<string, List<string>> _loadedMetadata;
 
         /// <summary>
         /// Contains all loaded entities that will be update several times a frame
@@ -26,25 +29,19 @@ namespace ConceptDemo
         private GameManager gameManager;
         private CameraManager camera;
 
-        /// <summary>
-        /// Contains all preloaded textures gathered from PrepareEntityContent
-        /// </summary>
-        private Dictionary<EntityID, List<Texture2D>> _loadedEntityTextures;
-
-        /// <summary>
-        /// Contains all reploaded entity information gathered from PrepareEntityContent
-        /// </summary>
-        private Dictionary<EntityID, List<string>> _loadedEntityContents;
-
         // Mono game specific
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        public GameMain() {
-            // Prepare entities
-            loadedEntities = new List<Entity>();
-            _loadedEntityTextures = new Dictionary<EntityID, List<Texture2D>>();
 
+        public GameMain() {
+            // Prepare loaded content storage
+            _loadedTextures = new Dictionary<string, List<Texture2D>>();
+            _loadedMetadata = new Dictionary<string, List<string>>();
+
+            // Prepare loaded entities storage
+            loadedEntities = new List<Entity>();
+            
             // Prepare functional classes
             gameManager = new GameManager(_loadedEntityTextures);
             camera = new CameraManager();
@@ -65,7 +62,8 @@ namespace ConceptDemo
         // Load textures and related functionality
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            PrepareEntityContent();
+
+            // PrepareEntityContent();
         }
 
         // Updates several times a frame
@@ -99,6 +97,14 @@ namespace ConceptDemo
 
 
         // Non-mono methods ------------------------------------------------
+        private void PrepareContent() {
+            
+        }
+
+
+
+
+
         /// <summary>
         /// Loads all content based on the EntityContent.csv
         /// </summary>
@@ -148,7 +154,9 @@ namespace ConceptDemo
 
                 }
 
-                /* Old File System
+                /* Old File Systems
+
+
                 // ID
                 fileEntityID = reader.ReadLine();
 

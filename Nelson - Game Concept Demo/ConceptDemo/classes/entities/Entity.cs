@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.Tracing;
 using System.Linq;
 
 namespace ConceptDemo.classes.entities
@@ -35,8 +36,27 @@ namespace ConceptDemo.classes.entities
             absPosition = initialPosition;
         }
 
+
+        /// <summary>
+        /// Updates the gameplay several times a frame
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void Update(GameTime gameTime) {
+        }
+
+        /// <summary>
+        /// Updates the graphics several times a frame
+        /// </summary>
+        /// <param name="gameTime">DeltaTime (normalized) variable</param>
+        public void Draw(GameTime gameTime) {
+
+
+        }
+
+
         // Teleport()
         // MoveTo()
         // Collision()
+
     }
 }

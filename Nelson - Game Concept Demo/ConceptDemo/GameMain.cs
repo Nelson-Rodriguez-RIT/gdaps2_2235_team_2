@@ -74,6 +74,9 @@ namespace ConceptDemo
 
         // Updates several times a frame
         protected override void Update(GameTime gameTime) {
+            // Update gameplay
+            gm.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -84,7 +87,8 @@ namespace ConceptDemo
 
             _spriteBatch.Begin(); // Begin displaying textures
 
-
+            // Draw gameplay
+            gm.Draw(gameTime);
 
             _spriteBatch.End(); // End displaying textures
 
@@ -100,7 +104,7 @@ namespace ConceptDemo
         private void PrepareContent() {
             // The starting folder is expected to be Content //
 
-            // Load content for entities
+            // Load content for _entities
             StreamReader fileIn = null;
             string[] contentDirectories = Directory.GetDirectories(EntitiesFilePath);
 
@@ -149,8 +153,7 @@ namespace ConceptDemo
                 }
                 catch { } // Have this error logged to a file
                 finally {
-                    if (fileIn != null)
-                        fileIn.Close();
+                    fileIn?.Close();
                 }
             }
         }

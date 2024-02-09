@@ -8,17 +8,30 @@ using System.Threading.Tasks;
 
 namespace Dante_Test
 {
-    internal class Player
+        internal sealed class Player
     {
-        public Vector2 position;
+        private Vector2 position;
         private Vector2 velocity;
-        public Vector2 acceleration;
+        private Vector2 acceleration;
+
+        public Vector2 Position
+        {
+            get { return position; }
+        }
+        public Vector2 Velocity
+        {
+            get { return velocity;}
+        }
+        public Vector2 Acceleration
+        {
+            get { return acceleration;}
+        }
 
         public Player(float x, float y) 
         { 
             position = new Vector2(x, y);
             velocity = new Vector2(0f, 0f);
-            acceleration = new Vector2(0f, 1f);
+            acceleration = new Vector2(0f, 1.5f);
         }
 
         public void VerticalMovement()
@@ -32,7 +45,7 @@ namespace Dante_Test
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
-                velocity.Y = -30f;
+                velocity.Y = -40f;
                 VerticalMovement();
             }
           
@@ -77,7 +90,7 @@ namespace Dante_Test
                 acceleration.X = 0;
             }
 
-            if (velocity.X < 10 && velocity.X > -10) 
+            if (velocity.X < 20 && velocity.X > -20) 
             {
                 velocity.X += acceleration.X;
             }

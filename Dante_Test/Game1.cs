@@ -11,6 +11,9 @@ namespace Dante_Test
         private SpriteBatch _spriteBatch;
         private Player player;
         private Texture2D image;
+        private Texture2D dragonEgg;
+        private Egg egg;
+        
 
         public Game1()
         {
@@ -23,8 +26,9 @@ namespace Dante_Test
         {
             // TODO: Add your initialization logic here
             player = new Player(100, 100);
-            _graphics.PreferredBackBufferWidth = 900; // set this value to the desired width
-            _graphics.PreferredBackBufferHeight = 900; // set this value to the desired height
+            egg = new Egg(player);
+            _graphics.PreferredBackBufferWidth = 1920; // set this value to the desired width
+            _graphics.PreferredBackBufferHeight = 1000; // set this value to the desired height
             _graphics.ApplyChanges();
             base.Initialize();
         }
@@ -37,6 +41,7 @@ namespace Dante_Test
 
 
             image = Content.Load <Texture2D>("slime");
+            dragonEgg = Content.Load<Texture2D>("dragonEgg");
         }
 
         protected override void Update(GameTime gameTime)
@@ -47,8 +52,9 @@ namespace Dante_Test
             // TODO: Add your update logic here
 
             player.HorizontalMovement();
+            
 
-            if (player.position.Y + image.Height < _graphics.PreferredBackBufferHeight)
+            if (player.Position.Y + image.Height < _graphics.PreferredBackBufferHeight)
             {
                 player.VerticalMovement();
             }
@@ -56,7 +62,7 @@ namespace Dante_Test
             {
                 player.Jump();
             }
-
+            egg.Update();
 
             base.Update(gameTime);
         }
@@ -68,7 +74,8 @@ namespace Dante_Test
             // TODO: Add your drawing code here
 
             _spriteBatch.Begin();
-            _spriteBatch.Draw(image, player.position, Color.White);
+            _spriteBatch.Draw(image, player.Position, Color.White);
+            _spriteBatch.Draw(dragonEgg, egg.Position, Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);

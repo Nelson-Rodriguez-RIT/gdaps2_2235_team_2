@@ -13,7 +13,7 @@ namespace Dante_Test
         private Texture2D image;
         private Texture2D dragonEgg;
         private Egg egg;
-        
+        private Companion companion;
 
         public Game1()
         {
@@ -27,6 +27,7 @@ namespace Dante_Test
             // TODO: Add your initialization logic here
             player = new Player(100, 100);
             egg = new Egg(player);
+            companion = new Companion();
             _graphics.PreferredBackBufferWidth = 1920; // set this value to the desired width
             _graphics.PreferredBackBufferHeight = 1000; // set this value to the desired height
             _graphics.ApplyChanges();
@@ -63,6 +64,12 @@ namespace Dante_Test
                 player.Jump();
             }
             egg.Update();
+            companion.Update(new MouseState()) ;
+
+            if (egg.Position.Y + dragonEgg.Height > _graphics.PreferredBackBufferHeight)
+            {
+                egg.Throw();
+            }
 
             base.Update(gameTime);
         }
@@ -76,6 +83,7 @@ namespace Dante_Test
             _spriteBatch.Begin();
             _spriteBatch.Draw(image, player.Position, Color.White);
             _spriteBatch.Draw(dragonEgg, egg.Position, Color.White);
+            _spriteBatch.Draw(image, companion.position, Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);

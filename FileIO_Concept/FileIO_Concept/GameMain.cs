@@ -36,7 +36,7 @@ namespace FileIO_Concept {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // This portion of file loading is subject to change
-            Entity.Load($"{RootDirectory}Content/Entity");
+            Entity.Load($"{RootDirectory}Content/Entity/");
             Entity.LoadedSprite = Content.Load<Texture2D>("Entity/sprite");
 
 

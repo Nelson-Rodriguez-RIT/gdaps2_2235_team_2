@@ -11,7 +11,7 @@ namespace FileIO_Concept.Content.Entity {
 
     internal class Entity {
         // Content grabbed from file
-        private static Dictionary<DataHeader, string> _data;
+        private static Dictionary<DataHeader, string> _data = new Dictionary<DataHeader, string>();
         private static Texture2D _sprite = null;
 
         // Needed in case only part of the data is loaded

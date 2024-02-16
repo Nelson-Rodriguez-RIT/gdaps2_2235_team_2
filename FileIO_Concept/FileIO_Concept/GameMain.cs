@@ -13,7 +13,7 @@ using System.Dynamic;
 namespace FileIO_Concept {
 
     public class GameMain : Game {
-        private const string RootDirectory = "../../../";
+        
 
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -36,9 +36,11 @@ namespace FileIO_Concept {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // This portion of file loading is subject to change
-            Entity.Load($"{RootDirectory}Content/Entity/");
-            Entity.LoadedSprite = Content.Load<Texture2D>("Entity/sprite");
+            //Entity.Load($"{RootDirectory}Content/Entity/");
+            //Entity.LoadedSprite = Content.Load<Texture2D>("Entity/sprite");
 
+            // Loads Entity's data
+            Loader.Load(typeof(Entity));
 
             
             testEntity = new Entity(new Vector2(0, 0));
@@ -70,7 +72,7 @@ namespace FileIO_Concept {
         }
 
         // Used to load relevant entity data
-        enum Entities {
+        public enum Entities {
             Entity
         }
     }

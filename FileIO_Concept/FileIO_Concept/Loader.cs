@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -19,8 +20,6 @@ namespace FileIO_Concept
     /// </summary>
     internal static class Loader
     {
-        private const string RootDirectory = "../../../";
-
         /// <summary>
         /// Puts data from a file into a dictionary.
         /// This could be made into seperate methods for different kinds of files 
@@ -28,11 +27,16 @@ namespace FileIO_Concept
         /// </summary>
         /// <param name="path">The path of the file.</param>
         /// <returns></returns>
-        public static Dictionary<DataHeader, string> Load(string path)
+        public static void Load(Type cl)
         {
+            const string RootDirectory = "../../../";
+            string dataPath = // Get relevant class file path
+                $"{RootDirectory}{cl.GetProperty("FilePath").GetMethod}data.txt";
+
+            // Get relevant class DataHeader enum
+
             Dictionary<DataHeader, string> _data = new Dictionary<DataHeader, string>();
-            string dataPath = $"{path}data.txt";
-            bool dataLoadedSuccess = false;
+            
 
             // For data reading
             StreamReader file = null;
@@ -81,30 +85,17 @@ namespace FileIO_Concept
                         header,
                         dataBuffer[header.ToString()]);
 
-
-                dataLoadedSuccess = true;
             }
             // Add debug console call for FileNotFoundException
             catch
             {
 
-                dataLoadedSuccess = false;
             }
             finally
             {
                 file?.Close(); // Closes file if successfully opened
             }
-
-            //Check to make sure 
-            if (_data != null)
-            {
-                return _data;
-            }
-            else
-            {
-                //Log to console
-                return null;
-            }
         }
+
     }
 }

@@ -50,45 +50,16 @@ namespace GameControls_Concept
 
                 // Set velocity cap TODO
                 velocity = new Vector2( // Moves this object's center towards the mouse cursor
-                    state.Position.X - image.Width / 2, 
-                    state.Position.Y - image.Height / 2
-                    ) - position;
+                    (state.Position.X - image.Width / 2) * moveSpeed * (float) gameTime.ElapsedGameTime.TotalSeconds, 
+                    (state.Position.Y - image.Height / 2) * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds) 
+                    - position;
 
-                // Set maxIteraiton based on velocity TODO
-                int maxIteration = 20; // Increase this number to increase collision precision
-
-                // How many steps it can go before colliding into anything
-                int peakXIteration = maxIteration;
-                int peakYIteration = maxIteration;
-
-                // Shorten iterations based on current peakIteration TODO
-
-                foreach (Platform platform in levelManager.Platforms) // Check each platform
-                    for (int iteration = 0; iteration <= maxIteration; iteration++) { // Check how many steps it can go before colliding into this platform
-                        if (new Rectangle( // Check for horizontal collision
-                                (int)((position.X + ((velocity.X * moveSpeed) / maxIteration) * iteration * (float)gameTime.ElapsedGameTime.TotalSeconds)),
-                                (int)position.Y,
-                                image.Width,
-                                image.Height)
-                                .Intersects(platform.Hitbox))
-                            // We want the absolute minimum steps
-                            peakXIteration = iteration - 1 < peakXIteration ? iteration - 1 : peakXIteration;
-
-                        if (new Rectangle( // Check for vertical collision
-                                (int) position.X,
-                                (int)((position.Y + ((velocity.Y * moveSpeed) / maxIteration) * iteration * (float)gameTime.ElapsedGameTime.TotalSeconds)),
-                                image.Width,
-                                image.Height)
-                                .Intersects(platform.Hitbox))
-                            // We want the absolute minimum steps
-                            peakYIteration = iteration - 1 < peakYIteration ? iteration - 1 : peakYIteration;
-                    } 
-                        
-
-                // Update position and relevant hitbox based on peakIteration
-                position += new Vector2(
-                    (velocity.X / maxIteration) * peakXIteration * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds,
-                    (velocity.Y / maxIteration) * peakYIteration * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                
+                position = Platform.CheckForPlatformCollision(
+                    state,
+                    levelManager.Platforms,
+                    hitbox,
+                    velocity);
 
                 //Move hibox to the right spot
                 hitbox = new Rectangle(

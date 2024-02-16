@@ -89,20 +89,20 @@ namespace GameControls_Concept
                 foreach (Platform platform in levelManager.Platforms) // Check each platform
                     for (int iteration = 0; iteration <= maxIteration; iteration++) { // Check how many steps it can go before colliding into this platform
                         if (new Rectangle( // Check for horizontal collision
-                            (int)((position.X + ((velocity.X * moveSpeed) / maxIteration) * iteration * (float)gameTime.ElapsedGameTime.TotalSeconds)),
-                            (int)position.Y,
-                            image.Width,
-                            image.Height)
-                            .Intersects(platform.Hitbox))
+                                (int)((position.X + ((velocity.X * moveSpeed) / maxIteration) * iteration * (float)gameTime.ElapsedGameTime.TotalSeconds)),
+                                (int)position.Y,
+                                image.Width,
+                                image.Height)
+                                .Intersects(platform.Hitbox))
                             // We want the absolute minimum steps
                             peakXIteration = iteration - 1 < peakXIteration ? iteration - 1 : peakXIteration;
 
                         if (new Rectangle( // Check for vertical collision
-                            (int) position.X,
-                            (int)((position.Y + ((velocity.Y * moveSpeed) / maxIteration) * iteration * (float)gameTime.ElapsedGameTime.TotalSeconds)),
-                            image.Width,
-                            image.Height)
-                            .Intersects(platform.Hitbox))
+                                (int) position.X,
+                                (int)((position.Y + ((velocity.Y * moveSpeed) / maxIteration) * iteration * (float)gameTime.ElapsedGameTime.TotalSeconds)),
+                                image.Width,
+                                image.Height)
+                                .Intersects(platform.Hitbox))
                             // We want the absolute minimum steps
                             peakYIteration = iteration - 1 < peakYIteration ? iteration - 1 : peakYIteration;
                     } 

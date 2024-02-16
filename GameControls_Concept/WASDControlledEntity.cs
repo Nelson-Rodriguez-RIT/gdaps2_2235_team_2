@@ -37,7 +37,7 @@ namespace GameControls_Concept
         public void Movement(GameTime gameTime)
         {
             
-
+            
             //Update velocity using acceleration
             velocity = new Vector2(
                 velocity.X + (acceleration.X * (float)Math.Pow(
@@ -46,6 +46,7 @@ namespace GameControls_Concept
                 velocity.Y + (acceleration.Y * (float)Math.Pow(
                     gameTime.ElapsedGameTime.TotalSeconds,
                     2)));
+            
 
             //Make sure speed is not over the maximum
             if (velocity.Y > TerminalVelocity) 
@@ -61,11 +62,11 @@ namespace GameControls_Concept
             //Slows down horizontal movement
             if (velocity.X > 0)
             {
-                acceleration.X = -20000f;
+                acceleration.X = -100000f;
             }
             else if (velocity.X < 0)
             {
-                acceleration.X = 20000f;
+                acceleration.X = 100000f;
             }
             else
             {

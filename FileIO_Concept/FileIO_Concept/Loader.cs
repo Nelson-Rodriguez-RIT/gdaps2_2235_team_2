@@ -34,6 +34,7 @@ namespace FileIO_Concept
                 $"{RootDirectory}{cl.GetProperty("FilePath").GetMethod}data.txt";
 
             // Get relevant class DataHeader enum
+            // Ran out of time, ill finish this later ;) - Nelson
 
             Dictionary<DataHeader, string> _data = new Dictionary<DataHeader, string>();
             

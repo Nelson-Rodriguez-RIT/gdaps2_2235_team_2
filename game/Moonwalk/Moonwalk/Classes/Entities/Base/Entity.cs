@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Entities.Base
 {
@@ -11,5 +10,11 @@ namespace Moonwalk.Classes.Entities.Base
     /// </summary>
     internal abstract class Entity
     {
+        // Contains the entity's sprite table and position
+        protected Rectangle entity;
+
+        public abstract void Update(GameTime gt);
+
+        public abstract void Draw(SpriteBatch sb);
     }
 }

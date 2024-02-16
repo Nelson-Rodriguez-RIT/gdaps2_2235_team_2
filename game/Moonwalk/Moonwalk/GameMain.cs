@@ -1,11 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Managers;
 
 namespace Moonwalk {
     public class GameMain : Game {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        GameManager gameManager;
 
         public GameMain() {
             _graphics = new GraphicsDeviceManager(this);
@@ -14,7 +17,7 @@ namespace Moonwalk {
         }
 
         protected override void Initialize() {
-            // TODO: Add your initialization logic here
+            gameManager = GameManager.GetInstance();
 
             base.Initialize();
         }
@@ -22,14 +25,15 @@ namespace Moonwalk {
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Load content here
         }
 
-        protected override void Update(GameTime gameTime) {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+        // As a general rule of thumb, keep update/draw logic inside of gameManager
+        // and initalization/loading logic inside GameMain
 
-            // TODO: Add your update logic here
+        protected override void Update(GameTime gameTime) {
+
+            gameManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -37,7 +41,11 @@ namespace Moonwalk {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+            gameManager.Draw(_spriteBatch);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

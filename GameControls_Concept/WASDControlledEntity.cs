@@ -9,7 +9,7 @@ namespace GameControls_Concept
 {
     internal class WASDControlledEntity
     {
-       
+        
 
         public WASDControlledEntity() 
         { 

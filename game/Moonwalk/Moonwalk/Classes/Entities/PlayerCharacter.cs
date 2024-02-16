@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Entities
 {
+    /// <summary>
+    /// The player's character
+    /// </summary>
     internal class PlayerCharacter : PlayerControlled
     {
     }

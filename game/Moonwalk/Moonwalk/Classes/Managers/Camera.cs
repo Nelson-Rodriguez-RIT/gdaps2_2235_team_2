@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Managers
 {
+    /// <summary>
+    /// Provides camera functionality
+    /// </summary>
     internal class Camera
     {
     }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Managers
 {
+    /// <summary>
+    /// Maintains the player's HUD
+    /// </summary>
     internal class Hud
     {
     }

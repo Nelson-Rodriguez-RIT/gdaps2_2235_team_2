@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Entities.Base
 {
+    /// <summary>
+    /// Contains base functionality of entities controlled by the player
+    /// </summary>
     internal abstract class PlayerControlled : Entity
     {
     }

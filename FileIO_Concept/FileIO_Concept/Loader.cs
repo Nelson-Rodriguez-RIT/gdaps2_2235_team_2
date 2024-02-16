@@ -1,44 +1,38 @@
 ﻿using Microsoft.VisualBasic.FileIO;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 
-namespace FileIO_Concept.Content.Entity {
+namespace FileIO_Concept
+{
+    enum DataHeader
+    {
+        value_int,
+        value_string
+    }
+    /// <summary>
+    /// A static class to help with loading data from files
+    /// </summary>
+    internal static class Loader
+    {
+        private const string RootDirectory = "../../../";
 
-
-    internal class Entity {
-        // Content grabbed from file
-        private static Dictionary<DataHeader, string> _data = new Dictionary<DataHeader, string>();
-        private static Texture2D _sprite = null;
-
-        // Needed in case only part of the data is loaded
-        private static bool dataLoadedSuccess;
-
-        private Rectangle entity;
-        
-        public static Texture2D LoadedSprite {
-            set {
-                if (_sprite == null)
-                    _sprite = value;
-            }
-        }
-
-        public Entity(Vector2 position) {
-            entity = new Rectangle(
-                (int) position.X, 
-                (int) position.Y, 
-                _sprite.Width / 4,
-                _sprite.Height / 4);
-        }
-
-        public static void Load(string classRootPath) {
-            string dataPath = $"{classRootPath}data.txt";
-
-            //THIS IS WHAT IT WOULD LOOK LIKE TO USE A STATIC CLASS FOR THIS - Dante
-            //_data = Loader.Load(classRootPath);
+        /// <summary>
+        /// Puts data from a file into a dictionary.
+        /// This could be made into seperate methods for different kinds of files 
+        /// and/or different things that need data (entity, level, etc.)
+        /// </summary>
+        /// <param name="path">The path of the file.</param>
+        /// <returns></returns>
+        public static Dictionary<DataHeader, string> Load(string path)
+        {
+            Dictionary<DataHeader, string> _data = new Dictionary<DataHeader, string>();
+            string dataPath = $"{path}data.txt";
+            bool dataLoadedSuccess = false;
 
             // For data reading
             StreamReader file = null;
@@ -50,7 +44,8 @@ namespace FileIO_Concept.Content.Entity {
 
             int line = 0; // For error logging purposes
 
-            try {
+            try
+            {
                 if (!File.Exists(dataPath)) // For error logging purposes
                     throw new FileNotFoundException();
 
@@ -58,7 +53,8 @@ namespace FileIO_Concept.Content.Entity {
 
                 // Read file content
                 // Error checking should be done here
-                while ((fileDataRaw = file.ReadLine()) != null) {
+                while ((fileDataRaw = file.ReadLine()) != null)
+                {
                     line++;
 
                     if (fileDataRaw[0] == '/') // Ignore comments
@@ -69,7 +65,7 @@ namespace FileIO_Concept.Content.Entity {
                         // Check for any file format errors that would prevent
                         // proper data formatting before this next line
                         (fileDataFormatted = fileDataRaw.Split('=')).Length != 2)
-                            throw new MalformedLineException();
+                        throw new MalformedLineException();
 
                     // Prepare data for sorting via enums
                     dataBuffer.Add(fileDataFormatted[0], fileDataFormatted[1]);
@@ -89,30 +85,26 @@ namespace FileIO_Concept.Content.Entity {
                 dataLoadedSuccess = true;
             }
             // Add debug console call for FileNotFoundException
-            catch {
+            catch
+            {
 
                 dataLoadedSuccess = false;
             }
-            finally {
+            finally
+            {
                 file?.Close(); // Closes file if successfully opened
             }
-        }
 
-
-        public void Draw(SpriteBatch sb) {
-            sb.Draw(
-                _sprite,
-                entity,
-                Color.White);
+            //Check to make sure 
+            if (_data != null)
+            {
+                return _data;
+            }
+            else
+            {
+                //Log to console
+                return null;
+            }
         }
-
-        /*
-        enum DataHeader
-        {
-        value_int,
-        value_string
-        }
-        */
     }
-    
 }

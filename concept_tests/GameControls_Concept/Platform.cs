@@ -44,7 +44,9 @@ namespace GameControls_Concept
             // Shorten iterations based on current peakIteration TODO
 
             foreach (Platform platform in platforms) // Check each platform
-                for (int iteration = 0; iteration <= maxIteration; iteration++) { // Check how many steps it can go before colliding into this platform
+            {
+                for (int iteration = 0; iteration <= maxIteration; iteration++)
+                { // Check how many steps it can go before colliding into this platform
                     if (new Rectangle( // Check for horizontal collision
                             (int)(entity.X + ((velocity.X) / maxIteration) * iteration),
                             (int)entity.Y,
@@ -63,11 +65,13 @@ namespace GameControls_Concept
                         // We want the absolute minimum steps
                         peakYIteration = iteration - 1 < peakYIteration ? iteration - 1 : peakYIteration;
                 }
+            }
 
             // Update position and relevant hitbox based on peakIteration
-            return new Vector2(
-                entity.X + (velocity.X / maxIteration) * peakXIteration,
-                entity.Y + (velocity.Y / maxIteration) * peakYIteration);
+            Vector2 temp = new Vector2(
+                (entity.X + entity.Width / 2) + (velocity.X / maxIteration) * peakXIteration,
+                (entity.Y + entity.Height / 2) + (velocity.Y / maxIteration) * peakYIteration);
+            return temp;
         }
     }
 }

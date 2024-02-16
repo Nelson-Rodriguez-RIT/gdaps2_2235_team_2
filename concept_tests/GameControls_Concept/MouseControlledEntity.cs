@@ -64,13 +64,14 @@ namespace GameControls_Concept
                     levelManager.Platforms,
                     hitbox,
                     velocity);
-
+                
                 //Move hibox to the right spot
                 hitbox = new Rectangle(
                     (int)position.X,
                     (int)position.Y,
                     image.Width,
                     image.Height);
+                
             }
 
             //Space to turn the following on and off

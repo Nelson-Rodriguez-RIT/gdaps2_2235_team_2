@@ -21,8 +21,8 @@ namespace GameControls_Concept
     internal class WASDControlledEntity : ControllableEntity
     {
         protected Vector2 acceleration;
-        protected const float Gravity = 70000f;
-        protected const float TerminalVelocity = 900f;
+        protected const float Gravity = 700f;
+        protected const float TerminalVelocity = 1400f;
         protected const float MaxXVelocity = 100f;
         protected PhysicsState physicsState;
 
@@ -81,6 +81,10 @@ namespace GameControls_Concept
             { 
                 velocity.Y = TerminalVelocity;
             }
+            else if (velocity.Y < -TerminalVelocity)
+            {
+                velocity.Y = -TerminalVelocity;
+            }
 
             // STILL DOESN'T WORK!!!!
             // ill fix it later ;P - Nelson
@@ -92,7 +96,7 @@ namespace GameControls_Concept
                 hitbox,
                 velocity);
 
-
+            
             //Slows down horizontal movement
             if (velocity.X > 0)
             {
@@ -106,6 +110,9 @@ namespace GameControls_Concept
             {
                 acceleration.X = 0;
             }
+            
+
+            base.Update(gameTime);
         }
         
         /// <summary>

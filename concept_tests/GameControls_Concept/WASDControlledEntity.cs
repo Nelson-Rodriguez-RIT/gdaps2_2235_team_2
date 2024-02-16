@@ -50,7 +50,8 @@ namespace GameControls_Concept
         /// </summary>
         /// <param name="gameTime"></param>
         public virtual void Movement(GameTime gameTime)
-        {         
+        {
+
             switch (physicsState)
             {
                 //Sets vertical velocity to 0 if grounded
@@ -81,10 +82,16 @@ namespace GameControls_Concept
                 velocity.Y = TerminalVelocity;
             }
 
+            // STILL DOESN'T WORK!!!!
+            // ill fix it later ;P - Nelson
+            // Currently its is rapidly moving (check locale window with a breakpoint to see what I mean)
+
             //Update position using velocity
-            position = new Vector2(
-                position.X + (velocity.X * (float)gameTime.ElapsedGameTime.TotalSeconds),
-                position.Y + (velocity.Y * (float)gameTime.ElapsedGameTime.TotalSeconds));
+            position = Platform.CheckForPlatformCollision(
+                levelManager.Platforms,
+                hitbox,
+                velocity);
+
 
             //Slows down horizontal movement
             if (velocity.X > 0)

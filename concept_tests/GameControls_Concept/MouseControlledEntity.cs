@@ -50,13 +50,17 @@ namespace GameControls_Concept
 
                 // Set velocity cap TODO
                 velocity = new Vector2( // Moves this object's center towards the mouse cursor
-                    (state.Position.X - image.Width / 2) * moveSpeed * (float) gameTime.ElapsedGameTime.TotalSeconds, 
-                    (state.Position.Y - image.Height / 2) * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds) 
+                    (state.Position.X - image.Width / 2), 
+                    (state.Position.Y - image.Height / 2)) 
                     - position;
 
-                
+                // Adjust velocity to with moveSpeed / gameTime
+                velocity.X *= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                velocity.Y *= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+
+
                 position = Platform.CheckForPlatformCollision(
-                    state,
                     levelManager.Platforms,
                     hitbox,
                     velocity);

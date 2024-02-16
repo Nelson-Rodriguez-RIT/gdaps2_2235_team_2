@@ -47,16 +47,21 @@ namespace GameControls_Concept
 
             if (state == State.Active) {
                 MouseState state = Mouse.GetState();
+
+                // Set velocity cap TODO
                 velocity = new Vector2( // Moves this object's center towards the mouse cursor
                     state.Position.X - image.Width / 2, 
                     state.Position.Y - image.Height / 2
                     ) - position;
 
+                // Set maxIteraiton based on velocity TODO
                 int maxIteration = 20; // Increase this number to increase collision precision
 
                 // How many steps it can go before colliding into anything
                 int peakXIteration = maxIteration;
                 int peakYIteration = maxIteration;
+
+                // Shorten iterations based on current peakIteration TODO
 
                 foreach (Platform platform in levelManager.Platforms) // Check each platform
                     for (int iteration = 0; iteration <= maxIteration; iteration++) { // Check how many steps it can go before colliding into this platform

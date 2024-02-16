@@ -69,57 +69,55 @@ namespace GameControls_Concept
             levelManager = manager;
         }
 
-        public virtual void MoveInParts(GameTime gameTime) 
-        {
-            int iterations = (int)(Math.Max(velocity.X, velocity.Y) / 10) + 1;           
-
-            for (int i = 0; i < iterations; i++)
-            {
-                Vector2 lastPosition = new Vector2(position.X, position.Y);
-
-                position = new Vector2(
-                    ((velocity.X / iterations) * (float)gameTime.ElapsedGameTime.TotalSeconds * moveSpeed + position.X),
-                    ((velocity.Y / iterations) * (float)gameTime.ElapsedGameTime.TotalSeconds * moveSpeed + position.Y));
-                hitbox = new Rectangle
-                    ((int)position.X - (image.Width / 2),
-                    (int)position.Y - (image.Height / 2),
-                    image.Width,
-                    image.Height);            
-
-                if (CheckPlatformCollision(levelManager))
-                {
-                    position = lastPosition;
-                    break;
-                }
-            }
-            
-        }
-
         public virtual void Update(GameTime gameTime)
         {
             keyboardState = Keyboard.GetState();
 
-            if (state == State.Active)
-            {
+            if (state == State.Active) {
                 MouseState state = Mouse.GetState();
-                velocity = state.Position.ToVector2() - position;
+                velocity = new Vector2( // Moves this boxes center towards the mouse cursor
+                    state.Position.X - image.Width / 2, 
+                    state.Position.Y - image.Height / 2
+                    ) - position;
 
-                Vector2 lastPosition = new Vector2(position.X, position.Y);
+                int maxIteration = 20; // Increase this number to increase precision
 
-                position = new Vector2(
-                    ((velocity.X) * (float)gameTime.ElapsedGameTime.TotalSeconds * moveSpeed + position.X),
-                    ((velocity.Y) * (float)gameTime.ElapsedGameTime.TotalSeconds * moveSpeed + position.Y));
-                hitbox = new Rectangle
-                    ((int)position.X - (image.Width / 2),
-                    (int)position.Y - (image.Height / 2),
+                // How many steps it can go before colliding into anything
+                int peakXIteration = maxIteration;
+                int peakYIteration = maxIteration;
+
+                foreach (Platform platform in levelManager.Platforms) // Check each platform
+                    for (int iteration = 0; iteration <= maxIteration; iteration++) { // Check how many steps it can go before colliding into this platform
+                        if (new Rectangle( // Check for horizontal collision
+                            (int)((position.X + ((velocity.X * moveSpeed) / maxIteration) * iteration * (float)gameTime.ElapsedGameTime.TotalSeconds)),
+                            (int)position.Y,
+                            image.Width,
+                            image.Height)
+                            .Intersects(platform.Hitbox))
+                            // We want the absolute minimum steps
+                            peakXIteration = iteration - 1 < peakXIteration ? iteration - 1 : peakXIteration;
+
+                        if (new Rectangle( // Check for vertical collision
+                            (int) position.X,
+                            (int)((position.Y + ((velocity.Y * moveSpeed) / maxIteration) * iteration * (float)gameTime.ElapsedGameTime.TotalSeconds)),
+                            image.Width,
+                            image.Height)
+                            .Intersects(platform.Hitbox))
+                            // We want the absolute minimum steps
+                            peakYIteration = iteration - 1 < peakYIteration ? iteration - 1 : peakYIteration;
+                    } 
+                        
+
+                // Update position and relevant hitbox based on peakIteration
+                position += new Vector2(
+                    (velocity.X / maxIteration) * peakXIteration * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds,
+                    (velocity.Y / maxIteration) * peakYIteration * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+
+                hitbox = new Rectangle(
+                    (int) position.X,
+                    (int) position.Y,
                     image.Width,
                     image.Height);
-
-                if (CheckPlatformCollision(levelManager))
-                {
-                    position = lastPosition;
-                    MoveInParts(gameTime);
-                }
             }
 
             if (!keyboardState.IsKeyDown(Keys.Space)
@@ -149,32 +147,6 @@ namespace GameControls_Concept
             {
                 state = State.Active;
             }
-        }
-
-        /// <summary>
-        /// Checks if the entity is colliding with a platform
-        /// </summary>
-        /// <param name="manager">The level manager</param>
-        /// <returns>A boolean value.</returns>
-        public virtual bool CheckPlatformCollision(LevelManager manager)
-        {
-            bool intersects = false;
-
-            foreach (Platform platform in manager.Platforms)
-            {
-                if (hitbox.Intersects(platform.Hitbox))
-                {
-                    intersects = true;
-                }
-            }
-            /*
-            if (manager.Platforms.Exists(platform => platform.Hitbox.Intersects(hitbox)))
-            {
-                intersects = true;
-            }
-            */
-
-            return intersects;
         }
     }
 }

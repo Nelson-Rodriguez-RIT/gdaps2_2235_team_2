@@ -85,6 +85,7 @@ namespace GameControls_Concept
                     (velocity.X / maxIteration) * peakXIteration * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds,
                     (velocity.Y / maxIteration) * peakYIteration * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
+                //Move hibox to the right spot
                 hitbox = new Rectangle(
                     (int)position.X,
                     (int)position.Y,
@@ -92,6 +93,7 @@ namespace GameControls_Concept
                     image.Height);
             }
 
+            //Space to turn the following on and off
             if (!keyboardState.IsKeyDown(Keys.Space)
                 && previousKB.IsKeyDown(Keys.Space))
             {
@@ -101,6 +103,9 @@ namespace GameControls_Concept
             previousKB = keyboardState;
         }
 
+        /// <summary>
+        /// Toggles the state between inactive and active.
+        /// </summary>
         public virtual void Toggle()
         {
             if (state == State.Active)

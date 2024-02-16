@@ -15,7 +15,7 @@ _This README contains basic information about the project and its artifacts. If 
 See [resources/README.md](resources/README.md) for details.
 
 ## Other Resources
-- [Task management Board](https://trello.com/invite/b/K1940kLa/ATTI859ded88f7193e5a666b90eb7dbb547160019063/gamename) - Link to the team's project board.
+- [Task management Board](https://app.milanote.com/1RB5Vv1lRZoZ6f?p=UqDENO9ue6r) - Link to the team's project board.
 - [Google Documentation](https://docs.google.com/document/d/1uJJm4_qDsUwsmxwNp8UnmGaAvmm2EFWhmtiW6mAVZ3g/edit?usp=sharing) - Link to the team's Google Doc with written project documentation.
 - [MonoGame Documentation](http://www.monogame.net/documentation/?page=main)
 - [Course homepage](https://mycourses.rit.edu/d2l/home/1012413)

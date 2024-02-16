@@ -18,44 +18,17 @@ namespace GameControls_Concept
     /// <summary>
     /// Class for an entity that is controlled with the mouse
     /// </summary>
-    internal class MouseControlledEntity
+    internal class MouseControlledEntity : ControllableEntity
     {
-        private Vector2 position;
-        private Vector2 velocity;
-        private Texture2D image;
+       
         const float moveSpeed = 10;
-        private State state;
-        private KeyboardState keyboardState;
-        private KeyboardState previousKB;
-        private Rectangle hitbox;
-        private LevelManager levelManager;
-        
-        public Rectangle Hitbox
-        {
-            get { return hitbox; }
-        }
-
-        public Vector2 Position
-        {
-            get { return position; }
-        }
-
-        public Vector2 Velocity
-        {
-            get { return velocity; }
-        }
+        protected State state;
 
         public MouseControlledEntity(Texture2D image, bool active, LevelManager manager) 
+            : base(image, manager, new Vector2(0, 0))
         { 
             MouseState state = Mouse.GetState();
             position = state.Position.ToVector2();
-            velocity = new Vector2(0, 0);
-            this.image = image;
-            hitbox = new Rectangle
-                ((int)position.X - (image.Width / 2),
-                (int)position.Y - (image.Height / 2),
-                image.Width,
-                image.Height);
 
             if (active)
             {
@@ -66,10 +39,9 @@ namespace GameControls_Concept
                 this.state = State.Inactive;
             }
 
-            levelManager = manager;
         }
 
-        public virtual void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             keyboardState = Keyboard.GetState();
 
@@ -114,8 +86,8 @@ namespace GameControls_Concept
                     (velocity.Y / maxIteration) * peakYIteration * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
                 hitbox = new Rectangle(
-                    (int) position.X,
-                    (int) position.Y,
+                    (int)position.X,
+                    (int)position.Y,
                     image.Width,
                     image.Height);
             }
@@ -127,14 +99,6 @@ namespace GameControls_Concept
             }
 
             previousKB = keyboardState;
-        }
-
-
-        public virtual void Draw(SpriteBatch sb)
-        {
-            sb.Draw(image, 
-                hitbox, 
-                Color.White);
         }
 
         public virtual void Toggle()

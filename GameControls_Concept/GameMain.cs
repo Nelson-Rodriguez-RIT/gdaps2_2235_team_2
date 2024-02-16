@@ -12,6 +12,7 @@ namespace GameControls_Concept
         //private MouseControlledEntity mouseControlInactive;
         private LevelManager levelManager;
         private Texture2D _texture;
+        private WASDControlledEntity WASD;
 
         public GameMain()
         {
@@ -28,6 +29,7 @@ namespace GameControls_Concept
             _graphics.PreferredBackBufferHeight = 1000;
             _graphics.PreferredBackBufferWidth = 1000;
             _graphics.ApplyChanges();
+            WASD = new WASDControlledEntity(Content.Load<Texture2D>("Sprite-0001"), levelManager, new Vector2(100, 100));
 
             mouseControlActive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), true, levelManager);
             //mouseControlInactive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), false);
@@ -52,6 +54,7 @@ namespace GameControls_Concept
 
             // TODO: Add your update logic here
 
+            WASD.Update(gameTime);
             mouseControlActive.Update(gameTime);
             //mouseControlInactive.Update(gameTime);
 
@@ -66,6 +69,7 @@ namespace GameControls_Concept
 
             _spriteBatch.Begin();
             mouseControlActive.Draw(_spriteBatch);
+            WASD.Draw(_spriteBatch);
             //mouseControlInactive.Draw(_spriteBatch);
             foreach (Platform platform in levelManager.Platforms)
             {

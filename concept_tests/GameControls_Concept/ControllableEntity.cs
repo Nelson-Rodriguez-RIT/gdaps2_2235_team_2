@@ -52,6 +52,9 @@ namespace GameControls_Concept
 
         public virtual void Update(GameTime gameTime)
         {
+            previousKB = keyboardState;
+            previousMS = mouseState;
+
             hitbox = new Rectangle
                 ((int)position.X - (image.Width / 2),
                 (int)position.Y - (image.Height / 2),

@@ -21,7 +21,7 @@ namespace GameControls_Concept
     internal class WASDControlledEntity : ControllableEntity
     {
         protected Vector2 acceleration;
-        protected const float Gravity = 700f;
+        protected const float Gravity = 1400f;
         protected const float TerminalVelocity = 1400f;
         protected const float MaxXVelocity = 100f;
         protected PhysicsState physicsState;
@@ -86,15 +86,13 @@ namespace GameControls_Concept
                 velocity.Y = -TerminalVelocity;
             }
 
-            // STILL DOESN'T WORK!!!!
-            // ill fix it later ;P - Nelson
-            // Currently its is rapidly moving (check locale window with a breakpoint to see what I mean)
 
             //Update position using velocity
             position = Platform.CheckForPlatformCollision(
                 levelManager.Platforms,
                 hitbox,
-                velocity);
+                velocity,
+                out physicsState);
 
             
             //Slows down horizontal movement
@@ -111,8 +109,6 @@ namespace GameControls_Concept
                 acceleration.X = 0;
             }
             
-
-            base.Update(gameTime);
         }
         
         /// <summary>
@@ -120,9 +116,12 @@ namespace GameControls_Concept
         /// </summary>
         public virtual void Input()
         {
+            keyboardState = Keyboard.GetState();
+            mouseState = Mouse.GetState();
+
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                acceleration.X = -140000f;
+                acceleration.X = -1400f;
             }
             else if (!Keyboard.GetState().IsKeyDown(Keys.D))
             {
@@ -131,7 +130,7 @@ namespace GameControls_Concept
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                acceleration.X = 140000f;
+                acceleration.X = 1400f;
             }
             else if (!Keyboard.GetState().IsKeyDown(Keys.A))
             {
@@ -142,6 +141,14 @@ namespace GameControls_Concept
                 && Keyboard.GetState().IsKeyDown(Keys.A))
             {
                 acceleration.X = 0;
+            }
+
+            //Jump!
+            if (physicsState == PhysicsState.Grounded &&
+                keyboardState.IsKeyDown(Keys.Space))
+            {
+                physicsState = PhysicsState.Airborne;
+                velocity.Y = -15f;
             }
         }
     }

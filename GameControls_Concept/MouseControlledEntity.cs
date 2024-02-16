@@ -75,12 +75,12 @@ namespace GameControls_Concept
 
             if (state == State.Active) {
                 MouseState state = Mouse.GetState();
-                velocity = new Vector2( // Moves this boxes center towards the mouse cursor
+                velocity = new Vector2( // Moves this object's center towards the mouse cursor
                     state.Position.X - image.Width / 2, 
                     state.Position.Y - image.Height / 2
                     ) - position;
 
-                int maxIteration = 20; // Increase this number to increase precision
+                int maxIteration = 20; // Increase this number to increase collision precision
 
                 // How many steps it can go before colliding into anything
                 int peakXIteration = maxIteration;

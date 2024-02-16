@@ -22,17 +22,17 @@ namespace GameControls_Concept
         protected Rectangle hitbox;
         protected LevelManager levelManager;
 
-        public Rectangle Hitbox
+        public virtual Rectangle Hitbox
         {
             get { return hitbox; }
         }
 
-        public Vector2 Position
+        public virtual Vector2 Position
         {
             get { return position; }
         }
 
-        public Vector2 Velocity
+        public virtual Vector2 Velocity
         {
             get { return velocity; }
         }

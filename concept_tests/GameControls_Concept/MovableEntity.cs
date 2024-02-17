@@ -60,7 +60,7 @@ namespace GameControls_Concept
         }
 
         public Vector2 CheckForPlatformCollision(
-              List<Platform> platforms)               // List of platforms to check against     
+              List<Collider> platforms)               // List of platforms to check against     
         {     
             //Scaling iterations based on velocity
             int maxIteration = CollisionAccuracy > 1 ? CollisionAccuracy : 1; 
@@ -72,7 +72,7 @@ namespace GameControls_Concept
 
             // Shorten iterations based on current peakIteration TODO
 
-            foreach (Platform platform in platforms) // Check each platform
+            foreach (Collider platform in platforms) // Check each platform
             {
                 for (int iteration = 0; iteration <= maxIteration; iteration++)
                 { // Check how many steps it can go before colliding into this platform

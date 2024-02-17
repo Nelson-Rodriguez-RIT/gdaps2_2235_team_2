@@ -70,7 +70,7 @@ namespace GameControls_Concept
             mouseControlActive.Draw(_spriteBatch);
             WASD.Draw(_spriteBatch);
             //mouseControlInactive.Draw(_spriteBatch);
-            foreach (Platform platform in levelManager.Platforms)
+            foreach (Collider platform in levelManager.Platforms)
             {
                 platform.Draw(_spriteBatch);
             }

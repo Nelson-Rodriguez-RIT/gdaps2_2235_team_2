@@ -9,10 +9,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameControls_Concept
 {
-    internal class Platform : Entity
+    internal class Collider : Entity
     {
 
-        public Platform(Rectangle rectangle, Texture2D image, LevelManager manager) : 
+        public Collider(Rectangle rectangle, Texture2D image, LevelManager manager) : 
             base(image, manager, rectangle.Location.ToVector2())
         {
             hitbox = rectangle;

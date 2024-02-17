@@ -12,28 +12,29 @@ namespace GameControls_Concept
 {
     internal class LevelManager
     {
-        private List<Platform> platforms;
+        private List<Collider> platforms;
         public Texture2D texture;
 
         private LevelManager instance;
 
-        public List<Platform> Platforms
+        public List<Collider> Platforms
         {
             get { return platforms; }
         }
 
         public LevelManager(Texture2D texture, LevelManager instance)
         {
-            platforms = new List<Platform>();
+            platforms = new List<Collider>();
             this.texture = texture;
             AddPlatform(new Rectangle(0, 800, 600, 100));
+            //AddPlatform(new )
 
             this.instance = instance;
         }
 
         private void AddPlatform(Rectangle hitbox)
         {
-            platforms.Add(new Platform(hitbox, texture, instance));
+            platforms.Add(new Collider(hitbox, texture, instance));
         }
 
         public void LoadFromFile(string path)

@@ -66,6 +66,8 @@ namespace GameControls_Concept
                  * PhysicsState field. This could be a reason to have the collision method be within 
                  * the entity class and not the platform, because the platform can't know how we want 
                  * it to interact with each different kind of entity. Lmk what you think we should do.
+                 * Also, if platforms will be entities too, it would be better to put the collision method
+                 * in the entity class IMO.
                  * - Dante
                 /*
                 position = Platform.CheckForPlatformCollision(

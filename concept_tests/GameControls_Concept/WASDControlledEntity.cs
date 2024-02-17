@@ -20,21 +20,18 @@ namespace GameControls_Concept
     /// </summary>
     internal class WASDControlledEntity : ControllableEntity
     {
-        protected Vector2 acceleration;
-        protected const float Gravity = 1400f;
-        protected const float TerminalVelocity = 1400f;
-        protected const float MaxXVelocity = 100f;
+        
         protected PhysicsState physicsState;
 
-        public virtual Vector2 Acceleration
-        {
-            get { return acceleration; } 
-        }
-
+       
         public WASDControlledEntity(Texture2D image, LevelManager manager, Vector2 position) 
             : base(image, manager, position)
-        { 
-            acceleration = new Vector2 (0, Gravity);
+        {
+            gravity = 1400f;
+            maxXVelocity = 70f;
+            terminalVelocity = 1400f;
+
+            acceleration = new Vector2 (0, gravity);
             physicsState = PhysicsState.Airborne;
         }
 
@@ -77,13 +74,13 @@ namespace GameControls_Concept
             }
 
             //Make sure speed is not over the maximum
-            if (velocity.Y > TerminalVelocity) 
+            if (velocity.Y > terminalVelocity) 
             { 
-                velocity.Y = TerminalVelocity;
+                velocity.Y = terminalVelocity;
             }
-            else if (velocity.Y < -TerminalVelocity)
+            else if (velocity.Y < -terminalVelocity)
             {
-                velocity.Y = -TerminalVelocity;
+                velocity.Y = -terminalVelocity;
             }
 
 

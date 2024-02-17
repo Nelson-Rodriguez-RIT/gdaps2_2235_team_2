@@ -12,6 +12,7 @@ namespace Noah_s_Level_Design_Concept
         public KeyboardState keyboardState;
         public KeyboardState oldKeyboardState;
         public MouseState mouseState;
+        public MouseState oldMouseState;
 
         private Player player;
         public Game1()
@@ -43,11 +44,15 @@ namespace Noah_s_Level_Design_Concept
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            player.UpdateAnimation(gameTime);
-
             oldKeyboardState = keyboardState;
             keyboardState = Keyboard.GetState();
+            oldMouseState = mouseState;
+            mouseState = Mouse.GetState();
             GetInput();
+
+            player.UpdateAnimation(gameTime);
+
+            
 
             base.Update(gameTime);
         }
@@ -75,9 +80,11 @@ namespace Noah_s_Level_Design_Concept
             switch (player.State)
             {
                 case PlayerState.Idle:
-                    if (mouseState.LeftButton == ButtonState.Pressed)
+                    if (mouseState.LeftButton == ButtonState.Pressed
+                        && oldMouseState.LeftButton == ButtonState.Released)
                     {
                         player.State = PlayerState.Attack;
+                        player.frame = 1;
                     }
                     break;
                 case PlayerState.Attack:

@@ -27,7 +27,7 @@ namespace Noah_s_Level_Design_Concept
         Texture2D attackSpriteSheet;
         Texture2D idleSpriteSheet;
 
-        int frame;
+        public int frame;
         double timeCounter;
         double fps;
         double timePerFrame;
@@ -76,7 +76,11 @@ namespace Noah_s_Level_Design_Concept
                     case PlayerState.Attack:
                         frame += 1;
                         if (frame >= AttackFrameCount)
-                        { frame = 1; }
+                        { 
+                            frame = 1;
+                            State = PlayerState.Idle;
+                        }
+                        
                         break;
                     case PlayerState.Idle:
                         frame += 1;

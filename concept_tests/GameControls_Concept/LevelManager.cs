@@ -15,22 +15,25 @@ namespace GameControls_Concept
         private List<Platform> platforms;
         public Texture2D texture;
 
+        private LevelManager instance;
+
         public List<Platform> Platforms
         {
             get { return platforms; }
         }
 
-        public LevelManager(Texture2D texture)
+        public LevelManager(Texture2D texture, LevelManager instance)
         {
             platforms = new List<Platform>();
             this.texture = texture;
             AddPlatform(new Rectangle(0, 800, 600, 100));
-            
+
+            this.instance = instance;
         }
 
         private void AddPlatform(Rectangle hitbox)
         {
-            platforms.Add(new Platform(hitbox, texture));
+            platforms.Add(new Platform(hitbox, texture, instance));
         }
 
         public void LoadFromFile(string path)

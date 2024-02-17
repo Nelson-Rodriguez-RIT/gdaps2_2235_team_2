@@ -24,7 +24,7 @@ namespace GameControls_Concept
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            levelManager = new LevelManager(Content.Load<Texture2D>("Sprite-0001"));
+            levelManager = new LevelManager(Content.Load<Texture2D>("Sprite-0001"), levelManager);
             //levelManager.LoadFromFile("level1.csv");
             _graphics.PreferredBackBufferHeight = 1000;
             _graphics.PreferredBackBufferWidth = 1000;

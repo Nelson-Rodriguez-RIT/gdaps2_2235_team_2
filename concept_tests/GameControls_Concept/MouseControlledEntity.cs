@@ -21,7 +21,8 @@ namespace GameControls_Concept
     internal class MouseControlledEntity : ControllableEntity
     {
        
-        const float moveSpeed = 10;
+
+        const float moveSpeed = 10f;
         protected State state;
 
         public MouseControlledEntity(Texture2D image, bool active, LevelManager manager) 
@@ -43,6 +44,8 @@ namespace GameControls_Concept
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
+
             keyboardState = Keyboard.GetState();
 
             if (state == State.Active) {
@@ -50,8 +53,8 @@ namespace GameControls_Concept
 
                 // Set velocity cap TODO
                 velocity = new Vector2( // Moves this object's center towards the mouse cursor
-                    (state.Position.X - image.Width / 2), 
-                    (state.Position.Y - image.Height / 2)) 
+                    (state.Position.X + image.Width / 2), 
+                    (state.Position.Y + image.Height / 2)) 
                     - position;
 
                 // Adjust velocity to with moveSpeed / gameTime
@@ -69,20 +72,12 @@ namespace GameControls_Concept
                  * Also, if platforms will be entities too, it would be better to put the collision method
                  * in the entity class IMO.
                  * - Dante
-                /*
-                position = Platform.CheckForPlatformCollision(
-                    levelManager.Platforms,
-                    hitbox,
-                    velocity);
-                */
-                
-                //Move hibox to the right spot
+                 */
                 hitbox = new Rectangle(
-                    (int)position.X,
-                    (int)position.Y,
+                    (int)position.X - (image.Width / 2),
+                    (int)position.Y - (image.Height / 2),
                     image.Width,
                     image.Height);
-                
             }
 
             //Space to turn the following on and off
@@ -92,7 +87,7 @@ namespace GameControls_Concept
                 Toggle();
             }
 
-            base.Update(gameTime);
+            
         }
 
         /// <summary>

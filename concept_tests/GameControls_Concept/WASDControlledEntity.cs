@@ -10,18 +10,14 @@ using System.Threading.Tasks;
 
 namespace GameControls_Concept
 {
-    enum PhysicsState //to be added to
-    {
-        Grounded,
-        Airborne
-    }
+    
     /// <summary>
     /// An entity that can be controlled with the WASD keys
     /// </summary>
     internal class WASDControlledEntity : ControllableEntity
     {
         
-        protected PhysicsState physicsState;
+        
 
        
         public WASDControlledEntity(Texture2D image, LevelManager manager, Vector2 position) 

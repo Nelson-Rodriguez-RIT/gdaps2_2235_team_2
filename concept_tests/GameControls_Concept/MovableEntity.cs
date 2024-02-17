@@ -10,8 +10,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameControls_Concept
 {
+    enum PhysicsState //to be added to
+    {
+        Grounded,
+        Airborne
+    }
     internal class MovableEntity : Entity
     {
+        protected PhysicsState physicsState;
+
         protected Vector2 velocity;
         protected Vector2 acceleration;
 
@@ -42,6 +49,13 @@ namespace GameControls_Concept
 
         public override void Update(GameTime gameTime)
         {
+            //Update position using velocity
+            position = Platform.CheckForPlatformCollision(
+                levelManager.Platforms,
+                hitbox,
+                velocity,
+                out physicsState);
+
             hitbox = new Rectangle
                 ((int)position.X - (image.Width / 2),
                 (int)position.Y - (image.Height / 2),

@@ -90,7 +90,7 @@ namespace GameControls_Concept
                 Toggle();
             }
 
-            previousKB = keyboardState;
+            base.Update(gameTime);
         }
 
         /// <summary>

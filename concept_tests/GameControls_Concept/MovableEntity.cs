@@ -35,6 +35,19 @@ namespace GameControls_Concept
             get { return acceleration; }
         }
 
+        protected int CollisionAccuracy
+        {
+            get
+            {
+                return 
+                    (int)(
+                        Math.Sqrt(
+                            Math.Pow(velocity.X, 2) + 
+                            Math.Pow(Velocity.Y, 2))                        
+                    );
+            }
+        }
+
         public MovableEntity(Texture2D image, LevelManager manager, Vector2 position) 
             : base(image, manager, position)
         {
@@ -46,26 +59,12 @@ namespace GameControls_Concept
             acceleration = new Vector2(0, 0);
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            /*
-            //Update position using velocity
-            position = CheckForPlatformCollision(
-                levelManager.Platforms);
-
-            hitbox = new Rectangle
-                ((int)position.X - (image.Width / 2),
-                (int)position.Y - (image.Height / 2),
-                image.Width,
-                image.Height);
-            */
-        }
-
         public Vector2 CheckForPlatformCollision(
               List<Platform> platforms)               // List of platforms to check against     
         {     
-                        // Set maxIteraiton based on velocity TODO
-            int maxIteration = 20; // Increase this number to increase collision precision
+            //Scaling iterations based on velocity
+            int maxIteration = CollisionAccuracy > 1 ? CollisionAccuracy : 1; 
+
 
             // How many steps it can go before colliding into anything
             int peakXIteration = maxIteration;

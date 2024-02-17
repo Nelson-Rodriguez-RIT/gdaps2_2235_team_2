@@ -75,12 +75,12 @@ namespace Noah_s_Level_Design_Concept
                 {
                     case PlayerState.Attack:
                         frame += 1;
-                        if (frame > AttackFrameCount)
+                        if (frame >= AttackFrameCount)
                         { frame = 1; }
                         break;
                     case PlayerState.Idle:
                         frame += 1;
-                        if (frame > IdleFrameCount)
+                        if (frame >= IdleFrameCount)
                         { frame = 1; }
                         break;
                 }

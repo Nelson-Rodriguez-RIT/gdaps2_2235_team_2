@@ -34,7 +34,6 @@ namespace GameControls_Concept
             mouseControlActive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), true, levelManager);
             //mouseControlInactive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), false);
 
-
             base.Initialize();
             
         }

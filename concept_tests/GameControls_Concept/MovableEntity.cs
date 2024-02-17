@@ -17,7 +17,6 @@ namespace GameControls_Concept
     }
     internal class MovableEntity : Entity
     {
-        protected PhysicsState physicsState;
 
         protected Vector2 velocity;
         protected Vector2 acceleration;
@@ -49,20 +48,60 @@ namespace GameControls_Concept
 
         public override void Update(GameTime gameTime)
         {
+            /*
             //Update position using velocity
-            position = Platform.CheckForPlatformCollision(
-                levelManager.Platforms,
-                hitbox,
-                velocity,
-                out physicsState);
+            position = CheckForPlatformCollision(
+                levelManager.Platforms);
 
             hitbox = new Rectangle
                 ((int)position.X - (image.Width / 2),
                 (int)position.Y - (image.Height / 2),
                 image.Width,
                 image.Height);
+            */
         }
 
-         
+        public Vector2 CheckForPlatformCollision(
+              List<Platform> platforms)               // List of platforms to check against     
+        {     
+                        // Set maxIteraiton based on velocity TODO
+            int maxIteration = 20; // Increase this number to increase collision precision
+
+            // How many steps it can go before colliding into anything
+            int peakXIteration = maxIteration;
+            int peakYIteration = maxIteration;
+
+            // Shorten iterations based on current peakIteration TODO
+
+            foreach (Platform platform in platforms) // Check each platform
+            {
+                for (int iteration = 0; iteration <= maxIteration; iteration++)
+                { // Check how many steps it can go before colliding into this platform
+                    if (new Rectangle( // Check for horizontal collision
+                            (int)(hitbox.X + ((velocity.X) / maxIteration) * iteration),
+                            (int)hitbox.Y,
+                            hitbox.Width,
+                            hitbox.Height)
+                            .Intersects(platform.Hitbox))
+                        // We want the absolute minimum steps
+                        peakXIteration = iteration - 1 < peakXIteration ? iteration - 1 : peakXIteration;
+
+                    if (new Rectangle( // Check for vertical collision
+                            (int)hitbox.X,
+                            (int)(hitbox.Y + ((velocity.Y) / maxIteration) * iteration),
+                            hitbox.Width,
+                            hitbox.Height)
+                            .Intersects(platform.Hitbox))
+                        // We want the absolute minimum steps
+                        peakYIteration = iteration - 1 < peakYIteration ? iteration - 1 : peakYIteration;
+                }
+            }
+
+            // Update position and relevant hitbox based on peakIteration
+            Vector2 temp = new Vector2(
+                (hitbox.X + hitbox.Width / 2) + (velocity.X / maxIteration) * peakXIteration,
+                (hitbox.Y + hitbox.Height / 2) + (velocity.Y / maxIteration) * peakYIteration);
+            return temp;
+        }
     }
 }

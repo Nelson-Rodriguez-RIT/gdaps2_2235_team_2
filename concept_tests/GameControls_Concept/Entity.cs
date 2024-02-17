@@ -52,6 +52,7 @@ namespace GameControls_Concept
             
         }
 
+        /*
         public static Vector2 CheckForPlatformCollision(
                List<Platform> platforms,               // List of platforms to check against
                Rectangle entity,                       // Entity hitbox
@@ -103,5 +104,6 @@ namespace GameControls_Concept
                 (entity.Y + entity.Height / 2) + (velocity.Y / maxIteration) * peakYIteration);
             return temp;
         }
+        */
     }
 }

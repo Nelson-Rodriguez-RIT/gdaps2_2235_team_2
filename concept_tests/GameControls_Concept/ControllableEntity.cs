@@ -30,7 +30,7 @@ namespace GameControls_Concept
             previousKB = keyboardState;
             previousMS = mouseState;
 
-            base.Update(gameTime);
+            //base.Update(gameTime);
         }
 
         

@@ -16,10 +16,6 @@ namespace GameControls_Concept
     /// </summary>
     internal class WASDControlledEntity : ControllableEntity
     {
-        
-        
-
-       
         public WASDControlledEntity(Texture2D image, LevelManager manager, Vector2 position) 
             : base(image, manager, position)
         {
@@ -28,13 +24,23 @@ namespace GameControls_Concept
             terminalVelocity = 1400f;
 
             acceleration = new Vector2 (0, gravity);
-            physicsState = PhysicsState.Airborne;
         }
 
         public override void Update(GameTime gameTime) 
         {
             Input();
             Movement(gameTime);
+
+            //Update position using velocity
+            position = CheckForPlatformCollision(
+                levelManager.Platforms);
+
+            hitbox = new Rectangle
+                ((int)position.X - (image.Width / 2),
+                (int)position.Y - (image.Height / 2),
+                image.Width,
+                image.Height);
+
             base.Update(gameTime);
         }
 
@@ -44,30 +50,16 @@ namespace GameControls_Concept
         /// <param name="gameTime"></param>
         public virtual void Movement(GameTime gameTime)
         {
+            //Update velocity using acceleration
+            velocity = new Vector2(
+                velocity.X + (acceleration.X * (float)Math.Pow(
+                    gameTime.ElapsedGameTime.TotalSeconds,
+                    2)),
+                velocity.Y + (acceleration.Y * (float)Math.Pow(
+                    gameTime.ElapsedGameTime.TotalSeconds,
+                    2)));
 
-            switch (physicsState)
-            {
-                //Sets vertical velocity to 0 if grounded
-                case PhysicsState.Grounded:
-                    velocity = new Vector2(
-                        velocity.X + (acceleration.X * (float)Math.Pow(
-                            gameTime.ElapsedGameTime.TotalSeconds,
-                            2)),
-                        0);
-                    break;
-                
-                    //Free fall
-                case PhysicsState.Airborne:
-                    //Update velocity using acceleration
-                    velocity = new Vector2(
-                        velocity.X + (acceleration.X * (float)Math.Pow(
-                            gameTime.ElapsedGameTime.TotalSeconds,
-                            2)),
-                        velocity.Y + (acceleration.Y * (float)Math.Pow(
-                            gameTime.ElapsedGameTime.TotalSeconds,
-                            2)));
-                    break;
-            }
+        
 
             //Make sure speed is not over the maximum
             if (velocity.Y > terminalVelocity) 
@@ -79,14 +71,20 @@ namespace GameControls_Concept
                 velocity.Y = -terminalVelocity;
             }
 
+            Vector2 oldPosition = position;
 
             //Update position using velocity
-            position = Platform.CheckForPlatformCollision(
-                levelManager.Platforms,
-                hitbox,
-                velocity,
-                out physicsState);
+            position = CheckForPlatformCollision(
+                levelManager.Platforms);
 
+            if (oldPosition.Y == position.Y)
+            {
+                velocity.Y = 0;
+            }
+            if (oldPosition.X == position.X)
+            {
+                velocity.X = 0;
+            }
             
             //Slows down horizontal movement
             if (velocity.X > 0)
@@ -137,10 +135,9 @@ namespace GameControls_Concept
             }
 
             //Jump!
-            if (physicsState == PhysicsState.Grounded &&
+            if (
                 keyboardState.IsKeyDown(Keys.Space))
             {
-                physicsState = PhysicsState.Airborne;
                 velocity.Y = -15f;
             }
         }

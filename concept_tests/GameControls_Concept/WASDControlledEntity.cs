@@ -33,10 +33,10 @@ namespace GameControls_Concept
 
             //Todo: fix swinging so it uses velocity and acceleration
             //Update position using velocity
-            /*
+            
             position = CheckForPlatformCollision(
                 levelManager.Platforms);
-            */
+            
 
             hitbox = new Rectangle
                 ((int)position.X - (image.Width / 2),

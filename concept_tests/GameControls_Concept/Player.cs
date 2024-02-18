@@ -20,8 +20,11 @@ namespace GameControls_Concept
     {
         private MouseControlledEntity companion;
         private PlayerStates state;
-        protected float moveSpeed = 1000f;
+        private PlayerStates prevState;
+        protected float moveSpeed = 10000f;
         private SpriteFont font;
+        private float initialTheta;
+        private float swingRadius;
 
         public Player(Texture2D image, LevelManager manager, Vector2 position, MouseControlledEntity companion, SpriteFont font)
             : base(image, manager, position)
@@ -34,17 +37,18 @@ namespace GameControls_Concept
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+            prevState = state;
         }
 
         public override void Input()
         {
             if (mouseState.LeftButton == ButtonState.Pressed
+                //&& previousMS.LeftButton != ButtonState.Pressed
                 && state == PlayerStates.Default)
-            {
+            {                
                 state = PlayerStates.Swinging;
-                
             }
-            /*
+            
             else if (state == PlayerStates.Swinging
                 && mouseState.LeftButton == ButtonState.Released)
             {
@@ -52,7 +56,7 @@ namespace GameControls_Concept
                 acceleration = new Vector2(
                     acceleration.X, gravity);
             }
-            */
+            
 
             base.Input();
         }
@@ -71,15 +75,17 @@ namespace GameControls_Concept
         {
             if (state == PlayerStates.Swinging)
             {
-                //For now to make things simpler
 
-                
+                state = PlayerStates.Swinging;
+
                 Vector2 hypotenuse = new Vector2(
                 companion.Position.X - position.X,
                 companion.Position.Y - position.Y);
 
+                if (prevState != PlayerStates.Swinging) 
+                {
 
-                float radius =
+                    swingRadius =
                     (float)(
                         Math.Sqrt(
                             Math.Pow(hypotenuse.X, 2) +
@@ -87,25 +93,58 @@ namespace GameControls_Concept
                         )
                     );
 
-                //Todo: Add velocity and acceleration
-
-                float theta = -90f + (float)((180 / Math.PI) * Math.Acos(                   
+                    initialTheta = -90f + (float)((180 / Math.PI) * Math.Acos(
                     hypotenuse.X
-                    / 
-                    radius
+                    /
+                    swingRadius
                     ));
 
-                float newTheta = 1f * (float)((Math.PI / 180) * theta * Math.Cos( ((Math.PI / 180) *
-                    Math.Sqrt(gravity / radius) * gameTime.TotalGameTime.TotalSeconds)));
+                    /*
+                    //Initial velocity calculations:
 
-                float degrees = newTheta * (float)(180 / Math.PI);
+                    double velocityMag = Math.Sqrt(
+                        Math.Pow(velocity.X, 2) +
+                        Math.Pow(velocity.Y, 2));
+
+                    double c = Math.Sqrt(
+                        Math.Pow(
+                            hypotenuse.X -    
+                            velocity.X, 
+                            2) +
+                        Math.Pow(
+                            hypotenuse.Y -
+                            velocity.Y,
+                            2));
+
+                    double angleBetween = -90f + (180 / Math.PI) * Math.Acos(
+                        (swingRadius * swingRadius +
+                        velocityMag * velocityMag -
+                        c * c) /
+                        (2 * swingRadius * velocityMag));
+
+                    double newVMag = velocityMag * Math.Cos(
+                        (Math.PI / 180) *
+                        angleBetween);
+
+                    velocity = new Vector2(
+                        (float)(newVMag * Math.Cos((Math.PI / 180) * Math.Abs(initialTheta))),
+                        (float)(newVMag * Math.Sin((Math.PI / 180) * Math.Abs(initialTheta)))
+                        );
+                    */
+                }
+                
+                float newTheta = (float)((Math.PI / 180) * initialTheta * Math.Cos( ((Math.PI / 180) *
+                    Math.Sqrt(gravity / swingRadius) * 100 * gameTime.TotalGameTime.TotalSeconds)));
+
+                float degrees = newTheta * (float)(180 / Math.PI); //for debug purposes
 
                 Vector2 temp = new Vector2(
-                    (float)(companion.Position.X + radius * Math.Sin(newTheta)),
-                    (float)(companion.Position.Y + radius * Math.Cos(newTheta))
+                    (float)(companion.Position.X + swingRadius * Math.Sin(newTheta)),
+                    (float)(companion.Position.Y + swingRadius * Math.Cos(newTheta))
                     );
 
-                position = temp;
+                velocity = (temp - position);
+                //position = temp;
 
 
                 /*
@@ -137,11 +176,44 @@ namespace GameControls_Concept
             }
             else
             {
-                base.Movement(gameTime);
+                //Update velocity using acceleration
+                velocity = new Vector2(
+                    velocity.X + (acceleration.X * (float)Math.Pow(
+                        gameTime.ElapsedGameTime.TotalSeconds,
+                        2)),
+                    velocity.Y + (acceleration.Y * (float)Math.Pow(
+                        gameTime.ElapsedGameTime.TotalSeconds,
+                        2)));
+
+                //Make sure speed is not over the maximum
+                if (velocity.Y > terminalVelocity)
+                {
+                    velocity.Y = terminalVelocity;
+                }
+                else if (velocity.Y < -terminalVelocity)
+                {
+                    velocity.Y = -terminalVelocity;
+                }
+
+
             }
 
-                
-                        
+            Vector2 oldPosition = position;
+
+            //Update position using velocity
+            position = CheckForPlatformCollision(
+                levelManager.Platforms);
+
+            if (oldPosition.Y == position.Y)
+            {
+                state = PlayerStates.Default;
+            }
+            if (oldPosition.X == position.X)
+            {
+                state = PlayerStates.Default;
+            }
+
+
         }
     }
 }

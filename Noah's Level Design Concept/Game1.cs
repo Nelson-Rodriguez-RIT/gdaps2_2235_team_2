@@ -35,6 +35,7 @@ namespace Noah_s_Level_Design_Concept
 
             Texture2D attackSheet = Content.Load<Texture2D>("Sprites/01-King Human/Attack (78x58)");
             Texture2D idleSheet = Content.Load<Texture2D>("Sprites/01-King Human/Idle (78x58)");
+            Texture2D beginningArea = Content.Load<Texture2D>("MoonwalkMapStart");  
 
             player = new Player(attackSheet, idleSheet, playerLoc, PlayerState.Idle);
         }
@@ -51,8 +52,6 @@ namespace Noah_s_Level_Design_Concept
             GetInput();
 
             player.UpdateAnimation(gameTime);
-
-            
 
             base.Update(gameTime);
         }

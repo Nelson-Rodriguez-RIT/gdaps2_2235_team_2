@@ -13,17 +13,15 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Sprites/01-King Human/Attack (78x58).png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Attack (78x58).png
+#begin MoonwalkMapLaboratory.tmx
+/importer:
+/processor:
+/build:MoonwalkMapLaboratory.tmx
+
+#begin MoonwalkMapStart.tmx
+/importer:
+/processor:
+/build:MoonwalkMapStart.tmx
 
 #begin Sprites/01-King Human/Attack (78x58).png
 /importer:TextureImporter

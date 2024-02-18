@@ -65,22 +65,22 @@ namespace Noah_s_Level_Design_Concept
             timePerFrame = 1 / fps;
         }
 
-        public void UpdateAnimation(GameTime gametime) 
+        public void UpdateAnimation(GameTime gametime)
         {
             timeCounter += gametime.ElapsedGameTime.TotalSeconds;
-            
-            if (timeCounter >= timePerFrame) 
+
+            if (timeCounter >= timePerFrame)
             {
                 switch (State)
                 {
                     case PlayerState.Attack:
                         frame += 1;
                         if (frame >= AttackFrameCount)
-                        { 
+                        {
                             frame = 1;
                             State = PlayerState.Idle;
                         }
-                        
+
                         break;
                     case PlayerState.Idle:
                         frame += 1;
@@ -118,7 +118,7 @@ namespace Noah_s_Level_Design_Concept
                 Color.White,
                 0,
                 Vector2.Zero,
-                3.0f,
+                2.0f,
                 flipSprite,
                 0);
         }
@@ -135,9 +135,9 @@ namespace Noah_s_Level_Design_Concept
                 Color.White,
                 0,
                 Vector2.Zero,
-                3.0f,
+                2.0f,
                 flipSprite,
                 0);
         }
-    }
+    }  
 }

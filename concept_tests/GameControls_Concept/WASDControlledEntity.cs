@@ -19,7 +19,7 @@ namespace GameControls_Concept
         public WASDControlledEntity(Texture2D image, LevelManager manager, Vector2 position) 
             : base(image, manager, position)
         {
-            gravity = 1400f;
+            gravity = 140f;
             maxXVelocity = 70f;
             terminalVelocity = 1400f;
 
@@ -31,9 +31,12 @@ namespace GameControls_Concept
             Input();
             Movement(gameTime);
 
+            //Todo: fix swinging so it uses velocity and acceleration
             //Update position using velocity
+            /*
             position = CheckForPlatformCollision(
                 levelManager.Platforms);
+            */
 
             hitbox = new Rectangle
                 ((int)position.X - (image.Width / 2),

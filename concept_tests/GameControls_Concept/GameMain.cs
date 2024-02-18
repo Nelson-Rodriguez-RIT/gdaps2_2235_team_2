@@ -12,7 +12,7 @@ namespace GameControls_Concept
         //private MouseControlledEntity mouseControlInactive;
         private LevelManager levelManager;
         private Texture2D _texture;
-        private WASDControlledEntity WASD;
+        private Player WASD;
 
         public GameMain()
         {
@@ -29,9 +29,11 @@ namespace GameControls_Concept
             _graphics.PreferredBackBufferHeight = 1000;
             _graphics.PreferredBackBufferWidth = 1000;
             _graphics.ApplyChanges();
-            WASD = new WASDControlledEntity(Content.Load<Texture2D>("Sprite-0001"), levelManager, new Vector2(100, 100));
-
             mouseControlActive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), true, levelManager);
+            WASD = new Player(Content.Load<Texture2D>("Sprite-0001"), levelManager, new Vector2(100, 100), mouseControlActive
+                , Content.Load<SpriteFont>("File"));
+
+            
             //mouseControlInactive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), false);
 
             base.Initialize();

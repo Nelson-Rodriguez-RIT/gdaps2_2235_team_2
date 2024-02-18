@@ -24,6 +24,7 @@ namespace GameControls_Concept
         protected float gravity;
         protected float terminalVelocity;
         protected float maxXVelocity;
+        
 
         public virtual Vector2 Velocity
         {

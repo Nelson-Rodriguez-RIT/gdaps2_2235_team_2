@@ -75,12 +75,14 @@ namespace GameControls_Concept
                     image.Height);
             }
 
+            /* Temporarily disabled
             //Space to turn the following on and off
             if (!keyboardState.IsKeyDown(Keys.Space)
                 && previousKB.IsKeyDown(Keys.Space))
             {
                 Toggle();
             }
+            */
 
             base.Update(gameTime);
         }

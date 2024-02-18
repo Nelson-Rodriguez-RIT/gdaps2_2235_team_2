@@ -1,4 +1,5 @@
-﻿using FileIO_Concept.Content.Entity;
+﻿using FileIO_Concept.Classes.Archived;
+using FileIO_Concept.Content.Entity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -10,11 +11,10 @@ using System.Dynamic;
 // 2.16.2024
 // File IO Concept Test
 
-namespace FileIO_Concept {
+namespace FileIO_Concept
+{
 
     public class GameMain : Game {
-        
-
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
@@ -27,7 +27,6 @@ namespace FileIO_Concept {
         }
 
         protected override void Initialize() {
-            // TODO: Add your initialization logic here
 
             base.Initialize();
         }
@@ -35,14 +34,9 @@ namespace FileIO_Concept {
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // This portion of file loading is subject to change
-            //Entity.Load($"{RootDirectory}Content/Entity/");
-            //Entity.LoadedSprite = Content.Load<Texture2D>("Entity/sprite");
+            Entity.Load(); // This loads all relevant file data
+            Entity.Sprite = Content.Load<Texture2D>(Entity.SpritePath); // Loads sprite
 
-            // Loads Entity's data
-            Loader.Load(typeof(Entity));
-
-            
             testEntity = new Entity(new Vector2(0, 0));
         }
 
@@ -65,15 +59,6 @@ namespace FileIO_Concept {
             _spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        public static void LogToConsole(string error) {
-            // TODO
-        }
-
-        // Used to load relevant entity data
-        public enum Entities {
-            Entity
         }
     }
 }

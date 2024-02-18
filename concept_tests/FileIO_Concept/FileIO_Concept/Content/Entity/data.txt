@@ -1,3 +1,0 @@
-/ This is a comment :D
-value_int=123
-value_string=this is peak

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace FileIO_Concept
+namespace FileIO_Concept.Classes.Archived
 {
     enum DataHeader
     {
@@ -37,7 +37,7 @@ namespace FileIO_Concept
             // Ran out of time, ill finish this later ;) - Nelson
 
             Dictionary<DataHeader, string> _data = new Dictionary<DataHeader, string>();
-            
+
 
             // For data reading
             StreamReader file = null;

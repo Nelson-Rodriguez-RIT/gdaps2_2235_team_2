@@ -34,7 +34,6 @@ namespace GameControls_Concept
             mouseControlActive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), true, levelManager);
             //mouseControlInactive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), false);
 
-
             base.Initialize();
             
         }
@@ -71,7 +70,7 @@ namespace GameControls_Concept
             mouseControlActive.Draw(_spriteBatch);
             WASD.Draw(_spriteBatch);
             //mouseControlInactive.Draw(_spriteBatch);
-            foreach (Platform platform in levelManager.Platforms)
+            foreach (Collider platform in levelManager.Platforms)
             {
                 platform.Draw(_spriteBatch);
             }

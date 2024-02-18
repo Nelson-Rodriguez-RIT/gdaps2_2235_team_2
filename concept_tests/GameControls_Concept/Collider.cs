@@ -9,27 +9,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameControls_Concept
 {
-    internal class Platform : Entity
+    internal class Collider : Entity
     {
-        private Rectangle hitbox;
-        private Texture2D image;
 
-
-
-        public Platform(Rectangle rectangle, Texture2D image, LevelManager manager) : 
+        public Collider(Rectangle rectangle, Texture2D image, LevelManager manager) : 
             base(image, manager, rectangle.Location.ToVector2())
         {
             hitbox = rectangle;
             this.image = image;
-        }
-        public Rectangle Hitbox 
-        { 
-            get { return hitbox; } 
-        }
-
-        public void Draw(SpriteBatch sb)
-        {
-            sb.Draw(image, hitbox, Color.White);
         }
 
 

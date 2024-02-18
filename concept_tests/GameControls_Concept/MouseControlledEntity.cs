@@ -44,37 +44,32 @@ namespace GameControls_Concept
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+
 
             keyboardState = Keyboard.GetState();
 
             if (state == State.Active) {
-                MouseState state = Mouse.GetState();
+                mouseState = Mouse.GetState();
 
                 // Set velocity cap TODO
-                velocity = new Vector2( // Moves this object's center towards the mouse cursor
+                velocity = //new Vector2( // Moves this object's center towards the mouse cursor
+                    /*
                     (state.Position.X + image.Width / 2), 
                     (state.Position.Y + image.Height / 2)) 
+                    */
+                    mouseState.Position.ToVector2()
                     - position;
 
                 // Adjust velocity to with moveSpeed / gameTime
                 velocity.X *= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 velocity.Y *= moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+                //Update position using velocity
+                position = CheckForPlatformCollision(
+                    levelManager.Platforms);
 
-                /*
-                 * I changed the CheckForPlatformCollision method to take an out PhysicsState
-                 * so that it could set that state to grounded if there was a collision. However, 
-                 * this creates a problem where we can't do the same for anything without that 
-                 * PhysicsState field. This could be a reason to have the collision method be within 
-                 * the entity class and not the platform, because the platform can't know how we want 
-                 * it to interact with each different kind of entity. Lmk what you think we should do.
-                 * Also, if platforms will be entities too, it would be better to put the collision method
-                 * in the entity class IMO.
-                 * - Dante
-                 */
-                hitbox = new Rectangle(
-                    (int)position.X - (image.Width / 2),
+                hitbox = new Rectangle
+                    ((int)position.X - (image.Width / 2),
                     (int)position.Y - (image.Height / 2),
                     image.Width,
                     image.Height);
@@ -87,7 +82,7 @@ namespace GameControls_Concept
                 Toggle();
             }
 
-            
+            base.Update(gameTime);
         }
 
         /// <summary>

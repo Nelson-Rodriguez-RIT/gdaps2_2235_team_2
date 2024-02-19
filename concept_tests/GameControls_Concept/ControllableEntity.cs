@@ -33,6 +33,9 @@ namespace GameControls_Concept
             //base.Update(gameTime);
         }
 
-        
+        public virtual void Input()
+        {
+
+        }
     }
 }

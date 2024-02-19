@@ -18,18 +18,41 @@ namespace GameControls_Concept
 
     internal class Player : WASDControlledEntity
     {
-        private MouseControlledEntity companion;
+        private Companion companion;
         private PlayerStates state;
         private PlayerStates prevState;
         protected float moveSpeed = 10000f;
         private SpriteFont font;
 
-        public Player(LevelManager manager, Vector2 position, MouseControlledEntity companion, SpriteFont font)
+        public Player(LevelManager manager, Vector2 position, Companion companion, SpriteFont font)
             : base(manager, position)
         {
             this.companion = companion;
             state = PlayerStates.Default;
             this.font = font;
+            this.companion.Player = this;
+        }
+
+        public double Radius
+        {
+            get
+            {
+                //Define the vector between the player and the companion
+                Vector2 hypotenuse = new Vector2(
+                    companion.Position.X - position.X,
+                    companion.Position.Y - position.Y);
+
+                //The magnitude of the previous vector,
+                //or the radius of the circle on which the player will rotate
+                return
+                        (
+                            Math.Sqrt(
+                                Math.Pow(hypotenuse.X, 2) +
+                                Math.Pow(hypotenuse.Y, 2)
+                            )
+                        );
+
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -42,8 +65,8 @@ namespace GameControls_Concept
         {
             base.Input();
 
-            if (mouseState.LeftButton == ButtonState.Pressed
-                && previousMS.LeftButton == ButtonState.Released
+            if (mouseState.RightButton == ButtonState.Pressed
+                && previousMS.RightButton == ButtonState.Released
                 && state == PlayerStates.Default
                 && position.Y > companion.Position.Y)
             {                
@@ -54,8 +77,8 @@ namespace GameControls_Concept
             }
             
             else if (state == PlayerStates.Swinging
-                && mouseState.LeftButton == ButtonState.Released
-                && previousMS.LeftButton == ButtonState.Pressed)
+                && mouseState.RightButton == ButtonState.Released
+                && previousMS.RightButton == ButtonState.Pressed)
             {
                 state = PlayerStates.Default;
                 physicsState = PhysicsState.Linear;
@@ -97,6 +120,7 @@ namespace GameControls_Concept
             }
             else
             {
+                /*
                 //Update velocity using acceleration
                 velocity = new Vector2(
                     velocity.X + (acceleration.X * (float)Math.Pow(
@@ -105,6 +129,9 @@ namespace GameControls_Concept
                     velocity.Y + (acceleration.Y * (float)Math.Pow(
                         gameTime.ElapsedGameTime.TotalSeconds,
                         2)));
+                */
+
+                velocity += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
                 //Make sure speed is not over the maximum
                 if (velocity.Y > terminalVelocity)

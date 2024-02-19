@@ -22,7 +22,7 @@ namespace GameControls_Concept
     {
        
 
-        const float moveSpeed = 10f;
+        float moveSpeed = 10f;
         public State state;
         
 
@@ -45,12 +45,11 @@ namespace GameControls_Concept
 
         public override void Update(GameTime gameTime)
         {
-
-
             keyboardState = Keyboard.GetState();
+            mouseState = Mouse.GetState();
+
 
             if (state == State.Active) {
-                mouseState = Mouse.GetState();
 
                 // Set velocity cap TODO
                 velocity = //new Vector2( // Moves this object's center towards the mouse cursor
@@ -76,15 +75,6 @@ namespace GameControls_Concept
                     image.Height);
             }
 
-            /* Temporarily disabled
-            //Space to turn the following on and off
-            if (!keyboardState.IsKeyDown(Keys.Space)
-                && previousKB.IsKeyDown(Keys.Space))
-            {
-                Toggle();
-            }
-            */
-
             base.Update(gameTime);
         }
 
@@ -102,5 +92,7 @@ namespace GameControls_Concept
                 state = State.Active;
             }
         }
+
+
     }
 }

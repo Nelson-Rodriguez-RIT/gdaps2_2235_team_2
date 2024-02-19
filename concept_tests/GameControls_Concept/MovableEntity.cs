@@ -243,5 +243,10 @@ namespace GameControls_Concept
             
 
         } 
+
+        public virtual void Impulse(Vector2 impulse)
+        {
+            velocity = impulse;
+        }
     }
 }

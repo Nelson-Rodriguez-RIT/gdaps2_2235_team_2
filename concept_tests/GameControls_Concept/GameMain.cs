@@ -8,7 +8,7 @@ namespace GameControls_Concept
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private MouseControlledEntity mouseControlActive;
+        private Companion mouseControlActive;
         //private MouseControlledEntity mouseControlInactive;
         private LevelManager levelManager;
         private Texture2D _texture;
@@ -29,7 +29,7 @@ namespace GameControls_Concept
             _graphics.PreferredBackBufferHeight = 1000;
             _graphics.PreferredBackBufferWidth = 1000;
             _graphics.ApplyChanges();
-            mouseControlActive = new MouseControlledEntity(true, levelManager);
+            mouseControlActive = new Companion(levelManager);
             WASD = new Player(levelManager, new Vector2(100, 100), mouseControlActive
                 , Content.Load<SpriteFont>("File"));
 

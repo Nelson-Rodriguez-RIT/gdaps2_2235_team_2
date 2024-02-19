@@ -19,7 +19,7 @@ namespace GameControls_Concept
         public WASDControlledEntity(LevelManager manager, Vector2 position) 
             : base(manager, position)
         {
-            gravity = 700f;
+            gravity = 10f;
             maxXVelocity = 70f;
             terminalVelocity = 1400f;
 
@@ -104,7 +104,7 @@ namespace GameControls_Concept
         /// <summary>
         /// Process input
         /// </summary>
-        public virtual void Input()
+        public override void Input()
         {
             keyboardState = Keyboard.GetState();
             mouseState = Mouse.GetState();

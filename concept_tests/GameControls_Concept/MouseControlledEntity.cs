@@ -23,7 +23,8 @@ namespace GameControls_Concept
        
 
         const float moveSpeed = 10f;
-        protected State state;
+        public State state;
+        
 
         public MouseControlledEntity(Texture2D image, bool active, LevelManager manager) 
             : base(image, manager, new Vector2(0, 0))

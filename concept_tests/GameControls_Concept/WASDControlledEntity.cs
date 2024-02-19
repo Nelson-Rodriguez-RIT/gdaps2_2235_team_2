@@ -19,7 +19,7 @@ namespace GameControls_Concept
         public WASDControlledEntity(Texture2D image, LevelManager manager, Vector2 position) 
             : base(image, manager, position)
         {
-            gravity = 140f;
+            gravity = 700f;
             maxXVelocity = 70f;
             terminalVelocity = 1400f;
 

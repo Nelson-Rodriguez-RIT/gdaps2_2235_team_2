@@ -12,11 +12,10 @@ namespace GameControls_Concept
     internal class Collider : Entity
     {
 
-        public Collider(Rectangle rectangle, Texture2D image, LevelManager manager) : 
-            base(image, manager, rectangle.Location.ToVector2())
+        public Collider(Rectangle rectangle, LevelManager manager) : 
+            base(manager, rectangle.Location.ToVector2())
         {
             hitbox = rectangle;
-            this.image = image;
         }
 
 

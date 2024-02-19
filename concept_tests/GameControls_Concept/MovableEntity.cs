@@ -76,8 +76,8 @@ namespace GameControls_Concept
         /// <param name="image"></param>
         /// <param name="manager"></param>
         /// <param name="position"></param>
-        public MovableEntity(Texture2D image, LevelManager manager, Vector2 position)
-            : base(image, manager, position)
+        public MovableEntity(LevelManager manager, Vector2 position)
+            : base(manager, position)
         {
             physicsState = PhysicsState.Linear;
             gravity = 0;
@@ -95,8 +95,8 @@ namespace GameControls_Concept
         /// <param name="manager"></param>
         /// <param name="position"></param>
         /// <param name="pivot">The center of the cirle the entity moves on</param>
-        public MovableEntity(Texture2D image, LevelManager manager, Vector2 position, Vector2 pivot)
-            : base(image, manager, position)
+        public MovableEntity(LevelManager manager, Vector2 position, Vector2 pivot)
+            : base(manager, position)
         {
             velocity = new Vector2(0, 0);
             acceleration = new Vector2(0, 0);

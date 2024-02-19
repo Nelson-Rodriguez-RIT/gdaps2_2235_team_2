@@ -19,8 +19,8 @@ namespace GameControls_Concept
         protected MouseState previousMS;
 
         
-        public ControllableEntity(Texture2D image, LevelManager manager, Vector2 position)
-            : base(image, manager, position)
+        public ControllableEntity(LevelManager manager, Vector2 position)
+            : base(manager, position)
         {
             
         }

@@ -16,8 +16,8 @@ namespace GameControls_Concept
     /// </summary>
     internal class WASDControlledEntity : ControllableEntity
     {
-        public WASDControlledEntity(Texture2D image, LevelManager manager, Vector2 position) 
-            : base(image, manager, position)
+        public WASDControlledEntity(LevelManager manager, Vector2 position) 
+            : base(manager, position)
         {
             gravity = 700f;
             maxXVelocity = 70f;

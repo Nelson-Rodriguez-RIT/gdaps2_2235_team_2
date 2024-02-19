@@ -26,8 +26,8 @@ namespace GameControls_Concept
         public State state;
         
 
-        public MouseControlledEntity(Texture2D image, bool active, LevelManager manager) 
-            : base(image, manager, new Vector2(0, 0))
+        public MouseControlledEntity(bool active, LevelManager manager) 
+            : base( manager, new Vector2(0, 0))
         { 
             MouseState state = Mouse.GetState();
             position = state.Position.ToVector2();

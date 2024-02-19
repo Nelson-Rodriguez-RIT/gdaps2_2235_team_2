@@ -30,7 +30,7 @@ namespace GameControls_Concept
             _graphics.PreferredBackBufferWidth = 1000;
             _graphics.ApplyChanges();
             mouseControlActive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), true, levelManager);
-            WASD = new Player(Content.Load<Texture2D>("Sprite-0001"), levelManager, new Vector2(100, 100), mouseControlActive
+            WASD = new Player(levelManager, new Vector2(100, 100), mouseControlActive
                 , Content.Load<SpriteFont>("File"));
 
             
@@ -44,6 +44,12 @@ namespace GameControls_Concept
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _texture = Content.Load<Texture2D>("Sprite-0001");
+            WASD.LoadSprite(_texture);
+            mouseControlActive.LoadSprite(_texture);
+            foreach(Collider collider in levelManager.Platforms)
+            {
+                collider.LoadSprite(_texture);
+            }
 
             // TODO: use this.Content to load your game content here
         }

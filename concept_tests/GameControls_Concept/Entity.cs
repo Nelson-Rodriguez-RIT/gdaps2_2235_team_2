@@ -27,7 +27,7 @@ namespace GameControls_Concept
             get { return position; }
         }
 
-        public Entity(Texture2D image, LevelManager manager, Vector2 position)
+        public Entity(LevelManager manager, Vector2 position)
         {
             this.position = position;          
             this.image = image;
@@ -52,6 +52,10 @@ namespace GameControls_Concept
             
         }
 
+        public virtual void LoadSprite(Texture2D texture)
+        {
+            image = texture;
+        }
        
     }
 }

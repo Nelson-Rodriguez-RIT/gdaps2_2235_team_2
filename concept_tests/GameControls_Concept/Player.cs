@@ -24,8 +24,8 @@ namespace GameControls_Concept
         protected float moveSpeed = 10000f;
         private SpriteFont font;
 
-        public Player(Texture2D image, LevelManager manager, Vector2 position, MouseControlledEntity companion, SpriteFont font)
-            : base(image, manager, position)
+        public Player(LevelManager manager, Vector2 position, MouseControlledEntity companion, SpriteFont font)
+            : base(manager, position)
         {
             this.companion = companion;
             state = PlayerStates.Default;

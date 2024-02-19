@@ -19,9 +19,9 @@ namespace GameControls_Concept
         public WASDControlledEntity(LevelManager manager, Vector2 position) 
             : base(manager, position)
         {
-            gravity = 10f;
-            maxXVelocity = 70f;
-            terminalVelocity = 1400f;
+            gravity = 30f;
+            maxXVelocity = 20f;
+            terminalVelocity = 100f;
 
             acceleration = new Vector2 (0, gravity);
         }
@@ -49,16 +49,12 @@ namespace GameControls_Concept
         /// <param name="gameTime"></param>
         public virtual void Movement(GameTime gameTime)
         {
-            //Update velocity using acceleration
-            velocity = new Vector2(
-                velocity.X + (acceleration.X * (float)Math.Pow(
-                    gameTime.ElapsedGameTime.TotalSeconds,
-                    2)),
-                velocity.Y + (acceleration.Y * (float)Math.Pow(
-                    gameTime.ElapsedGameTime.TotalSeconds,
-                    2)));
 
-        
+
+            //Update velocity using acceleration
+            velocity += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+
 
             //Make sure speed is not over the maximum
             if (velocity.Y > terminalVelocity) 
@@ -68,6 +64,15 @@ namespace GameControls_Concept
             else if (velocity.Y < -terminalVelocity)
             {
                 velocity.Y = -terminalVelocity;
+            }
+
+            if (velocity.X > maxXVelocity)
+            {
+                velocity.X = maxXVelocity;
+            }
+            else if (velocity.X < -maxXVelocity)
+            {
+                velocity.X = -maxXVelocity;
             }
 
             Vector2 oldPosition = position;
@@ -84,21 +89,7 @@ namespace GameControls_Concept
             {
                 velocity.X = 0;
             }
-            
-            //Slows down horizontal movement
-            if (velocity.X > 0)
-            {
-                acceleration.X = -100000f;
-            }
-            else if (velocity.X < 0)
-            {
-                acceleration.X = 100000f;
-            }
-            else
-            {
-                acceleration.X = 0;
-            }
-            
+                       
         }
         
         /// <summary>
@@ -109,28 +100,40 @@ namespace GameControls_Concept
             keyboardState = Keyboard.GetState();
             mouseState = Mouse.GetState();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
+            if (keyboardState.IsKeyDown(Keys.A) 
+                )
             {
-                acceleration.X = -1400f;
-            }
-            else if (!Keyboard.GetState().IsKeyDown(Keys.D))
+                if (previousKB.IsKeyUp(Keys.A))
+                velocity.X += -2f;
+
+                acceleration.X = -40f;
+
+                
+            }           
+
+            if (keyboardState.IsKeyDown(Keys.D)
+                )
             {
-                acceleration.X = 0;
+                if (previousKB.IsKeyUp(Keys.D))
+                    velocity.X += 3f;
+
+                acceleration.X = 40f;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            if (Math.Sign(acceleration.X) != Math.Sign(velocity.X))
             {
-                acceleration.X = 1400f;
-            }
-            else if (!Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                acceleration.X = 0;
+                acceleration.X *= 2;
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.D)
-                && Keyboard.GetState().IsKeyDown(Keys.A))
+            if (keyboardState.IsKeyUp(Keys.D)
+                && keyboardState.IsKeyUp(Keys.A))
             {
-                acceleration.X = 0;
+                acceleration.X = -velocity.X / 0.2f;
+                if (Math.Abs(velocity.X) < 1)
+                {
+                    velocity.X = 0;
+                    acceleration.X = 0;
+                }
             }
 
             //Jump!

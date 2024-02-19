@@ -120,16 +120,6 @@ namespace GameControls_Concept
             }
             else
             {
-                /*
-                //Update velocity using acceleration
-                velocity = new Vector2(
-                    velocity.X + (acceleration.X * (float)Math.Pow(
-                        gameTime.ElapsedGameTime.TotalSeconds,
-                        2)),
-                    velocity.Y + (acceleration.Y * (float)Math.Pow(
-                        gameTime.ElapsedGameTime.TotalSeconds,
-                        2)));
-                */
 
                 velocity += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -141,6 +131,15 @@ namespace GameControls_Concept
                 else if (velocity.Y < -terminalVelocity)
                 {
                     velocity.Y = -terminalVelocity;
+                }
+
+                if (velocity.X > maxXVelocity)
+                {
+                    velocity.X = maxXVelocity;
+                }
+                else if (velocity.X < -maxXVelocity)
+                {
+                    velocity.X = -maxXVelocity;
                 }
 
                 //Update position using velocity

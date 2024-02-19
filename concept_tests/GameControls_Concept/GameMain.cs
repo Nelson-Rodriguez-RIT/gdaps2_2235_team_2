@@ -27,7 +27,7 @@ namespace GameControls_Concept
             levelManager = new LevelManager(Content.Load<Texture2D>("Sprite-0001"), levelManager);
             //levelManager.LoadFromFile("level1.csv");
             _graphics.PreferredBackBufferHeight = 1000;
-            _graphics.PreferredBackBufferWidth = 1000;
+            _graphics.PreferredBackBufferWidth = 1900;
             _graphics.ApplyChanges();
             mouseControlActive = new Companion(levelManager);
             WASD = new Player(levelManager, new Vector2(100, 100), mouseControlActive

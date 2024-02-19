@@ -52,7 +52,7 @@ namespace GameControls_Concept
             {
                 if (player.Radius < 500 || true)
                 {
-                    player.Impulse(GetDifferenceVector(player.Position) / 35);
+                    player.Impulse(GetDifferenceVector(player.Position) / 15);
                 }
             }
         }

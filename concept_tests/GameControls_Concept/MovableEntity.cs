@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.VisualBasic;
 
 namespace GameControls_Concept
 {
@@ -198,12 +199,14 @@ namespace GameControls_Concept
             Vector2 temp = new Vector2(
                 (hitbox.X + hitbox.Width / 2) + (velocity.X / maxIteration) * peakXIteration,
                 (hitbox.Y + hitbox.Height / 2) + (velocity.Y / maxIteration) * peakYIteration);
-            return temp;
+
+                return temp;
 
         }
 
         public virtual double RotationalMotionCollision(List<Collider> colliders)
         {
+            
             //Scaling iterations based on velocity
             int maxIteration = CollisionAccuracy > 1 ? CollisionAccuracy : 1;
 
@@ -223,8 +226,8 @@ namespace GameControls_Concept
                     );
 
                     if (new Rectangle( // Check for horizontal collision
-                            (int)(temp.X - hitbox.Width / 2 + ((angVelocity) / maxIteration) * iteration),
-                            (int)(temp.Y - hitbox.Height / 2 + (angVelocity) * iteration),
+                            (int)(temp.X - hitbox.Width / 2 + ((angVelocity) / maxIteration) * iteration + angAccel * iteration * iteration),
+                            (int)(temp.Y - hitbox.Height / 2 + (angVelocity) / maxIteration * iteration + angAccel * iteration * iteration),
                             hitbox.Width,
                             hitbox.Height)
                             .Intersects(collider.Hitbox))
@@ -236,7 +239,9 @@ namespace GameControls_Concept
 
             // Update position and relevant hitbox based on peakIteration
             
-            return theta + (angVelocity / maxIteration) * peakIterations;
+            return theta + (angVelocity / maxIteration) * peakIterations + angAccel * peakIterations * peakIterations;
+            
+
         } 
     }
 }

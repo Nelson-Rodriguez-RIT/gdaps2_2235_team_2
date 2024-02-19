@@ -34,7 +34,7 @@ namespace GameControls_Concept
 
         private void AddPlatform(Rectangle hitbox)
         {
-            platforms.Add(new Collider(hitbox, texture, instance));
+            platforms.Add(new Collider(hitbox, instance));
         }
 
         public void LoadFromFile(string path)

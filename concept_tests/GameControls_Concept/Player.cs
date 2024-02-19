@@ -237,8 +237,8 @@ namespace GameControls_Concept
                     );
 
                     if (new Rectangle( // Check for horizontal collision
-                            (int)(temp.X - hitbox.Width / 2 + ((angVelocity) / maxIteration) * iteration),
-                            (int)(temp.Y - hitbox.Height / 2 + (angVelocity) * iteration),
+                            (int)(temp.X - hitbox.Width / 2 + ((angVelocity) / maxIteration) * iteration + (angAccel / maxIteration) * iteration * iteration),
+                            (int)(temp.Y - hitbox.Height / 2 + ((angVelocity) / maxIteration) * iteration + (angAccel / maxIteration) * iteration * iteration),
                             hitbox.Width,
                             hitbox.Height)
                             .Intersects(collider.Hitbox))
@@ -248,6 +248,8 @@ namespace GameControls_Concept
                 }
             }
 
+          
+
             //Determine whether to stop swinging
             if (peakIterations < maxIteration)
             {
@@ -255,7 +257,7 @@ namespace GameControls_Concept
             }
 
             // Update position and relevant hitbox based on peakIteration
-            return theta + (angVelocity / maxIteration) * peakIterations;
+            return theta + (angVelocity / maxIteration) * peakIterations + (angAccel / maxIteration) * peakIterations * peakIterations;
         }
     }
 }

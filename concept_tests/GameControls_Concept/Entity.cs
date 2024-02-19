@@ -33,10 +33,10 @@ namespace GameControls_Concept
             this.image = image;
 
             hitbox = new Rectangle
-                ((int)position.X - (image.Width / 2),
-                (int)position.Y - (image.Height / 2),
-                image.Width,
-                image.Height);
+                ((int)position.X - (50),
+                (int)position.Y - (50),
+                100,
+                100);
             this.levelManager = manager;
         }
 

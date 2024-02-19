@@ -68,6 +68,7 @@ namespace DynamicWindowSizing_Concept {
 
             _spriteBatch.Draw(
                 testSprite,
+                // Needed or else the position for scaled images do not line up
                 testPosition * WindowManager.WindowRatioScale,
                 null,
                 Color.White,

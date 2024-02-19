@@ -24,19 +24,6 @@ namespace GameControls_Concept
         protected float moveSpeed = 10000f;
         private SpriteFont font;
 
-        private double angVelocity = 0;
-        private double theta;
-        private double angAccel;
-        private float swingRadius;
-
-        //Harmonic motion variables
-        /*
-        private float initialTheta;
-        private float swingRadius;
-        private double initialTime;
-        private double period;
-        */
-
         public Player(Texture2D image, LevelManager manager, Vector2 position, MouseControlledEntity companion, SpriteFont font)
             : base(image, manager, position)
         {
@@ -61,6 +48,7 @@ namespace GameControls_Concept
                 && position.Y > companion.Position.Y)
             {                
                 state = PlayerStates.Swinging;
+                physicsState = PhysicsState.Rotational;
                 //companion can't move while player is swinging for now
                 companion.state = State.Inactive;
             }
@@ -70,6 +58,7 @@ namespace GameControls_Concept
                 && previousMS.LeftButton == ButtonState.Pressed)
             {
                 state = PlayerStates.Default;
+                physicsState = PhysicsState.Linear;
                 //This determines the velocity the player will have after 
                 //they stop swinging by converting the angular velocity
                 //back to linear velocity.
@@ -155,10 +144,12 @@ namespace GameControls_Concept
         /// Handles movement of the player while they are swinging.
         /// </summary>
         /// <param name="gameTime"></param>
-        public void Swing(GameTime gameTime)
+        public override void Swing(GameTime gameTime)
         {
             if (prevState != PlayerStates.Swinging)
             {
+                pivot = companion.Position;
+
                 //Define the vector between the player and the companion
                 Vector2 hypotenuse = new Vector2(
                     companion.Position.X - position.X,
@@ -221,26 +212,50 @@ namespace GameControls_Concept
                 acceleration = Vector2.Zero;
             }
 
-            //Determine the angular acceleration using the perpendicular component of gravity
-            angAccel = gravity * 10 * Math.Cos((Math.PI / 180) * theta);
+            base.Swing(gameTime);
 
-            //Update velocity with acceleration and position with velocity
-            angVelocity += angAccel * gameTime.ElapsedGameTime.TotalSeconds * gameTime.ElapsedGameTime.TotalSeconds;
-            theta += angVelocity * gameTime.ElapsedGameTime.TotalSeconds;
-            
-            //Determine new position using the new angle
-            Vector2 temp = new Vector2(
-                    (float)(companion.Position.X + swingRadius * Math.Cos((Math.PI / 180) * (theta))),
-                    (float)(companion.Position.Y + swingRadius * Math.Sin((Math.PI / 180) * (theta))
-                    ));
+        }
 
-            //update position
-            position = temp;
-            
-            //Let me know if you guys have any questions about this, 
-            //it's a lot of physics formulas that make more sense 
-            //if I can explain it to you while showing you a 
-            //picture - Dante :)
+        public override double RotationalMotionCollision(List<Collider> colliders)
+        {
+            //Scaling iterations based on velocity
+            int maxIteration = CollisionAccuracy > 1 ? CollisionAccuracy : 1;
+
+            // How many steps it can go before colliding into anything
+            int peakIterations = maxIteration;
+
+            // Shorten iterations based on current peakIteration TODO
+            foreach (Collider collider in colliders) // Check each platform
+            {
+                for (int iteration = 0; iteration <= maxIteration; iteration++)
+                { // Check how many steps it can go before colliding into this platform
+                    Vector2 temp = new Vector2(
+                    (float)(pivot.X + swingRadius * Math.Cos((Math.PI / 180) *
+                    (theta + angVelocity / maxIteration * iteration))),
+                    (float)(pivot.Y + swingRadius * Math.Sin((Math.PI / 180) *
+                    (theta + angVelocity / maxIteration * iteration)))
+                    );
+
+                    if (new Rectangle( // Check for horizontal collision
+                            (int)(temp.X - hitbox.Width / 2 + ((angVelocity) / maxIteration) * iteration),
+                            (int)(temp.Y - hitbox.Height / 2 + (angVelocity) * iteration),
+                            hitbox.Width,
+                            hitbox.Height)
+                            .Intersects(collider.Hitbox))
+                        // We want the absolute minimum steps
+                        peakIterations = iteration - 1 < peakIterations ? iteration - 1 : peakIterations;
+
+                }
+            }
+
+            //Determine whether to stop swinging
+            if (peakIterations < maxIteration)
+            {
+                state = PlayerStates.Default;
+            }
+
+            // Update position and relevant hitbox based on peakIteration
+            return theta + (angVelocity / maxIteration) * peakIterations;
         }
     }
 }

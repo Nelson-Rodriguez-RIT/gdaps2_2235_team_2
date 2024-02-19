@@ -22,10 +22,10 @@ namespace GameControls_Concept
         public ControllableEntity(Texture2D image, LevelManager manager, Vector2 position)
             : base(image, manager, position)
         {
-        
+            
         }
 
-        public virtual void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             previousKB = keyboardState;
             previousMS = mouseState;

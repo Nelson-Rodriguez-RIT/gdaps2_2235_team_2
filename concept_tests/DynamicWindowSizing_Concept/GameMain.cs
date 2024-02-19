@@ -1,11 +1,25 @@
-﻿using Microsoft.Xna.Framework;
+﻿using DynamicWindowSizing_Concept.Classes;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace DynamicWindowSizing_Concept {
     public class GameMain : Game {
+        // Honestly it be worth considering storing game systems such as default window size
+        // into a file format. Thoughts? - Nelson
+
+        private const int DefaultWindowWidth = 1280;
+        private const int DefaultWindowHeight = 720;
+
+        private GameWindow gw;
+        private WindowManager wm;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        // This would typically go into its own class
+        Vector2 testPosition; // This is an absolute location
+        Texture2D testSprite;
 
         public GameMain() {
             _graphics = new GraphicsDeviceManager(this);
@@ -14,7 +28,15 @@ namespace DynamicWindowSizing_Concept {
         }
 
         protected override void Initialize() {
-            // TODO: Add your initialization logic here
+            // Set initial window properties
+            Window.AllowUserResizing = true;
+
+            _graphics.PreferredBackBufferWidth = DefaultWindowWidth;
+            _graphics.PreferredBackBufferHeight = DefaultWindowHeight;
+            _graphics.ApplyChanges();
+
+            // Setup window manager
+            wm = new(DefaultWindowWidth, DefaultWindowHeight); // Probably should make this a singleton
 
             base.Initialize();
         }
@@ -22,22 +44,40 @@ namespace DynamicWindowSizing_Concept {
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            testSprite = Content.Load<Texture2D>("sprite");
+            testPosition = new Vector2(20, 20);
         }
 
         protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            // This will update the window size ratio
+            wm.Update(
+                Window.ClientBounds.Size.X,
+                Window.ClientBounds.Size.Y);
+
 
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Gray);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+            _spriteBatch.Draw(
+                testSprite,
+                testPosition * WindowManager.WindowRatioScale,
+                null,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                WindowManager.WindowRatioScale,
+                SpriteEffects.None,
+                0f);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

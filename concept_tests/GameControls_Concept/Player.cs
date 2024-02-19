@@ -234,9 +234,11 @@ namespace GameControls_Concept
                 //Set the initial angular velocity
                 angVelocity = (newVMag * 3000 *  -Math.Sign(hypotenuse.X)) / swingRadius;
 
-                velocity = Vector2.Zero;
-                acceleration = Vector2.Zero;
+                
             }
+
+            velocity = Vector2.Zero;
+            acceleration = Vector2.Zero;
 
             base.Swing(gameTime);
 

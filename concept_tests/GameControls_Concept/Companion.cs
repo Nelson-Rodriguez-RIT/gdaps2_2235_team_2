@@ -50,7 +50,7 @@ namespace GameControls_Concept
             if (mouseState.LeftButton == ButtonState.Pressed
                 && previousMS.LeftButton == ButtonState.Released)
             {
-                if (player.Radius < 500 || true)
+                if (player.Radius < 500)
                 {
                     player.Impulse(GetDifferenceVector(player.Position) / 15);
                 }
@@ -61,7 +61,7 @@ namespace GameControls_Concept
         {
             Vector2 temp = new Vector2(
                 position.X - otherPosition.X,
-                position.Y - otherPosition.Y);
+                position.Y - otherPosition.Y / 1.1f);
 
             return temp;
         }

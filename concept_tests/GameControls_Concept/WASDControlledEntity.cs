@@ -54,8 +54,6 @@ namespace GameControls_Concept
             //Update velocity using acceleration
             velocity += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-
-
             //Make sure speed is not over the maximum
             if (velocity.Y > terminalVelocity) 
             { 
@@ -128,8 +126,13 @@ namespace GameControls_Concept
             if (keyboardState.IsKeyUp(Keys.D)
                 && keyboardState.IsKeyUp(Keys.A))
             {
-                acceleration.X = -velocity.X / 0.2f;
-                if (Math.Abs(velocity.X) < 1)
+                
+                acceleration.X = -velocity.X / 
+                    (Math.Abs(velocity.Y) < 0.5 ? 0.1f : 0.5f);
+
+
+
+                if (Math.Abs(velocity.X) < 0.2)
                 {
                     velocity.X = 0;
                     acceleration.X = 0;

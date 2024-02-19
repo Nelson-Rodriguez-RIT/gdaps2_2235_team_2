@@ -1,0 +1,11 @@
+[Test]
+0,0
+background
+foreground
+20,80,80,20
+
+[Test2]
+100,0
+background
+foreground
+20,80,80,20

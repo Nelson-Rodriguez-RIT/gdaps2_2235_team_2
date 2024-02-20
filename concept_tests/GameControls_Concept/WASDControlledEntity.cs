@@ -50,7 +50,6 @@ namespace GameControls_Concept
         public virtual void Movement(GameTime gameTime)
         {
 
-
             //Update velocity using acceleration
             velocity += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -141,7 +140,8 @@ namespace GameControls_Concept
 
             //Jump!
             if (
-                keyboardState.IsKeyDown(Keys.Space))
+                keyboardState.IsKeyDown(Keys.Space) && (Math.Abs(velocity.Y) < 0.5)
+                )
             {
                 velocity.Y = -15f;
             }

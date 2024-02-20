@@ -21,7 +21,6 @@ namespace GameControls_Concept
         private Companion companion;
         private PlayerStates state;
         private PlayerStates prevState;
-        protected float moveSpeed = 10000f;
         private SpriteFont font;
 
         public Player(LevelManager manager, Vector2 position, Companion companion, SpriteFont font)

@@ -26,7 +26,7 @@ namespace GameControls_Concept
         {
             platforms = new List<Collider>();
             this.texture = texture;
-            AddPlatform(new Rectangle(0, 800, 600, 100));
+            AddPlatform(new Rectangle(0, 800, 1900, 100));
             //AddPlatform(new )
 
             this.instance = instance;

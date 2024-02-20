@@ -137,7 +137,7 @@ namespace GameControls_Concept
         public virtual void Swing(GameTime gameTime)
         {
             //Determine the angular acceleration using the perpendicular component of gravity
-            angAccel = gravity * 1200 * Math.Cos((Math.PI / 180) * theta);
+            angAccel = gravity * 1000 * Math.Cos((Math.PI / 180) * theta);
 
             //Update velocity with acceleration and position with velocity
             angVelocity += angAccel * gameTime.ElapsedGameTime.TotalSeconds * gameTime.ElapsedGameTime.TotalSeconds;

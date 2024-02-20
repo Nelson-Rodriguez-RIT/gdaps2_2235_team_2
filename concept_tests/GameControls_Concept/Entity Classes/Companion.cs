@@ -77,8 +77,8 @@ namespace GameControls_Concept
         public override void Draw(SpriteBatch sb)
         {
             frameCount = spriteData[animationState][2];
-            sb.DrawString(font, position.X + "  " + position.Y, new Vector2(300, 100), Color.White);
-            sb.DrawString(font, velocity.X + "  " + velocity.Y, new Vector2(500, 100), Color.White);
+            //sb.DrawString(font, position.X + "  " + position.Y, new Vector2(300, 100), Color.White);
+            //sb.DrawString(font, velocity.X + "  " + velocity.Y, new Vector2(500, 100), Color.White);
 
             switch (animationState)
             {

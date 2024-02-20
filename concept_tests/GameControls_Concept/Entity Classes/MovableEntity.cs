@@ -151,6 +151,28 @@ namespace GameControls_Concept
                     (float)(pivot.Y + swingRadius * Math.Sin((Math.PI / 180) * (theta))
                     ));
 
+            //Check for collision
+            foreach (Collider collider in levelManager.Platforms)
+            {
+                if (new Rectangle(
+                (int)temp.X - hitbox.Width / 2,
+                (int)temp.Y - hitbox.Height / 2,
+                hitbox.Width,
+                hitbox.Height)
+                    .Intersects(collider.Hitbox))
+                {
+                    physicsState = PhysicsState.Linear;
+                    //Convert back to linear motion
+                    velocity = new Vector2(                                       // 3000: random number for downscaling (it was too big)
+                    (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 3000),
+                    (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 3000);
+                    acceleration = new Vector2(
+                        acceleration.X, gravity);
+                    return;
+                }
+            }
+            
+
             //update position
             position = temp;
 
@@ -200,49 +222,12 @@ namespace GameControls_Concept
                 (hitbox.X + hitbox.Width / 2) + (velocity.X / maxIteration) * peakXIteration,
                 (hitbox.Y + hitbox.Height / 2) + (velocity.Y / maxIteration) * peakYIteration);
 
+
                 return temp;
 
         }
 
-        protected virtual double RotationalMotionCollision(List<Collider> colliders)
-        {
-            
-            //Scaling iterations based on velocity
-            int maxIteration = CollisionAccuracy > 1 ? CollisionAccuracy : 1;
-
-            // How many steps it can go before colliding into anything
-            int peakIterations = maxIteration;
-
-            // Shorten iterations based on current peakIteration TODO
-            foreach (Collider collider in colliders) // Check each platform
-            {
-                for (int iteration = 0; iteration <= maxIteration; iteration++)
-                { // Check how many steps it can go before colliding into this platform
-                    Vector2 temp = new Vector2(
-                    (float)(pivot.X + swingRadius * Math.Cos((Math.PI / 180) * 
-                    (theta + angVelocity / maxIteration * iteration))), 
-                    (float)(pivot.Y + swingRadius * Math.Sin((Math.PI / 180) *
-                    (theta + angVelocity / maxIteration * iteration)))
-                    );
-
-                    if (new Rectangle( // Check for horizontal collision
-                            (int)(temp.X - hitbox.Width / 2 + ((angVelocity) / maxIteration) * iteration + angAccel * iteration * iteration),
-                            (int)(temp.Y - hitbox.Height / 2 + (angVelocity) / maxIteration * iteration + angAccel * iteration * iteration),
-                            hitbox.Width,
-                            hitbox.Height)
-                            .Intersects(collider.Hitbox))
-                        // We want the absolute minimum steps
-                        peakIterations = iteration - 1 < peakIterations ? iteration - 1 : peakIterations;
-
-                }
-            }
-
-            // Update position and relevant hitbox based on peakIteration
-            
-            return theta + (angVelocity / maxIteration) * peakIterations + angAccel * peakIterations * peakIterations;
-            
-
-        } 
+        
 
         public virtual void Impulse(Vector2 impulse)
         {

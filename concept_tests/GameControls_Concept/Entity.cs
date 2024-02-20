@@ -17,6 +17,12 @@ namespace GameControls_Concept
         protected Rectangle hitbox;
         protected LevelManager levelManager;
 
+        //Animation
+        protected int spriteWidth;
+        protected int spriteHeight;
+        protected int fps;
+        protected int frameCount;
+
         public virtual Rectangle Hitbox
         {
             get { return hitbox; }
@@ -55,6 +61,16 @@ namespace GameControls_Concept
         public virtual void LoadSprite(Texture2D texture)
         {
             image = texture;
+        }
+
+        /// <summary>
+        /// Loads a spritesheet in with info about animation
+        /// </summary>
+        /// <param name="texture">The spritesheet</param>
+        /// <param name="filePath">The file which contains the animation information</param>
+        public virtual void LoadSpriteSheet(Texture2D texture, string filePath)
+        {
+
         }
        
     }

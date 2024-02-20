@@ -60,7 +60,7 @@ namespace GameControls_Concept
             prevState = state;
         }
 
-        public override void Input()
+        protected override void Input()
         {
             base.Input();
 
@@ -98,18 +98,19 @@ namespace GameControls_Concept
 
         public override void Draw(SpriteBatch sb)
         {
-            string temp = acceleration.X + " - " + acceleration.Y;
+            /*
             sb.DrawString(font, acceleration.X + "  " + acceleration.Y, new Vector2(700,100), Color.White);
             sb.DrawString(font, position.X + "  " + position.Y, new Vector2(300, 100), Color.White);
             sb.DrawString(font, velocity.X + "  " + velocity.Y, new Vector2(500, 100), Color.White);
             sb.DrawString(font, angAccel.ToString(), new Vector2(700, 200), Color.White);
             sb.DrawString(font, theta.ToString(), new Vector2(300, 200), Color.White);
             sb.DrawString(font, angVelocity.ToString(), new Vector2(500, 200), Color.White);
+            */
 
             base.Draw(sb);
         }
 
-        public override void Movement(GameTime gameTime)
+        protected override void Movement(GameTime gameTime)
         {
             Vector2 oldPosition = position;
 
@@ -169,7 +170,7 @@ namespace GameControls_Concept
         /// Handles movement of the player while they are swinging.
         /// </summary>
         /// <param name="gameTime"></param>
-        public override void Swing(GameTime gameTime)
+        protected override void Swing(GameTime gameTime)
         {
             if (prevState != PlayerStates.Swinging)
             {
@@ -243,7 +244,7 @@ namespace GameControls_Concept
 
         }
 
-        public override double RotationalMotionCollision(List<Collider> colliders)
+        protected override double RotationalMotionCollision(List<Collider> colliders)
         {
             //Scaling iterations based on velocity
             int maxIteration = CollisionAccuracy > 1 ? CollisionAccuracy : 1;

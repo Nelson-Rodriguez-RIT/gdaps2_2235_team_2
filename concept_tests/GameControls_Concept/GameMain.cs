@@ -29,7 +29,7 @@ namespace GameControls_Concept
             _graphics.PreferredBackBufferHeight = 1000;
             _graphics.PreferredBackBufferWidth = 1900;
             _graphics.ApplyChanges();
-            mouseControlActive = new Companion(levelManager);
+            mouseControlActive = new Companion(levelManager, Content);
             WASD = new Player(levelManager, new Vector2(100, 100), mouseControlActive
                 , Content.Load<SpriteFont>("File"));
 

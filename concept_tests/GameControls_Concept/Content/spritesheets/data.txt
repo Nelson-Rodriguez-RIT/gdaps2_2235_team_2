@@ -1,0 +1,10 @@
+/Format:
+/Animation
+/sprite width
+/sprite height
+/number of frames
+
+Idle
+64
+64
+6

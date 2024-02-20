@@ -47,7 +47,7 @@ namespace GameControls_Concept
         /// Move the entity based on its acceleration and velocity.
         /// </summary>
         /// <param name="gameTime"></param>
-        public virtual void Movement(GameTime gameTime)
+        protected virtual void Movement(GameTime gameTime)
         {
 
             //Update velocity using acceleration
@@ -92,7 +92,7 @@ namespace GameControls_Concept
         /// <summary>
         /// Process input
         /// </summary>
-        public override void Input()
+        protected override void Input()
         {
             keyboardState = Keyboard.GetState();
             mouseState = Mouse.GetState();

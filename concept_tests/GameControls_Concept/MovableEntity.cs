@@ -134,7 +134,7 @@ namespace GameControls_Concept
         /// Movement for a swinging entity (enemy, obstacle or player, presumably)
         /// </summary>
         /// <param name="gameTime"></param>
-        public virtual void Swing(GameTime gameTime)
+        protected virtual void Swing(GameTime gameTime)
         {
             //Determine the angular acceleration using the perpendicular component of gravity
             angAccel = gravity * 1000 * Math.Cos((Math.PI / 180) * theta);
@@ -160,7 +160,7 @@ namespace GameControls_Concept
             //picture - Dante :)
         }
 
-        public Vector2 CheckForPlatformCollision(
+        protected Vector2 CheckForPlatformCollision(
              List<Collider> platforms)               // List of platforms to check against     
         {
             //Scaling iterations based on velocity
@@ -204,7 +204,7 @@ namespace GameControls_Concept
 
         }
 
-        public virtual double RotationalMotionCollision(List<Collider> colliders)
+        protected virtual double RotationalMotionCollision(List<Collider> colliders)
         {
             
             //Scaling iterations based on velocity

@@ -1,8 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +23,27 @@ namespace GameControls_Concept
         private Player player;
         private Dictionary<Abilities, double> cooldowns;
 
+        //Animation
+        private AnimationStates animationState;
+        private int frame;
+        private double timeCounter;
+        private double fps = 12;
+        private double timePerFrame;
+        private Texture2D idleSheet;
+        private Texture2D moveSheet;
+        private Texture2D actionSheet;
+        Dictionary<AnimationStates, int[]> spriteData;
+        private ContentManager contentManager;
+        private SpriteFont font;
+
+
+        private enum AnimationStates
+        {
+            Idle,
+            Move,
+            Action
+        }
+
         public Player Player 
         { 
             get { return player; } 
@@ -29,20 +54,42 @@ namespace GameControls_Concept
             }
         }
 
-        public Companion(LevelManager manager) 
+        public Companion(LevelManager manager, ContentManager contentManager) 
             : base(true, manager)
         {
-            state = State.Active;
+            state = State.Active; 
+            animationState = AnimationStates.Idle;
+            this.contentManager = contentManager;
+            timePerFrame = 1 / fps;
+
+
+            LoadSpriteSheets("../../../Content/spritesheets", contentManager);
         }
 
         public override void Update(GameTime gameTime)
         {
             Input();
             base.Update(gameTime);
+            UpdateAnimation(gameTime);
             
         }
 
-        public override void Input()
+        public override void Draw(SpriteBatch sb)
+        {
+            frameCount = spriteData[animationState][2];
+            sb.DrawString(font, position.X + "  " + position.Y, new Vector2(300, 100), Color.White);
+            sb.DrawString(font, velocity.X + "  " + velocity.Y, new Vector2(500, 100), Color.White);
+
+            switch (animationState)
+            {
+                case AnimationStates.Idle:
+                    
+                    DrawIdle(SpriteEffects.None, sb);
+                    break;
+            }
+        }
+
+        protected override void Input()
         {
             keyboardState = Keyboard.GetState();
             mouseState = Mouse.GetState();
@@ -65,5 +112,121 @@ namespace GameControls_Concept
 
             return temp;
         }
+
+        public void LoadSpriteSheets(string directory, ContentManager content)
+        {
+            StreamReader reader = null;
+            List<string> lines = new List<string>();
+
+            try
+            {
+                font = content.Load<SpriteFont>("File");
+                idleSheet = content.Load<Texture2D>(directory + "/Idle");
+                moveSheet = content.Load<Texture2D>(directory + "/Move");
+                //actionSheet = content.Load<Texture2D>(directory + "/Action");
+
+                reader = new StreamReader(directory + "/data.txt");
+                string line = null;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line != "" && line[0] != '/')
+                    {
+                        lines.Add(line);
+                    }
+                }
+                lines.Add("end");
+
+
+            }
+            catch (FileNotFoundException e)
+            {
+                //console log error. For now: 
+
+                throw new Exception("File error");
+                
+            }
+            finally
+            {
+                if (reader != null)
+                    reader.Close();
+            }
+
+            spriteData = new();
+            AnimationStates key = AnimationStates.Idle;
+            int[] data = null;
+            int index = 0;
+            int useless = 0;
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if ((!int.TryParse(lines[i], out useless)
+                    && Enum.TryParse<AnimationStates>(lines[i], out key))
+                    || lines[i] == "end")
+                {
+                    if (data != null)
+                    {
+                        spriteData.Add(key, data);
+                    }
+
+                    index = i;
+                    data = new int[3];
+                }
+                else
+                {
+                    data[i - index - 1] = int.Parse(lines[i]);
+                }
+            }
+
+            
+        }
+
+        /// <summary>
+        /// Updates mario's animation as necessary
+        /// </summary>
+        /// <param name="gameTime">Time information</param>
+        public void UpdateAnimation(GameTime gameTime)
+        {
+            // Handle animation timing
+            // - Add to the time counter
+            // - Check if we have enough "time" to advance the frame
+
+            // How much time has passed?  
+            timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
+
+            // If enough time has passed:
+            if (timeCounter >= timePerFrame)
+            {
+                frame += 1;                     // Adjust the frame to the next image
+
+                if (frame >= frameCount)     // Check the bounds - have we reached the end of walk cycle?
+                    frame = 1;                  // Back to 1 (since 0 is the "standing" frame)
+
+                timeCounter -= timePerFrame;    // Remove the time we "used" - don't reset to 0
+                                                // This keeps the time passed 
+            }
+        }
+
+        private void DrawIdle(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            int[] data = spriteData[AnimationStates.Idle];
+
+            spriteBatch.Draw(
+                idleSheet,                    // - The texture to draw
+                position,                       // - The location to draw on the screen
+                new Rectangle(                  // - The "source" rectangle
+                    0,     //   - This rectangle specifies
+                    frame * data[1],           //	   where "inside" the texture
+                    data[0],             //     to get pixels (We don't want to
+                    data[1]),           //     draw the whole thing)
+                Color.White,                    // - The color
+                0,                              // - Rotation (none currently)
+                Vector2.Zero,                   // - Origin inside the image (top left)
+                5.0f,                           // - Scale (100% - no change)
+                flipSprite,                     // - Can be used to flip the image
+                0);                             // - Layer depth (unused)
+        }
     }
+
+ 
 }

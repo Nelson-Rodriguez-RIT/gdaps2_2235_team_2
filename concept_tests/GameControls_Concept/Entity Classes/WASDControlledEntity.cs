@@ -101,9 +101,9 @@ namespace GameControls_Concept
                 )
             {
                 if (previousKB.IsKeyUp(Keys.A))
-                velocity.X += -2f;
+                velocity.X += -3f;
 
-                acceleration.X = -40f;
+                 acceleration.X = -40f;
 
                 
             }           
@@ -117,17 +117,14 @@ namespace GameControls_Concept
                 acceleration.X = 40f;
             }
 
-            if (Math.Sign(acceleration.X) != Math.Sign(velocity.X))
-            {
-                acceleration.X *= 2;
-            }
+            
 
             if (keyboardState.IsKeyUp(Keys.D)
                 && keyboardState.IsKeyUp(Keys.A))
             {
                 
                 acceleration.X = -velocity.X / 
-                    (Math.Abs(velocity.Y) < 0.5 ? 0.1f : 0.5f);
+                    (Math.Abs(velocity.Y) < 0.5 ? 0.2f : 0.5f);
 
 
 
@@ -136,6 +133,13 @@ namespace GameControls_Concept
                     velocity.X = 0;
                     acceleration.X = 0;
                 }
+            }
+
+            //If the player is accelerating opposite their motion, 
+            //double the acceleration for smoother movement
+            if (Math.Sign(acceleration.X) != Math.Sign(velocity.X))
+            {
+                acceleration.X *= 2f;
             }
 
             //Jump!

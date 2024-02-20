@@ -66,16 +66,16 @@ namespace GameControls_Concept
 
             if (mouseState.RightButton == ButtonState.Pressed
                 && previousMS.RightButton == ButtonState.Released
-                && state == PlayerStates.Default
+                && physicsState == PhysicsState.Linear
                 && position.Y > companion.Position.Y)
-            {                
+            {
                 state = PlayerStates.Swinging;
                 physicsState = PhysicsState.Rotational;
                 //companion can't move while player is swinging for now
                 companion.state = State.Inactive;
             }
-            
-            else if (state == PlayerStates.Swinging
+
+            else if (physicsState == PhysicsState.Rotational
                 && mouseState.RightButton == ButtonState.Released
                 && previousMS.RightButton == ButtonState.Pressed)
             {
@@ -98,14 +98,14 @@ namespace GameControls_Concept
 
         public override void Draw(SpriteBatch sb)
         {
-            /*
+            
             sb.DrawString(font, acceleration.X + "  " + acceleration.Y, new Vector2(700,100), Color.White);
             sb.DrawString(font, position.X + "  " + position.Y, new Vector2(300, 100), Color.White);
             sb.DrawString(font, velocity.X + "  " + velocity.Y, new Vector2(500, 100), Color.White);
             sb.DrawString(font, angAccel.ToString(), new Vector2(700, 200), Color.White);
             sb.DrawString(font, theta.ToString(), new Vector2(300, 200), Color.White);
             sb.DrawString(font, angVelocity.ToString(), new Vector2(500, 200), Color.White);
-            */
+            
 
             base.Draw(sb);
         }
@@ -114,7 +114,7 @@ namespace GameControls_Concept
         {
             Vector2 oldPosition = position;
 
-            if (state == PlayerStates.Swinging)
+            if (physicsState == PhysicsState.Rotational)
             {
                 Swing(gameTime);             
             }
@@ -244,48 +244,6 @@ namespace GameControls_Concept
 
         }
 
-        protected override double RotationalMotionCollision(List<Collider> colliders)
-        {
-            //Scaling iterations based on velocity
-            int maxIteration = CollisionAccuracy > 1 ? CollisionAccuracy : 1;
-
-            // How many steps it can go before colliding into anything
-            int peakIterations = maxIteration;
-
-            // Shorten iterations based on current peakIteration TODO
-            foreach (Collider collider in colliders) // Check each platform
-            {
-                for (int iteration = 0; iteration <= maxIteration; iteration++)
-                { // Check how many steps it can go before colliding into this platform
-                    Vector2 temp = new Vector2(
-                    (float)(pivot.X + swingRadius * Math.Cos((Math.PI / 180) *
-                    (theta + angVelocity / maxIteration * iteration))),
-                    (float)(pivot.Y + swingRadius * Math.Sin((Math.PI / 180) *
-                    (theta + angVelocity / maxIteration * iteration)))
-                    );
-
-                    if (new Rectangle( // Check for horizontal collision
-                            (int)(temp.X - hitbox.Width / 2 + ((angVelocity) / maxIteration) * iteration + (angAccel / maxIteration) * iteration * iteration),
-                            (int)(temp.Y - hitbox.Height / 2 + ((angVelocity) / maxIteration) * iteration + (angAccel / maxIteration) * iteration * iteration),
-                            hitbox.Width,
-                            hitbox.Height)
-                            .Intersects(collider.Hitbox))
-                        // We want the absolute minimum steps
-                        peakIterations = iteration - 1 < peakIterations ? iteration - 1 : peakIterations;
-
-                }
-            }
-
-          
-
-            //Determine whether to stop swinging
-            if (peakIterations < maxIteration)
-            {
-                state = PlayerStates.Default;
-            }
-
-            // Update position and relevant hitbox based on peakIteration
-            return theta + (angVelocity / maxIteration) * peakIterations + (angAccel / maxIteration) * peakIterations * peakIterations;
-        }
+        
     }
 }

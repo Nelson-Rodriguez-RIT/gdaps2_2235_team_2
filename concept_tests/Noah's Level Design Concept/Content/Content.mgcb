@@ -13,17 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin MoonwalkMapLaboratory.tmx
-/importer:
-/processor:
-/build:MoonwalkMapLaboratory.tmx
-
-#begin MoonwalkMapStart.tmx
-/importer:
-/processor:
-/build:MoonwalkMapStart.tmx
-
-#begin Sprites/01-King Human/Attack (78x58).png
+#begin AnimationSheet_Character.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -33,9 +23,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Attack (78x58).png
+/build:AnimationSheet_Character.png
 
-#begin Sprites/01-King Human/Dead (78x58).png
+#begin MoonwalkMapLaboratoryState1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -45,9 +35,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Dead (78x58).png
+/build:MoonwalkMapLaboratoryState1.png
 
-#begin Sprites/01-King Human/Door In (78x58).png
+#begin MoonwalkMapLaboratoryState2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -57,9 +47,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Door In (78x58).png
+/build:MoonwalkMapLaboratoryState2.png
 
-#begin Sprites/01-King Human/Door Out (78x58).png
+#begin MoonwalkMapStart.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -69,77 +59,5 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Door Out (78x58).png
-
-#begin Sprites/01-King Human/Fall (78x58).png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Fall (78x58).png
-
-#begin Sprites/01-King Human/Ground (78x58).png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Ground (78x58).png
-
-#begin Sprites/01-King Human/Hit (78x58).png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Hit (78x58).png
-
-#begin Sprites/01-King Human/Idle (78x58).png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Idle (78x58).png
-
-#begin Sprites/01-King Human/Jump (78x58).png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Jump (78x58).png
-
-#begin Sprites/01-King Human/Run (78x58).png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Sprites/01-King Human/Run (78x58).png
+/build:MoonwalkMapStart.png
 

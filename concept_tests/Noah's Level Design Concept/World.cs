@@ -15,6 +15,7 @@ namespace Noah_s_Level_Design_Concept
         private bool active;
         private Texture2D asset;
         private Rectangle position;
+        private float gravity = 9.8;
         KeyboardState keyboardState;
         KeyboardState previousKeyboardState;
 
@@ -53,12 +54,10 @@ namespace Noah_s_Level_Design_Concept
                 movementDirection -= Vector2.UnitX * velocity;
                 this.position.X += (int)(movementDirection.X);
             }
-            if (SingleKeyPress(Keys.Space, keyboardState))
-            { 
+            if (keyboardState.IsKeyDown(Keys.Space))
+            {
                 //iT DONT WORK
-                movementDirection += (Vector2.UnitX * velocity) + (Vector2.UnitY * velocity);
-                this.position.X += (int)(movementDirection.X);
-                this.position.Y += (int)(movementDirection.Y);
+                movementDirection.Y -= velocity - gravity * (float)Math.Pow(gameTime.ElapsedGameTime.TotalSeconds, 2f);
                 
             }
             

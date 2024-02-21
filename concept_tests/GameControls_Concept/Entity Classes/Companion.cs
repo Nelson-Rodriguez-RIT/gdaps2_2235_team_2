@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mime;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace GameControls_Concept
@@ -29,13 +30,10 @@ namespace GameControls_Concept
         private double timeCounter;
         private double fps = 12;
         private double timePerFrame;
-        private Texture2D idleSheet;
-        private Texture2D moveSheet;
-        private Texture2D actionSheet;
-        Dictionary<AnimationStates, int[]> spriteData;
+        Dictionary<AnimationStates, Tuple<Texture2D, int[]>> spriteData;
         private ContentManager contentManager;
         private SpriteFont font;
-
+        private bool facingLeft;
 
         private enum AnimationStates
         {
@@ -61,32 +59,56 @@ namespace GameControls_Concept
             animationState = AnimationStates.Idle;
             this.contentManager = contentManager;
             timePerFrame = 1 / fps;
+            facingLeft = false;
 
+            font = contentManager.Load<SpriteFont>("File");
 
-            LoadSpriteSheets<AnimationStates>("../../../Content/spritesheets", contentManager);
+            spriteData = 
+                LoadSpriteSheets<AnimationStates>("../../../Content/companion", contentManager);
         }
 
         public override void Update(GameTime gameTime)
         {
             Input();
+            
+            if (velocity.X > 0)
+            {
+                facingLeft = false;
+            }
+            else if (velocity.X < 0) 
+            { 
+                facingLeft = true;
+            }
+
+            if (velocity.X != 0 && velocity.Y != 0)
+            {
+                animationState = AnimationStates.Move;
+            }
+            else
+            {
+                animationState = AnimationStates.Idle;
+            }
+
             base.Update(gameTime);
             UpdateAnimation(gameTime);
-            
         }
 
         public override void Draw(SpriteBatch sb)
         {
-            frameCount = spriteData[animationState][2];
-            //sb.DrawString(font, position.X + "  " + position.Y, new Vector2(300, 100), Color.White);
-            //sb.DrawString(font, velocity.X + "  " + velocity.Y, new Vector2(500, 100), Color.White);
+            frameCount = spriteData[animationState].Item2[2];
+            sb.DrawString(font, position.X + "  " + position.Y, new Vector2(300, 100), Color.White);
+            sb.DrawString(font, velocity.X + "  " + velocity.Y, new Vector2(500, 100), Color.White);
 
+            DrawAnimation(sb);
+            /*
             switch (animationState)
             {
                 case AnimationStates.Idle:
                     
-                    DrawIdle(SpriteEffects.None, sb);
+                    
                     break;
             }
+            */
         }
 
         protected override void Input()
@@ -108,7 +130,7 @@ namespace GameControls_Concept
         {
             Vector2 temp = new Vector2(
                 position.X - otherPosition.X,
-                position.Y - otherPosition.Y / 1.1f);
+                position.Y - otherPosition.Y / 1.1f);                       
 
             return temp;
         }       
@@ -139,13 +161,14 @@ namespace GameControls_Concept
             }
         }
 
-        private void DrawIdle(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        private void DrawAnimation(SpriteBatch spriteBatch)
         {
-            int[] data = spriteData[AnimationStates.Idle];
+            int[] data = spriteData[animationState].Item2;
+
 
             spriteBatch.Draw(
-                idleSheet,                    // - The texture to draw
-                position,                       // - The location to draw on the screen
+                spriteData[animationState].Item1,                    // - The texture to draw
+                hitbox.Location.ToVector2(),                       // - The location to draw on the screen
                 new Rectangle(                  // - The "source" rectangle
                     0,     //   - This rectangle specifies
                     frame * data[1],           //	   where "inside" the texture
@@ -155,7 +178,9 @@ namespace GameControls_Concept
                 0,                              // - Rotation (none currently)
                 Vector2.Zero,                   // - Origin inside the image (top left)
                 5.0f,                           // - Scale (100% - no change)
-                flipSprite,                     // - Can be used to flip the image
+                facingLeft ? 
+                SpriteEffects.FlipHorizontally 
+                : SpriteEffects.None,                     // - Can be used to flip the image
                 0);                             // - Layer depth (unused)
         }
     }

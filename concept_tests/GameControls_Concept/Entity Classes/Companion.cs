@@ -63,7 +63,7 @@ namespace GameControls_Concept
             timePerFrame = 1 / fps;
 
 
-            LoadSpriteSheets("../../../Content/spritesheets", contentManager);
+            LoadSpriteSheets<AnimationStates>("../../../Content/spritesheets", contentManager);
         }
 
         public override void Update(GameTime gameTime)
@@ -111,78 +111,10 @@ namespace GameControls_Concept
                 position.Y - otherPosition.Y / 1.1f);
 
             return temp;
-        }
-
-        public void LoadSpriteSheets(string directory, ContentManager content)
-        {
-            StreamReader reader = null;
-            List<string> lines = new List<string>();
-
-            try
-            {
-                font = content.Load<SpriteFont>("File");
-                idleSheet = content.Load<Texture2D>(directory + "/Idle");
-                moveSheet = content.Load<Texture2D>(directory + "/Move");
-                //actionSheet = content.Load<Texture2D>(directory + "/Action");
-
-                reader = new StreamReader(directory + "/data.txt");
-                string line = null;
-
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (line != "" && line[0] != '/')
-                    {
-                        lines.Add(line);
-                    }
-                }
-                lines.Add("end");
-
-
-            }
-            catch (FileNotFoundException e)
-            {
-                //console log error. For now: 
-
-                throw new Exception("File error");
-                
-            }
-            finally
-            {
-                if (reader != null)
-                    reader.Close();
-            }
-
-            spriteData = new();
-            AnimationStates key = AnimationStates.Idle;
-            int[] data = null;
-            int index = 0;
-            int useless = 0;
-
-            for (int i = 0; i < lines.Count; i++)
-            {
-                if ((!int.TryParse(lines[i], out useless)
-                    && Enum.TryParse<AnimationStates>(lines[i], out key))
-                    || lines[i] == "end")
-                {
-                    if (data != null)
-                    {
-                        spriteData.Add(key, data);
-                    }
-
-                    index = i;
-                    data = new int[3];
-                }
-                else
-                {
-                    data[i - index - 1] = int.Parse(lines[i]);
-                }
-            }
-
-            
-        }
+        }       
 
         /// <summary>
-        /// Updates mario's animation as necessary
+        /// Updates animation as necessary
         /// </summary>
         /// <param name="gameTime">Time information</param>
         public void UpdateAnimation(GameTime gameTime)

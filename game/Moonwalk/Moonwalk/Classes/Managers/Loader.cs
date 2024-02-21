@@ -170,11 +170,11 @@ namespace Moonwalk.Classes.Managers {
 
             //Variables we need
             StreamReader reader = null;
-            List<string> lines = new List<string>();    // the lines in the file
-            Object[] states = Enum.GetValues(typeof(T))
-                .Cast<Object>()
-                .ToArray();     // each constant in the enum
-            string[] names = Enum.GetNames(typeof(T));  // the names of each animation state
+            List<string> lines = new List<string>();                      // the lines in the file
+            T[] states = Enum.GetValues(typeof(T))                        // each constant in the enum
+                .Cast<T>()
+                .ToArray();                                               
+            string[] names = Enum.GetNames(typeof(T));                    // the names of each animation state
             Dictionary<T, Tuple<Texture2D, int[]>> spriteData = new();    // what we are going to return
 
 
@@ -188,7 +188,7 @@ namespace Moonwalk.Classes.Managers {
                     try
                     {
                         spriteData.Add(
-                        (T)states[i],
+                        states[i],
                         new Tuple<Texture2D, int[]>
                             (content.Load<Texture2D>(tempPath),
                             null));

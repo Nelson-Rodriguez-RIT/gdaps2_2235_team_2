@@ -110,10 +110,18 @@ namespace Moonwalk.Classes.Managers.Map {
                 }
             }
 
+            //You can return this instead - Dante
+            Tuple<List<int[][]>, List<Rectangle>> changeThisName = new 
+                Tuple<List<int[][]>, List<Rectangle>>
+                (
+                    (List<int[][]>)bufferedData[0],
+                    (List<Rectangle>)bufferedData[1]
+                );
 
             return bufferedData;
         }
 
+        // Can this be changed to return a Dictionary<int, Texture2D>? - Dante
         private Object FormatSpriteRules(ContentManager _content, List<string> paths) {
             Dictionary<int, Texture2D> bufferedData = new();
 

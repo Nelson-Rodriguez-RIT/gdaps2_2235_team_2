@@ -15,6 +15,8 @@ namespace Noah_s_Level_Design_Concept
         private bool active;
         private Texture2D asset;
         private Rectangle position;
+        KeyboardState keyboardState;
+        KeyboardState previousKeyboardState;
 
         public bool IsActive
         {
@@ -37,9 +39,9 @@ namespace Noah_s_Level_Design_Concept
         public void Update(GameTime gameTime) 
         {
             //movement capabilities using vectors
-            KeyboardState keyboardState = Keyboard.GetState();
+            keyboardState = Keyboard.GetState();   
             Vector2 movementDirection = Vector2.Zero;
-            int velocity = 6;
+            float velocity = 6;
             //if player moves to the right, screen should move left at same pace
             if (keyboardState.IsKeyDown(Keys.A))
             {
@@ -51,16 +53,16 @@ namespace Noah_s_Level_Design_Concept
                 movementDirection -= Vector2.UnitX * velocity;
                 this.position.X += (int)(movementDirection.X);
             }
-            if (keyboardState.IsKeyDown(Keys.S))
-            {
-                movementDirection -= Vector2.UnitY * velocity;
+            if (SingleKeyPress(Keys.Space, keyboardState))
+            { 
+                //iT DONT WORK
+                movementDirection += (Vector2.UnitX * velocity) + (Vector2.UnitY * velocity);
+                this.position.X += (int)(movementDirection.X);
                 this.position.Y += (int)(movementDirection.Y);
+                
             }
-            if (keyboardState.IsKeyDown(Keys.W))
-            {
-                movementDirection += Vector2.UnitY * velocity;
-                this.position.Y += (int)(movementDirection.Y);
-            }
+            
+            previousKeyboardState = keyboardState;
         }
 
         public void Draw(SpriteBatch spriteBatch) 
@@ -72,6 +74,15 @@ namespace Noah_s_Level_Design_Concept
                     position,
                     Color.White);
             }
+        }
+
+        private bool SingleKeyPress(Keys key, KeyboardState keyboardState)
+        {
+            if (keyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyUp(key))
+            {
+                return true;
+            }
+            else { return false; }
         }
     }
 }

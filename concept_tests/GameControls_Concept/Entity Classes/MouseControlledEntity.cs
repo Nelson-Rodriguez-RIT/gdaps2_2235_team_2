@@ -73,6 +73,15 @@ namespace GameControls_Concept
                     (int)position.Y - (image.Height / 2),
                     image.Width,
                     image.Height);
+
+                if (Math.Abs(velocity.X) < 1)
+                {
+                    velocity.X = 0;
+                }
+                if (Math.Abs(velocity.Y) < 1)
+                {
+                    velocity.Y = 0;
+                }
             }
 
             base.Update(gameTime);

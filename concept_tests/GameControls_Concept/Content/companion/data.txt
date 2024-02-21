@@ -5,6 +5,11 @@
 /number of frames
 
 Idle
-64
-64
+32
+32
 6
+
+Move
+116
+77
+8

@@ -161,6 +161,7 @@ namespace GameControls_Concept
                 {
                     data[i - index - 1] = int.Parse(lines[i]);
 
+                    //Do this if at the end of the file
                     if (i == lines.Count() - 1)
                     {
                         T temp = (T)Enum.Parse(typeof(T), lines[index]);    // get the animation state the data is paired with

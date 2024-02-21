@@ -10,7 +10,7 @@ namespace Moonwalk.Classes.Entities
     /// <summary>
     /// The player's character
     /// </summary>
-    internal class PlayerCharacter : PlayerControlled
+    internal class PlayerCharacter// : PlayerControlled
     {
     }
 }

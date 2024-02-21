@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace Noah_s_Level_Design_Concept
 {
@@ -14,45 +16,58 @@ namespace Noah_s_Level_Design_Concept
         public MouseState mouseState;
         public MouseState oldMouseState;
 
-        private Player player;
+        public int screenWidth;
+        public int screenHeight;
+        public List<World> worlds;
+        public Player player;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-        }
+    }
 
         protected override void Initialize()
         {
+            _graphics.PreferredBackBufferWidth = 1280; // set this value to the desired width
+            _graphics.PreferredBackBufferHeight = 736; // set this value to the desired height
+            screenWidth = _graphics.PreferredBackBufferWidth;
+            screenHeight = _graphics.PreferredBackBufferHeight;
+            _graphics.ApplyChanges();
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            //map textures
+            Texture2D startMap = Content.Load<Texture2D>("MoonwalkMapStart");
+            Texture2D labMap1 = Content.Load<Texture2D>("MoonwalkMapLaboratoryState1");
+            Texture2D labMap2 = Content.Load<Texture2D>("MoonwalkMapLaboratoryState2");
+            //object textures
+            Texture2D playerAsset = Content.Load<Texture2D>("AnimationSheet_Character");
 
-            Vector2 playerLoc = new Vector2(GraphicsDevice.Viewport.Width / 2, GraphicsDevice.Viewport.Height / 2);
+            worlds = new List<World>
+            {
+                new World(startMap, new Rectangle(0, 0, screenWidth, screenHeight), true),
+                new World(labMap1, new Rectangle(screenWidth, 352, screenWidth, screenHeight), true),
+                new World(labMap2, new Rectangle(screenWidth, 352, screenWidth, screenHeight), false)
+            };
 
-            Texture2D attackSheet = Content.Load<Texture2D>("Sprites/01-King Human/Attack (78x58)");
-            Texture2D idleSheet = Content.Load<Texture2D>("Sprites/01-King Human/Idle (78x58)");
-            Texture2D beginningArea = Content.Load<Texture2D>("MoonwalkMapStart");  
-
-            player = new Player(attackSheet, idleSheet, playerLoc, PlayerState.Idle);
+            player = new Player(
+                playerAsset,
+                new Rectangle(448, 384, 64, 64));
         }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            oldKeyboardState = keyboardState;
-            keyboardState = Keyboard.GetState();
-            oldMouseState = mouseState;
-            mouseState = Mouse.GetState();
-            GetInput();
-
-            player.UpdateAnimation(gameTime);
-
+            for (int i = 0; i < worlds.Count; i++)
+            { worlds[i].Update(gameTime); }
+            player.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -61,9 +76,10 @@ namespace Noah_s_Level_Design_Concept
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             _spriteBatch.Begin();
+            for (int i = 0; i < worlds.Count; i++)
+            { worlds[i].Draw(_spriteBatch); }
             player.Draw(_spriteBatch);
             _spriteBatch.End();
-
             base.Draw(gameTime);
         }
         private bool SingleKeyPress(Keys key, KeyboardState keyboardState)
@@ -74,26 +90,6 @@ namespace Noah_s_Level_Design_Concept
             }
             else { return false; }
         }
-        private void GetInput()
-        {
-            switch (player.State)
-            {
-                case PlayerState.Idle:
-                    if (mouseState.LeftButton == ButtonState.Pressed
-                        && oldMouseState.LeftButton == ButtonState.Released)
-                    {
-                        player.State = PlayerState.Attack;
-                        player.frame = 1;
-                    }
-                    break;
-                case PlayerState.Attack:
-                    {
-                        
-                    }
-                    break;
-            
-            }
         
-        }
     }
 }

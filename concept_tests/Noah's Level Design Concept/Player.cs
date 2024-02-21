@@ -12,38 +12,17 @@ namespace Noah_s_Level_Design_Concept
     public class Player : GameObject
     {
         KeyboardState _kbState;
-        KeyboardState _prevkbState;
-        public Player(Texture2D asset, Rectangle hitbox): base(asset, hitbox)
-        {}
+        public Vector2 position;
 
-        public void Update(GameTime gameTime)
+        public Player(Texture2D asset, Rectangle hitbox, Vector2 position): base(asset, hitbox)
         {
-            _kbState = Keyboard.GetState();
-            Vector2 movementDirection = Vector2.Zero;
-            if (_kbState.IsKeyDown(Keys.S))
-            {
-                movementDirection += Vector2.UnitY * 3;
-                this.hitbox.Y += (int)(movementDirection.Y);
-            }
-            if (_kbState.IsKeyDown(Keys.W))
-            {
-                movementDirection -= Vector2.UnitY * 3;
-                this.hitbox.Y += (int)(movementDirection.Y);
-            }
-            if (_kbState.IsKeyDown(Keys.A))
-            {
-                movementDirection -= Vector2.UnitX * 3;
-                this.hitbox.X += (int)(movementDirection.X);
-            }
-            if (_kbState.IsKeyDown(Keys.D))
-            {
-                movementDirection += Vector2.UnitX * 3;
-                this.hitbox.X += (int)(movementDirection.X);
-            }
-            _prevkbState = _kbState;
+            this.position = position;
         }
 
-        public void Draw(SpriteBatch sb) 
+        public override void Update(GameTime gameTime)
+        {}
+
+        public override void Draw(SpriteBatch sb) 
         {
             sb.Draw(
                     asset,

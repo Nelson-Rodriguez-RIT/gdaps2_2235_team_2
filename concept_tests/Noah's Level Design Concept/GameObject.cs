@@ -13,7 +13,6 @@ namespace Noah_s_Level_Design_Concept
     {
         public Texture2D asset;
         public Rectangle hitbox;
-        public Vector2 position;
 
         public Rectangle Hitbox
         { 
@@ -24,10 +23,9 @@ namespace Noah_s_Level_Design_Concept
         {
             this.asset = asset;
             this.hitbox = hitbox;
-            this.position = position;
         }
-        public void Update(GameTime gameTime){ }
+        public abstract void Update(GameTime gameTime);
 
-        public void Draw(SpriteBatch sb) { }
+        public abstract void Draw(SpriteBatch sb);
     }
 }

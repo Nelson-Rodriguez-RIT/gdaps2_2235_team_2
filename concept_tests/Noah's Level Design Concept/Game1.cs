@@ -10,16 +10,16 @@ namespace Noah_s_Level_Design_Concept
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        
+
         public KeyboardState keyboardState;
-        public KeyboardState oldKeyboardState;
-        public MouseState mouseState;
-        public MouseState oldMouseState;
 
         public int screenWidth;
         public int screenHeight;
         public List<World> worlds;
         public Player player;
+
+        public delegate void Proximity(int x, int y);
+        public event Proximity InProximity;
 
         public Game1()
         {
@@ -58,7 +58,8 @@ namespace Noah_s_Level_Design_Concept
 
             player = new Player(
                 playerAsset,
-                new Rectangle(448, 384, 64, 64));
+                new Rectangle(448, 384, 64, 64),
+                new Vector2(448, 384));
         }
 
         protected override void Update(GameTime gameTime)
@@ -67,7 +68,7 @@ namespace Noah_s_Level_Design_Concept
                 Exit();
             for (int i = 0; i < worlds.Count; i++)
             { worlds[i].Update(gameTime); }
-            player.Update(gameTime);
+            
             base.Update(gameTime);
         }
 
@@ -81,15 +82,7 @@ namespace Noah_s_Level_Design_Concept
             player.Draw(_spriteBatch);
             _spriteBatch.End();
             base.Draw(gameTime);
+
         }
-        private bool SingleKeyPress(Keys key, KeyboardState keyboardState)
-        {
-            if (keyboardState.IsKeyDown(key) && oldKeyboardState.IsKeyUp(key))
-            {
-                return true;
-            }
-            else { return false; }
-        }
-        
     }
 }

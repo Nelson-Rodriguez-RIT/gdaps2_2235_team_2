@@ -98,14 +98,14 @@ namespace GameControls_Concept
 
         public override void Draw(SpriteBatch sb)
         {
-            
+            /*
             sb.DrawString(font, acceleration.X + "  " + acceleration.Y, new Vector2(700,100), Color.White);
             sb.DrawString(font, position.X + "  " + position.Y, new Vector2(300, 100), Color.White);
             sb.DrawString(font, velocity.X + "  " + velocity.Y, new Vector2(500, 100), Color.White);
             sb.DrawString(font, angAccel.ToString(), new Vector2(700, 200), Color.White);
             sb.DrawString(font, theta.ToString(), new Vector2(300, 200), Color.White);
             sb.DrawString(font, angVelocity.ToString(), new Vector2(500, 200), Color.White);
-            
+            */
 
             base.Draw(sb);
         }

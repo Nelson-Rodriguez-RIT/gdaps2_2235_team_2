@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using System.Text.RegularExpressions;
 
 namespace GameControls_Concept
 {
@@ -73,29 +74,40 @@ namespace GameControls_Concept
         /// <param name="content">Content loader</param>
         /// <returns>A dictionary of animation states paired with the data that goes with them</returns>
         /// <exception cref="Exception"></exception>
-        public static Dictionary<T, int[]> //This will hold the animation data for each sprite sheet
+        public static Dictionary<T, Tuple<Texture2D, int[]>> //This will hold the animation data for each sprite sheet
             LoadSpriteSheets<T>(string directory, ContentManager content)
         {
+
             //Variables we need
             StreamReader reader = null;
-            List<string> lines = new List<string>();
-            var states = Enum.GetValues(typeof(T));
-            Dictionary<T, int[]> spriteData = new();
+            List<string> lines = new List<string>();    // the lines in the file
+            Object[] states = Enum.GetValues(typeof(T))
+                .Cast<Object>()
+                .ToArray();     // each constant in the enum
+            string[] names = Enum.GetNames(typeof(T));  // the names of each animation state
+            Dictionary<T, Tuple<Texture2D, int[]>> spriteData = new();    // what we are going to return
+            
 
             //Load each line into a string array
             try
             {
-                //font = content.Load<SpriteFont>("File");
 
-                    /*
-                idleSheet = content.Load<Texture2D>(directory + "/Idle");
-                moveSheet = content.Load<Texture2D>(directory + "/Move");
-                    */
-                //actionSheet = content.Load<Texture2D>(directory + "/Action");
-
-                foreach (var state in states)
+                for (int i = 0; i < states.Length; i++)
                 {
-                    
+                    string tempPath = directory + "/" + names[i];
+                    try
+                    {
+                        spriteData.Add(
+                        (T)states[i],
+                        new Tuple<Texture2D, int[]>
+                            (content.Load<Texture2D>(tempPath),
+                            null));
+
+                    }
+                    catch (ContentLoadException e )
+                    {
+                        //console log "spritesheet not found"
+                    }
                 }
 
                 reader = new StreamReader(directory + "/data.txt");
@@ -125,30 +137,46 @@ namespace GameControls_Concept
             }
             
             int[] data = null;                          // the array to hold data for each animation
-            int index = 0;                              // the index of the last animation identifier
-            string[] names = Enum.GetNames(typeof(T));  // the names of each animation state
+            int index = 0;                              // the index of the last animation identifier           
             int arrayLength = 3;                        // make this not hard coded in the future (?)
 
             for (int i = 0; i < lines.Count; i++)
             {
                 //Check if the line is a animation identifier
-                if (names.Contains(lines[i]) )
-                {
-                    index = i;                          // update the last identifier index
-                    
+                if (names.Contains(lines[i]))
+                {                
                     if (data != null )                  // don't save data if it doesn't exist
                     {
                         T temp = (T)Enum.Parse(typeof(T), lines[index]);    // get the animation state the data is paired with
 
-                        spriteData.Add(temp, data);     // add the data to the dictionary paired with the state
+                        spriteData[temp] = new Tuple
+                            <Texture2D, int[]>(spriteData[temp].Item1, data);     // add the data to the dictionary paired with the state
                     }
 
+                    index = i;                                    // update the last identifier index
                     data = new int[arrayLength];                  // create a new data array
                 }
                 //if not, add the data to the array
                 else
                 {
                     data[i - index - 1] = int.Parse(lines[i]);
+
+                    if (i == lines.Count() - 1)
+                    {
+                        T temp = (T)Enum.Parse(typeof(T), lines[index]);    // get the animation state the data is paired with
+
+                        spriteData[temp] = new Tuple
+                            <Texture2D, int[]>(spriteData[temp].Item1, data);     // add the data to the dictionary paired with the state
+                    }
+                }
+            }
+
+            foreach (KeyValuePair<T, Tuple<Texture2D, int[]>> keyValuePair in spriteData)
+            {
+                if (keyValuePair.Value.Item2 == null)
+                {
+                    throw new Exception($"Data for '{keyValuePair.Key}'" +
+                        $"was not found in the file.");
                 }
             }
 

@@ -228,7 +228,10 @@ namespace GameControls_Concept
         }
 
         
-
+        /// <summary>
+        /// Apply new motion to the object
+        /// </summary>
+        /// <param name="impulse"></param>
         public virtual void Impulse(Vector2 impulse)
         {
             velocity = impulse;

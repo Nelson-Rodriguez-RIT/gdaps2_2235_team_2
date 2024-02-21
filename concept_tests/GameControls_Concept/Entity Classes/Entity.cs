@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace GameControls_Concept
 {
@@ -63,14 +64,95 @@ namespace GameControls_Concept
             image = texture;
         }
 
-        /// <summary>
-        /// Loads a spritesheet in with info about animation
-        /// </summary>
-        /// <param name="texture">The spritesheet</param>
-        /// <param name="filePath">The file which contains the animation information</param>
-        public virtual void LoadSpriteSheet(Texture2D texture, string filePath)
-        {
 
+        /// <summary>
+        /// Gets data relevant to animation from a file folder.
+        /// </summary>
+        /// <typeparam name="T">The enum of animation states</typeparam>
+        /// <param name="directory">Folder path for files related to the class</param>
+        /// <param name="content">Content loader</param>
+        /// <returns>A dictionary of animation states paired with the data that goes with them</returns>
+        /// <exception cref="Exception"></exception>
+        public static Dictionary<T, int[]> //This will hold the animation data for each sprite sheet
+            LoadSpriteSheets<T>(string directory, ContentManager content)
+        {
+            //Variables we need
+            StreamReader reader = null;
+            List<string> lines = new List<string>();
+            var states = Enum.GetValues(typeof(T));
+            Dictionary<T, int[]> spriteData = new();
+
+            //Load each line into a string array
+            try
+            {
+                //font = content.Load<SpriteFont>("File");
+
+                    /*
+                idleSheet = content.Load<Texture2D>(directory + "/Idle");
+                moveSheet = content.Load<Texture2D>(directory + "/Move");
+                    */
+                //actionSheet = content.Load<Texture2D>(directory + "/Action");
+
+                foreach (var state in states)
+                {
+                    
+                }
+
+                reader = new StreamReader(directory + "/data.txt");
+                string line = null;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line != "" && line[0] != '/')
+                    {
+                        lines.Add(line);
+                    }
+                }
+
+
+            }
+            catch (FileNotFoundException e)
+            {
+                //console log error. For now: 
+
+                throw new Exception("File error");
+
+            }
+            finally
+            {
+                if (reader != null)
+                    reader.Close();
+            }
+            
+            int[] data = null;                          // the array to hold data for each animation
+            int index = 0;                              // the index of the last animation identifier
+            string[] names = Enum.GetNames(typeof(T));  // the names of each animation state
+            int arrayLength = 3;                        // make this not hard coded in the future (?)
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                //Check if the line is a animation identifier
+                if (names.Contains(lines[i]) )
+                {
+                    index = i;                          // update the last identifier index
+                    
+                    if (data != null )                  // don't save data if it doesn't exist
+                    {
+                        T temp = (T)Enum.Parse(typeof(T), lines[index]);    // get the animation state the data is paired with
+
+                        spriteData.Add(temp, data);     // add the data to the dictionary paired with the state
+                    }
+
+                    data = new int[arrayLength];                  // create a new data array
+                }
+                //if not, add the data to the array
+                else
+                {
+                    data[i - index - 1] = int.Parse(lines[i]);
+                }
+            }
+
+            return spriteData;
         }
        
     }

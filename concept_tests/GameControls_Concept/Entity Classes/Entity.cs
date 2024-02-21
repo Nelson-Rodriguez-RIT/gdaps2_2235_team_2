@@ -171,6 +171,7 @@ namespace GameControls_Concept
                 }
             }
 
+            //Check to make sure each animation has data
             foreach (KeyValuePair<T, Tuple<Texture2D, int[]>> keyValuePair in spriteData)
             {
                 if (keyValuePair.Value.Item2 == null)

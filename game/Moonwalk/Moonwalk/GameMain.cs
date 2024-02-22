@@ -17,15 +17,12 @@ namespace Moonwalk {
         }
 
         protected override void Initialize() {
-            gameManager = GameManager.GetInstance();
-
             base.Initialize();
         }
 
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // Load content here
+            gameManager = GameManager.GetInstance(Content);
         }
 
         // As a general rule of thumb, keep update/draw logic inside of gameManager
@@ -39,7 +36,7 @@ namespace Moonwalk {
         }
 
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Gray);
 
             _spriteBatch.Begin();
 

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Managers.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +13,8 @@ using System.Threading.Tasks;
 namespace Moonwalk.Classes.Managers
 {
     enum GameState {
-        MainMenu,
-        Options,
-        Playing,
-        Death,
-        LevelCompletion
+        Test_Load,
+        Test,
     }
 
     /// <summary>
@@ -23,12 +22,13 @@ namespace Moonwalk.Classes.Managers
     /// </summary>
     internal sealed class GameManager {
 
-        private static GameManager instance = null;
+        private static GameManager _instance = null;
+
+        private ContentManager _content;
 
         // Game element managers
-        private Camera camera;
-        private Level level;
-        private GUI hud;
+        private Camera _camera;
+        private MapManager _map;
 
         // Gameplay related states
         private GameState state;
@@ -38,13 +38,17 @@ namespace Moonwalk.Classes.Managers
         // Currently loaded entities
         private List<Entity> entities;
 
-        private GameManager() {
-            // Get each managers respective instance
-            camera = Camera.GetInstance();
-            level = Level.GetInstance();
-            hud = GUI.GetInstance();
+        private GameManager(ContentManager content) {
+            // Get content for loading needs
+            _content = content;
 
-            state = GameState.MainMenu;
+            // Get each managers respective instance
+            _camera = Camera.GetInstance();
+            _map = MapManager.GetInstance();
+
+            Loader.Content = _content;
+
+            state = GameState.Test_Load;
         }
 
 
@@ -52,11 +56,11 @@ namespace Moonwalk.Classes.Managers
         /// Gets GameManager's singleton instance
         /// </summary>
         /// <returns>A GameManager object</returns>
-        public static GameManager GetInstance() {
-            if (instance == null)
-                instance = new GameManager();
+        public static GameManager GetInstance(ContentManager content) {
+            if (_instance == null)
+                _instance = new GameManager(content);
 
-            return instance;
+            return _instance;
         }
 
 
@@ -69,19 +73,12 @@ namespace Moonwalk.Classes.Managers
             msState = Mouse.GetState();
 
             switch (state) {
-                case GameState.MainMenu:
+                case GameState.Test_Load:
+                    _map.Load(MapGroups.Test);
+                    state = GameState.Test;
                     break;
 
-                case GameState.Options:
-                    break;
-
-                case GameState.Playing:
-                    break;
-
-                case GameState.Death:
-                    break;
-
-                case GameState.LevelCompletion:
+                case GameState.Test:
                     break;
             }
         }
@@ -91,25 +88,13 @@ namespace Moonwalk.Classes.Managers
         /// </summary>
         public void Draw(SpriteBatch sb) {
             switch (state) {
-                case GameState.MainMenu:
+                case GameState.Test_Load:
                     break;
 
-                case GameState.Options:
-                    break;
-
-                case GameState.Playing:
-                    break;
-
-                case GameState.Death:
-                    break;
-
-                case GameState.LevelCompletion:
+                case GameState.Test:
+                    _map.Draw(sb);
                     break;
             }
-        }
-
-        private void UpdateEntities(GameTime gt) {
-
         }
     }
 

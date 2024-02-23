@@ -13,6 +13,8 @@ namespace GameControls_Concept
         private LevelManager levelManager;
         private Texture2D _texture;
         private Player WASD;
+        private EventTrigger eventTrigger;
+        private Color color;
 
         public GameMain()
         {
@@ -33,7 +35,17 @@ namespace GameControls_Concept
             WASD = new Player(levelManager, new Vector2(100, 100), mouseControlActive
                 , Content.Load<SpriteFont>("File"));
 
-            
+            //EventTrigger testing
+            eventTrigger = new EventTrigger(
+                new Rectangle(
+                    500,
+                    500,
+                    500,
+                    500));
+            eventTrigger.onPlayerEnter += this.ChangeColor;
+
+            color = Color.CornflowerBlue;
+
             //mouseControlInactive = new MouseControlledEntity(Content.Load<Texture2D>("Sprite-0001"), false);
 
             base.Initialize();
@@ -63,6 +75,7 @@ namespace GameControls_Concept
 
             WASD.Update(gameTime);
             mouseControlActive.Update(gameTime);
+            eventTrigger.Update(WASD);
             //mouseControlInactive.Update(gameTime);
 
             base.Update(gameTime);
@@ -70,7 +83,7 @@ namespace GameControls_Concept
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(color);
 
             // TODO: Add your drawing code here
 
@@ -85,6 +98,12 @@ namespace GameControls_Concept
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        //testing for events and delegates
+        protected void ChangeColor()
+        {
+            color = Color.White;
         }
     }
 }

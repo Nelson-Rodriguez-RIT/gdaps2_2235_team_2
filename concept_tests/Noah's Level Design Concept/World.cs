@@ -15,7 +15,8 @@ namespace Noah_s_Level_Design_Concept
         private bool active;
         private Texture2D asset;
         private Rectangle position;
-        private float gravity = 9.8;
+        private Vector2 movementDirection;
+        private float gravity = 9.8f;
         KeyboardState keyboardState;
         KeyboardState previousKeyboardState;
 
@@ -39,29 +40,7 @@ namespace Noah_s_Level_Design_Concept
 
         public void Update(GameTime gameTime) 
         {
-            //movement capabilities using vectors
-            keyboardState = Keyboard.GetState();   
-            Vector2 movementDirection = Vector2.Zero;
-            float velocity = 6;
-            //if player moves to the right, screen should move left at same pace
-            if (keyboardState.IsKeyDown(Keys.A))
-            {
-                movementDirection += Vector2.UnitX * velocity;
-                this.position.X += (int)(movementDirection.X);
-            }
-            if (keyboardState.IsKeyDown(Keys.D))
-            {
-                movementDirection -= Vector2.UnitX * velocity;
-                this.position.X += (int)(movementDirection.X);
-            }
-            if (keyboardState.IsKeyDown(Keys.Space))
-            {
-                //iT DONT WORK
-                movementDirection.Y -= velocity - gravity * (float)Math.Pow(gameTime.ElapsedGameTime.TotalSeconds, 2f);
-                
-            }
             
-            previousKeyboardState = keyboardState;
         }
 
         public void Draw(SpriteBatch spriteBatch) 
@@ -75,13 +54,28 @@ namespace Noah_s_Level_Design_Concept
             }
         }
 
-        private bool SingleKeyPress(Keys key, KeyboardState keyboardState)
+        //want to make it where once the player reaches the middle of the screen, their character no longer moves
+        //and the background just moves
+        public void Movement(Player player, int screenWidth, int screenHeight)
         {
-            if (keyboardState.IsKeyDown(key) && previousKeyboardState.IsKeyUp(key))
+            movementDirection = Vector2.Zero;
+            keyboardState = Keyboard.GetState();
+            if (player.hitbox.X == screenWidth / 2)
             {
-                return true;
+                if (keyboardState.IsKeyDown(Keys.A) && previousKeyboardState.IsKeyDown(Keys.A)) //if player is moving left
+                {
+                    movementDirection += Vector2.UnitX * (int)player.Velocity;
+                    this.position.X += (int)movementDirection.X;
+                }
+                if (keyboardState.IsKeyDown(Keys.D) && previousKeyboardState.IsKeyDown(Keys.D)) //if player is moving left)
+                {
+                    movementDirection += Vector2.UnitX * (int)player.Velocity;
+                    this.position.X -= (int)movementDirection.X;
+                }
+                previousKeyboardState = keyboardState;
             }
-            else { return false; }
+        
         }
+       
     }
 }

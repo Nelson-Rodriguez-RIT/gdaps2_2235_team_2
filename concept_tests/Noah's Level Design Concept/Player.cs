@@ -11,16 +11,47 @@ namespace Noah_s_Level_Design_Concept
 {
     public class Player : GameObject
     {
-        KeyboardState _kbState;
-        public Vector2 position;
+        KeyboardState keyboardState;
+        KeyboardState previousKeyboardState;
+        private int gravity = 10;
+        private Vector2 acceleration;
+        private Vector2 movementDirection;
+        private float velocity = 6;
 
-        public Player(Texture2D asset, Rectangle hitbox, Vector2 position): base(asset, hitbox)
+        public Vector2 MovementDirection
+        { 
+            get { return movementDirection; }
+            set { movementDirection = value; }
+        }
+
+        public float Velocity
+        { get { return velocity; } }
+
+        public Player(Texture2D asset, Rectangle hitbox): base(asset, hitbox)
         {
-            this.position = position;
+            this.acceleration = new Vector2(0, gravity);
         }
 
         public override void Update(GameTime gameTime)
-        {}
+        {
+            //movement capabilities using vectors
+            keyboardState = Keyboard.GetState();
+            movementDirection = Vector2.Zero;
+            //if player moves to the right, screen should move left at same pace
+            if (keyboardState.IsKeyDown(Keys.A) && previousKeyboardState.IsKeyDown(Keys.A))
+            {
+                movementDirection += Vector2.UnitX * velocity;
+                this.hitbox.X -= (int)(movementDirection.X);
+            }
+            if (keyboardState.IsKeyDown(Keys.D) && previousKeyboardState.IsKeyDown(Keys.D))
+            {
+                movementDirection += Vector2.UnitX * velocity;
+                this.hitbox.X += (int)(movementDirection.X);
+            }
+            this.hitbox.Y += (int)this.acceleration.Y;
+
+            previousKeyboardState = keyboardState;
+        }
 
         public override void Draw(SpriteBatch sb) 
         {

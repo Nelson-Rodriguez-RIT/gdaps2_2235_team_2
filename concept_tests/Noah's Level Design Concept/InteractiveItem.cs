@@ -69,10 +69,7 @@ namespace Noah_s_Level_Design_Concept
                 case InteractibleStates.Held:
                     //if being held, the player could either place directly into powerslot if 
                     //item is a battery, or if something like a box, item will return to idle when dropped
-                    if (canPower && isPowering)
-                    {
-                        state = InteractibleStates.Powering;
-                    }
+                    
 
 
                     break; 

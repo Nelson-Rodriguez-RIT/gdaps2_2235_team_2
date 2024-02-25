@@ -17,6 +17,7 @@ namespace Noah_s_Level_Design_Concept
         private Rectangle position;
         private Vector2 movementDirection;
         private float gravity = 9.8f;
+        private Vector2 offset;
 
         public bool IsActive
         {
@@ -28,25 +29,24 @@ namespace Noah_s_Level_Design_Concept
             get { return position; } 
             set { position = value; }
         }
+        public Vector2 Offset
+        { get { return offset; } }
 
         public World(Texture2D asset, Rectangle postion, bool active)
         {
             this.asset = asset;
             this.position = postion;    
             this.active = active;
+            this.offset = new Vector2 (-position.Width/2 , -position.Height/2);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Camera camera) 
+        public void Draw(SpriteBatch spriteBatch) 
         {
             if (active)
             {
                 spriteBatch.Draw(
                     asset,
-                    new Rectangle(
-                        this.position.X - camera.CameraX,
-                        this.position.Y - camera.CameraY,
-                        this.position.Width,
-                        this.position.Height),
+                    Camera.ApplyOffset(position, offset),
                     Color.White);
             }
         }

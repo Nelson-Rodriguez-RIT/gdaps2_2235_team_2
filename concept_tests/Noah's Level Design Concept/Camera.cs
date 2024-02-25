@@ -7,36 +7,82 @@ using System.Threading.Tasks;
 
 namespace Noah_s_Level_Design_Concept
 {
-    public class Camera
+    internal static class Camera
     {
-        private Rectangle position;
-        private Vector2 movementDirection;
+        private static Vector2 globalOffset;
 
-        public int CameraX
-        { get { return position.X; } }
-        public int CameraY
-        { get { return position.Y; } }
+        // What the camera is focusing on
+        private static Rectangle rectTarget;        // i.e. the player
+        private static Vector2 vectorTarget;        // Invisable map geometry for a boss fight
 
-        public Camera(Rectangle position)
+        private static bool focusStatic;            // What ever is the most recent target set
+                                                    // will be the focused Camera target
+
+        public static Rectangle RectTarget
         {
-            this.position = position;
-        }
-
-        public void Movement(Player player)
-        {
-            movementDirection = Vector2.Zero;
-
-            if (player.MovingLeft) //if player is moving left
+            get { return rectTarget; }
+            set
             {
-                movementDirection += Vector2.UnitX * 6;
-                this.position.X += (int)movementDirection.X;
-            }
-            if (player.MovingRight) //if player is moving left)
-            {
-                movementDirection += Vector2.UnitX * 6;
-                this.position.X -= (int)movementDirection.X;
+                focusStatic = false;
+                rectTarget = value;
             }
         }
-        
+
+        public static Vector2 VectorTarget
+        {
+            get { return vectorTarget; }
+            set
+            {
+                focusStatic = true;
+                vectorTarget = value;
+            }
+        }
+
+        public static Vector2 GlobalOffset
+        {
+            get { return globalOffset; }
+            set { globalOffset = value; }
+        }
+
+
+        public static Rectangle ApplyOffset(Rectangle position)
+        {
+            return ApplyOffset(position, Vector2.Zero);
+        }
+
+        public static Rectangle ApplyOffset(Rectangle position, Vector2 offset)
+        {
+            if (focusStatic)
+                return new Rectangle(
+                   (position.X + (int)offset.X) - (int)vectorTarget.X + (int)globalOffset.X,
+                   (position.Y + (int)offset.Y) - (int)vectorTarget.Y + (int)globalOffset.Y,
+                   position.Width,
+                   position.Height);
+            else
+                return new Rectangle(
+                   (position.X + (int)offset.X) - rectTarget.X + (int)globalOffset.X,
+                   (position.Y + (int)offset.Y) - rectTarget.Y + (int)globalOffset.Y,
+                   position.Width,
+                   position.Height);
+        }
+
+
+        public static Vector2 ApplyOffset(Vector2 position)
+        {
+            return ApplyOffset(position, Vector2.Zero);
+        }
+
+        public static Vector2 ApplyOffset(Vector2 position, Vector2 offset)
+        {
+            if (focusStatic)
+                return new Vector2(
+                    (position.X + offset.X) - vectorTarget.X + globalOffset.X,
+                    (position.Y + offset.Y) - vectorTarget.Y + globalOffset.Y);
+            else
+                return new Vector2(
+                    (position.X + offset.X) - rectTarget.X + globalOffset.X,
+                    (position.Y + offset.Y) - rectTarget.Y + globalOffset.Y);
+
+        }
     }
 }

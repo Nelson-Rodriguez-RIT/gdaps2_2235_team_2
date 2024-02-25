@@ -19,10 +19,11 @@ namespace Noah_s_Level_Design_Concept
         public int screenWidth;
         public int screenHeight;
         public List<World> worlds;
-        public Player player;
         public List<Platform> platforms;
+
+        public Player player;
         public Vector2 playerSpawn;
-        public Camera camera;
+        public bool toggleFocus;
 
         public Game1()
         {
@@ -60,7 +61,6 @@ namespace Noah_s_Level_Design_Concept
             };
 
             playerSpawn = new Vector2(448, 354);
-
             player = new Player(
                 playerAsset,
                 new Rectangle((int)playerSpawn.X, (int)playerSpawn.Y, 64, 64));
@@ -72,7 +72,10 @@ namespace Noah_s_Level_Design_Concept
                 new Platform(new Rectangle(224 * 4, 120 * 4, 96 * 4, 32 * 4), texture)
             };
 
-            camera = new Camera(new Rectangle(0, 0, screenWidth, screenHeight));
+            Camera.RectTarget = player.position;
+            Camera.GlobalOffset = new Vector2(
+                (screenWidth/2) - player.position.Width, 
+                (screenHeight/2) - player.position.Height);
         }
 
         protected override void Update(GameTime gameTime)
@@ -84,15 +87,14 @@ namespace Noah_s_Level_Design_Concept
             foreach (Platform platform in platforms)
             { platform.CheckCollision(player); }
 
-            camera.Movement(player);
+            if (toggleFocus)
+                Camera.RectTarget = player.position;
             /*
-            foreach (World world in worlds) 
-            { world.Movement(player); }
-
-            foreach (Platform platform in platforms)
-            { platform.Movement(player); }
+             * if not focused (boss) make the current room the focus
+             * i currently have no way of checking current room
+            else
+                Camera.VectorTarget = ;
             */
-
             base.Update(gameTime);
         }
 
@@ -105,10 +107,10 @@ namespace Noah_s_Level_Design_Concept
             player.Draw(_spriteBatch);
 
             foreach (Platform platform in platforms)
-            { platform.Draw(_spriteBatch, camera); }
+            { platform.Draw(_spriteBatch); }
 
             foreach (World world in worlds)
-            { world.Draw(_spriteBatch, camera); }
+            { world.Draw(_spriteBatch); }
 
             _spriteBatch.End();
             base.Draw(gameTime);

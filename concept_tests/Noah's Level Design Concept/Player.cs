@@ -63,7 +63,7 @@ namespace Noah_s_Level_Design_Concept
         {
             sb.Draw(
                     asset,
-                    position,
+                    Camera.ApplyOffset(position),
                     new Rectangle(0,0,32,32),
                     Color.White);
         }

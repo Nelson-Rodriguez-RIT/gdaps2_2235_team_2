@@ -14,14 +14,18 @@ namespace Noah_s_Level_Design_Concept
         public Rectangle position;
         public Texture2D texture;
         public Vector2 movementDirection;
+        private Vector2 offset;
 
         public Rectangle Hitbox
         { get { return position; } }
+        public Vector2 Offset
+        { get { return offset; } }
 
         public Platform(Rectangle position, Texture2D texture) 
         {
             this.position = position;
             this.texture = texture;
+            this.offset = new Vector2(-position.Width / 2, -position.Height / 2);
         }
 
         public void CheckCollision(GameObject obj) 
@@ -32,15 +36,11 @@ namespace Noah_s_Level_Design_Concept
             }
         }
 
-        public void Draw(SpriteBatch sb, Camera camera) 
+        public void Draw(SpriteBatch sb) 
         {
             sb.Draw(
                 texture,
-                new Rectangle(
-                        this.position.X - camera.CameraX,
-                        this.position.Y - camera.CameraY,
-                        this.position.Width,
-                        this.position.Height),
+                Camera.ApplyOffset(position, offset),
                 Color.Red); 
         }
         /*

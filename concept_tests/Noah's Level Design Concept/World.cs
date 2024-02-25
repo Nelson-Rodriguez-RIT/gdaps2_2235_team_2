@@ -17,8 +17,6 @@ namespace Noah_s_Level_Design_Concept
         private Rectangle position;
         private Vector2 movementDirection;
         private float gravity = 9.8f;
-        KeyboardState keyboardState;
-        KeyboardState previousKeyboardState;
 
         public bool IsActive
         {
@@ -38,44 +36,39 @@ namespace Noah_s_Level_Design_Concept
             this.active = active;
         }
 
-        public void Update(GameTime gameTime) 
-        {
-            
-        }
-
-        public void Draw(SpriteBatch spriteBatch) 
+        public void Draw(SpriteBatch spriteBatch, Camera camera) 
         {
             if (active)
             {
                 spriteBatch.Draw(
                     asset,
-                    position,
+                    new Rectangle(
+                        this.position.X - camera.CameraX,
+                        this.position.Y - camera.CameraY,
+                        this.position.Width,
+                        this.position.Height),
                     Color.White);
             }
         }
 
         //want to make it where once the player reaches the middle of the screen, their character no longer moves
         //and the background just moves
-        public void Movement(Player player, int screenWidth, int screenHeight)
+        /*
+        public void Movement(Player player)
         {
             movementDirection = Vector2.Zero;
-            keyboardState = Keyboard.GetState();
-            if (player.hitbox.X == screenWidth / 2)
+
+            if (player.MovingLeft) //if player is moving left
             {
-                if (keyboardState.IsKeyDown(Keys.A) && previousKeyboardState.IsKeyDown(Keys.A)) //if player is moving left
-                {
-                    movementDirection += Vector2.UnitX * (int)player.Velocity;
-                    this.position.X += (int)movementDirection.X;
-                }
-                if (keyboardState.IsKeyDown(Keys.D) && previousKeyboardState.IsKeyDown(Keys.D)) //if player is moving left)
-                {
-                    movementDirection += Vector2.UnitX * (int)player.Velocity;
-                    this.position.X -= (int)movementDirection.X;
-                }
-                previousKeyboardState = keyboardState;
+                movementDirection += Vector2.UnitX * 6;
+                this.position.X += (int)movementDirection.X;
             }
-        
+            if (player.MovingRight) //if player is moving left)
+            {
+                movementDirection += Vector2.UnitX * 6;
+                this.position.X -= (int)movementDirection.X;
+            }
         }
-       
+        */
     }
 }

@@ -16,39 +16,45 @@ namespace Noah_s_Level_Design_Concept
         private int gravity = 10;
         private Vector2 acceleration;
         private Vector2 movementDirection;
-        private float velocity = 6;
+        private float velocity = 5;
+        private bool movingLeft = false;
+        private bool movingRight = false;
 
-        public Vector2 MovementDirection
-        { 
-            get { return movementDirection; }
-            set { movementDirection = value; }
-        }
-
+        public bool MovingLeft
+        { get { return movingLeft; } }
+        public bool MovingRight
+        { get { return movingRight; } }
         public float Velocity
         { get { return velocity; } }
 
-        public Player(Texture2D asset, Rectangle hitbox): base(asset, hitbox)
+        public Player(Texture2D asset, Rectangle position): base(asset, position)
         {
             this.acceleration = new Vector2(0, gravity);
+            this.position = position;
         }
 
         public override void Update(GameTime gameTime)
         {
+            movingLeft = false;
+            movingRight = false;
             //movement capabilities using vectors
             keyboardState = Keyboard.GetState();
             movementDirection = Vector2.Zero;
+
             //if player moves to the right, screen should move left at same pace
             if (keyboardState.IsKeyDown(Keys.A) && previousKeyboardState.IsKeyDown(Keys.A))
             {
                 movementDirection += Vector2.UnitX * velocity;
-                this.hitbox.X -= (int)(movementDirection.X);
+                this.position.X -= (int)(movementDirection.X);
+                movingLeft = true;
             }
             if (keyboardState.IsKeyDown(Keys.D) && previousKeyboardState.IsKeyDown(Keys.D))
             {
                 movementDirection += Vector2.UnitX * velocity;
-                this.hitbox.X += (int)(movementDirection.X);
+                this.position.X += (int)(movementDirection.X);
+                movingRight = true;
             }
-            this.hitbox.Y += (int)this.acceleration.Y;
+            this.position.Y += (int)this.acceleration.Y;
 
             previousKeyboardState = keyboardState;
         }
@@ -57,7 +63,7 @@ namespace Noah_s_Level_Design_Concept
         {
             sb.Draw(
                     asset,
-                    hitbox,
+                    position,
                     new Rectangle(0,0,32,32),
                     Color.White);
         }

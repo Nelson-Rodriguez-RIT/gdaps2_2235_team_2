@@ -22,6 +22,7 @@ namespace Noah_s_Level_Design_Concept
         public Player player;
         public List<Platform> platforms;
         public Vector2 playerSpawn;
+        public Camera camera;
 
         public Game1()
         {
@@ -70,6 +71,8 @@ namespace Noah_s_Level_Design_Concept
                 new Platform(new Rectangle(32 * 4, 104 * 4, 56 * 4, 8 * 4), texture),
                 new Platform(new Rectangle(224 * 4, 120 * 4, 96 * 4, 32 * 4), texture)
             };
+
+            camera = new Camera(new Rectangle(0, 0, screenWidth, screenHeight));
         }
 
         protected override void Update(GameTime gameTime)
@@ -81,8 +84,14 @@ namespace Noah_s_Level_Design_Concept
             foreach (Platform platform in platforms)
             { platform.CheckCollision(player); }
 
+            camera.Movement(player);
+            /*
             foreach (World world in worlds) 
-            { world.Movement(player, screenWidth, screenHeight); }
+            { world.Movement(player); }
+
+            foreach (Platform platform in platforms)
+            { platform.Movement(player); }
+            */
 
             base.Update(gameTime);
         }
@@ -96,10 +105,10 @@ namespace Noah_s_Level_Design_Concept
             player.Draw(_spriteBatch);
 
             foreach (Platform platform in platforms)
-            { platform.Draw(_spriteBatch); }
+            { platform.Draw(_spriteBatch, camera); }
 
             foreach (World world in worlds)
-            { world.Draw(_spriteBatch); }
+            { world.Draw(_spriteBatch, camera); }
 
             _spriteBatch.End();
             base.Draw(gameTime);

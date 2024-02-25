@@ -11,32 +11,54 @@ namespace Noah_s_Level_Design_Concept
 {
     public class Platform
     {
-        public Rectangle hitbox;
+        public Rectangle position;
         public Texture2D texture;
+        public Vector2 movementDirection;
 
         public Rectangle Hitbox
-        { get { return hitbox; } }
+        { get { return position; } }
 
-        public Platform(Rectangle hitbox, Texture2D texture) 
+        public Platform(Rectangle position, Texture2D texture) 
         {
-            this.hitbox = hitbox;
+            this.position = position;
             this.texture = texture;
         }
 
         public void CheckCollision(GameObject obj) 
         {
-            if (this.hitbox.Intersects(obj.Hitbox))
+            if (this.position.Intersects(obj.Position))
             {
-                obj.hitbox.Y = this.hitbox.Y - obj.hitbox.Height;
+                obj.position.Y = this.position.Y - obj.position.Height;
             }
         }
 
-        public void Draw(SpriteBatch sb) 
+        public void Draw(SpriteBatch sb, Camera camera) 
         {
             sb.Draw(
                 texture,
-                new Rectangle(hitbox.X, hitbox.Y, hitbox.Width, hitbox.Height),
+                new Rectangle(
+                        this.position.X - camera.CameraX,
+                        this.position.Y - camera.CameraY,
+                        this.position.Width,
+                        this.position.Height),
                 Color.Red); 
         }
+        /*
+        public void Movement(Player player)
+        {
+            movementDirection = Vector2.Zero;
+
+            if (player.MovingLeft) //if player is moving left
+            {
+                movementDirection += Vector2.UnitX * 6;
+                this.position.X += (int)movementDirection.X;
+            }
+            if (player.MovingRight) //if player is moving left)
+            {
+                movementDirection += Vector2.UnitX * 6;
+                this.position.X -= (int)movementDirection.X;
+            }
+        }
+        */
     }
 }

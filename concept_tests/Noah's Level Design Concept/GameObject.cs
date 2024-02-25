@@ -12,17 +12,17 @@ namespace Noah_s_Level_Design_Concept
     public abstract class GameObject
     {
         public Texture2D asset;
-        public Rectangle hitbox;
+        public Rectangle position;
 
-        public Rectangle Hitbox
+        public Rectangle Position
         { 
-            get { return hitbox; } 
+            get { return position; } 
         }
 
-        public GameObject(Texture2D asset, Rectangle hitbox) 
+        public GameObject(Texture2D asset, Rectangle position) 
         {
             this.asset = asset;
-            this.hitbox = hitbox;
+            this.position = position;
         }
         public abstract void Update(GameTime gameTime);
 

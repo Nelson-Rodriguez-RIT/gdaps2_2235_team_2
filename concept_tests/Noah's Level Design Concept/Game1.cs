@@ -23,7 +23,7 @@ namespace Noah_s_Level_Design_Concept
 
         public Player player;
         public Vector2 playerSpawn;
-        public bool toggleFocus;
+        public bool toggleFocus = true;
 
         public Game1()
         {

@@ -46,7 +46,7 @@ namespace Noah_s_Level_Design_Concept
             {
                 spriteBatch.Draw(
                     asset,
-                    Camera.ApplyOffset(position, offset),
+                    Camera.ApplyOffset(position),
                     Color.White);
             }
         }

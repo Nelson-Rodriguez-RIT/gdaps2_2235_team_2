@@ -40,7 +40,7 @@ namespace Noah_s_Level_Design_Concept
         {
             sb.Draw(
                 texture,
-                Camera.ApplyOffset(position, offset),
+                Camera.ApplyOffset(position),
                 Color.Red); 
         }
         /*

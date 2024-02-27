@@ -11,5 +11,6 @@ namespace Moonwalk.Classes.Entities.Base
     /// </summary>
     internal abstract class PlayerControlled : Entity
     {
+
     }
 }

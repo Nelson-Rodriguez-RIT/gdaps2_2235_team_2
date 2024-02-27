@@ -15,6 +15,6 @@ namespace Moonwalk.Classes.Entities.Base
 
         public abstract void Update(GameTime gt);
 
-        public abstract void Draw(SpriteBatch sb);
+        public abstract void Draw(SpriteBatch sb, Vector2 globalScale);
     }
 }

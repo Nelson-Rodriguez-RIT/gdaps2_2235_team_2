@@ -5,10 +5,16 @@ using Moonwalk.Classes.Managers;
 
 namespace Moonwalk {
     public class GameMain : Game {
+        private const int DefaultWindowWidth = 1280;
+        private const int DefaultWindowHeight = 720;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         GameManager gameManager;
+        WindowManager windowManager;
+
+        Vector2 globalScale;
 
         public GameMain() {
             _graphics = new GraphicsDeviceManager(this);
@@ -17,6 +23,15 @@ namespace Moonwalk {
         }
 
         protected override void Initialize() {
+            // Set initial window properties
+            Window.AllowUserResizing = true;
+
+            _graphics.PreferredBackBufferWidth = DefaultWindowWidth;
+            _graphics.PreferredBackBufferHeight = DefaultWindowHeight;
+            _graphics.ApplyChanges();
+
+            windowManager = WindowManager.GetInstance(DefaultWindowWidth, DefaultWindowHeight);
+
             base.Initialize();
         }
 
@@ -25,11 +40,16 @@ namespace Moonwalk {
             gameManager = GameManager.GetInstance(Content);
         }
 
-        // As a general rule of thumb, keep update/draw logic inside of gameManager
-        // and initalization/loading logic inside GameMain
+
 
         protected override void Update(GameTime gameTime) {
+            // Non-game logic (i.e. updating the window size ratio) should go below //
+            windowManager.Update( // Updates the scaling factor based on the window size
+                Window.ClientBounds.Size.X,
+                Window.ClientBounds.Size.Y);
+            globalScale = windowManager.WindowRatioScale;
 
+            // Keep game logic inside of gameManager //
             gameManager.Update(gameTime);
 
             base.Update(gameTime);
@@ -38,9 +58,10 @@ namespace Moonwalk {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Gray);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(
+                samplerState: SamplerState.PointClamp); // Prevents blurry sprites
 
-            gameManager.Draw(_spriteBatch);
+            gameManager.Draw(_spriteBatch, globalScale);
 
             _spriteBatch.End();
 

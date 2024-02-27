@@ -13,7 +13,6 @@ using System.Threading.Tasks;
 namespace Moonwalk.Classes.Managers
 {
     enum GameState {
-        Test_Load,
         Test,
     }
 
@@ -22,12 +21,9 @@ namespace Moonwalk.Classes.Managers
     /// </summary>
     internal sealed class GameManager {
 
-        private static GameManager _instance = null;
-
-        private ContentManager _content;
-
         // Game element managers
-        private Camera _camera;
+        private static GameManager _instance = null;
+        private ContentManager _content;
         private MapManager _map;
 
         // Gameplay related states
@@ -38,17 +34,22 @@ namespace Moonwalk.Classes.Managers
         // Currently loaded entities
         private List<Entity> entities;
 
+        // For testing purposes
+        private Vector2 cameraTarget;
+
         private GameManager(ContentManager content) {
             // Get content for loading needs
             _content = content;
 
             // Get each managers respective instance
-            _camera = Camera.GetInstance();
             _map = MapManager.GetInstance();
 
             Loader.Content = _content;
 
-            state = GameState.Test_Load;
+            entities = new List<Entity>();
+
+            // Prepares neccessary elements
+            Transition(GameState.Test);
         }
 
 
@@ -63,7 +64,6 @@ namespace Moonwalk.Classes.Managers
             return _instance;
         }
 
-
         /// <summary>
         /// Handles gameplay logic
         /// </summary>
@@ -73,28 +73,74 @@ namespace Moonwalk.Classes.Managers
             msState = Mouse.GetState();
 
             switch (state) {
-                case GameState.Test_Load:
-                    _map.Load(MapGroups.Test);
-                    state = GameState.Test;
-                    break;
-
                 case GameState.Test:
+
+                    // This is just testing the Camera (using the map for reference)
+                    if (kbState.IsKeyDown(Keys.A))
+                        cameraTarget.X -= (float) (100 * gt.ElapsedGameTime.TotalSeconds);
+                    if (kbState.IsKeyDown(Keys.D))
+                        cameraTarget.X += (float)(100 * gt.ElapsedGameTime.TotalSeconds);
+
+
+                    Camera.VectorTarget = cameraTarget;
                     break;
             }
+
+            foreach (Entity entity in entities)
+                entity.Update(gt);
         }
 
         /// <summary>
         /// Handles draw logic
         /// </summary>
-        public void Draw(SpriteBatch sb) {
+        public void Draw(SpriteBatch sb, Vector2 globalScale) {
+            // Elements draw based on game state (i.e. GUI or menu elements)
             switch (state) {
-                case GameState.Test_Load:
-                    break;
-
                 case GameState.Test:
-                    _map.Draw(sb);
+                    
                     break;
             }
+
+            // Elements drawn ever iteration
+            foreach (Entity entity in entities)
+                entity.Draw(sb, globalScale);
+
+            _map.Draw(sb, globalScale);
+        }
+
+        /// <summary>
+        /// Handles logic when switching between game states
+        /// </summary>
+        /// <param name="nextState">The next game state to transition to</param>
+        private void Transition(GameState nextState) {
+            switch (nextState) {
+                case GameState.Test:
+                    cameraTarget = new Vector2(0, 0);
+                    _map.Load(MapGroups.Test);
+                    break;
+            }
+
+            state = nextState;
+        }
+
+        /// <summary>
+        /// Handles any neccassray logic when spawning an enemy
+        /// </summary>
+        /// <typeparam name="T">Entity related class to spawn</typeparam>
+        /// <param name="position">Initial position to spawn</param>
+        private void SpawnEntity(Type className, Vector2 position) { // No idea if this works by the way :P
+            // FYI you would class this class like:
+            // SpawnEntity(typeof(Player), new Vector(0, 0));
+            // This would add the class "Player" to the entities list and spawn them at 0, 0
+            entities.Add((Entity) Activator.CreateInstance(className));
+        }
+
+        /// <summary>
+        /// Handles any neccessary logic when despawning an enemy
+        /// </summary>
+        /// <param name="entity">Entity to despawn</param>
+        private void DespawnEntity(Entity entity) {
+            entities.Remove(entity);
         }
     }
 

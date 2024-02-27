@@ -52,9 +52,9 @@ namespace Moonwalk.Classes.Managers.Map
             
         }
 
-        public void Draw(SpriteBatch sb) {
+        public void Draw(SpriteBatch sb, Vector2 globalScale) {
             foreach (Map map in maps)
-                map.Draw(sb);
+                map.Draw(sb, globalScale);
         }
     }
 }

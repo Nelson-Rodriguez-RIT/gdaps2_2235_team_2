@@ -139,17 +139,25 @@ namespace Moonwalk.Classes.Managers.Map {
             return bufferedData;
         }
 
-        public void Draw(SpriteBatch sb) {
-            foreach (int[][] tiles in _tiles)
+        public void Draw(SpriteBatch sb, Vector2 globalScale) {
+            foreach (int[][] tiles in _tiles) // This is for rendering several layers
                 for (int row = 0; row < tiles.Length; row++)
                     for (int col = 0; col < tiles[row].Length; col++) {
+                        // 0's are empty space
                         if (tiles[row][col] == 0)
                             continue;
 
+                        // Draw the relevant map tile
                         sb.Draw(
                             _sprites[tiles[row][col]],
-                            new Vector2(col * 25, row * 25),
-                            Color.White);
+                            Camera.ApplyOffset(new Vector2(col * 25, row * 25)) * globalScale,
+                            null,
+                            Color.White,
+                            0f,
+                            Vector2.Zero,
+                            globalScale,
+                            SpriteEffects.None,
+                            0);
                     }
                         
         }

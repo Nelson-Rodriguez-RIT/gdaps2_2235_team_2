@@ -77,12 +77,12 @@ namespace Moonwalk.Classes.Managers
 
                     // This is just testing the Camera (using the map for reference)
                     if (kbState.IsKeyDown(Keys.A))
-                        cameraTarget.X -= (float) (100 * gt.ElapsedGameTime.TotalSeconds);
+                        cameraTarget.X -= (float)(100 * gt.ElapsedGameTime.TotalSeconds);
                     if (kbState.IsKeyDown(Keys.D))
                         cameraTarget.X += (float)(100 * gt.ElapsedGameTime.TotalSeconds);
 
-
                     Camera.VectorTarget = cameraTarget;
+
                     break;
             }
 
@@ -126,8 +126,6 @@ namespace Moonwalk.Classes.Managers
         /// <summary>
         /// Handles any neccassray logic when spawning an enemy
         /// </summary>
-        /// <typeparam name="T">Entity related class to spawn</typeparam>
-        /// <param name="position">Initial position to spawn</param>
         private void SpawnEntity(Type className, Vector2 position) { // No idea if this works by the way :P
             // FYI you would class this class like:
             // SpawnEntity(typeof(Player), new Vector(0, 0));

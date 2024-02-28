@@ -30,7 +30,6 @@ namespace Moonwalk.Classes.Managers.Map
         /// <summary>
         /// Gets Level's singleton instance
         /// </summary>
-        /// <returns>A Level object</returns>
         public static MapManager GetInstance()
         {
             if (instance == null)

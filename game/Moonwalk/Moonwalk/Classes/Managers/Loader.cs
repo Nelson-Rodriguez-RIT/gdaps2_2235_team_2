@@ -29,16 +29,16 @@ namespace Moonwalk.Classes.Managers {
         }
 
         /// <summary>
-        /// Searches, formats, and returns specific file data
+        /// Seaches for, formats, and returns file data based on provided rules
         /// </summary>
         /// <param name="rootDirectory">Initial place to start searching for files</param>
         /// <param name="fileType">File type to search for</param>
-        /// <param name="decodeRules">Rules on how to format the raw file data</param>
+        /// <param name="formatRules">Rules on how to format the raw file data</param>
         /// <returns>Formatted file data</returns>
         public static Object ProcessFileData(
                 string rootDirectory,
                 string fileType,
-                Delegate decodeRules) {
+                Delegate formatRules) {
             // Get needed sub directories
             List<string> subDirectories = new();
             ScanSubDirectories(rootDirectory, subDirectories);
@@ -50,9 +50,15 @@ namespace Moonwalk.Classes.Managers {
             List<List<string>> rawFileData = GetRawFileData(files);
 
             // Apply file decoding rules
-            return DecodeFileData(rawFileData, decodeRules);
+            return DecodeFileData(rawFileData, formatRules);
         }
 
+        /// <summary>
+        /// Seaches for, formats, and returns sprite data based on provided rules
+        /// </summary>
+        /// <param name="rootDirectory">Initial place to start searching for files</param>
+        /// <param name="formatRules">Rules on how to format sprite data</param>
+        /// <returns>Formatted sprite data</returns>
         public static Object ProcessSpriteData(
                 string rootDirectory,
                 Delegate formatRules) {

@@ -97,7 +97,7 @@ namespace Moonwalk.Classes.Managers.Map {
             rawData = Regex.Matches(dataQueue.Dequeue(), @"[.\d]+");
             data = rawData.Cast<Match>().Select(match => match.Value).ToList();
 
-            // This data we want is the 4th and 5th numerical values for that line of data
+            // This data we want is the 5th and 6th numerical values for that line of data
             _tileSize = new Vector2(
                 int.Parse(data[4]),     // Tile width
                 int.Parse(data[5]));    // Tile height
@@ -147,10 +147,10 @@ namespace Moonwalk.Classes.Managers.Map {
 
                         // We care for the 2nd, 3rd, 4th, and 5th numeric values in the file
                         geometry.Add(new Rectangle(
-                            int.Parse(data[2]),     // Collision's relative X position
-                            int.Parse(data[3]),     // Collision's relative Y position
-                            int.Parse(data[4]),     // Collision's width
-                            int.Parse(data[5])      // Collision's height
+                            (int)float.Parse(data[1]),     // Collision's relative X position
+                            (int)float.Parse(data[2]),     // Collision's relative Y position
+                            (int)float.Parse(data[3]),     // Collision's width
+                            (int)float.Parse(data[4])      // Collision's height
                             ));
                     }
 

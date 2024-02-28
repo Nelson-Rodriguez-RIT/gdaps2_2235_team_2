@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Entities;
 using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Classes.Managers.Map;
 using System;
@@ -87,7 +88,7 @@ namespace Moonwalk.Classes.Managers
             }
 
             foreach (Entity entity in entities)
-                entity.Update(gt);
+                entity.Update(gt, kbState, msState);
         }
 
         /// <summary>
@@ -101,11 +102,11 @@ namespace Moonwalk.Classes.Managers
                     break;
             }
 
+            _map.Draw(sb, globalScale);
+
             // Elements drawn ever iteration
             foreach (Entity entity in entities)
                 entity.Draw(sb, globalScale);
-
-            _map.Draw(sb, globalScale);
         }
 
         /// <summary>
@@ -117,6 +118,7 @@ namespace Moonwalk.Classes.Managers
                 case GameState.Test:
                     cameraTarget = new Vector2(0, 0);
                     _map.Load(MapGroups.Test);
+                    entities.Add(new TestEntity(new Vector2(0, 0)));
                     break;
             }
 

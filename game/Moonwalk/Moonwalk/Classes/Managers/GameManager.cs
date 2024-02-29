@@ -4,11 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities;
 using Moonwalk.Classes.Entities.Base;
-using Moonwalk.Classes.Managers.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Managers
@@ -24,8 +24,6 @@ namespace Moonwalk.Classes.Managers
 
         // Game element managers
         private static GameManager _instance = null;
-        private ContentManager _content;
-        private MapManager _map;
 
         // Gameplay related states
         private GameState state;
@@ -40,12 +38,7 @@ namespace Moonwalk.Classes.Managers
 
         private GameManager(ContentManager content) {
             // Get content for loading needs
-            _content = content;
-
-            // Get each managers respective instance
-            _map = MapManager.GetInstance();
-
-            Loader.Content = _content;
+            Loader.Content = content;
 
             entities = new List<Entity>();
 
@@ -94,7 +87,7 @@ namespace Moonwalk.Classes.Managers
         /// <summary>
         /// Handles draw logic
         /// </summary>
-        public void Draw(SpriteBatch sb, Vector2 globalScale) {
+        public void Draw(SpriteBatch batch, Vector2 globalScale) {
             // Elements draw based on game state (i.e. GUI or menu elements)
             switch (state) {
                 case GameState.Test:
@@ -102,11 +95,11 @@ namespace Moonwalk.Classes.Managers
                     break;
             }
 
-            _map.Draw(sb, globalScale);
+            Map.Draw(batch, globalScale);
 
             // Elements drawn ever iteration
             foreach (Entity entity in entities)
-                entity.Draw(sb, globalScale);
+                entity.Draw(batch, globalScale);
         }
 
         /// <summary>
@@ -117,8 +110,13 @@ namespace Moonwalk.Classes.Managers
             switch (nextState) {
                 case GameState.Test:
                     cameraTarget = new Vector2(0, 0);
-                    _map.Load(MapGroups.Test);
-                    entities.Add(new TestEntity(new Vector2(0, 0)));
+
+                    // Loads the "TestMap" map
+                    Map.LoadMap("TestMap");
+
+                    // Loads the "TestEntity" entity
+                    SpawnEntity(typeof(TestEntity), Vector2.Zero);
+
                     break;
             }
 
@@ -132,7 +130,7 @@ namespace Moonwalk.Classes.Managers
             // FYI you would class this class like:
             // SpawnEntity(typeof(Player), new Vector(0, 0));
             // This would add the class "Player" to the entities list and spawn them at 0, 0
-            entities.Add((Entity) Activator.CreateInstance(className));
+            entities.Add((Entity) Activator.CreateInstance(className, new object[] {position}));
         }
 
         /// <summary>

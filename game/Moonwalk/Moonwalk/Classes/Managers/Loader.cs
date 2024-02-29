@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.IO;
 using System;
+using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace Moonwalk.Classes.Managers {
     internal static class Loader {
@@ -35,11 +37,105 @@ namespace Moonwalk.Classes.Managers {
         }
 
         public static (
-                List<int[][]> tiles, 
+                List<int[][]> tiles,
+                List<Terrain> geometry,
                 Dictionary<int, Texture2D> sprites,
-                List<Terrain> geometry) 
+                Vector2 tileSize) 
                 LoadMap(string path) {
-            // In the middle of refactoring this class - Nelson
+            List<int[][]> bufferedTiles = new();
+            List<Terrain> bufferedGeometry = new();
+            Dictionary<int, Texture2D> bufferedSprites = new();
+            Vector2 bufferdTileSize;
+
+            Queue<string> fileData;
+            MatchCollection parsedData;
+            List<string> data;
+
+
+            // Begin reading .tmx file data
+            fileData = new Queue<string>(LoadFile($"{path}map.tmx"));
+
+            // First line contains tmx file formating information (we don't care about this)
+            fileData.Dequeue();
+
+            // Second line contains general information about the map
+            // We care about the 5th/6th numerical values (tilewidth and tileheight)
+            parsedData = Regex.Matches(fileData.Dequeue(), @"[.\d]+"); // Dante really clutched up by knowing about this :D
+            data = parsedData.Cast<Match>().Select(match => match.Value).ToList();
+
+            bufferdTileSize = new Vector2(
+                int.Parse(data[4]),     // Individual tile width
+                int.Parse(data[5]));    // Individual tile height
+
+
+            // Begin reading tile and geometry data
+            while (fileData.Count != 0) {
+                // Reading tile data
+                if (fileData.Peek().Contains("<layer")) {
+                    // Ignore tmx file formating data
+                    fileData.Dequeue();
+                    fileData.Dequeue();
+
+                    // Read and collected relevant file data
+                    List<int[]> tileRows = new();
+                    while (!fileData.Peek().Contains("</data>")) {
+                        // Get relevant numerical data
+                        parsedData = Regex.Matches(fileData.Dequeue(), @"[.\d]+");
+                        data = parsedData.Cast<Match>().Select(match => match.Value).ToList();
+
+                        // Extract each tile ID from parsed data
+                        int[] tileRow = new int[data.Count];
+                        for (int i = 0; i < tileRow.Length; i++)
+                            tileRow[i] = int.Parse(data[i]);
+
+                        tileRows.Add(tileRow);
+                    }
+
+                    // Format all collectecd data
+                    int[][] tiles = new int[tileRows.Count][];
+                    for (int i = 0; i < tiles.Length; i++)
+                        tiles[i] = tileRows[i];
+
+                    // Store formated tile data
+                    bufferedTiles.Add(tiles);
+                }
+
+                // Reading geometry data
+                else if (fileData.Peek().Contains("<objectgroup")) {
+                    // Ignore tmx formatting
+                    fileData.Dequeue();
+
+                    while (!fileData.Peek().Contains("</objectgroup>")) {
+                        // Get relevant numerical data
+                        parsedData = Regex.Matches(fileData.Dequeue(), @"[.\d]+");
+                        data = parsedData.Cast<Match>().Select(match => match.Value).ToList();
+
+                        // We care for the 2nd, 3rd, 4th, and 5th numeric values in the file
+                       bufferedGeometry.Add(new Terrain(new Rectangle(
+                            (int)float.Parse(data[1]),     // Collision's relative X position
+                            (int)float.Parse(data[2]),     // Collision's relative Y position
+                            (int)float.Parse(data[3]),     // Collision's width
+                            (int)float.Parse(data[4])      // Collision's height
+                            )));
+                    }
+                }
+
+                else // If it isn't one of the above, most likely tmx file formatting data
+                    fileData.Dequeue();
+            }
+
+
+            // Get sprite data
+            string[] spriteFilePaths = Directory.GetFiles($"{path}sprites/"); // Gets paths to all images
+            for (int ID = 0; ID < spriteFilePaths.Length; ID++)
+                bufferedSprites.Add(
+                    ID + 1,                                         // Relevant ID of the tile sprite
+                    LoadTexture(spriteFilePaths[ID]                 // Relevant Texture2D 
+                        .Remove(spriteFilePaths[ID].Length - 4)));
+
+
+            return (bufferedTiles, bufferedGeometry,
+                    bufferedSprites, bufferdTileSize);
         }
 
         public static (

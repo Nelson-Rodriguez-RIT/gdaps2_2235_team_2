@@ -70,8 +70,8 @@ namespace Moonwalk.Classes.Entities.Base
                     spritePosition.X : 0;
         }
 
-        public virtual void Draw(SpriteBatch sb, Vector2 globalScale) {
-            sb.Draw(
+        public virtual void Draw(SpriteBatch batch, Vector2 globalScale) {
+            batch.Draw(
                 spritesheet,
                 new Rectangle( // Position
                     (int)position.X,

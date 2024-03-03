@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Managers;
+using System;
+using System.Reflection.Metadata;
 
 namespace Moonwalk {
     public class GameMain : Game {

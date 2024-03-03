@@ -17,73 +17,52 @@ namespace Moonwalk.Classes.Entities.Base
 
         // These rely on file data and only need to be loaded once
         protected static Dictionary<string, string> properties = null;
-        protected static Dictionary<int, (int totalSprites, int framesPerSprite)> animationMetadata = null;
+        protected static List<Animation> animations = null;
         protected static Texture2D spritesheet = null;
-        protected static Vector2 spriteSize;
 
-        // Holds Animations enum values for the current animation
-        protected int activeAnimation;
-        
-        // Subsection of the sprite sheet to draw
-        protected Vector2 spritePosition;
+        // Currently displayed animation
+        protected Animation activeAnimation; // DO NOT manually change this, use SwitchAnimation() instead
 
         // Entity's position
         protected Vector2 position;
 
+        protected int spriteScale;
 
-        public Entity(
-                Vector2 position, 
-                string directory,
-                int activeAnimation = 0) {
+        public Entity(Vector2 position, string directory) {
             this.position = position;
             this.directory = directory;
-            this.activeAnimation = activeAnimation;
 
             if (properties == null) { // Load data if it isn't already loaded
-                (Dictionary<string, string> properties,
-                Dictionary<int, (int totalSprites, int framesPerSprite)> animationMetadata,
-                Texture2D spritesheet, Vector2 spriteSize) 
-                    bufferedData = Loader.LoadEntity(directory);
+                (Dictionary<string, string> properties, List<Animation> animations,
+                Texture2D spritesheet) bufferedData = Loader.LoadEntity(directory);
 
                 properties = bufferedData.properties;
-                animationMetadata = bufferedData.animationMetadata;
+                animations = bufferedData.animations;
                 spritesheet = bufferedData.spritesheet;
-                spriteSize = bufferedData.spriteSize;
             }
         }
         
 
         public virtual void Update(
-                GameTime gt, 
+                GameTime gameTime, 
                 KeyboardState kbState,
                 MouseState msState) {
-            // Determines how much to increment the frame by. Based on 60 FPS
-            float deltaTime =
-                (float)gt.ElapsedGameTime.TotalSeconds *
-                (60 / animationMetadata[activeAnimation].framesPerSprite);
-
-            spritePosition.Y = (int) activeAnimation;
-            spritePosition.X =
-                // Updates this value, potentially resetting it to 0 if it trys to point 
-                // to a sprite that does not exist (basically restarting the animation)
-                (spritePosition.X += deltaTime) < animationMetadata[activeAnimation].totalSprites ?
-                    spritePosition.X : 0;
+            activeAnimation.UpdateAnimation(gameTime);
         }
 
         public virtual void Draw(SpriteBatch batch, Vector2 globalScale) {
-            batch.Draw(
-                spritesheet,
-                new Rectangle( // Position
-                    (int)position.X,
-                    (int)position.Y,
-                    (int)(spriteSize.X * globalScale.X),
-                    (int)(spriteSize.Y * globalScale.Y)),
-                new Rectangle( // Specific sprite from spritesheet
-                    (int)(Math.Floor(spritePosition.X) * spriteSize.X),
-                    (int)(spritePosition.Y * spriteSize.Y),
-                    (int)spriteSize.X,
-                    (int)spriteSize.Y),
-                Color.White);
+            activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, position);
         }
+
+        protected void SwitchAnimation(Enum animationEnum) {
+            activeAnimation = animations[Convert.ToInt32(animationEnum)];
+            activeAnimation.Reset();
+        }
+
+        protected void SwitchAnimation(Animation animation) {
+            activeAnimation = animation;
+            animation.Reset();
+        }
+
     }
 }

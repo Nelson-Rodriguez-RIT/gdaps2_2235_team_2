@@ -7,6 +7,7 @@ using System.IO;
 using System;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Managers {
     internal static class Loader {
@@ -140,16 +141,12 @@ namespace Moonwalk.Classes.Managers {
 
         public static (
                 Dictionary<string, string> properties,
-                Dictionary<int, (int totalSprites, int framesPerSprite)> animationMetadata,
-                Texture2D spritesheet,
-                Vector2 spriteSize)
+                List<Animation> animations,
+                Texture2D spritesheet)
                 LoadEntity(string path) {
-            // Temporary holders for collected file data
             Dictionary<string, string> bufferedProperties = new();
-            Dictionary<int, (int totalSprites, int framesPerSprite)> 
-                bufferedAnimationData = new();
+            List<Animation> bufferedAnimations = new();
             Texture2D bufferedSpritesheet;
-            Vector2 bufferedSpriteSize;
 
             Queue<string> fileData;
             string[] splitData;
@@ -159,7 +156,8 @@ namespace Moonwalk.Classes.Managers {
             fileData = new Queue<string>(LoadFile($"{path}/properties.dat"));
 
             while (fileData.Count != 0) {
-                if (fileData.Peek()[0] == '/') { // Ignore comments
+                if (fileData.Peek()[0] == '/' || // Ignore comments or (likely) empty lines
+                        fileData.Peek()[0] == ' ') { 
                     fileData.Dequeue();
                     continue;
                 }
@@ -175,18 +173,79 @@ namespace Moonwalk.Classes.Managers {
             // Get animation data
             fileData = new Queue<string>(LoadFile($"{path}/animations.dat"));
 
-            // First line always contains sprite's WidthxHeight
-            splitData = fileData.Dequeue().Split('x');
-            bufferedSpriteSize = new Vector2(
-                int.Parse(splitData[0]),    // Individual sprite width
-                int.Parse(splitData[1]));   // Individual sprite height
+            AnimationStyle style = AnimationStyle.Horizontal;
 
-            for (int i = 0; fileData.Count != 0; i++) {
-                splitData = fileData.Dequeue().Split(',');
-                bufferedAnimationData.Add(
-                    i, (                        // Matches its respective Animations enum value
-                    int.Parse(splitData[0]),    // Number of sprites for this animation
-                    int.Parse(splitData[1])));  // Number of frames each sprite gets in this animation
+            // Set up default fields with placeholder values
+            // Prevents crashes and allows us to compile :D
+            Vector2 defaultSpriteSize = Vector2.One;
+            Vector2 defaultOrigin = Vector2.Zero;
+            int defaultTotalSprites = 1;
+            int defaultFramesPerSprite = 1;
+
+            // This allows use to have custom Widths/Heights for each animation since this
+            // will inform the Animation where it should get its data from. This will be
+            // incremented by either a Width (for Vertical styles) or Height (for Horizontal styles)
+            int spaceTakenOnSpritesheet = 0;
+
+            while (fileData.Count != 0) {
+                if (fileData.Peek().Length == 0) // Skip empty lines
+                    fileData.Dequeue();
+
+                switch (fileData.Peek()[0]) {
+                    case '/': // Ignore comments or (likely) empty lines
+                        case ' ':
+                        fileData.Dequeue();
+                        break;
+
+                    case '&': // Set AnimationStyle
+                        if (fileData.Dequeue().Contains("Vetical"))
+                            style = AnimationStyle.Vertical;
+                        break;
+
+                    case '@': // Set default values
+                        splitData = fileData.Dequeue().Split(",");
+                        splitData[0] = splitData[0].Remove(0, 1); // Removes line identifier
+
+                        defaultSpriteSize = new Vector2(
+                            int.Parse(splitData[0].Split('x')[0]),
+                            int.Parse(splitData[0].Split('x')[1])
+                            );
+
+                        defaultOrigin = new Vector2(
+                            int.Parse(splitData[1].Split(':')[0]),
+                            int.Parse(splitData[1].Split(':')[1])
+                            );
+
+                        defaultTotalSprites = int.Parse(splitData[2]);
+
+                        defaultFramesPerSprite = int.Parse(splitData[3]);
+                        break;
+
+                    default: // Create an animation using file data
+                        splitData = fileData.Dequeue().Split(',');
+
+                        // If a # is detected, default values are used instead
+                        bufferedAnimations.Add(new Animation(
+                            splitData[0][0] == '#' ? defaultSpriteSize :
+                                new Vector2(
+                                    int.Parse(splitData[0].Split('x')[0]),
+                                    int.Parse(splitData[0].Split('x')[1])),
+                            splitData[1][0] == '#' ? defaultOrigin :
+                                new Vector2(
+                                    int.Parse(splitData[1].Split(':')[0]),
+                                    int.Parse(splitData[1].Split(':')[1])),
+                            splitData[2][0] == '#' ? defaultTotalSprites :
+                                int.Parse(splitData[2]),
+                            splitData[3][0] == '#' ? defaultFramesPerSprite :
+                                int.Parse(splitData[3]),
+                            style,
+                            spaceTakenOnSpritesheet));
+
+                        spaceTakenOnSpritesheet += style == AnimationStyle.Horizontal ?
+                            (splitData[0][0] == '#' ? (int)defaultSpriteSize.Y : int.Parse(splitData[0].Split('x')[1])) :
+                            (splitData[0][0] == '#' ? (int)defaultSpriteSize.X : int.Parse(splitData[0].Split('x')[0]));
+                        break;
+                }
             }
                 
 
@@ -194,7 +253,7 @@ namespace Moonwalk.Classes.Managers {
             bufferedSpritesheet = LoadTexture($"{path}/spritesheet");
 
 
-            return (bufferedProperties, bufferedAnimationData, bufferedSpritesheet, bufferedSpriteSize);
+            return (bufferedProperties, bufferedAnimations, bufferedSpritesheet);
         }
     }
 }

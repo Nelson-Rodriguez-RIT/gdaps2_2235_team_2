@@ -33,6 +33,24 @@ namespace Moonwalk.Classes.Managers {
             return data;
         }
 
+        public static List<string> LoadFile(string directory, string fileType) {
+            string[] paths = Directory.GetFiles(directory);
+            string relevantPath = null;
+
+            // Get the first path to have the relevant file ending
+            foreach (string path in paths)
+                if (path.Contains(fileType)) {
+                    relevantPath = path;
+                    break;
+                }
+
+            if (relevantPath == null)
+                return null;
+
+            // Load relevant data
+            return LoadFile(relevantPath);
+        }
+
         public static Texture2D LoadTexture(string path) {
             return content.Load<Texture2D>(path);
         }
@@ -153,7 +171,7 @@ namespace Moonwalk.Classes.Managers {
 
 
             // Get entity properties
-            fileData = new Queue<string>(LoadFile($"{path}/properties.dat"));
+            fileData = new Queue<string>(LoadFile($"{path}/", ".edf"));
 
             while (fileData.Count != 0) {
                 if (fileData.Peek()[0] == '/' || // Ignore comments or (likely) empty lines
@@ -171,7 +189,7 @@ namespace Moonwalk.Classes.Managers {
 
 
             // Get animation data
-            fileData = new Queue<string>(LoadFile($"{path}/animations.dat"));
+            fileData = new Queue<string>(LoadFile($"{path}/", ".adf"));
 
             AnimationStyle style = AnimationStyle.Horizontal;
 

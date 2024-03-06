@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnemyClass_Concept", "EnemyClass_Concept.csproj", "{AAA31BC1-DA2A-489C-AFC6-CC8D10CF9A05}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AAA31BC1-DA2A-489C-AFC6-CC8D10CF9A05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AAA31BC1-DA2A-489C-AFC6-CC8D10CF9A05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AAA31BC1-DA2A-489C-AFC6-CC8D10CF9A05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AAA31BC1-DA2A-489C-AFC6-CC8D10CF9A05}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {901EA6AF-67D7-45B5-AC20-8E27160A0897}
+	EndGlobalSection
+EndGlobal

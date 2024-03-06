@@ -11,13 +11,10 @@ namespace Moonwalk.Classes.Entities.Base
     /// <summary>
     /// Contains universal functionality for all entities
     /// </summary>
-<<<<<<< Updated upstream
     internal abstract class Entity {
         // The path the directory containing this entity's file related data in Content
         protected string directory;
-=======
-    internal abstract class Entity
-    {
+    
         protected enum PhysicsState
         {
             Linear,
@@ -38,7 +35,7 @@ namespace Moonwalk.Classes.Entities.Base
         protected float terminalVelocity;
         protected float maxXVelocity;
 
-        //Rotational motion  *** This stuff can be moved to the player if we want since we don't have any other rotating things***
+        //Rotational motion  *** This stuff can be moved to the player if we want since we don't have any other rotating things yet ***
         protected double theta;
         protected double angVelocity;
         protected double angAccel;
@@ -62,7 +59,6 @@ namespace Moonwalk.Classes.Entities.Base
         {
             get { return acceleration; }
         }
->>>>>>> Stashed changes
 
         // These rely on file data and only need to be loaded once
         protected static Dictionary<string, string> properties = null;
@@ -71,9 +67,6 @@ namespace Moonwalk.Classes.Entities.Base
 
         // Currently displayed animation
         protected Animation activeAnimation; // DO NOT manually change this, use SwitchAnimation() instead
-
-        // Entity's position
-        protected Vector2 position;
 
         protected int spriteScale;
 
@@ -99,10 +92,6 @@ namespace Moonwalk.Classes.Entities.Base
             activeAnimation.UpdateAnimation(gameTime);
         }
 
-        public virtual void Draw(SpriteBatch batch, Vector2 globalScale) {
-            activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, position);
-        }
-
         protected void SwitchAnimation(Enum animationEnum) {
             activeAnimation = animations[Convert.ToInt32(animationEnum)];
             activeAnimation.Reset();
@@ -113,8 +102,6 @@ namespace Moonwalk.Classes.Entities.Base
             animation.Reset();
         }
 
-<<<<<<< Updated upstream
-=======
         public abstract void Draw(SpriteBatch sb, Vector2 globalScale);
 
         protected virtual void LinearMotion(GameTime gameTime)
@@ -172,6 +159,5 @@ namespace Moonwalk.Classes.Entities.Base
             //update position
             position = temp;
         }
->>>>>>> Stashed changes
     }
 }

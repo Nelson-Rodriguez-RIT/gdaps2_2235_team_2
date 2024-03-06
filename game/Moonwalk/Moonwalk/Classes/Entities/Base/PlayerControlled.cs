@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Moonwalk.Classes.Entities.Base
 {
-    internal abstract class PlayerControlled : Entity, IControllable
+    internal abstract class PlayerControlled : Entity, IControllable, ICollidable
     {
         public PlayerControlled(Vector2 position, string directory) : base(position, directory)
         { 
@@ -36,5 +36,10 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         public abstract void Input(StoredInput input);
+
+        public virtual void CheckCollision()
+        {
+
+        }
     }
 }

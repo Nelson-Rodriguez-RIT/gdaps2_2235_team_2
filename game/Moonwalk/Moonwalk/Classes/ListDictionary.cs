@@ -14,7 +14,7 @@ namespace Moonwalk.Classes
     /// are automatically sorted into the correct list.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class ListDictionary<T> where T : class
+    internal class ListDictionary<T> : IEnumerable<T> where T : class
     {
         private Dictionary<Type, IList> lists;
         private List<Type> listTypes;
@@ -133,6 +133,40 @@ namespace Moonwalk.Classes
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Allows each element to be iterated through
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator<T> GetEnumerator()
+        {
+            List<T> list = new List<T>();
+
+            foreach (KeyValuePair<Type, IList> kv in lists)
+            {
+                foreach (T item in kv.Value)
+                {
+                    list.Add(item);
+                }
+            }
+
+            return list.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            List<T> list = new List<T>();
+
+            foreach (KeyValuePair<Type, IList> kv in lists)
+            {
+                foreach (T item in kv.Value)
+                {
+                    list.Add(item);
+                }
+            }
+
+            return list.GetEnumerator();
         }
     }
 }

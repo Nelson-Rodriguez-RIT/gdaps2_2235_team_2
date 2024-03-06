@@ -35,10 +35,10 @@ namespace GameControls_Concept
             //Update position using velocity                     
 
             hitbox = new Rectangle
-                ((int)position.X - (image.Width / 2),
-                (int)position.Y - (image.Height / 2),
-                image.Width,
-                image.Height);
+                ((int)position.X - (spriteSheet.Width / 2),
+                (int)position.Y - (spriteSheet.Height / 2),
+                spriteSheet.Width,
+                spriteSheet.Height);
 
             base.Update(gameTime);
         }

@@ -13,11 +13,10 @@ namespace WorkForEnemyClass
     internal class Enemy
     {
         //Fields
-        bool active;
-        Texture2D asset;
-        Rectangle position;
-        Color color;
-        Vector2 spritePosition;
+        bool active;                        //whether the enemy is there
+        Texture2D asset;                    //assets for enemy
+        Rectangle position;                 //enemy position and size            
+        Vector2 spritePosition;             //enemy position - subject to change
 
 
         // Animation
@@ -33,27 +32,46 @@ namespace WorkForEnemyClass
         const int EnemyRectWidth = 44;      // The width of a single frame
 
         //For Enemies specifically
-        int health;
-        int speed;
-        bool isLeft;
-        int count;
+        int health;                         //enemy health
+        int speed;                          //Enemy speed of movement
+        bool isLeft;                        //Whether enemy is facing left - can be changed
+        int count;                          // count for how far enemy has moved
+        int countMax;                       //maximum of enemy movement in one direction
 
         /// <summary>
-        /// Parameterized Constructor
+        /// Parameterized Constructor of moving enemy
         /// </summary>
         /// <param name="asset"></param>
         /// <param name="position"></param>
         /// <param name="color"></param>
-        public Enemy(Texture2D asset, Rectangle position, Color color, int speed, bool isLeft, int health) //figure out how to get this to work
-            : base(asset, position, color) //may get rid of levelScore & totalScore
+        public Enemy(Texture2D asset, Rectangle position,int speed, bool isLeft, int health, int countMax)
+            : base(asset, position, health)
         {
             active = true;
             this.position = position;
-            this.color = color;
             this.asset = asset;
             this.speed = speed;
             this.isLeft = isLeft;
             count = 0;
+            this.health = health;
+            spritePosition = new Microsoft.Xna.Framework.Vector2(position.X, position.Y);
+            this.countMax = countMax;
+        }
+
+
+        /// <summary>
+        /// Parameterized Constructor of still enemy
+        /// </summary>
+        /// <param name="asset"></param>
+        /// <param name="position"></param>
+        /// <param name="color"></param>
+        public Enemy(Texture2D asset, Rectangle position, bool isLeft, int health)
+            : base(asset, position, health)
+        {
+            active = true;
+            this.position = position;
+            this.asset = asset;            
+            this.isLeft = isLeft;
             this.health = health;
             spritePosition = new Microsoft.Xna.Framework.Vector2(position.X, position.Y);
         }
@@ -135,8 +153,8 @@ namespace WorkForEnemyClass
                     EnemyRectHeight),           //     draw the whole thing)
                 Color.White,                    // - The color
                 0,                              // - Rotation (none currently)
-                spritePosition.Zero,                   // - Origin inside the image (top left)
-                spritePosition.One,                    // - Scale (100% - no change)
+                spritePosition.Zero,            // - Origin inside the image (top left)
+                spritePosition.One,             // - Scale (100% - no change)
                 SpriteEffects.FlipHorizontally, // - Can be used to flip the image
                 0);                             // - Layer depth (unused)
                 }
@@ -161,7 +179,7 @@ namespace WorkForEnemyClass
 
                 if (speed == 0) //Sprite stuff in here will change
                 {
-                    spriteBatch.Draw(asset, position, color);
+                    spriteBatch.Draw(asset, position, Color.White);
                 }
             }
         }
@@ -172,7 +190,7 @@ namespace WorkForEnemyClass
         /// <param name="gameTime"></param>
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime) //needs a parent class
         {
-            if (speed > 0)
+            if (speed > 0 || speed != null)
             {
                 if (isLeft)
                 {
@@ -185,12 +203,12 @@ namespace WorkForEnemyClass
                     count += speed;
                 }
 
-                if (count < 200)
+                if (count < (- countMax))
                 {
                     isLeft = true;
                 }
 
-                else if (count > 200)
+                else if (count > countMax)
                 {
                     isLeft = false;
                 }

@@ -32,6 +32,7 @@ namespace Moonwalk.Classes.Managers
 
         // Currently loaded entities
         private List<Entity> entities;
+        private ListDictionary<Entity> entities2;
 
         // For testing purposes
         private Vector2 cameraTarget;
@@ -41,6 +42,15 @@ namespace Moonwalk.Classes.Managers
             Loader.Content = content;
 
             entities = new List<Entity>();
+
+            //Testing for my new entity list concept
+            List<Type> types = new List<Type>();
+            types.Add(typeof(Entity));
+            types.Add(typeof(TestEntity));
+            entities2 = new ListDictionary<Entity>(types);
+            entities2.Add(new TestEntity(Vector2.Zero));
+            entities2.Add(new TestEntity(Vector2.Zero));
+            entities2.Add(new TestEntity(Vector2.Zero));
 
             // Prepares neccessary elements
             Transition(GameState.Test);

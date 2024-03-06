@@ -1,7 +1,7 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +19,7 @@ namespace Moonwalk.Interfaces
         /// <summary>
         /// Handles movement of an entity
         /// </summary>
-        void Movement();
+        void Movement(GameTime time);
 
     }
 }

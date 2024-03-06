@@ -102,7 +102,10 @@ namespace Moonwalk.Classes.Entities.Base
             animation.Reset();
         }
 
-        public abstract void Draw(SpriteBatch sb, Vector2 globalScale);
+        public virtual void Draw(SpriteBatch batch, Vector2 globalScale)
+        {
+            activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, position);
+        }
 
         protected virtual void LinearMotion(GameTime gameTime)
         {
@@ -158,6 +161,70 @@ namespace Moonwalk.Classes.Entities.Base
 
             //update position
             position = temp;
+        }
+
+        public void SetRotationalVariables(Vector2 centerOfCircle)
+        {
+            this.pivot = centerOfCircle;
+
+            //Define the vector between the player and the companion
+            Vector2 hypotenuse = new Vector2(
+                pivot.X - position.X,
+                pivot.Y - position.Y);
+
+            //The magnitude of the previous vector,
+            //or the radius of the circle on which the player will rotate
+            swingRadius =
+                    (float)(
+                        Math.Sqrt(
+                            Math.Pow(hypotenuse.X, 2) +
+                            Math.Pow(hypotenuse.Y, 2)
+                        )
+                    );
+
+            //Get the angle between the player and 0 degrees (right)
+            theta = 180 - (float)((180 / Math.PI) * Math.Acos(
+                    hypotenuse.X
+                    /
+                    swingRadius
+                    ));
+
+            //The rest of the code in this is for determining the 
+            //entity's initial velocity when they start swinging. You need to 
+            //get the component of the entity's current velocity that is 
+            //perpendicular to the radius. A diagram is very helpful for understanding.
+
+            //Magnitude of the entity's velocity
+            double velocityMag = Math.Sqrt(
+                Math.Pow(velocity.X, 2) +
+                Math.Pow(velocity.Y, 2));
+
+            //The length of the side opposite the angle we want
+            double c = Math.Sqrt(
+                Math.Pow(
+                    hypotenuse.X -
+                    velocity.X,
+                    2) +
+                Math.Pow(
+                    hypotenuse.Y -
+                    velocity.Y,
+                    2));
+
+            //Use law of cosines to get the angle
+            double angleBetween = -90f + (180 / Math.PI) * Math.Acos(
+                (swingRadius * swingRadius +
+                velocityMag * velocityMag -
+                c * c) /
+                (2 * swingRadius * velocityMag));
+
+            //Get the component of the velocity perpendicular to the radius
+            double newVMag = velocityMag * Math.Cos(
+                (Math.PI / 180) *
+                angleBetween);
+
+            //Set the initial angular velocity
+            angVelocity = (newVMag * 3000 * -Math.Sign(hypotenuse.X)) / swingRadius;
+
         }
     }
 }

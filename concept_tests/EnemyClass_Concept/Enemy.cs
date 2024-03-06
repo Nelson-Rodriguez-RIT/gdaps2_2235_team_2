@@ -17,6 +17,7 @@ namespace WorkForEnemyClass
         Texture2D asset;
         Rectangle position;
         Color color;
+        Vector2 spritePosition;
 
 
         // Animation
@@ -25,7 +26,7 @@ namespace WorkForEnemyClass
         double fps;             // The speed of the animation
         double timePerFrame;    // The amount of time (in fractional seconds) per frame
 
-        // Constants for "source" rectangle (inside the image)
+        // Constants for "source" rectangle (inside the image) //CHANGE FOR SPECIFICS
         const int WalkFrameCount = 3;       // The number of frames in the animation
         const int EnemyRectOffsetY = 116;   // How far down in the image are the frames?
         const int EnemyRectHeight = 72;     // The height of a single frame
@@ -54,6 +55,7 @@ namespace WorkForEnemyClass
             this.isLeft = isLeft;
             count = 0;
             this.health = health;
+            spritePosition = new Microsoft.Xna.Framework.Vector2(position.X, position.Y);
         }
 
         /// <summary>
@@ -125,7 +127,7 @@ namespace WorkForEnemyClass
                 {
                     spriteBatch.Draw(
                 asset,                          // - The texture to draw
-                new Vector2(position.X, position.Y), // - The location to draw on the screen
+                spritePosition,                 // - The location to draw on the screen
                 new Rectangle(                  // - The "source" rectangle
                     0,                          //   - This rectangle specifies
                     EnemyRectOffsetY,           //	   where "inside" the texture
@@ -133,8 +135,8 @@ namespace WorkForEnemyClass
                     EnemyRectHeight),           //     draw the whole thing)
                 Color.White,                    // - The color
                 0,                              // - Rotation (none currently)
-                Vector2.Zero,                   // - Origin inside the image (top left)
-                Vector2.One,                    // - Scale (100% - no change)
+                spritePosition.Zero,                   // - Origin inside the image (top left)
+                spritePosition.One,                    // - Scale (100% - no change)
                 SpriteEffects.FlipHorizontally, // - Can be used to flip the image
                 0);                             // - Layer depth (unused)
                 }
@@ -143,7 +145,7 @@ namespace WorkForEnemyClass
                 {
                     spriteBatch.Draw(
                 asset,
-                new Vector2(position.X, position.Y), //figure out how to fix the issue with the Vector2's
+                spritePosition, //figure out how to fix the issue with the Vector2's
                 new Rectangle( 
                     0, 
                     EnemyRectOffsetY,
@@ -151,8 +153,8 @@ namespace WorkForEnemyClass
                     EnemyRectHeight),
                 Color.White,
                 0,
-                Vector2.Zero,
-                Vector2.One,
+                spritePosition.Zero,
+                spritePosition.One, //might change for scaling
                 SpriteEffects.None,
                 0);
                 }

@@ -27,9 +27,9 @@ namespace WorkForEnemyClass
 
         // Constants for "source" rectangle (inside the image)
         const int WalkFrameCount = 3;       // The number of frames in the animation
-        const int MarioRectOffsetY = 116;   // How far down in the image are the frames?
-        const int MarioRectHeight = 72;     // The height of a single frame
-        const int MarioRectWidth = 44;      // The width of a single frame
+        const int EnemyRectOffsetY = 116;   // How far down in the image are the frames?
+        const int EnemyRectHeight = 72;     // The height of a single frame
+        const int EnemyRectWidth = 44;      // The width of a single frame
 
         //For Enemies specifically
         int health;
@@ -117,7 +117,7 @@ namespace WorkForEnemyClass
         /// Draws specific spriteBatch for Collectibles
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch) //needs a parent class
         {
             if (active)
             {
@@ -128,9 +128,9 @@ namespace WorkForEnemyClass
                 new Vector2(position.X, position.Y), // - The location to draw on the screen
                 new Rectangle(                  // - The "source" rectangle
                     0,                          //   - This rectangle specifies
-                    MarioRectOffsetY,           //	   where "inside" the texture
-                    MarioRectWidth,             //     to get pixels (We don't want to
-                    MarioRectHeight),           //     draw the whole thing)
+                    EnemyRectOffsetY,           //	   where "inside" the texture
+                    EnemyRectWidth,             //     to get pixels (We don't want to
+                    EnemyRectHeight),           //     draw the whole thing)
                 Color.White,                    // - The color
                 0,                              // - Rotation (none currently)
                 Vector2.Zero,                   // - Origin inside the image (top left)
@@ -142,19 +142,19 @@ namespace WorkForEnemyClass
                 if (!isLeft) //Sprite stuff in here will change
                 {
                     spriteBatch.Draw(
-                asset,                          // - The texture to draw
-                new Vector2(position.X, position.Y), // - The location to draw on the screen
-                new Rectangle(                  // - The "source" rectangle
-                    0,                          //   - This rectangle specifies
-                    MarioRectOffsetY,           //	   where "inside" the texture
-                    MarioRectWidth,             //     to get pixels (We don't want to
-                    MarioRectHeight),           //     draw the whole thing)
-                Color.White,                    // - The color
-                0,                              // - Rotation (none currently)
-                Vector2.Zero,                   // - Origin inside the image (top left)
-                Vector2.One,                    // - Scale (100% - no change)
-                SpriteEffects.None,             // - Can be used to flip the image
-                0);                             // - Layer depth (unused)
+                asset,
+                new Vector2(position.X, position.Y), //figure out how to fix the issue with the Vector2's
+                new Rectangle( 
+                    0, 
+                    EnemyRectOffsetY,
+                    EnemyRectWidth, 
+                    EnemyRectHeight),
+                Color.White,
+                0,
+                Vector2.Zero,
+                Vector2.One,
+                SpriteEffects.None,
+                0);
                 }
 
                 if (speed == 0) //Sprite stuff in here will change
@@ -168,7 +168,7 @@ namespace WorkForEnemyClass
         /// Updates movement of enemy
         /// </summary>
         /// <param name="gameTime"></param>
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        public override void Update(Microsoft.Xna.Framework.GameTime gameTime) //needs a parent class
         {
             if (speed > 0)
             {

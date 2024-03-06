@@ -34,6 +34,9 @@ namespace Moonwalk.Classes.Managers
         private List<Entity> entities;
         private ListDictionary<Entity> entities2;
 
+        //Input handling:
+        private StoredInput storedInput;
+
         // For testing purposes
         private Vector2 cameraTarget;
 
@@ -42,6 +45,7 @@ namespace Moonwalk.Classes.Managers
             Loader.Content = content;
 
             entities = new List<Entity>();
+            
 
             //Testing for my new entity list concept
             List<Type> types = new List<Type>();
@@ -73,8 +77,7 @@ namespace Moonwalk.Classes.Managers
         /// </summary>
         public void Update(GameTime gt) {
             // Get user input
-            kbState = Keyboard.GetState();
-            msState = Mouse.GetState();
+            storedInput.Update();
 
             switch (state) {
                 case GameState.Test:
@@ -91,7 +94,9 @@ namespace Moonwalk.Classes.Managers
             }
 
             foreach (Entity entity in entities)
-                entity.Update(gt, kbState, msState);
+                entity.Update(gt, storedInput.CurrentKeyboard, storedInput.CurrentMouse);
+
+            storedInput.UpdatePrevious();
         }
 
         /// <summary>

@@ -25,7 +25,7 @@ namespace WorkForEnemyClass
         double fps;             // The speed of the animation
         double timePerFrame;    // The amount of time (in fractional seconds) per frame
 
-        // Constants for "source" rectangle (inside the image) //CHANGE FOR SPECIFICS
+        // Constants for "source" rectangle (inside the image) //CHANGE FOR SPECIFICS - maybe as parameters taken in (frameNum, rectOffsetY, rectHeight, rectWidth)
         const int WalkFrameCount = 3;       // The number of frames in the animation
         const int EnemyRectOffsetY = 116;   // How far down in the image are the frames?
         const int EnemyRectHeight = 72;     // The height of a single frame

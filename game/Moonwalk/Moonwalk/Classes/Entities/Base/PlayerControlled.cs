@@ -35,6 +35,6 @@ namespace Moonwalk.Classes.Entities.Base
             
         }
 
-        public abstract void Input();
+        public abstract void Input(StoredInput input);
     }
 }

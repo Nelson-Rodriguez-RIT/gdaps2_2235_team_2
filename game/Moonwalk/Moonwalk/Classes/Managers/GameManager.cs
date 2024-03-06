@@ -49,7 +49,6 @@ namespace Moonwalk.Classes.Managers
 
             //Testing for my new entity list concept
             List<Type> types = new List<Type>();
-            types.Add(typeof(Entity));
             types.Add(typeof(TestEntity));
             entities2 = new ListDictionary<Entity>(types);
             entities2.Add(new TestEntity(Vector2.Zero));

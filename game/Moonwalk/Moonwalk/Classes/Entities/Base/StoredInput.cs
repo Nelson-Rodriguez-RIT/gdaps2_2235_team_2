@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Entities.Base
 {
-
+    /// <summary>
+    /// Stores current and previous mouse states, and contains methods to update them
+    /// </summary>
     internal class StoredInput
     {
         private MouseState currentMouse;
@@ -34,6 +36,10 @@ namespace Moonwalk.Classes.Entities.Base
         public KeyboardState PreviousKeyboard
         { get { return previousKeyboard; } }
 
+        /// <summary>
+        /// Updates the mouse and keyboard states
+        /// </summary>
+        /// <exception cref="Exception">This exception occurs if you did not update the previous states in the last update.</exception>
         public void Update()
         {
             if (!hasUpdated)
@@ -49,6 +55,9 @@ namespace Moonwalk.Classes.Entities.Base
 
         }
 
+        /// <summary>
+        /// Updates the previous mouse and keyboard states
+        /// </summary>
         public void UpdatePrevious()
         {
             previousMouse = currentMouse;
@@ -56,6 +65,24 @@ namespace Moonwalk.Classes.Entities.Base
             hasUpdated = false;
         }
 
+        public bool IsPressed(Keys key)
+        {
+            if (currentKeyboard.IsKeyDown(key))
+            {
+                return true;
+            }
 
+            return false;
+        }
+
+        public bool WasPressed(Keys key)
+        {
+            if (previousKeyboard.IsKeyDown(key))
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

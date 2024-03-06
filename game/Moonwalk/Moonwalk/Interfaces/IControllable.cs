@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Moonwalk.Classes.Entities.Base;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace Moonwalk.Interfaces
 {
     internal interface IControllable : IMovable
     {
-        void Input();
+        void Input(StoredInput input);
     }
 }

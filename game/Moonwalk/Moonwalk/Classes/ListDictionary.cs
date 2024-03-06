@@ -35,31 +35,73 @@ namespace Moonwalk.Classes
         /// <param name="listTypes"></param>
         public ListDictionary(List<Type> listTypes)
         {
+            //make sure the types do not inherit from each other
+            foreach (Type type in listTypes)
+            {
+                foreach (Type type2 in listTypes)
+                {
+                    if (type.IsSubclassOf(type2))
+                    {
+                        throw new Exception("No types in the list can inherit from each other");
+                    }
+                }
+            }
+
+
             lists = new();
-            this.listTypes = listTypes;
+            this.listTypes = listTypes;       
+
+            //Add each key to the list
+            foreach (Type type in listTypes)
+            {
+                Type listType = typeof(List<>).MakeGenericType(type);
+
+                IList list = 
+                    (IList)Activator.CreateInstance(listType);
+
+                lists.Add(type, list);
+            }
         }
 
         public void Add(T item)
         {
             Type itemType = item.GetType();
-
-            //If the list of possible types doesn't contain the type, don't add
-            if (listTypes != null && !listTypes.Contains(itemType))
+            
+            if (listTypes != null)
             {
-                return;
-            }
+                //Add to the key if it already exists
+                if (lists.ContainsKey(itemType))
+                {
 
-            if (!lists.ContainsKey(itemType))
+                    lists[itemType].Add(item);
+                }
+                else        //Add new key and list if not
+                {
+                    Type listType = typeof(List<>).MakeGenericType(itemType);
+
+                    lists.Add(itemType,
+                        (IList)Activator.CreateInstance(listType));
+
+
+                    lists[itemType].Add(item);
+                }
+            }
+            else
             {
-                Type listType = typeof(List<>).MakeGenericType(itemType);
-
-                lists.Add(itemType,
-                    (IList)Activator.CreateInstance(listType));
+                //Search for a type that the item being added inherits from
+                foreach (KeyValuePair<Type, IList> keyValuePair in lists)
+                {
+                    //When you find it, add to that list
+                    if (itemType.IsSubclassOf(keyValuePair.Key))
+                    {
+                        lists[keyValuePair.Key].Add(item);
+                        break;
+                    }
+                }
             }
-
-            lists[itemType].Add(item);
         }
 
+        //Edit this method to look like Add (fix inheritance checking)
         public void Remove(T item)
         {
             Type itemType = item.GetType();
@@ -75,6 +117,7 @@ namespace Moonwalk.Classes
             }
         }
 
+        //Add inheritance checking
         public bool Contains(T item)
         {
             Type itemType = item.GetType();

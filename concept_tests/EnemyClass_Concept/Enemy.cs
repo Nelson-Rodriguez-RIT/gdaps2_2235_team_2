@@ -113,10 +113,6 @@ namespace WorkForEnemyClass
         /// <param name="gameTime">Time information</param>
         public void UpdateAnimation(GameTime gameTime)
         {
-            // Handle animation timing
-            // - Add to the time counter
-            // - Check if we have enough "time" to advance the frame
-
             // How much time has passed?  
             timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -141,6 +137,7 @@ namespace WorkForEnemyClass
         {
             if (active)
             {
+                //If enemy should be facing left
                 if (isLeft) //Sprite stuff in here will change
                 {
                     spriteBatch.Draw(
@@ -159,11 +156,12 @@ namespace WorkForEnemyClass
                 0);                             // - Layer depth (unused)
                 }
 
+                //If enemy should be facing right
                 if (!isLeft) //Sprite stuff in here will change
                 {
                     spriteBatch.Draw(
                 asset,
-                spritePosition, //figure out how to fix the issue with the Vector2's
+                spritePosition,
                 new Rectangle( 
                     0, 
                     EnemyRectOffsetY,
@@ -177,6 +175,7 @@ namespace WorkForEnemyClass
                 0);
                 }
 
+                //if enemy has a speed of 0
                 if (speed == 0) //Sprite stuff in here will change
                 {
                     spriteBatch.Draw(asset, position, Color.White);
@@ -190,19 +189,23 @@ namespace WorkForEnemyClass
         /// <param name="gameTime"></param>
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime) //needs a parent class
         {
+            //updates enemy's movement if speed is greater than 0 or not equal to null
             if (speed > 0 || speed != null)
             {
+                //changes position of enemy
                 if (isLeft)
                 {
                     position.Y -= speed;
                     count -= speed;
                 }
+
                 else
                 {
                     position.Y += speed;
                     count += speed;
                 }
 
+                //changes direction of enemy
                 if (count < (- countMax))
                 {
                     isLeft = true;

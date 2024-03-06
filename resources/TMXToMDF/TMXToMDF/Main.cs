@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -98,6 +99,7 @@ namespace TMXToMDF {
                 Location = new Point(380, 87),
                 Size = new Size(60, 25),
             };
+            convertButton.Click += OnConvertButtonClick;
             Controls.Add(convertButton);
         }
 
@@ -128,7 +130,7 @@ namespace TMXToMDF {
                 dialog.RestoreDirectory = true;
 
                 if (dialog.ShowDialog() == DialogResult.OK)
-                    if ((stream = new StreamWriter(dialog.FileName)) != null) {
+                    if ((stream = new StreamWriter($"{dialog.FileName}")) != null) {
                         List<string> data = ExtractTMXData();
 
                         if (data == null) { // Data wasn't extracted successfully
@@ -155,6 +157,7 @@ namespace TMXToMDF {
             Queue<string> rawData = new Queue<string>();
             List<string> formatData = new List<string>();
 
+            MatchCollection parsedData;
             string[] dataBlock;
             string data;
 
@@ -162,9 +165,78 @@ namespace TMXToMDF {
             while ((data = stream.ReadLine()) != null)
                 rawData.Enqueue(data);
 
+            // First line contains TMX formatting data (not useful)
+            rawData.Dequeue();
+
+            // Second line contains general information about the overall tile structure
+            // We care about the 5th/6th numerical values (tilewidth and tileheight)
+            parsedData = Regex.Matches(rawData.Dequeue(), @"[.\d]+");
+            dataBlock = parsedData.Cast<Match>().Select(match => match.Value).ToArray();
+
+            formatData.Add($"SIZE={dataBlock[4]},{dataBlock[5]}");
+
             // Format raw data by extracting useful elements
             while (rawData.Count != 0) {
-                // TODO: Implement already existing code from Moonwalk
+                
+                // Tile data
+                if (rawData.Peek().Contains("<layer")) {
+                    // Ignore tmx file formatting
+                    rawData.Dequeue();
+                    rawData.Dequeue();
+
+                    // Read tile data for each row
+                    List<int[]> tileRows = new List<int[]>();
+                    while (!rawData.Peek().Contains("</data>")) {
+                        // Get relevant numerical data
+                        parsedData = Regex.Matches(rawData.Dequeue(), @"[.\d]+");
+                        dataBlock = parsedData.Cast<Match>().Select(match => match.Value).ToArray();
+
+                        // Extract each tile ID from parsed data
+                        int[] tileRow = new int[dataBlock.Length];
+                        for (int i = 0; i < tileRow.Length; i++)
+                            tileRow[i] = int.Parse(dataBlock[i]);
+
+                        tileRows.Add(tileRow);
+                    }
+
+                    // Format data into a MDF form
+                    formatData.Add("TILESTART");
+
+                    foreach (int[] row in tileRows) {
+                        // Creates a string formated like "ID,ID,ID,ID,ID ... ID,"
+                        string line = "";
+                        foreach (int ID in row)
+                            line += $"{ID},";
+
+                        line.Remove(line.Length - 1); // Removes the last, unneeded comma
+                        formatData.Add(line);
+                    }
+
+                    formatData.Add("TILEEND");
+                }
+
+                else if (rawData.Peek().Contains("<objectgroup")) {
+                    // Ignore tmx file formatting
+                    rawData.Dequeue();
+
+                    while (!rawData.Peek().Contains("</objectgroup")) {
+                        // Get relevant numerical data
+                        parsedData = Regex.Matches(rawData.Dequeue(), @"[.\d]+");
+                        dataBlock = parsedData.Cast<Match>().Select(match => match.Value).ToArray();
+
+                        // We care for the 2nd, 3rd, 4th, and 5th numeric values in the file
+                        // Tiled doesn't allow for special geometry, therefore we assume all
+                        // geometry is basic Terrain
+                        formatData.Add($"Terrain=" +    
+                            $"{(int)float.Parse(dataBlock[1])}," +  // Collision's relative X position
+                            $"{(int)float.Parse(dataBlock[2])}," +  // Collision's relative Y position
+                            $"{(int)float.Parse(dataBlock[3])}," +  // Collision's width
+                            $"{(int)float.Parse(dataBlock[4])}");   // Collision's height
+                    }
+                }
+
+                else // If it isn't one of the above, most likely tmx file formatting data
+                    rawData.Dequeue();
             }
 
 

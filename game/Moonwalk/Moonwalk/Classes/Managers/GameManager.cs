@@ -43,6 +43,7 @@ namespace Moonwalk.Classes.Managers
         private GameManager(ContentManager content) {
             // Get content for loading needs
             Loader.Content = content;
+            storedInput = new StoredInput();
 
             entities = new List<Entity>();
             
@@ -93,7 +94,7 @@ namespace Moonwalk.Classes.Managers
             }
 
             foreach (Entity entity in entities)
-                entity.Update(gt, storedInput.CurrentKeyboard, storedInput.CurrentMouse);
+                entity.Update(gt, storedInput);
 
             storedInput.UpdatePrevious();
         }
@@ -129,7 +130,7 @@ namespace Moonwalk.Classes.Managers
                     Map.LoadMap("TestMap");
 
                     // Loads the "TestEntity" entity
-                    SpawnEntity(typeof(TestEntity), Vector2.Zero);
+                    SpawnEntity(typeof(TestEntity), new Vector2(200, 200));
 
                     break;
             }

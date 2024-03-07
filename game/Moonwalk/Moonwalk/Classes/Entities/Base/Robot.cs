@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Moonwalk.Classes.Entities.Base
 {
+    /*
     internal class Robot : PlayerControlled
     {
         //Change this to private later
@@ -21,4 +22,5 @@ namespace Moonwalk.Classes.Entities.Base
             velocity = input.CurrentMouse.Position.ToVector2() - position;
         }
     }
+    */
 }

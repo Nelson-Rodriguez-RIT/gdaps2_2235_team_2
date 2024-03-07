@@ -23,7 +23,6 @@ namespace Moonwalk.Classes.Entities.Base
 
         // Contains the entity's sprite table and position
         protected Rectangle entity;
-        protected Rectangle hitbox;
 
         protected float gravity;
         /// <summary>
@@ -32,11 +31,11 @@ namespace Moonwalk.Classes.Entities.Base
         protected PhysicsState physicsState;
 
         //linear motion
-        protected Vector2 position;
+        protected Vector2 vectorPosition;
         protected Vector2 velocity;
         protected Vector2 acceleration;
-        protected float maxYVelocity;
-        protected float maxXVelocity;
+        protected int maxYVelocity;
+        protected int maxXVelocity;
 
         //Rotational motion  
         protected double theta;
@@ -48,9 +47,9 @@ namespace Moonwalk.Classes.Entities.Base
         //Animation
         protected Texture2D spriteSheet;
 
-        public virtual Vector2 Position
+        public virtual Point Position
         {
-            get { return position; }
+            get { return entity.Location; }
         }
 
         public virtual Vector2 Velocity
@@ -75,12 +74,13 @@ namespace Moonwalk.Classes.Entities.Base
 
         public Entity(Vector2 position, string directory) {
             physicsState = PhysicsState.Linear;
-            this.position = position;
+            vectorPosition = position;
+            this.entity = new Rectangle(vectorPosition.ToPoint(), new Point(100, 100));
             velocity = Vector2.Zero;
             acceleration = Vector2.Zero;
             gravity = 0f;
-            maxYVelocity = float.MaxValue;
-            maxXVelocity = float.MaxValue;
+            maxYVelocity = int.MaxValue;
+            maxXVelocity = int.MaxValue;
 
             this.directory = directory;
 
@@ -114,13 +114,13 @@ namespace Moonwalk.Classes.Entities.Base
 
         public virtual void Draw(SpriteBatch batch, Vector2 globalScale)
         {
-            activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, position);
+            activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, Position.ToVector2());
         }
 
         protected virtual void LinearMotion(GameTime gameTime)
         {
             velocity += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            vectorPosition += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         /// <summary>
@@ -133,7 +133,7 @@ namespace Moonwalk.Classes.Entities.Base
             angAccel = gravity * 1000 * Math.Cos((Math.PI / 180) * theta);
 
             //Update velocity with acceleration and position with velocity
-            angVelocity += angAccel * gameTime.ElapsedGameTime.TotalSeconds * gameTime.ElapsedGameTime.TotalSeconds;
+            angVelocity += angAccel * gameTime.ElapsedGameTime.TotalSeconds /** gameTime.ElapsedGameTime.TotalSeconds*/;
             theta += angVelocity * gameTime.ElapsedGameTime.TotalSeconds;
 
             //Determine new position using the new angle
@@ -143,7 +143,7 @@ namespace Moonwalk.Classes.Entities.Base
                     ));
 
 
-            position = temp;
+            vectorPosition = temp;
         }
 
         /// <summary>
@@ -156,8 +156,8 @@ namespace Moonwalk.Classes.Entities.Base
 
             //Define the vector between the player and the companion
             Vector2 hypotenuse = new Vector2(
-                pivot.X - position.X,
-                pivot.Y - position.Y);
+                pivot.X - vectorPosition.X,
+                pivot.Y - vectorPosition.Y);
 
             //The magnitude of the previous vector,
             //or the radius of the circle on which the player will rotate

@@ -16,5 +16,10 @@ namespace Moonwalk.Classes.Entities.Base {
         public Terrain(Rectangle hitbox) {
             this.hitbox = hitbox; 
         }
+
+        public override string ToString()
+        {
+            return hitbox.X + " - " + hitbox.Y + " - " + hitbox.Width + " - " + hitbox.Height;
+        }
     }
 }

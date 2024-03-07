@@ -23,6 +23,13 @@ namespace Moonwalk.Classes.Managers
         private static Dictionary<int, Texture2D> sprites;
         private static Vector2 tileSize;
 
+        public static List<Terrain> Geometry 
+        { 
+            get
+            {
+                return geometry;
+            } 
+        }
 
         public static void LoadMap(string mapRootFolderName)
         {

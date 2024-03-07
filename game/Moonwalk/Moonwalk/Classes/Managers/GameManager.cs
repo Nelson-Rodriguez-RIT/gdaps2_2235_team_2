@@ -31,7 +31,7 @@ namespace Moonwalk.Classes.Managers
         private MouseState msState;
 
         // Currently loaded entities
-        private ListDictionary<Entity> entities;
+        private Assortment<Entity> entities;
 
         //Input handling:
         private StoredInput storedInput;
@@ -49,7 +49,7 @@ namespace Moonwalk.Classes.Managers
             List<Type> types = new List<Type>();
             types.Add(typeof(TestEntity));
             types.Add(typeof(Robot));
-            entities = new ListDictionary<Entity>(types);
+            entities = new Assortment<Entity>(types);
 
 
             // Prepares neccessary elements

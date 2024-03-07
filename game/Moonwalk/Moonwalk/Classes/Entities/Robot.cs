@@ -5,10 +5,11 @@ using Microsoft.Xna.Framework;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Entities.Base;
 
-namespace Moonwalk.Classes.Entities.Base
+namespace Moonwalk.Classes.Entities
 {
-    
+
     /// <summary>
     /// The player's trusty companion
     /// </summary>
@@ -46,5 +47,5 @@ namespace Moonwalk.Classes.Entities.Base
             velocity = input.CurrentMouse.Position.ToVector2() - vectorPosition;
         }
     }
-    
+
 }

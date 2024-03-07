@@ -1,4 +1,4 @@
-﻿using Moonwalk.Classes.Entities.Base;
+﻿using Moonwalk.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

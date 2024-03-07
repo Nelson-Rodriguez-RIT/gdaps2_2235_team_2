@@ -14,7 +14,7 @@ namespace Moonwalk.Classes
     /// are automatically sorted into the correct list.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class ListDictionary<T> : IEnumerable<T> where T : class
+    internal class Assortment<T> : IEnumerable<T> where T : class
     {
         private Dictionary<Type, IList> lists;
         private List<Type> listTypes;
@@ -24,7 +24,7 @@ namespace Moonwalk.Classes
             get { return lists[type]; }
         }
 
-        public ListDictionary()
+        public Assortment()
         {
             lists = new();
         }
@@ -33,7 +33,7 @@ namespace Moonwalk.Classes
         /// Use this constructor if you want to limit the types that can be added to the dictionary
         /// </summary>
         /// <param name="listTypes"></param>
-        public ListDictionary(List<Type> listTypes)
+        public Assortment(List<Type> listTypes)
         {
             //make sure the types do not inherit from each other
             foreach (Type type in listTypes)
@@ -42,7 +42,7 @@ namespace Moonwalk.Classes
                 {
                     if (type.IsSubclassOf(type2))
                     {
-                        throw new Exception("No types in the list can inherit from each other");
+                        throw new Exception("No types in the list can inherit from one other");
                     }
                 }
             }
@@ -168,5 +168,7 @@ namespace Moonwalk.Classes
 
             return list.GetEnumerator();
         }
+
+
     }
 }

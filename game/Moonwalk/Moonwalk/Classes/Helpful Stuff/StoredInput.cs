@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Moonwalk.Classes.Entities.Base
+namespace Moonwalk.Classes
 {
     /// <summary>
     /// Stores current and previous mouse states, and contains methods to update them

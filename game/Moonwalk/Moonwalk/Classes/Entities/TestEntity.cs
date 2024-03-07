@@ -7,7 +7,8 @@ using Moonwalk.Classes.Managers;
 using System;
 using System.Collections.Generic;
 
-namespace Moonwalk.Classes.Entities {
+namespace Moonwalk.Classes.Entities
+{
     internal class TestEntity : PlayerControlled {
         protected enum Animations {
             Idle,

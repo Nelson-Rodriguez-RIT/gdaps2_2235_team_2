@@ -8,6 +8,9 @@ using System.Collections.Generic;
 
 namespace Moonwalk.Classes.Entities.Base
 {
+    /// <summary>
+    /// The player controlled character
+    /// </summary>
     internal class Player : PlayerControlled
     {
         protected enum Animations
@@ -23,6 +26,7 @@ namespace Moonwalk.Classes.Entities.Base
             Attack,
         }
 
+        //Make private later
         public Player(Vector2 position) : base(position, "../../../Content/Entities/TestEntity")
         {
             gravity = 10f;
@@ -54,6 +58,19 @@ namespace Moonwalk.Classes.Entities.Base
                 acceleration.X = 10f;
             }
             
+            //Slow down if not pressing anything
+            if (!input.IsPressed(Keys.D) &&
+                !input.IsPressed(Keys.A))
+            { 
+                acceleration.X = -Math.Sign(velocity.X) * 5;
+            }
+
+            //Jump (doesn't work yet)
+            if (input.IsPressed(Keys.Space))
+            {
+                velocity.Y = 20;
+            }
+
         }
 
     }

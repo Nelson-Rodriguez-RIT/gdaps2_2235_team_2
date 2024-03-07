@@ -9,7 +9,9 @@ using Microsoft.Xna.Framework.Input;
 namespace Moonwalk.Classes.Entities.Base
 {
     
-
+    /// <summary>
+    /// The player's trusty companion
+    /// </summary>
     internal class Robot : PlayerControlled
     {
         protected enum Animations
@@ -40,6 +42,7 @@ namespace Moonwalk.Classes.Entities.Base
 
         public override void Input(StoredInput input)
         {
+            //Velocity points towards the mouse cursor
             velocity = input.CurrentMouse.Position.ToVector2() - vectorPosition;
         }
     }

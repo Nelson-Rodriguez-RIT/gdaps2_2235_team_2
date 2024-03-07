@@ -102,11 +102,19 @@ namespace Moonwalk.Classes.Entities.Base
             activeAnimation.UpdateAnimation(gameTime);
         }
 
+        /// <summary>
+        /// Switches the animation currently playing to another
+        /// </summary>
+        /// <param name="animation">The animation to switch to</param>
         protected void SwitchAnimation(Enum animationEnum) {
             activeAnimation = animations[Convert.ToInt32(animationEnum)];
             activeAnimation.Reset();
         }
 
+        /// <summary>
+        /// Switches the animation currently playing to another
+        /// </summary>
+        /// <param name="animation">The animation to switch to</param>
         protected void SwitchAnimation(Animation animation) {
             activeAnimation = animation;
             animation.Reset();
@@ -122,9 +130,15 @@ namespace Moonwalk.Classes.Entities.Base
             activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, Position.ToVector2());
         }
 
+        /// <summary>
+        /// Move an entity linearly
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected virtual void LinearMotion(GameTime gameTime)
         {
+            //Update velocity
             velocity += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //Update position
             vectorPosition += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 

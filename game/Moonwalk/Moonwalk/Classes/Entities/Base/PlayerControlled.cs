@@ -103,6 +103,8 @@ namespace Moonwalk.Classes.Entities.Base
 
             Point lastSafePosition = new Point(Position.X, Position.Y);        //Last point before a collision
 
+            velocity += acceleration * time;                                   //Update velocity
+
             //Vertical
             while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
             {
@@ -110,8 +112,6 @@ namespace Moonwalk.Classes.Entities.Base
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
                 }
-
-                velocity.Y += acceleration.Y * (time * iterationCounter / CollisionAccuracy);       // Increment velocity
 
                 //Cap velocity
                 if (Math.Abs(velocity.Y) > maxYVelocity)
@@ -121,7 +121,11 @@ namespace Moonwalk.Classes.Entities.Base
 
                 vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
 
-                entity = new Rectangle(vectorPosition.ToPoint(), entity.Size);                      // Update hitbox location
+                entity = new Rectangle(
+                    (int)Math.Round(vectorPosition.X), 
+                    (int)Math.Round(vectorPosition.Y), 
+                    entity.Width,
+                    entity.Height);                      // Update hitbox location
 
                 if (CheckCollision())                                                   // Check if there was a collision
                 {
@@ -141,9 +145,12 @@ namespace Moonwalk.Classes.Entities.Base
             while (!CheckCollision() && iterationCounter <= CollisionAccuracy)
             {
                 if (!CheckCollision())
-                    lastSafePosition = new Point(Position.X, Position.Y);      
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);
+                    //oldVelocity = new Vector2(velocity.X, velocity.Y);
+                }                        
 
-                velocity.X += acceleration.X * (time * iterationCounter / CollisionAccuracy);
+                //velocity.X += acceleration.X * (time * iterationCounter / CollisionAccuracy);
 
                 //Cap velocity
                 if (Math.Abs(velocity.X) > maxXVelocity)
@@ -153,7 +160,11 @@ namespace Moonwalk.Classes.Entities.Base
 
                 vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
 
-                entity = new Rectangle(vectorPosition.ToPoint(), entity.Size);
+                entity = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    entity.Width,
+                    entity.Height);
 
                 if (CheckCollision())
                 {

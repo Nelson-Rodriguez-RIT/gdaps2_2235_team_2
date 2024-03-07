@@ -22,6 +22,8 @@ namespace Moonwalk.Classes.Managers
     /// </summary>
     internal sealed class GameManager {
 
+        public static SpriteFont font;
+
         // Game element managers
         private static GameManager _instance = null;
 
@@ -127,7 +129,7 @@ namespace Moonwalk.Classes.Managers
 
                     // Loads the "TestEntity" entity
                     SpawnEntity<Player>(new Vector2(200, 200));
-                    SpawnEntity<Robot>(new Vector2(400, 400));
+                    //SpawnEntity<Robot>(new Vector2(400, 400));
 
 
                     break;

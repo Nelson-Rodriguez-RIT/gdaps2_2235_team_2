@@ -30,10 +30,10 @@ namespace Moonwalk.Classes.Entities
         //Make private later
         public Player(Vector2 position) : base(position, "../../../Content/Entities/TestEntity")
         {
-            gravity = 10f;
+            gravity = 30f;
             acceleration = new Vector2(0, gravity);
-            maxXVelocity = 40;
-            maxYVelocity = 40;
+            maxXVelocity = 100;
+            maxYVelocity = 100;
             physicsState = PhysicsState.Linear;
 
             SwitchAnimation(Animations.Idle);
@@ -61,17 +61,32 @@ namespace Moonwalk.Classes.Entities
 
             //Slow down if not pressing anything
             if (!input.IsPressed(Keys.D) &&
-                !input.IsPressed(Keys.A))
+                !input.IsPressed(Keys.A)
+                && velocity.X != 0)
             {
                 acceleration.X = -Math.Sign(velocity.X) * 5;
+
             }
+
+            
 
             //Jump (doesn't work yet)
-            if (input.IsPressed(Keys.Space))
+            if (input.IsPressed(Keys.Space)
+                && !input.WasPressed(Keys.Space))
             {
-                velocity.Y = 20;
+                velocity.Y = -60;
             }
 
+        }
+
+        public override void Draw(SpriteBatch batch, Vector2 globalScale)
+        {
+            base.Draw(batch, globalScale);
+
+            batch.DrawString(GameManager.font, 
+                $"{vectorPosition.Y} - {velocity.Y} - {acceleration.Y} \n {Position.Y}",
+                new Vector2(400, 50),
+                Color.White);
         }
 
     }

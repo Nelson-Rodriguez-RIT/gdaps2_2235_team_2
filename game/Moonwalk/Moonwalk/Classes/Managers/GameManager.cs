@@ -31,8 +31,7 @@ namespace Moonwalk.Classes.Managers
         private MouseState msState;
 
         // Currently loaded entities
-        private List<Entity> entities;
-        private ListDictionary<Entity> entities2;
+        private ListDictionary<Entity> entities;
 
         //Input handling:
         private StoredInput storedInput;
@@ -44,17 +43,14 @@ namespace Moonwalk.Classes.Managers
             // Get content for loading needs
             Loader.Content = content;
             storedInput = new StoredInput();
-
-            entities = new List<Entity>();
             
 
             //Testing for my new entity list concept
             List<Type> types = new List<Type>();
             types.Add(typeof(TestEntity));
-            entities2 = new ListDictionary<Entity>(types);
-            entities2.Add(new TestEntity(Vector2.Zero));
-            entities2.Add(new TestEntity(Vector2.Zero));
-            entities2.Add(new TestEntity(Vector2.Zero));
+            types.Add(typeof(Robot));
+            entities = new ListDictionary<Entity>(types);
+
 
             // Prepares neccessary elements
             Transition(GameState.Test);
@@ -130,8 +126,9 @@ namespace Moonwalk.Classes.Managers
                     Map.LoadMap("TestMap");
 
                     // Loads the "TestEntity" entity
-                    SpawnEntity<TestEntity>(new Vector2(200, 200));
+                    SpawnEntity<Player>(new Vector2(200, 200));
                     SpawnEntity<Robot>(new Vector2(400, 400));
+
 
                     break;
             }

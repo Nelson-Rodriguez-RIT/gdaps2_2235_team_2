@@ -28,10 +28,12 @@ namespace Moonwalk.Classes.Entities.Base
 
                         return
                     (int)(
-                        Math.Sqrt(
-                            Math.Pow(velocity.X, 2) +
-                            Math.Pow(Velocity.Y, 2))
-                        / 20
+                        Math.Ceiling(
+                            Math.Sqrt(
+                                Math.Pow(velocity.X, 2) +
+                                Math.Pow(Velocity.Y, 2))
+                            / 4.0
+                            )
                     );
                     case PhysicsState.Rotational:
                         if (angVelocity == 0)
@@ -102,6 +104,13 @@ namespace Moonwalk.Classes.Entities.Base
                 }
 
                 velocity.Y += acceleration.Y * (time * iterationCounter / CollisionAccuracy);
+
+                //Cap velocity
+                if (Math.Abs(velocity.Y) > maxYVelocity)
+                {
+                    velocity.Y = maxYVelocity * Math.Sign(velocity.Y);
+                }
+
                 vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);
 
                 entity = new Rectangle(vectorPosition.ToPoint(), entity.Size);
@@ -127,6 +136,13 @@ namespace Moonwalk.Classes.Entities.Base
                     lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
 
                 velocity.X += acceleration.X * (time * iterationCounter / CollisionAccuracy);
+
+                //Cap velocity
+                if (Math.Abs(velocity.X) > maxXVelocity)
+                {
+                    velocity.X = maxXVelocity * Math.Sign(velocity.X);
+                }
+
                 vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
 
                 entity = new Rectangle(vectorPosition.ToPoint(), entity.Size);

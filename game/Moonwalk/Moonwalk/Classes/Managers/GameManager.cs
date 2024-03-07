@@ -130,7 +130,8 @@ namespace Moonwalk.Classes.Managers
                     Map.LoadMap("TestMap");
 
                     // Loads the "TestEntity" entity
-                    SpawnEntity(typeof(TestEntity), new Vector2(200, 200));
+                    SpawnEntity<TestEntity>(new Vector2(200, 200));
+                    SpawnEntity<Robot>(new Vector2(400, 400));
 
                     break;
             }
@@ -141,11 +142,12 @@ namespace Moonwalk.Classes.Managers
         /// <summary>
         /// Handles any neccassray logic when spawning an enemy
         /// </summary>
-        private void SpawnEntity(Type className, Vector2 position) { // No idea if this works by the way :P
+        private void SpawnEntity<T>(Vector2 position) where T : class
+        { // No idea if this works by the way :P
             // FYI you would class this class like:
             // SpawnEntity(typeof(Player), new Vector(0, 0));
             // This would add the class "Player" to the entities list and spawn them at 0, 0
-            entities.Add((Entity) Activator.CreateInstance(className, new object[] {position}));
+            entities.Add((Entity) Activator.CreateInstance(typeof(T), new object[] {position}));
         }
 
         /// <summary>

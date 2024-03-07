@@ -114,6 +114,11 @@ namespace Moonwalk.Classes.Entities.Base
 
         public virtual void Draw(SpriteBatch batch, Vector2 globalScale)
         {
+            if (spriteScale == 0)
+            {
+                throw new Exception("You forgot to set the sprite scale");
+            }
+
             activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, Position.ToVector2());
         }
 

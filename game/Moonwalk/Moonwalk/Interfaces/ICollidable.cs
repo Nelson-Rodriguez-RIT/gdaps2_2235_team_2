@@ -8,6 +8,15 @@ namespace Moonwalk.Interfaces
 {
     internal interface ICollidable : IMovable
     {
-        void CheckCollision();
+        /// <summary>
+        /// The accuracy with which to check (Higher means more checks)
+        /// </summary>
+        int CollisionAccuracy
+        { get; }
+
+        /// <summary>
+        /// Checks if the object has collided with another
+        /// </summary>
+        bool CheckCollision();
     }
 }

@@ -11,14 +11,38 @@ namespace Moonwalk.Classes.Entities.Base
 {
     internal abstract class PlayerControlled : Entity, IControllable, ICollidable
     {
+        public int CollisionAccuracy
+        {
+            get
+            {
+                switch (physicsState)
+                {
+                    case PhysicsState.Linear:
+                        return
+                    (int)(
+                        Math.Sqrt(
+                            Math.Pow(velocity.X, 2) +
+                            Math.Pow(Velocity.Y, 2))
+                        / 2
+                    );
+                    case PhysicsState.Rotational:
+                        return (int)(
+                            Math.Abs(angVelocity / 10));
+                    default:
+                        return 1;
+                }
+            }
+        }
+
         public PlayerControlled(Vector2 position, string directory) : base(position, directory)
         { 
 
         }
 
-        public override void Update(GameTime gameTime, KeyboardState kbState, MouseState msState)
+        public override void Update(GameTime gameTime, StoredInput input)
         {
-            base.Update(gameTime, kbState, msState);
+            Input(input);
+            base.Update(gameTime, input);
         }
 
         public virtual void Movement(GameTime time)
@@ -39,7 +63,14 @@ namespace Moonwalk.Classes.Entities.Base
 
         public virtual void CheckCollision()
         {
+            switch (physicsState)
+            {
+                case PhysicsState.Linear:
 
+                    break;
+                case PhysicsState.Rotational:
+                    break;
+            }
         }
     }
 }

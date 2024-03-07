@@ -9,10 +9,15 @@ namespace Moonwalk.Interfaces
 {
     internal interface IMovable
     {
-
+        /// <summary>
+        /// Velocity of the object
+        /// </summary>
         Vector2 Velocity 
         { get; }
 
+        /// <summary>
+        /// Acceleration of the object
+        /// </summary>
         Vector2 Acceleration
         { get; }
 

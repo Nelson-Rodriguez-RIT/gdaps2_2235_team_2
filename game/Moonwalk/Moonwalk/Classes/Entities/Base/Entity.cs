@@ -26,16 +26,19 @@ namespace Moonwalk.Classes.Entities.Base
         protected Rectangle hitbox;
 
         protected float gravity;
+        /// <summary>
+        /// Determines whether or not an entity moves linearly or radially
+        /// </summary>
         protected PhysicsState physicsState;
 
         //linear motion
         protected Vector2 position;
         protected Vector2 velocity;
         protected Vector2 acceleration;
-        protected float terminalVelocity;
+        protected float maxYVelocity;
         protected float maxXVelocity;
 
-        //Rotational motion  *** This stuff can be moved to the player if we want since we don't have any other rotating things yet ***
+        //Rotational motion  
         protected double theta;
         protected double angVelocity;
         protected double angAccel;
@@ -71,7 +74,14 @@ namespace Moonwalk.Classes.Entities.Base
         protected int spriteScale;
 
         public Entity(Vector2 position, string directory) {
+            physicsState = PhysicsState.Linear;
             this.position = position;
+            velocity = Vector2.Zero;
+            acceleration = Vector2.Zero;
+            gravity = 0f;
+            maxYVelocity = float.MaxValue;
+            maxXVelocity = float.MaxValue;
+
             this.directory = directory;
 
             if (properties == null) { // Load data if it isn't already loaded
@@ -83,12 +93,12 @@ namespace Moonwalk.Classes.Entities.Base
                 spritesheet = bufferedData.spritesheet;
             }
         }
+
         
 
         public virtual void Update(
                 GameTime gameTime, 
-                KeyboardState kbState,
-                MouseState msState) {
+                StoredInput input) {
             activeAnimation.UpdateAnimation(gameTime);
         }
 
@@ -109,7 +119,6 @@ namespace Moonwalk.Classes.Entities.Base
 
         protected virtual void LinearMotion(GameTime gameTime)
         {
-            //Add collision later
             velocity += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
             position += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
@@ -126,8 +135,6 @@ namespace Moonwalk.Classes.Entities.Base
             //Update velocity with acceleration and position with velocity
             angVelocity += angAccel * gameTime.ElapsedGameTime.TotalSeconds * gameTime.ElapsedGameTime.TotalSeconds;
             theta += angVelocity * gameTime.ElapsedGameTime.TotalSeconds;
-            //Collision (doesn't work yet)
-            //theta = RotationalMotionCollision(levelManager.Platforms);
 
             //Determine new position using the new angle
             Vector2 temp = new Vector2(
@@ -135,34 +142,14 @@ namespace Moonwalk.Classes.Entities.Base
                     (float)(pivot.Y + swingRadius * Math.Sin((Math.PI / 180) * (theta))
                     ));
 
-            /*
-            //Check for collision
-            foreach (Collider collider in levelManager.Platforms)
-            {
-                if (new Rectangle(
-                (int)temp.X - hitbox.Width / 2,
-                (int)temp.Y - hitbox.Height / 2,
-                hitbox.Width,
-                hitbox.Height)
-                    .Intersects(collider.Hitbox))
-                {
-                    physicsState = PhysicsState.Linear;
-                    //Convert back to linear motion
-                    velocity = new Vector2(                                       // 3000: random number for downscaling (it was too big)
-                    (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 3000),
-                    (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 3000);
-                    acceleration = new Vector2(
-                        acceleration.X, gravity);
-                    return;
-                }
-            }
-            */ //Collision checking
 
-
-            //update position
             position = temp;
         }
 
+        /// <summary>
+        /// To be called when an entity switches from linear motion to rotational
+        /// </summary>
+        /// <param name="centerOfCircle"></param>
         public void SetRotationalVariables(Vector2 centerOfCircle)
         {
             this.pivot = centerOfCircle;

@@ -7,8 +7,15 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Helpful_Stuff
 {
+    /// <summary>
+    /// A data structure to hold ability cooldowns
+    /// </summary>
+    /// <typeparam name="TEnum"></typeparam>
     internal class AbilityCooldowns<TEnum> where TEnum : Enum
     {
+        /// <summary>
+        /// Stores the name of the ability and its cooldown as the key, value is the time until it can be used again
+        /// </summary>
         private Dictionary<Tuple<TEnum, double>, double> cooldowns;
 
         public AbilityCooldowns(string directory) 

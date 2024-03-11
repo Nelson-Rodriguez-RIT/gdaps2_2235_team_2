@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Helpful_Stuff;
 
 namespace Moonwalk.Classes.Entities
 {
@@ -28,16 +29,31 @@ namespace Moonwalk.Classes.Entities
             Attack,
         }
 
+        protected enum Abilities
+        {
+            Tether,
+            Gravity
+        }
+
+        /// <summary>
+        /// Cooldowns of each ability
+        /// </summary>
+        protected AbilityCooldowns<Abilities> cooldowns;
+
         //Change this to private later
         public Robot(Vector2 position) : base(position, "../../../Content/Entities/TestEntity")
         {
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);
             spriteScale = 4;
+            
+            
+            cooldowns = new AbilityCooldowns<Abilities>(directory);
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
+            cooldowns.Update(gameTime);
             base.Update(gameTime, input);
         }
 

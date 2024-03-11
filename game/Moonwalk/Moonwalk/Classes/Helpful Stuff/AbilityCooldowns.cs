@@ -23,7 +23,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             //get cooldowns from file
             //string fileName = directory + "/cooldowns";
 
-            cooldowns = new ();
+            cooldowns = new Dictionary<Tuple<TEnum, double>, double>();
 
             TEnum[] enumArray = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToArray();
 

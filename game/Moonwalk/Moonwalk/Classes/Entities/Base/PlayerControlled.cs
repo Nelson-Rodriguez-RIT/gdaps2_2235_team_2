@@ -150,8 +150,6 @@ namespace Moonwalk.Classes.Entities.Base
                     //oldVelocity = new Vector2(velocity.X, velocity.Y);
                 }                        
 
-                //velocity.X += acceleration.X * (time * iterationCounter / CollisionAccuracy);
-
                 //Cap velocity
                 if (Math.Abs(velocity.X) > maxXVelocity)
                 {

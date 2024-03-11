@@ -45,7 +45,7 @@ namespace Moonwalk.Classes.Managers
             // Get content for loading needs
             Loader.Content = content;
             storedInput = new StoredInput();
-            
+            Camera.GlobalOffset = WindowManager.Instance.Center;
 
             //Testing for my new entity list concept
             List<Type> types = new List<Type>();
@@ -140,7 +140,7 @@ namespace Moonwalk.Classes.Managers
 
                     // Loads the "TestEntity" entity
                     SpawnEntity<Player>(new Vector2(200, 200));
-                    //SpawnEntity<Robot>(new Vector2(400, 400));
+                    SpawnEntity<Robot>(new Vector2(400, 400));
 
 
                     break;

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Classes.Helpful_Stuff;
+using Moonwalk.Classes.Managers;
 
 namespace Moonwalk.Classes.Entities
 {
@@ -45,7 +46,7 @@ namespace Moonwalk.Classes.Entities
         {
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);
-            spriteScale = 4;
+            spriteScale = 2;
             
             
             cooldowns = new AbilityCooldowns<Abilities>(directory);
@@ -60,7 +61,8 @@ namespace Moonwalk.Classes.Entities
         public override void Input(StoredInput input)
         {
             //Velocity points towards the mouse cursor
-            velocity = input.CurrentMouse.Position.ToVector2() - vectorPosition;
+
+            velocity = input.CurrentMouse.Position.ToVector2() - Camera.ApplyOffset(vectorPosition);
         }
     }
 

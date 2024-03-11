@@ -57,8 +57,8 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         public PlayerControlled(Vector2 position, string directory) : base(position, directory)
-        { 
-
+        {
+            physicsState = PhysicsState.Linear;
         }
 
         public override void Update(GameTime gameTime, StoredInput input)

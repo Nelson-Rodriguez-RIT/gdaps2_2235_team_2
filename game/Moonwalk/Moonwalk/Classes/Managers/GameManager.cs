@@ -80,11 +80,20 @@ namespace Moonwalk.Classes.Managers
             switch (state) {
                 case GameState.Test:
 
-                    // This is just testing the Camera (using the map for reference)
-                    if (kbState.IsKeyDown(Keys.A))
-                        cameraTarget.X -= (float)(100 * gt.ElapsedGameTime.TotalSeconds);
-                    if (kbState.IsKeyDown(Keys.D))
-                        cameraTarget.X += (float)(100 * gt.ElapsedGameTime.TotalSeconds);
+                    
+                    // Set camera target to player's position
+                    // 
+                    // I wanted to have this in the player class but couldn't get it to work this time
+                    // - Dante
+                    foreach  (Entity entity in entities)
+                    {
+                        if (entity is Player)
+                        {
+                            cameraTarget = new Vector2(entity.Position.X, entity.Position.Y);
+                            break;
+                        }
+                    }
+                    
 
                     Camera.VectorTarget = cameraTarget;
 
@@ -92,7 +101,9 @@ namespace Moonwalk.Classes.Managers
             }
 
             foreach (Entity entity in entities)
+            {
                 entity.Update(gt, storedInput);
+            }
 
             storedInput.UpdatePrevious();
         }
@@ -122,7 +133,7 @@ namespace Moonwalk.Classes.Managers
         private void Transition(GameState nextState) {
             switch (nextState) {
                 case GameState.Test:
-                    cameraTarget = new Vector2(0, 0);
+                    
 
                     // Loads the "TestMap" map
                     Map.LoadMap("TestMap");

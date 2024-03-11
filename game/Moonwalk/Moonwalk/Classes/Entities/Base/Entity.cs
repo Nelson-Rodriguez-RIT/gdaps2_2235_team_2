@@ -47,6 +47,11 @@ namespace Moonwalk.Classes.Entities.Base
         //Animation
         protected Texture2D spriteSheet;
 
+        public virtual Rectangle Hitbox
+        {
+            get { return entity; }
+        }
+
         public virtual Point Position
         {
             get { return entity.Location; }
@@ -127,7 +132,10 @@ namespace Moonwalk.Classes.Entities.Base
                 throw new Exception("You forgot to set the sprite scale");
             }
 
-            activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, Position.ToVector2());
+            //apply offset
+            Vector2 temp = Camera.ApplyOffset(vectorPosition);
+
+            activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, temp);
         }
 
         /// <summary>
@@ -140,6 +148,9 @@ namespace Moonwalk.Classes.Entities.Base
             velocity += acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
             //Update position
             vectorPosition += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            //Apply offset
+            vectorPosition = Camera.ApplyOffset(vectorPosition);
         }
 
         /// <summary>

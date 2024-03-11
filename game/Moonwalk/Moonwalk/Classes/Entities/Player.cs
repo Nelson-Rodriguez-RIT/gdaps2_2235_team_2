@@ -30,11 +30,10 @@ namespace Moonwalk.Classes.Entities
         //Make private later
         public Player(Vector2 position) : base(position, "../../../Content/Entities/TestEntity")
         {
-            gravity = 30f;
+            gravity = 50f;
             acceleration = new Vector2(0, gravity);
-            maxXVelocity = 100;
-            maxYVelocity = 100;
-            physicsState = PhysicsState.Linear;
+            maxXVelocity = 60;
+            maxYVelocity = 100;           
 
             SwitchAnimation(Animations.Idle);
             spriteScale = 4;
@@ -42,7 +41,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            base.Update(gameTime, input);
+            base.Update(gameTime, input);          
         }
 
         public override void Input(StoredInput input)
@@ -51,12 +50,14 @@ namespace Moonwalk.Classes.Entities
             if (input.IsPressed(Keys.A) &&
                 !input.IsPressed(Keys.D))
             {
-                acceleration.X = -10f;
+                // acceleration is higher if the player is moving in the opposite direction for smoother movement
+                acceleration.X = velocity.X > 0 ? -maxXVelocity * 2.5f : -maxXVelocity * 2;
             }
             else if (input.IsPressed(Keys.D) &&
                 !input.IsPressed(Keys.A))
             {
-                acceleration.X = 10f;
+                // acceleration is higher if the player is moving in the opposite direction for smoother movement
+                acceleration.X = velocity.X < 0 ? maxXVelocity * 2.5f : maxXVelocity * 2;
             }
 
             //Slow down if not pressing anything
@@ -64,13 +65,13 @@ namespace Moonwalk.Classes.Entities
                 !input.IsPressed(Keys.A)
                 && velocity.X != 0)
             {
-                acceleration.X = -Math.Sign(velocity.X) * 5;
+                acceleration.X = -Math.Sign(velocity.X) * 20;
 
             }
 
             
 
-            //Jump (doesn't work yet)
+            //Jump (doesn't work yet, needs check for grounded)
             if (input.IsPressed(Keys.Space)
                 && !input.WasPressed(Keys.Space))
             {

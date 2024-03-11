@@ -42,8 +42,8 @@ namespace Moonwalk.Classes.Managers {
         public static Rectangle ApplyOffset(Rectangle position, Vector2 offset) {
             if (focusStatic)
                 return new Rectangle(
-                   (position.X + (int)offset.X) - (int)vectorTarget.X + (int)globalOffset.X,
-                   (position.Y + (int)offset.Y) - (int)vectorTarget.Y + (int)globalOffset.Y,
+                   (position.X + (int)offset.X) - (int)vectorTarget.X + (int)globalOffset.X + (int)WindowManager.Instance.Center.X,
+                   (position.Y + (int)offset.Y) - (int)vectorTarget.Y + (int)globalOffset.Y + (int)WindowManager.Instance.Center.Y,
                    position.Width,
                    position.Height);
             else
@@ -61,9 +61,11 @@ namespace Moonwalk.Classes.Managers {
 
         public static Vector2 ApplyOffset(Vector2 position, Vector2 offset) {
             if (focusStatic)
-                return new Vector2(
-                    (position.X + offset.X) - vectorTarget.X + globalOffset.X,
-                    (position.Y + offset.Y) - vectorTarget.Y + globalOffset.Y);
+                return new Vector2( 
+                    (position.X + offset.X) - vectorTarget.X + globalOffset.X + 
+                    (int)WindowManager.Instance.Center.X,   //apply offset from the center of the window
+                    (position.Y + offset.Y) - vectorTarget.Y + globalOffset.Y + 
+                    (int)WindowManager.Instance.Center.Y);  //apply offset from the center of the window
             else
                 return new Vector2(
                     (position.X + offset.X) - rectTarget.X + globalOffset.X,

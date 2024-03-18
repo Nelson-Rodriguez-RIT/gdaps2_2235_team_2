@@ -3,13 +3,18 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
 using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Entities
 {
+    public delegate List<IMovable> OnGravityAbilityUsed();
+    public delegate Vector2 GetRobotPosition();
+
     /// <summary>
     /// The player controlled character
     /// </summary>
@@ -24,6 +29,20 @@ namespace Moonwalk.Classes.Entities
             Hit,
             Death
         }
+
+        protected enum Abilities
+        {
+            Tether,
+            Gravity
+        }
+
+        /// <summary>
+        /// Cooldowns of each ability
+        /// </summary>
+        protected AbilityCooldowns<Abilities> cooldowns;
+
+        public event OnGravityAbilityUsed OnGravityAbilityUsed;
+        public event GetRobotPosition GetRobotPosition;
 
         /// <summary>
         /// Determines if the entity is grounded or not
@@ -51,10 +70,13 @@ namespace Moonwalk.Classes.Entities
 
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
+
+            cooldowns = new AbilityCooldowns<Abilities>(directory);
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
+            cooldowns.Update(gameTime);
             base.Update(gameTime, input);          
         }
 
@@ -85,12 +107,48 @@ namespace Moonwalk.Classes.Entities
 
             
 
-            //Jump (doesn't work yet, needs check for grounded)
+            //Jump 
             if (input.IsPressed(Keys.Space)
                 && !input.WasPressed(Keys.Space) 
                 && Grounded)
             {
                 velocity.Y = -60;
+            }
+
+                //Robot abilities:
+
+            //Gravity ability
+            if (input.CurrentMouse.LeftButton == ButtonState.Pressed
+                && input.PreviousMouse.LeftButton == ButtonState.Released
+                && cooldowns.UseAbility(Abilities.Gravity))
+            {
+                //Get a list of movables from the game manager
+                List<IMovable> movables = OnGravityAbilityUsed();
+
+                //Make all entities move towards this
+                foreach (IMovable movable in movables)
+                {
+                    //Check that entity is within range
+                    if (Math.Sqrt(
+                            Math.Pow(movable.Position.X - Position.X, 2) +
+                            Math.Pow(movable.Position.Y - Position.Y, 2)
+                            )
+                        < 375)
+                        movable.Impulse(GetRobotPosition());
+                }
+            }
+
+            //Tether ability - planning to have this be able to swing blocks and stuff too, maybe send back projectiles?
+            if (input.CurrentMouse.RightButton == ButtonState.Pressed
+                && input.PreviousMouse.RightButton == ButtonState.Released
+                && cooldowns.UseAbility(Abilities.Tether))
+            {
+                SetRotationalVariables(GetRobotPosition());
+            }
+            else if (input.CurrentMouse.RightButton == ButtonState.Released
+                && input.PreviousMouse.RightButton == ButtonState.Pressed)
+            {
+                SetLinearVariables();
             }
 
         }
@@ -105,5 +163,6 @@ namespace Moonwalk.Classes.Entities
                 Color.White);
         }
 
+        
     }
 }

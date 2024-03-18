@@ -169,6 +169,20 @@ namespace Moonwalk.Classes
             return list.GetEnumerator();
         }
 
+        public List<T2> GetAllOfType<T2>() where T2 : class
+        {
+            List<T> list = new List<T>();
 
+            foreach (T item in this)
+            {
+                //Check if the entity is the wanted type
+                if (item is T2 || item.GetType().IsSubclassOf(typeof(T2)))
+                {
+                    list.Add(item);
+                }
+            }
+
+            return list.Cast<T2>().ToList();
+        }
     }
 }

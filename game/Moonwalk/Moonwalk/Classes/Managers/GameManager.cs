@@ -175,7 +175,12 @@ namespace Moonwalk.Classes.Managers
                     // Loads the test entities
                     SpawnEntity<Player>(new Vector2(200, 200));
                     SpawnEntity<Robot>(new Vector2(400, 400));
-                    ((Robot)entities[typeof(Robot)][0]).getGravityPulseTargets += this.GetAllEntitiesOfType<IMovable>;
+
+                    Robot robot = ((Robot)entities[typeof(Robot)][0]);
+                    Player player = ((Player)entities[typeof(Player)][0]);
+
+                    player.GetRobotPosition += robot.GetPosition;
+                    player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
 
                     break;
 
@@ -186,7 +191,12 @@ namespace Moonwalk.Classes.Managers
                     // Loads player + companion
                     SpawnEntity<Player>(new Vector2(48, 48));
                     SpawnEntity<Robot>(new Vector2(128, 48));
-                    ((Robot)entities[typeof(Robot)][0]).getGravityPulseTargets += this.GetAllEntitiesOfType<IMovable>;
+
+                    robot = ((Robot)entities[typeof(Robot)][0]);
+                    player = ((Player)entities[typeof(Player)][0]);
+
+                    player.GetRobotPosition += robot.GetPosition;
+                    player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
 
                     break;
             }
@@ -213,21 +223,7 @@ namespace Moonwalk.Classes.Managers
             entities.Remove(entity);
         }
 
-        private List<T> GetAllEntitiesOfType<T>() where T : class
-        {
-            List<Entity> entityList = new List<Entity>();
-
-            foreach (Entity entity in entities)
-            {
-                //Check if the entity is the wanted type
-                if (entity is T || entity.GetType().IsSubclassOf(typeof(T)))
-                {
-                    entityList.Add(entity);
-                }
-            }
-
-            return entityList.Cast<T>().ToList();
-        }
+        
     }
 
 

@@ -211,7 +211,8 @@ namespace Moonwalk.Classes.Entities.Base
         protected virtual void RotationalMotion(GameTime gameTime)
         {
             //Determine the angular acceleration using the perpendicular component of gravity
-            angAccel = gravity * 1000 * Math.Cos((Math.PI / 180) * theta);
+            angAccel = gravity * 10 * Math.Cos((Math.PI / 180) * theta);
+            //angAccel -= Math.Sign(angAccel * 5);
 
             //Update velocity with acceleration and position with velocity
             angVelocity += angAccel * gameTime.ElapsedGameTime.TotalSeconds /** gameTime.ElapsedGameTime.TotalSeconds*/;
@@ -231,8 +232,9 @@ namespace Moonwalk.Classes.Entities.Base
         /// To be called when an entity switches from linear motion to rotational
         /// </summary>
         /// <param name="centerOfCircle"></param>
-        protected void SetRotationalVariables(Vector2 centerOfCircle)
+        public void SetRotationalVariables(Vector2 centerOfCircle)
         {
+            this.physicsState = PhysicsState.Rotational;
             this.pivot = centerOfCircle;
 
             //Define the vector between the player and the companion
@@ -291,8 +293,21 @@ namespace Moonwalk.Classes.Entities.Base
                 angleBetween);
 
             //Set the initial angular velocity
-            angVelocity = (newVMag * 3000 * -Math.Sign(hypotenuse.X)) / swingRadius;
+            angVelocity = (newVMag *1000 * -Math.Sign(hypotenuse.X)) / swingRadius;
 
+        }
+
+        public void SetLinearVariables()
+        {
+            physicsState = PhysicsState.Linear;
+            //This determines the velocity the player will have after 
+            //they stop swinging by converting the angular velocity
+            //back to linear velocity.
+            velocity = new Vector2(                                       // 3000: random number for downscaling (it was too big)
+                (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 600),
+                (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 600);
+            acceleration = new Vector2(
+                acceleration.X, gravity);
         }
     }
 }

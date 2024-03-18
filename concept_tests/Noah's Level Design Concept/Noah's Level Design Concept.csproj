@@ -12,6 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Battery.cs" />
+    <Compile Remove="Class1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Icon.ico" />

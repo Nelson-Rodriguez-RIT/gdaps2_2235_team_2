@@ -13,6 +13,8 @@ using Moonwalk.Interfaces;
 namespace Moonwalk.Classes.Entities
 {
     public delegate List<IMovable> GetMovables();
+    public delegate void SwingStart();
+    public delegate void SwingStop();
 
     /// <summary>
     /// The player's trusty companion
@@ -39,6 +41,8 @@ namespace Moonwalk.Classes.Entities
         }
 
         public event GetMovables getGravityPulseTargets;
+        public event SwingStart swingStart;
+        public event SwingStop swingStop;
 
         /// <summary>
         /// Cooldowns of each ability
@@ -69,7 +73,8 @@ namespace Moonwalk.Classes.Entities
 
             //Gravity ability
             if (input.CurrentMouse.LeftButton == ButtonState.Pressed
-                && input.PreviousMouse.LeftButton == ButtonState.Released)
+                && input.PreviousMouse.LeftButton == ButtonState.Released
+                && cooldowns.UseAbility(Abilities.Gravity))
             {
                 //Get a list of movables from the game manager
                 List<IMovable> movables = getGravityPulseTargets();
@@ -85,6 +90,14 @@ namespace Moonwalk.Classes.Entities
                         < 375)  
                     movable.Impulse(vectorPosition);
                 }
+            }
+
+            //Tether ability - planning to have this be able to swing blocks and stuff too, maybe send back projectiles?
+            if (input.CurrentMouse.RightButton == ButtonState.Pressed
+                && input.PreviousMouse.RightButton == ButtonState.Released
+                && cooldowns.UseAbility(Abilities.Tether))
+            {
+
             }
         }
 

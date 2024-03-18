@@ -95,6 +95,17 @@ namespace Moonwalk.Classes.Entities.Base
             return temp;
         }
 
+        /// <summary>
+        /// Determines if the entity collided with terrain
+        /// </summary>
+        /// <returns>True if a collision occurred</returns>
+        public virtual bool CheckCollision(Rectangle rectangle)
+        {
+            bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(rectangle));
+
+            return temp;
+        }
+
         protected override void LinearMotion(GameTime gt) 
         {
             float time = (float)gt.ElapsedGameTime.TotalSeconds;

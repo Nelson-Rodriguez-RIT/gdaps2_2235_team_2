@@ -12,7 +12,7 @@ using Moonwalk.Interfaces;
 
 namespace Moonwalk.Classes.Entities
 {
-    public delegate List<IMovable> GetEntitiesInProximity();
+    public delegate List<IMovable> GetMovables();
 
     /// <summary>
     /// The player's trusty companion
@@ -38,7 +38,7 @@ namespace Moonwalk.Classes.Entities
             Gravity
         }
 
-        public event GetEntitiesInProximity gravityPulse;
+        public event GetMovables getGravityPulseTargets;
 
         /// <summary>
         /// Cooldowns of each ability
@@ -67,11 +67,12 @@ namespace Moonwalk.Classes.Entities
             //Velocity points towards the mouse cursor
             velocity = input.CurrentMouse.Position.ToVector2() - Camera.ApplyOffset(vectorPosition);
 
+            //Gravity ability
             if (input.CurrentMouse.LeftButton == ButtonState.Pressed
                 && input.PreviousMouse.LeftButton == ButtonState.Released)
             {
                 //Get a list of movables from the game manager
-                List<IMovable> movables = gravityPulse();
+                List<IMovable> movables = getGravityPulseTargets();
 
                 //Make all entities move towards this
                 foreach (IMovable movable in movables)

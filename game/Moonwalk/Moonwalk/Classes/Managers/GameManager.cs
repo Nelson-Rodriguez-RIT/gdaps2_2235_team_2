@@ -144,7 +144,7 @@ namespace Moonwalk.Classes.Managers
                     // Loads the test entities
                     SpawnEntity<Player>(new Vector2(200, 200));
                     SpawnEntity<Robot>(new Vector2(400, 400));
-                    ((Robot)entities[typeof(Robot)][0]).gravityPulse += this.GetAllEntitiesOfType<IMovable>;
+                    ((Robot)entities[typeof(Robot)][0]).getGravityPulseTargets += this.GetAllEntitiesOfType<IMovable>;
 
                     break;
             }

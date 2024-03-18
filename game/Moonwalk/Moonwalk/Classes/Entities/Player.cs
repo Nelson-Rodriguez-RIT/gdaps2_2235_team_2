@@ -66,7 +66,7 @@ namespace Moonwalk.Classes.Entities
             gravity = 50f;
             acceleration = new Vector2(0, gravity);
             maxXVelocity = 60;
-            maxYVelocity = 100;           
+            maxYVelocity = 70;           
 
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
@@ -139,16 +139,22 @@ namespace Moonwalk.Classes.Entities
             }
 
             //Tether ability - planning to have this be able to swing blocks and stuff too, maybe send back projectiles?
-            if (input.CurrentMouse.RightButton == ButtonState.Pressed
+            if (physicsState == PhysicsState.Linear
+                && input.CurrentMouse.RightButton == ButtonState.Pressed
                 && input.PreviousMouse.RightButton == ButtonState.Released
                 && cooldowns.UseAbility(Abilities.Tether))
             {
-                SetRotationalVariables(GetRobotPosition());
+                //if (cooldowns.UseAbility(Abilities.Tether)) 
+                //{
+                    SetRotationalVariables(GetRobotPosition());
+                //}
+
             }
             else if (input.CurrentMouse.RightButton == ButtonState.Released
                 && input.PreviousMouse.RightButton == ButtonState.Pressed)
             {
-                SetLinearVariables();
+                if (physicsState == PhysicsState.Rotational)
+                    SetLinearVariables();
             }
 
         }

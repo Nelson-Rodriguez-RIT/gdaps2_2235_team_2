@@ -41,8 +41,10 @@ namespace Moonwalk {
         }
 
         protected override void LoadContent() {
+
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            gameManager = GameManager.GetInstance(Content);
+            gameManager = GameManager.GetInstance(Content, _graphics.GraphicsDevice);
             GameManager.font = Content.Load<SpriteFont>("File");
         }
 

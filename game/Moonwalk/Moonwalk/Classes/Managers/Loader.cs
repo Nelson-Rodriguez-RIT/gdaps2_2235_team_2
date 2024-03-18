@@ -192,7 +192,7 @@ namespace Moonwalk.Classes.Managers {
                         break;
 
                     case '&': // Set AnimationStyle
-                        if (fileData.Dequeue().Contains("Vetical"))
+                        if (fileData.Dequeue().Contains("Vertical"))
                             style = AnimationStyle.Vertical;
                         break;
 

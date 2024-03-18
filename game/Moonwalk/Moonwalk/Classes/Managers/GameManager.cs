@@ -28,6 +28,9 @@ namespace Moonwalk.Classes.Managers
 
         public static SpriteFont font;
 
+        private GraphicsDevice graphics;
+        private bool displayHitboxes = false;
+
         // Game element managers
         private static GameManager _instance = null;
 
@@ -45,11 +48,13 @@ namespace Moonwalk.Classes.Managers
         // For testing purposes
         private Vector2 cameraTarget;
 
-        private GameManager(ContentManager content) {
+        private GameManager(ContentManager content, GraphicsDevice graphics) {
             // Get content for loading needs
             Loader.Content = content;
+            this.graphics = graphics;
             storedInput = new StoredInput();
             Camera.GlobalOffset = WindowManager.Instance.Center;
+
 
             //Testing for my new entity list concept
             List<Type> types = new List<Type>();
@@ -67,9 +72,9 @@ namespace Moonwalk.Classes.Managers
         /// Gets GameManager's singleton instance
         /// </summary>
         /// <returns>A GameManager object</returns>
-        public static GameManager GetInstance(ContentManager content) {
+        public static GameManager GetInstance(ContentManager content, GraphicsDevice graphics) {
             if (_instance == null)
-                _instance = new GameManager(content);
+                _instance = new GameManager(content, graphics);
 
             return _instance;
         }
@@ -80,6 +85,11 @@ namespace Moonwalk.Classes.Managers
         public void Update(GameTime gt) {
             // Get user input
             storedInput.Update();
+
+            // Doesn't work atm
+            if (storedInput.CurrentKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw hitboxes
+                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F2))
+                displayHitboxes = !displayHitboxes;
 
             switch (state) {
                 case GameState.Test:
@@ -123,6 +133,7 @@ namespace Moonwalk.Classes.Managers
                 entity.Update(gt, storedInput);
             }
 
+
             storedInput.UpdatePrevious();
         }
 
@@ -140,8 +151,13 @@ namespace Moonwalk.Classes.Managers
             Map.Draw(batch, globalScale);
 
             // Elements drawn ever iteration
-            foreach (Entity entity in entities)
+            foreach (Entity entity in entities) {
                 entity.Draw(batch, globalScale);
+
+                if (displayHitboxes)
+                    entity.DrawHitbox(batch, globalScale, graphics);
+            }
+                
         }
 
         /// <summary>
@@ -165,11 +181,11 @@ namespace Moonwalk.Classes.Managers
 
                 case GameState.Demo:
 
-                    Map.LoadMap("TestMap");
+                    Map.LoadMap("Demo");
 
                     // Loads player + companion
-                    SpawnEntity<Player>(new Vector2(200, 200));
-                    SpawnEntity<Robot>(new Vector2(400, 400));
+                    SpawnEntity<Player>(new Vector2(48, 48));
+                    SpawnEntity<Robot>(new Vector2(128, 48));
                     ((Robot)entities[typeof(Robot)][0]).getGravityPulseTargets += this.GetAllEntitiesOfType<IMovable>;
 
                     break;

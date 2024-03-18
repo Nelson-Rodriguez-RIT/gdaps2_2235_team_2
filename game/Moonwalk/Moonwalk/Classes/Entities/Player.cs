@@ -18,14 +18,11 @@ namespace Moonwalk.Classes.Entities
         protected enum Animations
         {
             Idle,
-            Idle_Blink,
-            Walk,
             Run,
-            Crouch,
-            Jump,
-            Hurt,
-            Death,
             Attack,
+            Shoot,
+            Hit,
+            Death
         }
 
         /// <summary>
@@ -45,7 +42,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         //Make private later
-        public Player(Vector2 position) : base(position, "../../../Content/Entities/TestEntity")
+        public Player(Vector2 position) : base(position, "../../../Content/Entities/Player")
         {
             gravity = 50f;
             acceleration = new Vector2(0, gravity);
@@ -53,7 +50,7 @@ namespace Moonwalk.Classes.Entities
             maxYVelocity = 100;           
 
             SwitchAnimation(Animations.Idle);
-            spriteScale = 4;
+            spriteScale = 1;
         }
 
         public override void Update(GameTime gameTime, StoredInput input)

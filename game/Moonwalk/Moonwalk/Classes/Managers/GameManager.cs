@@ -4,9 +4,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities;
 using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +52,7 @@ namespace Moonwalk.Classes.Managers
 
             //Testing for my new entity list concept
             List<Type> types = new List<Type>();
-            types.Add(typeof(TestEntity));
+            types.Add(typeof(Player));
             types.Add(typeof(Robot));
             entities = new Assortment<Entity>(types);
 
@@ -138,10 +141,10 @@ namespace Moonwalk.Classes.Managers
                     // Loads the "TestMap" map
                     Map.LoadMap("TestMap");
 
-                    // Loads the "TestEntity" entity
+                    // Loads the test entities
                     SpawnEntity<Player>(new Vector2(200, 200));
                     SpawnEntity<Robot>(new Vector2(400, 400));
-
+                    ((Robot)entities[typeof(Robot)][0]).gravityPulse += this.GetAllEntitiesOfType<IMovable>;
 
                     break;
             }
@@ -166,6 +169,22 @@ namespace Moonwalk.Classes.Managers
         /// <param name="entity">Entity to despawn</param>
         private void DespawnEntity(Entity entity) {
             entities.Remove(entity);
+        }
+
+        private List<T> GetAllEntitiesOfType<T>() where T : class
+        {
+            List<Entity> entityList = new List<Entity>();
+
+            foreach (Entity entity in entities)
+            {
+                //Check if the entity is the wanted type
+                if (entity is T || entity.GetType().IsSubclassOf(typeof(T)))
+                {
+                    entityList.Add(entity);
+                }
+            }
+
+            return entityList.Cast<T>().ToList();
         }
     }
 

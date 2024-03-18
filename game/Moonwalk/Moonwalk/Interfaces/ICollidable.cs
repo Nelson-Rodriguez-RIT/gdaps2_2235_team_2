@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Interfaces
 {
-    internal interface ICollidable : IMovable
+    public interface ICollidable : IMovable
     {
         /// <summary>
         /// The accuracy with which to check (Higher means more checks)

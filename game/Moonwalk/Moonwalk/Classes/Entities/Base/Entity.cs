@@ -180,7 +180,7 @@ namespace Moonwalk.Classes.Entities.Base
         /// To be called when an entity switches from linear motion to rotational
         /// </summary>
         /// <param name="centerOfCircle"></param>
-        public void SetRotationalVariables(Vector2 centerOfCircle)
+        protected void SetRotationalVariables(Vector2 centerOfCircle)
         {
             this.pivot = centerOfCircle;
 

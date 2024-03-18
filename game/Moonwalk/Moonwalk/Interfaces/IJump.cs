@@ -9,7 +9,7 @@ namespace Moonwalk.Interfaces
     /// <summary>
     /// An entity that can jump
     /// </summary>
-    internal interface IJump
+    public interface IJump
     {
         bool Grounded
         { get; }

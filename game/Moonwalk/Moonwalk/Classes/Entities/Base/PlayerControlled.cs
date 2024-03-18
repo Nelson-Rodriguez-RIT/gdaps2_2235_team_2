@@ -211,5 +211,10 @@ namespace Moonwalk.Classes.Entities.Base
                 LinearMotion(gt);
             }
         }
+
+        public void Impulse(Vector2 destination)
+        {
+            velocity = (destination - vectorPosition) / 4f;
+        }
     }
 }

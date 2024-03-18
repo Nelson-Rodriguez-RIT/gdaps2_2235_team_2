@@ -8,9 +8,11 @@ using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
+using Moonwalk.Interfaces;
 
 namespace Moonwalk.Classes.Entities
 {
+    public delegate List<IMovable> GetEntitiesInProximity();
 
     /// <summary>
     /// The player's trusty companion
@@ -35,6 +37,8 @@ namespace Moonwalk.Classes.Entities
             Tether,
             Gravity
         }
+
+        public event GetEntitiesInProximity gravityPulse;
 
         /// <summary>
         /// Cooldowns of each ability
@@ -61,9 +65,29 @@ namespace Moonwalk.Classes.Entities
         public override void Input(StoredInput input)
         {
             //Velocity points towards the mouse cursor
-
             velocity = input.CurrentMouse.Position.ToVector2() - Camera.ApplyOffset(vectorPosition);
+
+            if (input.CurrentMouse.LeftButton == ButtonState.Pressed
+                && input.PreviousMouse.LeftButton == ButtonState.Released)
+            {
+                //Get a list of movables from the game manager
+                List<IMovable> movables = gravityPulse();
+
+                //Make all entities move towards this
+                foreach (IMovable movable in movables)
+                {
+                    //Check that entity is within range
+                    if (Math.Sqrt(
+                            Math.Pow(movable.Position.X - Position.X, 2) +
+                            Math.Pow(movable.Position.Y - Position.Y, 2)
+                            )
+                        < 375)  
+                    movable.Impulse(vectorPosition);
+                }
+            }
         }
+
+        
     }
 
 }

@@ -118,6 +118,7 @@ namespace Moonwalk.Classes.Managers
                     foreach (Entity entity in entities) {
                         if (entity is Player) {
                             cameraTarget = new Vector2(entity.Position.X, entity.Position.Y);
+                            //Camera.GlobalOffset = Vector2.Zero; //new Vector2(15, 13);
                             break;
                         }
                     }
@@ -140,7 +141,7 @@ namespace Moonwalk.Classes.Managers
         /// <summary>
         /// Handles draw logic
         /// </summary>
-        public void Draw(SpriteBatch batch, Vector2 globalScale) {
+        public void Draw(SpriteBatch batch) {
             // Elements draw based on game state (i.e. GUI or menu elements)
             switch (state) {
                 case GameState.Test:
@@ -148,14 +149,13 @@ namespace Moonwalk.Classes.Managers
                     break;
             }
 
-            Map.Draw(batch, globalScale);
+            Map.Draw(batch);
 
             // Elements drawn ever iteration
             foreach (Entity entity in entities) {
-                entity.Draw(batch, globalScale);
+                entity.Draw(batch);
 
-                if (displayHitboxes)
-                    entity.DrawHitbox(batch, globalScale, graphics);
+        
             }
                 
         }

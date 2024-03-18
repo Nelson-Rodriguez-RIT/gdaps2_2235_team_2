@@ -64,12 +64,12 @@ namespace Moonwalk.Classes.Managers {
                 return new Vector2(
                     (position.X + offset.X) - vectorTarget.X + globalOffset.X,
                     //(int)WindowManager.Instance.Center.X,   //apply offset from the center of the window
-                    (position.Y + offset.Y) - vectorTarget.Y + globalOffset.Y);
+                    (position.Y + offset.Y) - vectorTarget.Y + globalOffset.Y) * GameMain.ActiveScale;
             //(int)WindowManager.Instance.Center.Y);  //apply offset from the center of the window
             else
                 return new Vector2(
                     (position.X + offset.X) - rectTarget.X + globalOffset.X,
-                    (position.Y + offset.Y) - rectTarget.Y + globalOffset.Y);
+                    (position.Y + offset.Y) - rectTarget.Y + globalOffset.Y) * GameMain.ActiveScale;
 
         }
     }

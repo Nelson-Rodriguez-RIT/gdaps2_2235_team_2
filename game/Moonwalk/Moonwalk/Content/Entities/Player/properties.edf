@@ -1,2 +1,4 @@
-HitboxX=10
-HitboxY=10
+HitboxX=8
+HitboxY=22
+HitboxXOrigin=15
+HitboxYOrigin=13

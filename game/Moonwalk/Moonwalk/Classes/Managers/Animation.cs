@@ -114,12 +114,16 @@ namespace Moonwalk.Classes.Managers {
             batch.Draw(
                 spritesheet,
                 new Rectangle(
-                    (int)position.X,    // X position
-                    (int)position.Y,    // Y position
+                    (int)(position.X * scale.X),    // X position
+                    (int)(position.Y * scale.Y),    // Y position
                     (int)(spriteSize.X * scale.X),  // Width
                     (int)(spriteSize.Y * scale.Y)), // Height
                 spritesheetBox, // Sprite from spritesheet
-                Color.White);
+                Color.White,
+                0f,
+                origin,
+                SpriteEffects.None,
+                0);
         }
 
         public void Reset() {

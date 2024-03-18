@@ -95,9 +95,9 @@ namespace Moonwalk.Classes.Entities
 
         }
 
-        public override void Draw(SpriteBatch batch, Vector2 globalScale)
+        public override void Draw(SpriteBatch batch)
         {
-            base.Draw(batch, globalScale);
+            base.Draw(batch);
 
             batch.DrawString(GameManager.font, 
                 $"{vectorPosition.Y} - {velocity.Y} - {acceleration.Y} \n {Position.Y}",

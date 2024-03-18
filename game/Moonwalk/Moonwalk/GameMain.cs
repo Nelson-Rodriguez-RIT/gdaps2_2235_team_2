@@ -16,7 +16,10 @@ namespace Moonwalk {
         GameManager gameManager;
         WindowManager windowManager;
 
-        Vector2 globalScale;
+        //private Vector2 DefaultScale = new Vector2(5, 5);
+        private Vector2 DefaultScale = new Vector2(1, 1);
+
+        private Vector2 activeScale;
 
         public GameMain() {
             _graphics = new GraphicsDeviceManager(this);
@@ -46,11 +49,12 @@ namespace Moonwalk {
 
 
         protected override void Update(GameTime gameTime) {
+            activeScale = Vector2.One;
             // Non-game logic (i.e. updating the window size ratio) should go below //
             windowManager.Update( // Updates the scaling factor based on the window size
                 Window.ClientBounds.Size.X,
                 Window.ClientBounds.Size.Y);
-            globalScale = windowManager.WindowRatioScale;
+            activeScale = windowManager.WindowRatioScale;
 
             // Keep game logic inside of gameManager //
             gameManager.Update(gameTime);
@@ -64,7 +68,7 @@ namespace Moonwalk {
             _spriteBatch.Begin(
                 samplerState: SamplerState.PointClamp); // Prevents blurry sprites
 
-            gameManager.Draw(_spriteBatch, globalScale);
+            gameManager.Draw(_spriteBatch, activeScale * DefaultScale);
 
             _spriteBatch.End();
 

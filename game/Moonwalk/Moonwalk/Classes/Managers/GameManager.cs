@@ -18,6 +18,7 @@ namespace Moonwalk.Classes.Managers
 {
     enum GameState {
         Test,
+        Demo
     }
 
     /// <summary>
@@ -58,7 +59,7 @@ namespace Moonwalk.Classes.Managers
 
 
             // Prepares neccessary elements
-            Transition(GameState.Test);
+            Transition(GameState.Demo);
         }
 
 
@@ -97,6 +98,20 @@ namespace Moonwalk.Classes.Managers
                         }
                     }
                     
+
+                    Camera.VectorTarget = cameraTarget;
+
+                    break;
+
+                case GameState.Demo:
+
+                    foreach (Entity entity in entities) {
+                        if (entity is Player) {
+                            cameraTarget = new Vector2(entity.Position.X, entity.Position.Y);
+                            break;
+                        }
+                    }
+
 
                     Camera.VectorTarget = cameraTarget;
 
@@ -142,6 +157,17 @@ namespace Moonwalk.Classes.Managers
                     Map.LoadMap("TestMap");
 
                     // Loads the test entities
+                    SpawnEntity<Player>(new Vector2(200, 200));
+                    SpawnEntity<Robot>(new Vector2(400, 400));
+                    ((Robot)entities[typeof(Robot)][0]).getGravityPulseTargets += this.GetAllEntitiesOfType<IMovable>;
+
+                    break;
+
+                case GameState.Demo:
+
+                    Map.LoadMap("TestMap");
+
+                    // Loads player + companion
                     SpawnEntity<Player>(new Vector2(200, 200));
                     SpawnEntity<Robot>(new Vector2(400, 400));
                     ((Robot)entities[typeof(Robot)][0]).getGravityPulseTargets += this.GetAllEntitiesOfType<IMovable>;

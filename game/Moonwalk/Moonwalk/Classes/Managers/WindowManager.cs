@@ -23,6 +23,27 @@ namespace Moonwalk.Classes.Managers {
             }
         }
 
+        /// <summary>
+        /// Access the windowmanager instance so we can get the center
+        /// </summary>
+        public static WindowManager Instance
+        {
+            get { return instance; }
+        }
+
+        /// <summary>
+        /// Center of the window
+        /// </summary>
+        public Vector2 Center
+        {
+            get
+            {
+                return new Vector2(
+                    width / 2,
+                    height / 2
+                    );
+            }
+        }
 
         private WindowManager(int initialWidth, int initialHeight) {
             defaultWidth = initialWidth;

@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Managers;
+using System;
+using System.Reflection.Metadata;
 
 namespace Moonwalk {
     public class GameMain : Game {
@@ -38,6 +40,7 @@ namespace Moonwalk {
         protected override void LoadContent() {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             gameManager = GameManager.GetInstance(Content);
+            GameManager.font = Content.Load<SpriteFont>("File");
         }
 
 

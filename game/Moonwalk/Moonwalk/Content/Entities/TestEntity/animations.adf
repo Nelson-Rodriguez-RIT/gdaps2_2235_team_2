@@ -1,0 +1,46 @@
+/ This is a comment and will be ignored (same with the empty line below)
+/ (Side note: With the way I coded it, any line that starts with a space is ignored)
+
+/ Use the & to set the animation type. This should be set before any data is read and there should
+/ only be one type per animation data file. (It will default to Horizontal if none is set)
+/ The choices are Horizontal and Vertical (respectivly).
+&Horizontal
+
+/ Use the @ symbol to set default values. This used so that information doesn't needed to repeated.
+/ This can be set multiple times if you desired, but you should always set it if you plan on using
+/ default values (or else bad things will happen D:< )
+
+/ The following is the expected format for animations. Replace <Text> with the expected value
+/ <Individual Sprite's Width>x<Individual Sprite's Width>,<Origin X>:<Origin Y>,<Amount of Sprites in Animation>,<Amount of Frames Each Sprite Last For>
+@32x32,0:0,8,5
+
+/ The following READ lines are information related each animation.
+/ Make sure to order this reletive to how your order your Animations enum
+/ Also good practice is to label each set of values with the respective enum name
+
+/ Idle
+#,#,2,30
+
+/ IdleBlinking
+#,#,2,30
+
+/ Walk
+#,#,4,10
+
+/ Run
+#,#,#,#
+
+/ Crouch
+#,#,6,#
+
+/ Jump
+#,#,#,#
+
+/ Hurt
+#,#,2,20
+
+/ Death
+#,#,#,#
+
+/ Attack
+#,#,#,#

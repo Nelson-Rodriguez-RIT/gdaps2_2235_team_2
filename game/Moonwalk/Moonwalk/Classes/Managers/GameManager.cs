@@ -2,12 +2,13 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Entities;
 using Moonwalk.Classes.Entities.Base;
-using Moonwalk.Classes.Managers.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Managers
@@ -21,10 +22,10 @@ namespace Moonwalk.Classes.Managers
     /// </summary>
     internal sealed class GameManager {
 
+        public static SpriteFont font;
+
         // Game element managers
         private static GameManager _instance = null;
-        private ContentManager _content;
-        private MapManager _map;
 
         // Gameplay related states
         private GameState state;
@@ -32,21 +33,26 @@ namespace Moonwalk.Classes.Managers
         private MouseState msState;
 
         // Currently loaded entities
-        private List<Entity> entities;
+        private Assortment<Entity> entities;
+
+        //Input handling:
+        private StoredInput storedInput;
 
         // For testing purposes
         private Vector2 cameraTarget;
 
         private GameManager(ContentManager content) {
             // Get content for loading needs
-            _content = content;
+            Loader.Content = content;
+            storedInput = new StoredInput();
+            Camera.GlobalOffset = WindowManager.Instance.Center;
 
-            // Get each managers respective instance
-            _map = MapManager.GetInstance();
+            //Testing for my new entity list concept
+            List<Type> types = new List<Type>();
+            types.Add(typeof(TestEntity));
+            types.Add(typeof(Robot));
+            entities = new Assortment<Entity>(types);
 
-            Loader.Content = _content;
-
-            entities = new List<Entity>();
 
             // Prepares neccessary elements
             Transition(GameState.Test);
@@ -69,31 +75,43 @@ namespace Moonwalk.Classes.Managers
         /// </summary>
         public void Update(GameTime gt) {
             // Get user input
-            kbState = Keyboard.GetState();
-            msState = Mouse.GetState();
+            storedInput.Update();
 
             switch (state) {
                 case GameState.Test:
 
-                    // This is just testing the Camera (using the map for reference)
-                    if (kbState.IsKeyDown(Keys.A))
-                        cameraTarget.X -= (float) (100 * gt.ElapsedGameTime.TotalSeconds);
-                    if (kbState.IsKeyDown(Keys.D))
-                        cameraTarget.X += (float)(100 * gt.ElapsedGameTime.TotalSeconds);
-
+                    
+                    // Set camera target to player's position
+                    // 
+                    // I wanted to have this in the player class but couldn't get it to work this time
+                    // - Dante
+                    foreach  (Entity entity in entities)
+                    {
+                        if (entity is Player)
+                        {
+                            cameraTarget = new Vector2(entity.Position.X, entity.Position.Y);
+                            break;
+                        }
+                    }
+                    
 
                     Camera.VectorTarget = cameraTarget;
+
                     break;
             }
 
             foreach (Entity entity in entities)
-                entity.Update(gt);
+            {
+                entity.Update(gt, storedInput);
+            }
+
+            storedInput.UpdatePrevious();
         }
 
         /// <summary>
         /// Handles draw logic
         /// </summary>
-        public void Draw(SpriteBatch sb, Vector2 globalScale) {
+        public void Draw(SpriteBatch batch, Vector2 globalScale) {
             // Elements draw based on game state (i.e. GUI or menu elements)
             switch (state) {
                 case GameState.Test:
@@ -101,11 +119,11 @@ namespace Moonwalk.Classes.Managers
                     break;
             }
 
+            Map.Draw(batch, globalScale);
+
             // Elements drawn ever iteration
             foreach (Entity entity in entities)
-                entity.Draw(sb, globalScale);
-
-            _map.Draw(sb, globalScale);
+                entity.Draw(batch, globalScale);
         }
 
         /// <summary>
@@ -115,8 +133,16 @@ namespace Moonwalk.Classes.Managers
         private void Transition(GameState nextState) {
             switch (nextState) {
                 case GameState.Test:
-                    cameraTarget = new Vector2(0, 0);
-                    _map.Load(MapGroups.Test);
+                    
+
+                    // Loads the "TestMap" map
+                    Map.LoadMap("TestMap");
+
+                    // Loads the "TestEntity" entity
+                    SpawnEntity<Player>(new Vector2(200, 200));
+                    SpawnEntity<Robot>(new Vector2(400, 400));
+
+
                     break;
             }
 
@@ -126,13 +152,12 @@ namespace Moonwalk.Classes.Managers
         /// <summary>
         /// Handles any neccassray logic when spawning an enemy
         /// </summary>
-        /// <typeparam name="T">Entity related class to spawn</typeparam>
-        /// <param name="position">Initial position to spawn</param>
-        private void SpawnEntity(Type className, Vector2 position) { // No idea if this works by the way :P
+        private void SpawnEntity<T>(Vector2 position) where T : class
+        { // No idea if this works by the way :P
             // FYI you would class this class like:
             // SpawnEntity(typeof(Player), new Vector(0, 0));
             // This would add the class "Player" to the entities list and spawn them at 0, 0
-            entities.Add((Entity) Activator.CreateInstance(className));
+            entities.Add((Entity) Activator.CreateInstance(typeof(T), new object[] {position}));
         }
 
         /// <summary>

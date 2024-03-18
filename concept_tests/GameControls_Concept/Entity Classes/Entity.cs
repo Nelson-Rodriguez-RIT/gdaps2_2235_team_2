@@ -15,7 +15,7 @@ namespace GameControls_Concept
     internal abstract class Entity
     {
         protected Vector2 position;
-        protected Texture2D image;
+        protected Texture2D spriteSheet;
         protected Rectangle hitbox;
         protected LevelManager levelManager;
 
@@ -38,7 +38,7 @@ namespace GameControls_Concept
         public Entity(LevelManager manager, Vector2 position)
         {
             this.position = position;          
-            this.image = image;
+            this.spriteSheet = spriteSheet;
 
             hitbox = new Rectangle
                 ((int)position.X - (50),
@@ -50,7 +50,7 @@ namespace GameControls_Concept
 
         public virtual void Draw(SpriteBatch sb)
         {
-            sb.Draw(image,
+            sb.Draw(spriteSheet,
                 hitbox,
                 Color.White);
         }
@@ -62,7 +62,7 @@ namespace GameControls_Concept
 
         public virtual void LoadSprite(Texture2D texture)
         {
-            image = texture;
+            spriteSheet = texture;
         }
 
 

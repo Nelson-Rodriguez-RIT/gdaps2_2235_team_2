@@ -1,24 +1,16 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using Moonwalk.Classes.Entities.Base;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 using System.IO;
+using System;
+using System.Text.RegularExpressions;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Managers {
     internal static class Loader {
-        /*
-        TODO:
-            - Implement fallback mechanics in case a file can't be open doesn't exist.
-            This fallback should lead to a folder containing sprites that exist to fill
-            content that otherwise is missing (i.e. think of what source does when missing a texture)
-        */
-
         private static ContentManager content = null;
 
         public static ContentManager Content {
@@ -28,251 +20,234 @@ namespace Moonwalk.Classes.Managers {
             }
         }
 
-        /// <summary>
-        /// Searches, formats, and returns specific file data
-        /// </summary>
-        /// <param name="rootDirectory">Initial place to start searching for files</param>
-        /// <param name="fileType">File type to search for</param>
-        /// <param name="decodeRules">Rules on how to format the raw file data</param>
-        /// <returns>Formatted file data</returns>
-        public static Object ProcessFileData(
-                string rootDirectory,
-                string fileType,
-                Delegate decodeRules) {
-            // Get needed sub directories
-            List<string> subDirectories = new();
-            ScanSubDirectories(rootDirectory, subDirectories);
-
-            // Find desired files
-            List<string> files = ScanForFileType(fileType, subDirectories);
-
-            // Get raw data from files
-            List<List<string>> rawFileData = GetRawFileData(files);
-
-            // Apply file decoding rules
-            return DecodeFileData(rawFileData, decodeRules);
-        }
-
-        public static Object ProcessSpriteData(
-                string rootDirectory,
-                Delegate formatRules) {
-            // Get needed sub directories
-            List<string> subDirectories = new();
-            ScanSubDirectories(rootDirectory, subDirectories);
-
-            // Find desired png files
-            List<string> files = ScanForFileType("png", subDirectories);
-
-            // Get sprites and apply formatting rules
-            return LoadAndFormatSprites(files, formatRules);
-        }
-
-        /// <summary>
-        /// Searches and records any subdirectories in a given directory
-        /// </summary>
-        /// <param name="directory">Directory to search in</param>
-        /// <param name="directoriesRef">Reference to a list to store these directories paths</param>
-        private static void ScanSubDirectories(string directory, List<string> directoriesRef) {
-            directoriesRef.Add(directory); // A reference used instead of a return type
-                                           // since this methods uses recursion
-
-            // Scan for sub directories
-            string[] subDirectories = Directory.GetDirectories(directory);
-
-            // If there aren't any, go back
-            if (subDirectories == null)
-                return;
-
-            // If there are, scan each of those for additional directories
-            foreach (string subDirectory in subDirectories)
-                ScanSubDirectories(subDirectory, directoriesRef);
-        }
-
-        /// <summary>
-        /// Scans for any files with a specific type in several directories
-        /// </summary>
-        /// <param name="fileType">File type to search for</param>
-        /// <param name="directories">Directories to search through</param>
-        /// <returns>Paths to each file that has the respective file type</returns>
-        private static List<string> ScanForFileType(string fileType, List<string> directories) {
-            List<string> files = new();
-
-            foreach (string directory in directories)                  // For each found directory
-                foreach (string file in Directory.GetFiles(directory)) // Search for desired files
-                    if ((file.Remove(0, directory.Length - 1))  // Get filename
-                            .Split('.')[1]                      // Get file ending
-                            == fileType)                        // Check if wanted file type
-                        files.Add(file);
-
-            return files;
-        }
-
-        /// <summary>
-        /// Searches through provided file paths and gathers their raw text data
-        /// </summary>
-        /// <param name="files">Files to read</param>
-        /// <returns>A collection of gathered raw data</returns>
-        private static List<List<string>> GetRawFileData(List<string> files) {
-            StreamReader reader;
-            List<List<string>> _data = new();
+        public static List<string> LoadFile(string path) {
+            StreamReader reader = new StreamReader(path); ;
+            List<string> data = new();
             string incomingData;
 
-            // Begin scanning each file
-            foreach (string file in files) {
-                reader = new StreamReader(file);
-                List<string> data = new();
+            // Get all file contents
+            while ((incomingData = reader.ReadLine()) != null)
+                data.Add(incomingData);
 
-                // Get all file contents
-                while ((incomingData = reader.ReadLine()) != null)
-                    data.Add(incomingData);
 
-                _data.Add(data);
-            }
-
-            return _data;
+            return data;
         }
 
-        /// <summary>
-        /// Decodes raw file data with a set of provided "rules"
-        /// </summary>
-        /// <param name="rawFileData">Data to decode</param>
-        /// <param name="decodeRules">Set of "rules" to follow</param>
-        /// <returns>Decoded object of data</returns>
-        private static Object DecodeFileData(
-                List<List<string>> rawFileData,
-                Delegate decodeRules) {
-            return decodeRules.DynamicInvoke(rawFileData);
+        public static List<string> LoadFile(string directory, string fileType) {
+            string[] paths = Directory.GetFiles(directory);
+            string relevantPath = null;
+
+            // Get the first path to have the relevant file ending
+            foreach (string path in paths)
+                if (path.Contains(fileType)) {
+                    relevantPath = path;
+                    break;
+                }
+
+            if (relevantPath == null)
+                return null;
+
+            // Load relevant data
+            return LoadFile(relevantPath);
         }
 
-        /// <summary>
-        /// Formats sprites with a set of provided "rules"
-        /// </summary>
-        /// <param name="files">Sprites to load</param>
-        /// <param name="formatRules">Set of "rules" to follow</param>
-        /// <returns></returns>
-        private static Object LoadAndFormatSprites(
-                List<string> files,
-                Delegate formatRules) {
-            return formatRules.DynamicInvoke(content, files);
+        public static Texture2D LoadTexture(string path) {
+            return content.Load<Texture2D>(path);
         }
 
-        /// <summary>
-        /// Gets data relevant to animation from a file folder for a specific class.
-        /// </summary>
-        /// <typeparam name="T">The enum of animation states</typeparam>
-        /// <param name="directory">Folder path for files related to the class</param>
-        /// <param name="content">Content loader</param>
-        /// <returns>A dictionary of animation states paired with the data that goes with them</returns>
-        /// <exception cref="Exception"></exception>
-        public static Dictionary<T, Tuple<Texture2D, int[]>> //This will hold the animation data for each sprite sheet
-            LoadAnimation<T>(string directory, ContentManager content)
-        {
+        public static (
+                List<int[][]> tiles,
+                List<Terrain> geometry,
+                Dictionary<int, Texture2D> sprites,
+                Vector2 tileSize) 
+                LoadMap(string path) {
+            List<int[][]> bufferedTiles = new();
+            List<Terrain> bufferedGeometry = new();
+            Dictionary<int, Texture2D> bufferedSprites = new();
+            Vector2 bufferdTileSize = new Vector2();
 
-            //Variables we need
-            StreamReader reader = null;
-            List<string> lines = new List<string>();                      // the lines in the file
-            T[] states = Enum.GetValues(typeof(T))                        // each constant in the enum
-                .Cast<T>()
-                .ToArray();                                               
-            string[] names = Enum.GetNames(typeof(T));                    // the names of each animation state
-            Dictionary<T, Tuple<Texture2D, int[]>> spriteData = new();    // what we are going to return
+            Queue<string> fileData = new();
+            string data;
+            string[] dataBlock;
 
+            fileData = new Queue<string>(LoadFile(path, ".mdf"));
 
-            //Load each line into a string array
-            try
-            {
+            while (fileData.Count != 0) {
+                // Ill probably refactor this to be more efficient later
+                // For now its just important that it works
+                if (fileData.Peek().Contains("TILESTART")) {
+                    fileData.Dequeue();
+                    List<int[]> tileRows = new();
+                    while ((data = fileData.Dequeue()) != "TILEEND") {
+                        dataBlock = data.Split(',');
+                        int[] row = new int[dataBlock.Length];
 
-                for (int i = 0; i < states.Length; i++)
-                {
-                    string tempPath = directory + "/" + names[i];
-                    try
-                    {
-                        spriteData.Add(
-                        states[i],
-                        new Tuple<Texture2D, int[]>
-                            (content.Load<Texture2D>(tempPath),
-                            null));
+                        for (int i = 0; i < row.Length - 1; i++)
+                            row[i] = int.Parse(dataBlock[i]);
 
-                    }
-                    catch (ContentLoadException e)
-                    {
-                        //console log "spritesheet not found"
-                    }
-                }
-
-                reader = new StreamReader(directory + "/data.txt");
-                string line = null;
-
-                while ((line = reader.ReadLine()) != null)
-                {
-                    if (line != "" && line[0] != '/')
-                    {
-                        lines.Add(line);
-                    }
-                }
-
-
-            }
-            catch (FileNotFoundException e)
-            {
-                //console log error. For now: 
-
-                throw new Exception("File error");
-
-            }
-            finally
-            {
-                if (reader != null)
-                    reader.Close();
-            }
-
-            int[] data = null;                          // the array to hold data for each animation
-            int index = 0;                              // the index of the last animation identifier           
-            int arrayLength = 3;                        // make this not hard coded in the future (?)
-
-            for (int i = 0; i < lines.Count; i++)
-            {
-                //Check if the line is a animation identifier
-                if (names.Contains(lines[i]))
-                {
-                    if (data != null)                  // don't save data if it doesn't exist
-                    {
-                        T temp = (T)Enum.Parse(typeof(T), lines[index]);    // get the animation state the data is paired with
-
-                        spriteData[temp] = new Tuple
-                            <Texture2D, int[]>(spriteData[temp].Item1, data);     // add the data to the dictionary paired with the state
+                        tileRows.Add(row);
                     }
 
-                    index = i;                                    // update the last identifier index
-                    data = new int[arrayLength];                  // create a new data array
-                }
-                //if not, add the data to the array
-                else
-                {
-                    data[i - index - 1] = int.Parse(lines[i]);
+                    // Convert list into a jagged array
+                    int[][] formattedTileRows = new int[tileRows.Count][];
+                    for (int i = 0; i < formattedTileRows.Length; i++)
+                        formattedTileRows[i] = tileRows[i];
 
-                    //Do this if at the end of the file
-                    if (i == lines.Count() - 1)
-                    {
-                        T temp = (T)Enum.Parse(typeof(T), lines[index]);    // get the animation state the data is paired with
-
-                        spriteData[temp] = new Tuple
-                            <Texture2D, int[]>(spriteData[temp].Item1, data);     // add the data to the dictionary paired with the state
-                    }
+                    bufferedTiles.Add(formattedTileRows);
                 }
+
+                else if (fileData.Peek().Contains("SIZE")) {
+                    // Ignore the SIZE= and split the csvs
+                    dataBlock = fileData.Dequeue().Split('=')[1].Split(',');
+                    bufferdTileSize = new Vector2(
+                        int.Parse(dataBlock[0]),    // Width
+                        int.Parse(dataBlock[1])     // Height
+                        );
+                }
+
+                else if (fileData.Peek().Contains("Terrain")) {
+                    // Ignore the Terrain= and split the csvs
+                    dataBlock = fileData.Dequeue().Split('=')[1].Split(',');
+                    bufferedGeometry.Add(new Terrain(new Rectangle (
+                        int.Parse(dataBlock[0]),
+                        int.Parse(dataBlock[1]),
+                        int.Parse(dataBlock[2]),
+                        int.Parse(dataBlock[3])
+                        )));
+                }
+
+                else // Ignore any unexpectedly formatted data
+                    fileData.Dequeue();
             }
 
-            //Check to make sure each animation has data
-            foreach (KeyValuePair<T, Tuple<Texture2D, int[]>> keyValuePair in spriteData)
-            {
-                if (keyValuePair.Value.Item2 == null)
-                {
-                    throw new Exception($"Data for '{keyValuePair.Key}'" +
-                        $"was not found in the file.");
+            // Get sprite data
+            string[] spriteFilePaths = Directory.GetFiles($"{path}sprites/"); // Gets paths to all images
+            for (int ID = 0; ID < spriteFilePaths.Length; ID++)
+                bufferedSprites.Add(
+                    ID + 1,                                         // Relevant ID of the tile sprite
+                    LoadTexture(spriteFilePaths[ID]                 // Relevant Texture2D 
+                        .Remove(spriteFilePaths[ID].Length - 4)));
+
+
+            return (bufferedTiles, bufferedGeometry,
+                    bufferedSprites, bufferdTileSize);
+        }
+
+        public static (
+                Dictionary<string, string> properties,
+                List<Animation> animations,
+                Texture2D spritesheet)
+                LoadEntity(string path) {
+            Dictionary<string, string> bufferedProperties = new();
+            List<Animation> bufferedAnimations = new();
+            Texture2D bufferedSpritesheet;
+
+            Queue<string> fileData;
+            string[] splitData;
+
+
+            // Get entity properties
+            fileData = new Queue<string>(LoadFile($"{path}/", ".edf"));
+
+            while (fileData.Count != 0) {
+                if (fileData.Peek()[0] == '/' || // Ignore comments or (likely) empty lines
+                        fileData.Peek()[0] == ' ') { 
+                    fileData.Dequeue();
+                    continue;
                 }
+
+                // Break data into its header and body components
+                splitData = fileData.Dequeue().Split('=');
+
+                // Format and store data
+                bufferedProperties.Add(splitData[0], splitData[1]);
             }
 
-            return spriteData;
+
+            // Get animation data
+            fileData = new Queue<string>(LoadFile($"{path}/", ".adf"));
+
+            AnimationStyle style = AnimationStyle.Horizontal;
+
+            // Set up default fields with placeholder values
+            // Prevents crashes and allows us to compile :D
+            Vector2 defaultSpriteSize = Vector2.One;
+            Vector2 defaultOrigin = Vector2.Zero;
+            int defaultTotalSprites = 1;
+            int defaultFramesPerSprite = 1;
+
+            // This allows use to have custom Widths/Heights for each animation since this
+            // will inform the Animation where it should get its data from. This will be
+            // incremented by either a Width (for Vertical styles) or Height (for Horizontal styles)
+            int spaceTakenOnSpritesheet = 0;
+
+            while (fileData.Count != 0) {
+                if (fileData.Peek().Length == 0) // Skip empty lines
+                    fileData.Dequeue();
+
+                switch (fileData.Peek()[0]) {
+                    case '/': // Ignore comments or (likely) empty lines
+                        case ' ':
+                        fileData.Dequeue();
+                        break;
+
+                    case '&': // Set AnimationStyle
+                        if (fileData.Dequeue().Contains("Vetical"))
+                            style = AnimationStyle.Vertical;
+                        break;
+
+                    case '@': // Set default values
+                        splitData = fileData.Dequeue().Split(",");
+                        splitData[0] = splitData[0].Remove(0, 1); // Removes line identifier
+
+                        defaultSpriteSize = new Vector2(
+                            int.Parse(splitData[0].Split('x')[0]),
+                            int.Parse(splitData[0].Split('x')[1])
+                            );
+
+                        defaultOrigin = new Vector2(
+                            int.Parse(splitData[1].Split(':')[0]),
+                            int.Parse(splitData[1].Split(':')[1])
+                            );
+
+                        defaultTotalSprites = int.Parse(splitData[2]);
+
+                        defaultFramesPerSprite = int.Parse(splitData[3]);
+                        break;
+
+                    default: // Create an animation using file data
+                        splitData = fileData.Dequeue().Split(',');
+
+                        // If a # is detected, default values are used instead
+                        bufferedAnimations.Add(new Animation(
+                            splitData[0][0] == '#' ? defaultSpriteSize :
+                                new Vector2(
+                                    int.Parse(splitData[0].Split('x')[0]),
+                                    int.Parse(splitData[0].Split('x')[1])),
+                            splitData[1][0] == '#' ? defaultOrigin :
+                                new Vector2(
+                                    int.Parse(splitData[1].Split(':')[0]),
+                                    int.Parse(splitData[1].Split(':')[1])),
+                            splitData[2][0] == '#' ? defaultTotalSprites :
+                                int.Parse(splitData[2]),
+                            splitData[3][0] == '#' ? defaultFramesPerSprite :
+                                int.Parse(splitData[3]),
+                            style,
+                            spaceTakenOnSpritesheet));
+
+                        spaceTakenOnSpritesheet += style == AnimationStyle.Horizontal ?
+                            (splitData[0][0] == '#' ? (int)defaultSpriteSize.Y : int.Parse(splitData[0].Split('x')[1])) :
+                            (splitData[0][0] == '#' ? (int)defaultSpriteSize.X : int.Parse(splitData[0].Split('x')[0]));
+                        break;
+                }
+            }
+                
+
+            // Get sprite sheet
+            bufferedSpritesheet = LoadTexture($"{path}/spritesheet");
+
+
+            return (bufferedProperties, bufferedAnimations, bufferedSpritesheet);
         }
     }
 }

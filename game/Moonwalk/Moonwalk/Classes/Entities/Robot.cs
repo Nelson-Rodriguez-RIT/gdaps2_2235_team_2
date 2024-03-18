@@ -46,7 +46,7 @@ namespace Moonwalk.Classes.Entities
         protected AbilityCooldowns<Abilities> cooldowns;
 
         //Change this to private later
-        public Robot(Vector2 position) : base(position, "../../../Content/Entities/TestEntity")
+        public Robot(Vector2 position) : base(position, "../../../Content/Entities/TestEntity", 10, 10)
         {
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);

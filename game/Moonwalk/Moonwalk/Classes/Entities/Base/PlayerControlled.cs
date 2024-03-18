@@ -56,7 +56,8 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-        public PlayerControlled(Vector2 position, string directory) : base(position, directory)
+        public PlayerControlled(Vector2 position, string directory, int width, int height) 
+            : base(position, directory, width, height)
         {
             physicsState = PhysicsState.Linear;
         }
@@ -92,6 +93,11 @@ namespace Moonwalk.Classes.Entities.Base
         {
             bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(entity));
 
+            if (temp)
+            {
+                Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(entity));
+            }
+
             return temp;
         }
 
@@ -102,6 +108,11 @@ namespace Moonwalk.Classes.Entities.Base
         public virtual bool CheckCollision(Rectangle rectangle)
         {
             bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(rectangle));
+
+            if (temp)
+            {
+                //for debugging
+            }
 
             return temp;
         }

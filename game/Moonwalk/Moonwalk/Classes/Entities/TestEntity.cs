@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 namespace Moonwalk.Classes.Entities
 {
+    /*
     internal class TestEntity : PlayerControlled {
         protected enum Animations {
             Idle,
@@ -21,13 +22,14 @@ namespace Moonwalk.Classes.Entities
             Death,
             Attack,
         }
-
+        
         public TestEntity(Vector2 initalPosition) 
                 : base(initalPosition, "../../../Content/Entities/TestEntity") {
             SwitchAnimation(Animations.Idle);
             spriteScale = 4;
             entity = new Rectangle((int)vectorPosition.X, (int)vectorPosition.Y, 300, 300);
         }
+        
 
         public override void Update(GameTime gameTime, StoredInput input) {
 
@@ -86,5 +88,7 @@ namespace Moonwalk.Classes.Entities
                 velocity = Vector2.Zero;
             }
         }
+    
     }
+    */
 }

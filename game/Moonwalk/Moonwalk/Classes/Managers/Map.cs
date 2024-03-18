@@ -41,7 +41,7 @@ namespace Moonwalk.Classes.Managers
             geometry = bufferedData.geometry;
 
             //REMOVE THIS LATER (for testing purposes) - Dante
-            geometry.Add(new Terrain(new Rectangle(0, 500, 1000, 100)));
+            //geometry.Add(new Terrain(new Rectangle(0, 500, 1000, 100)));
 
             sprites = bufferedData.sprites;
             tileSize = bufferedData.tileSize;

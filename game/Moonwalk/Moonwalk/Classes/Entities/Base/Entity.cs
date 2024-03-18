@@ -49,7 +49,7 @@ namespace Moonwalk.Classes.Entities.Base
         //Animation
         protected Texture2D spriteSheet;
 
-        private Texture2D hitboxSprite = null;
+        //private Texture2D hitboxSprite = null;
 
         public virtual Rectangle Hitbox
         {
@@ -81,15 +81,20 @@ namespace Moonwalk.Classes.Entities.Base
 
         protected int spriteScale;
 
-        public Entity(Vector2 position, string directory) {
+        public Entity(Vector2 position, string directory, int width, int height) {
             physicsState = PhysicsState.Linear;
             vectorPosition = position;
-            this.entity = new Rectangle(vectorPosition.ToPoint(), new Point(100, 100));
             velocity = Vector2.Zero;
             acceleration = Vector2.Zero;
             gravity = 0f;
             maxYVelocity = int.MaxValue;
             maxXVelocity = int.MaxValue;
+
+            this.entity = new Rectangle(
+                (int)vectorPosition.X,
+                (int)vectorPosition.Y,
+                width,
+                height);
 
             this.directory = directory;
 
@@ -106,8 +111,8 @@ namespace Moonwalk.Classes.Entities.Base
                 int.Parse(properties["HitboxX"]),
                 int.Parse(properties["HitboxY"]));
 
-            if (hitboxSprite == null)
-                hitboxSprite = Loader.LoadTexture("../../../Content/Entities/HitboxSprite");
+            //if (hitboxSprite == null)
+            //    hitboxSprite = Loader.LoadTexture("../../../Content/Entities/HitboxSprite");
         }
 
         

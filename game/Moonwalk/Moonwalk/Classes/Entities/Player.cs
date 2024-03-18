@@ -42,7 +42,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         //Make private later
-        public Player(Vector2 position) : base(position, "../../../Content/Entities/Player")
+        public Player(Vector2 position) : base(position, "../../../Content/Entities/Player", 10, 10)
         {
             gravity = 50f;
             acceleration = new Vector2(0, gravity);

@@ -50,6 +50,7 @@ namespace Moonwalk.Classes.Entities
         private FaceDirection faceDirection;
 
         private int animationTimer;
+        private double jumpTimer;
 
         /// <summary>
         /// Determines if the entity is grounded or not
@@ -90,7 +91,24 @@ namespace Moonwalk.Classes.Entities
         {
             cooldowns.Update(gameTime);
             base.Update(gameTime, input);
-            animationTimer --;
+
+            //Slow down if not pressing anything
+            if (!input.IsPressed(Keys.D) &&
+                !input.IsPressed(Keys.A)
+                && velocity.X != 0)
+            {
+                acceleration.X = -Math.Sign(velocity.X) * 20;
+            }
+
+            if (velocity.X != 0
+                && Math.Abs(velocity.X) < 0.5f)
+                //&& Math.Sign(acceleration.X) != Math.Sign(velocity.X))
+            {
+                velocity.X = 0;
+                acceleration.X = 0;
+            }
+
+                animationTimer--;
             ChangeAnimation(input);
         }
 
@@ -111,28 +129,8 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = velocity.X < 0 ? maxXVelocity * 2.5f : maxXVelocity * 2;
             }
 
-            //Slow down if not pressing anything
-            if (!input.IsPressed(Keys.D) &&
-                !input.IsPressed(Keys.A)
-                && velocity.X != 0)
-            {
-                acceleration.X = -Math.Sign(velocity.X) * 20;
-
-            }
-
-            if (velocity.X != 0 
-                && Math.Abs(velocity.X) < 0.5f 
-                && Math.Sign(acceleration.X) != Math.Sign(velocity.X))
-            {
-                velocity.X = 0;
-                acceleration.X = 0;
-            }
-
             
             
-
-  
-
 
             //Jump 
             if ((input.IsPressed(Keys.Space)

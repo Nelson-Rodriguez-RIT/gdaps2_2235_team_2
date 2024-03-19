@@ -14,6 +14,7 @@ namespace Moonwalk.Classes.Entities
 {
     public delegate List<IMovable> OnGravityAbilityUsed();
     public delegate Vector2 GetRobotPosition();
+    //public delegate List<IDamageable> OnAttack();
 
     /// <summary>
     /// The player controlled character
@@ -27,7 +28,8 @@ namespace Moonwalk.Classes.Entities
             Attack,
             Shoot,
             Hit,
-            Death
+            Death,
+            Jump
         }
 
         protected enum Abilities
@@ -43,6 +45,11 @@ namespace Moonwalk.Classes.Entities
 
         public event OnGravityAbilityUsed OnGravityAbilityUsed;
         public event GetRobotPosition GetRobotPosition;
+
+        private Animations animation;
+        private FaceDirection faceDirection;
+
+        private int animationTimer;
 
         /// <summary>
         /// Determines if the entity is grounded or not
@@ -77,7 +84,9 @@ namespace Moonwalk.Classes.Entities
         public override void Update(GameTime gameTime, StoredInput input)
         {
             cooldowns.Update(gameTime);
-            base.Update(gameTime, input);          
+            base.Update(gameTime, input);
+            animationTimer --;
+            ChangeAnimation(input);
         }
 
         public override void Input(StoredInput input)
@@ -132,20 +141,7 @@ namespace Moonwalk.Classes.Entities
                 && input.PreviousMouse.LeftButton == ButtonState.Released
                 && cooldowns.UseAbility(Abilities.Gravity))
             {
-                //Get a list of movables from the game manager
-                List<IMovable> movables = OnGravityAbilityUsed();
-
-                //Make all entities move towards this
-                foreach (IMovable movable in movables)
-                {
-                    //Check that entity is within range
-                    if (Math.Sqrt(
-                            Math.Pow(movable.Position.X - Position.X, 2) +
-                            Math.Pow(movable.Position.Y - Position.Y, 2)
-                            )
-                        < 375)
-                        movable.Impulse(GetRobotPosition());
-                }
+                GravityAbility();
             }
 
             //Tether ability - planning to have this be able to swing blocks and stuff too, maybe send back projectiles?
@@ -154,10 +150,8 @@ namespace Moonwalk.Classes.Entities
                 && input.PreviousMouse.RightButton == ButtonState.Released
                 && cooldowns.UseAbility(Abilities.Tether))
             {
-                //if (cooldowns.UseAbility(Abilities.Tether)) 
-                //{
-                    SetRotationalVariables(GetRobotPosition());
-                //}
+
+                SetRotationalVariables(GetRobotPosition());
 
             }
             else if (input.CurrentMouse.RightButton == ButtonState.Released
@@ -179,6 +173,69 @@ namespace Moonwalk.Classes.Entities
                 Color.White);
         }
 
-        
+        private void ChangeAnimation(StoredInput input)
+        {
+            if (animationTimer > 0)
+            {
+                return;
+            }
+            else
+            {
+                animationTimer = 0;
+            }
+
+            if (acceleration.X < 0)
+            {
+                faceDirection = FaceDirection.Left;
+            }
+            else
+            {
+                faceDirection = FaceDirection.Right;
+            }
+
+            if (velocity.X == 0 && velocity.Y == 0)
+            {
+                SwitchAnimation(Animations.Idle, false);
+            }
+
+            if (velocity.X != 0)
+            {                
+                SwitchAnimation(Animations.Run, false);
+            }
+
+            if (!Grounded)
+            {
+                SwitchAnimation(Animations.Jump);
+            }
+
+            if (input.IsPressed(Keys.F))
+            {
+                SwitchAnimation(Animations.Attack, false);
+                animationTimer = activeAnimation.AnimationLength;
+            }
+        }
+
+        private void Attack()
+        {
+            //List<Enemy> enemies = 
+        }
+
+        private void GravityAbility()
+        {
+            //Get a list of movables from the game manager
+            List<IMovable> movables = OnGravityAbilityUsed();
+
+            //Make all entities move towards this
+            foreach (IMovable movable in movables)
+            {
+                //Check that entity is within range
+                if (Math.Sqrt(
+                        Math.Pow(movable.Position.X - Position.X, 2) +
+                        Math.Pow(movable.Position.Y - Position.Y, 2)
+                        )
+                    < 375)
+                    movable.Impulse(GetRobotPosition());
+            }
+        }
     }
 }

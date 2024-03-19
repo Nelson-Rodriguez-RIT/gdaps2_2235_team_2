@@ -21,6 +21,12 @@ namespace Moonwalk.Classes.Entities.Base
             Rotational
         }
 
+        protected enum FaceDirection
+        {
+            Right,
+            Left
+        }
+
         // Contains the entity's sprite table and position
         protected Rectangle entity;
 
@@ -119,7 +125,8 @@ namespace Moonwalk.Classes.Entities.Base
 
         public virtual void Update(
                 GameTime gameTime, 
-                StoredInput input) {
+                StoredInput input) 
+        {
             activeAnimation.UpdateAnimation(gameTime);
         }
 
@@ -127,10 +134,15 @@ namespace Moonwalk.Classes.Entities.Base
         /// Switches the animation currently playing to another
         /// </summary>
         /// <param name="animation">The animation to switch to</param>
-        protected void SwitchAnimation(Enum animationEnum) {
+        protected void SwitchAnimation(Enum animationEnum, bool resetAnimation = true)
+        {
             activeAnimation = animations[Convert.ToInt32(animationEnum)];
-            activeAnimation.Reset();
+            if (resetAnimation)
+                activeAnimation.Reset();
         }
+
+
+
 
         /// <summary>
         /// Switches the animation currently playing to another
@@ -308,6 +320,11 @@ namespace Moonwalk.Classes.Entities.Base
                 (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 600);
             acceleration = new Vector2(
                 acceleration.X, gravity);
+        }
+
+        public void Impulse(Vector2 destination)
+        {
+            velocity = (destination - vectorPosition) / 4f;
         }
     }
 }

@@ -38,6 +38,25 @@ namespace Moonwalk.Classes.Managers {
         // Whether the animation sprites layed out horizontally or vertically on the spritesheet
         private AnimationStyle style;
 
+        public int AnimationLength
+        {
+            get
+            {
+                return totalSprites * framesPerSprite;
+            }
+        }
+
+        public int AnimationValue
+        {
+            get
+            {
+                if (style == AnimationStyle.Horizontal)
+                    return spritesheetBox.Y;
+
+                else return spritesheetBox.X;
+            }
+        }
+
 
         public Animation(
                 // This information should be gathered from a file (please don't manually type it)

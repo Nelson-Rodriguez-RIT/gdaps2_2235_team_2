@@ -28,7 +28,8 @@ namespace Moonwalk.Classes.Entities
             Attack,
             Shoot,
             Hit,
-            Death
+            Death,
+            Jump
         }
 
         protected enum Abilities
@@ -44,6 +45,10 @@ namespace Moonwalk.Classes.Entities
 
         public event OnGravityAbilityUsed OnGravityAbilityUsed;
         public event GetRobotPosition GetRobotPosition;
+
+        private Animations animation;
+
+        private double animationTimer;
 
         /// <summary>
         /// Determines if the entity is grounded or not
@@ -78,7 +83,8 @@ namespace Moonwalk.Classes.Entities
         public override void Update(GameTime gameTime, StoredInput input)
         {
             cooldowns.Update(gameTime);
-            base.Update(gameTime, input);          
+            base.Update(gameTime, input);
+            ChangeAnimation();
         }
 
         public override void Input(StoredInput input)
@@ -163,6 +169,24 @@ namespace Moonwalk.Classes.Entities
                 $"{vectorPosition.Y} - {velocity.Y} - {acceleration.Y} \n {Position.Y}",
                 new Vector2(400, 50),
                 Color.White);
+        }
+
+        private void ChangeAnimation()
+        {
+            if (velocity.X == 0 && velocity.Y == 0)
+            {
+                SwitchAnimation(Animations.Idle);
+            }
+
+            if (velocity.X != 0)
+            {                
+                SwitchAnimation(Animations.Run);
+            }
+
+            if (!Grounded)
+            {
+                SwitchAnimation(Animations.Jump);
+            }
         }
 
         private void Attack()

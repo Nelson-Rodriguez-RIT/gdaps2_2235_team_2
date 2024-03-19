@@ -21,6 +21,12 @@ namespace Moonwalk.Classes.Entities.Base
             Rotational
         }
 
+        protected enum FaceDirection
+        {
+            Right,
+            Left
+        }
+
         // Contains the entity's sprite table and position
         protected Rectangle entity;
 

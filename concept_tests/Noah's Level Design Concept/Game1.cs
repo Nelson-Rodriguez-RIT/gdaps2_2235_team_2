@@ -56,8 +56,7 @@ namespace Noah_s_Level_Design_Concept
             worlds = new List<World>
             {
                 new World(startMap, new Rectangle(0, 0, screenWidth, screenHeight), true),
-                new World(labMap1, new Rectangle(screenWidth, 352, screenWidth, screenHeight), true),
-                new World(labMap2, new Rectangle(screenWidth, 352, screenWidth, screenHeight), false)
+                new World(labMap2, new Rectangle(screenWidth, 352, screenWidth, screenHeight), true)
             };
 
             playerSpawn = new Vector2(448, 354);
@@ -70,6 +69,24 @@ namespace Noah_s_Level_Design_Concept
                 new Platform(new Rectangle(88 * 4, 112 * 4, 136 * 4, 32 * 4), texture),
                 new Platform(new Rectangle(32 * 4, 104 * 4, 56 * 4, 8 * 4), texture),
                 new Platform(new Rectangle(224 * 4, 120 * 4, 96 * 4, 32 * 4), texture)
+                /*
+                new Platform(new Rectangle(), texture),
+                    Terrain= + 0, screenHeight + 0,320,8
+                    Terrain=168,32,152,8
+Terrain=0,32,104,8
+Terrain=168,40,96,48
+Terrain=248,88,56,48
+Terrain=80,120,168,16
+Terrain=104,112,64,8
+Terrain=16,40,88,48
+Terrain=0,88,32,88
+Terrain=0,176,320,8
+Terrain=288,136,16,40
+Terrain=31,151,24,24
+Terrain=56,160,8,16
+Terrain=64,168,8,8
+Terrain=56,120,24,8
+*/
             };
 
             Camera.RectTarget = player.position;

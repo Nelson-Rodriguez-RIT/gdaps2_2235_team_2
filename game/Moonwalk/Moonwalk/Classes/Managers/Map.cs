@@ -71,7 +71,7 @@ namespace Moonwalk.Classes.Managers
                         batch.Draw(
                             //sprites[tiles[row][col]],  // Uses tile ID to get a specific sprite
                             spritesheet,
-                            Camera.ApplyOffset(new Vector2(col * tileSize.X, row * tileSize.Y)) * GameMain.ActiveScale,  // Position, with relevant offseets
+                            Camera.ApplyOffset(new Vector2(col * tileSize.X, row * tileSize.Y)),  // Position, with relevant offseets
                             //new Vector2(col * tileSize.X, row * tileSize.Y),
                             //null,           // Unused since we don't plan using sprite sheets for map tiles
                             sprite,
@@ -79,7 +79,7 @@ namespace Moonwalk.Classes.Managers
                             0f,             // Rotation
                             //Camera.VectorTarget * globalScale,   // Origin
                             Vector2.Zero,
-                            GameMain.ActiveScale,    // Image scale, DO NOT USE THIS
+                            GameMain.ActiveScale,    // Image scale
                             SpriteEffects.None, // Image flipping
                             0);             // Layer
                     }

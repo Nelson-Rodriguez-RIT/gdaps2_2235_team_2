@@ -108,7 +108,7 @@ namespace Moonwalk.Classes.Managers
                     }
                     
 
-                    //Camera.VectorTarget = cameraTarget;
+                    Camera.VectorTarget = cameraTarget;
 
                     break;
 
@@ -117,7 +117,6 @@ namespace Moonwalk.Classes.Managers
                     foreach (Entity entity in entities) {
                         if (entity is Player) {
                             cameraTarget = new Vector2(entity.Position.X, entity.Position.Y);
-                            //Camera.GlobalOffset = Vector2.Zero; //new Vector2(15, 13);
                             break;
                         }
                     }

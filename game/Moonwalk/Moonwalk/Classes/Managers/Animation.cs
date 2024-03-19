@@ -145,6 +145,16 @@ namespace Moonwalk.Classes.Managers {
                 origin,
                 FaceDirection == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
                 0);
+
+            batch.Draw(
+                spritesheet,
+                new Rectangle(),
+                spritesheetBox,
+                Color.White,
+                0f,
+                origin,
+                SpriteEffects.FlipHorizontally,
+                0);
         }
 
         public void Reset() {

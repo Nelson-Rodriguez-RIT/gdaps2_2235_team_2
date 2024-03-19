@@ -132,7 +132,11 @@ namespace Moonwalk.Classes.Managers {
                 Vector2 scale,
                 Texture2D spritesheet, 
                 Vector2 position) {
-            batch.Draw(
+
+            switch (FaceDirection)
+            {
+                case 0:
+                    batch.Draw(
                 spritesheet,
                 new Rectangle(
                     (int)(position.X),    // X position
@@ -143,18 +147,27 @@ namespace Moonwalk.Classes.Managers {
                 Color.White,
                 0f,
                 origin,
-                FaceDirection == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                SpriteEffects.None,
                 0);
 
-            batch.Draw(
-                spritesheet,
-                new Rectangle(),
-                spritesheetBox,
-                Color.White,
-                0f,
-                origin,
-                SpriteEffects.FlipHorizontally,
-                0);
+                    break;
+                case 1:
+
+                    batch.Draw(
+               spritesheet,
+               new Rectangle(
+                   (int)(position.X - (int)((spriteSize.X) * scale.X)),
+                   (int)(position.Y),
+                   (int)(spriteSize.X * scale.X),  // Width
+                   (int)(spriteSize.Y * scale.Y)), // Height
+               spritesheetBox,
+               Color.White,
+               0f,
+               new Vector2(-24, 13),
+               SpriteEffects.FlipHorizontally,
+               0);
+                    break;
+            }             
         }
 
         public void Reset() {

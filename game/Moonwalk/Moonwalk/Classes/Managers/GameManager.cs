@@ -53,7 +53,7 @@ namespace Moonwalk.Classes.Managers
             Loader.Content = content;
             this.graphics = graphics;
             storedInput = new StoredInput();
-            Camera.GlobalOffset = WindowManager.Instance.Center;
+            //Camera.GlobalOffset = WindowManager.Instance.Center;
 
 
             //Testing for my new entity list concept
@@ -108,7 +108,7 @@ namespace Moonwalk.Classes.Managers
                     }
                     
 
-                    Camera.VectorTarget = cameraTarget;
+                    //Camera.VectorTarget = cameraTarget;
 
                     break;
 
@@ -122,7 +122,7 @@ namespace Moonwalk.Classes.Managers
                     }
 
 
-                    Camera.VectorTarget = cameraTarget;
+                   // Camera.VectorTarget = cameraTarget;
 
                     break;
             }
@@ -185,7 +185,7 @@ namespace Moonwalk.Classes.Managers
 
                 case GameState.Demo:
 
-                    Map.LoadMap("StartMap");
+                    Map.LoadMap("Demo");
 
                     // Loads player + companion
                     SpawnEntity<Player>(new Vector2(50, 48));

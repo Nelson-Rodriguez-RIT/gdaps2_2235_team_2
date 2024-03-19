@@ -96,6 +96,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void Input(StoredInput input)
         {
+            
             //Horizontal movement
             if (input.IsPressed(Keys.A) &&
                 !input.IsPressed(Keys.D))
@@ -110,14 +111,6 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = velocity.X < 0 ? maxXVelocity * 2.5f : maxXVelocity * 2;
             }
 
-            if (velocity.X != 0 
-                && velocity.X < 0.5f 
-                && Math.Sign(acceleration.X) != Math.Sign(velocity.X))
-            {
-                velocity.X = 0;
-                acceleration.X = 0;
-            }
-
             //Slow down if not pressing anything
             if (!input.IsPressed(Keys.D) &&
                 !input.IsPressed(Keys.A)
@@ -126,6 +119,19 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = -Math.Sign(velocity.X) * 20;
 
             }
+
+            if (velocity.X != 0 
+                && Math.Abs(velocity.X) < 0.5f 
+                && Math.Sign(acceleration.X) != Math.Sign(velocity.X))
+            {
+                velocity.X = 0;
+                acceleration.X = 0;
+            }
+
+            
+            
+
+  
 
 
             //Jump 
@@ -153,7 +159,7 @@ namespace Moonwalk.Classes.Entities
                 && input.PreviousMouse.LeftButton == ButtonState.Released
                 && cooldowns.UseAbility(Abilities.Gravity))
             {
-                GravityAbility();
+                //GravityAbility();
             }
 
             //Tether ability - planning to have this be able to swing blocks and stuff too, maybe send back projectiles?
@@ -196,11 +202,11 @@ namespace Moonwalk.Classes.Entities
                 animationTimer = 0;
             }
 
-            if (acceleration.X < 0)
+            if (velocity.X < 0)
             {
                 faceDirection = FaceDirection.Left;
             }
-            else
+            else if (velocity.X > 0)
             {
                 faceDirection = FaceDirection.Right;
             }
@@ -240,8 +246,10 @@ namespace Moonwalk.Classes.Entities
             //List<Enemy> enemies = 
         }
 
+        
         private void GravityAbility()
         {
+            
             //Get a list of movables from the game manager
             List<IMovable> movables = OnGravityAbilityUsed();
 
@@ -256,6 +264,8 @@ namespace Moonwalk.Classes.Entities
                     < 375)
                     movable.Impulse(GetRobotPosition());
             }
+            
         }
+        
     }
 }

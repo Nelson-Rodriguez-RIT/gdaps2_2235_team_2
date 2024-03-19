@@ -4,19 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Moonwalk.Classes.Managers;
 
 namespace Moonwalk.Classes.Entities.Base
 {
-    /*
+    
     internal class Enemy : Entity, ICollidable
     {
         //Fields
         bool active;                        //whether the enemy is there
-        Texture2D asset;                    //assets for enemy
-        Rectangle position;                 //enemy position and size            
-        Vector2 spritePosition;             //enemy position - subject to change
 
-
+        /*
         // Animation
         int frame;              // The current animation frame
         double timeCounter;     // The amount of time that has passed
@@ -28,13 +28,54 @@ namespace Moonwalk.Classes.Entities.Base
         const int EnemyRectOffsetY = 116;   // How far down in the image are the frames?
         const int EnemyRectHeight = 72;     // The height of a single frame
         const int EnemyRectWidth = 44;      // The width of a single frame
+        */
 
         //For Enemies specifically
-        int health;                         //enemy health
-        int speed;                          //Enemy speed of movement
-        bool isLeft;                        //Whether enemy is facing left - can be changed
+        int health;                         // enemy health
+        int speed;                          // Enemy speed of movement
+        bool isLeft;                        // Whether enemy is facing left - can be changed
         int count;                          // count for how far enemy has moved
-        int countMax;                       //maximum of enemy movement in one direction
+        int countMax;                       // maximum of enemy movement in one direction
+
+        /// <summary>
+        /// Property to determine how many checks to do when checking for collision
+        /// </summary>
+        public int CollisionAccuracy
+        {
+            get
+            {
+                switch (physicsState)
+                {
+                    case PhysicsState.Linear:
+
+                        // Min accuracy is 1
+                        if (velocity.X == 0 &&
+                            velocity.Y == 0)
+                        {
+                            return 1;
+                        }
+
+                        return      //Use the magnitude of the velocity to get the accuracy
+                    (int)(
+                        Math.Ceiling(
+                            Math.Sqrt(
+                                Math.Pow(velocity.X, 2) +
+                                Math.Pow(Velocity.Y, 2))
+                            / 4.0
+                            )
+                    );
+                    case PhysicsState.Rotational:
+                        if (angVelocity == 0)
+                        {
+                            return 1;
+                        }
+                        return (int)(
+                            Math.Abs(angVelocity / 10));
+                    default:
+                        return 0;
+                }
+            }
+        }
 
         /// <summary>
         /// Parameterized Constructor of moving enemy
@@ -42,21 +83,19 @@ namespace Moonwalk.Classes.Entities.Base
         /// <param name="asset"></param>
         /// <param name="position"></param>
         /// <param name="color"></param>
-        public Enemy(Texture2D asset, Rectangle position,int speed, bool isLeft, int health, int countMax)
-            : base(asset, position, health)
+        public Enemy(string directory, Vector2 position, int speed, bool isLeft, int health, int countMax,
+            int width, int height)
+            : base(position, directory, width, height)
         {
             active = true;
-            this.position = position;
-            this.asset = asset;
             this.speed = speed;
             this.isLeft = isLeft;
             count = 0;
             this.health = health;
-            spritePosition = new Microsoft.Xna.Framework.Vector2(position.X, position.Y);
             this.countMax = countMax;
         }
 
-
+        /*
         /// <summary>
         /// Parameterized Constructor of still enemy
         /// </summary>
@@ -73,6 +112,7 @@ namespace Moonwalk.Classes.Entities.Base
             this.health = health;
             spritePosition = new Microsoft.Xna.Framework.Vector2(position.X, position.Y);
         }
+        */
 
         /// <summary>
         /// Returns the health of the enemy
@@ -84,11 +124,11 @@ namespace Moonwalk.Classes.Entities.Base
         /// </summary>
         /// <param name="check"></param>
         /// <returns></returns>
-        public bool CheckCollision(Player check) //will check if player collides with this enemy
+        public bool CheckPlayerCollision(Player check) //will check if player collides with this enemy
         {
             if (active)
             {
-                if (position.Intersects(check.Position))
+                if (entity.Intersects(check.Hitbox))
                 {
                     return true;
                 }
@@ -105,6 +145,24 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
+        /// <summary>
+        /// Determines if the entity collided with terrain
+        /// </summary>
+        /// <returns>True if a collision occurred</returns>
+        public virtual bool CheckCollision()
+        {
+            bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(entity));
+
+            if (temp)
+            {
+                Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(entity));
+            }           
+
+            return temp;
+        }
+
+        // All of this is unnecessary as it is done in Animation. Thanks Nelson! - Dante
+        /*
         /// <summary>
         /// Updates enemies' animation as necessary
         /// </summary>
@@ -180,12 +238,13 @@ namespace Moonwalk.Classes.Entities.Base
                 }
             }
         }
+        */
 
         /// <summary>
         /// Updates movement of enemy
         /// </summary>
         /// <param name="gameTime"></param>
-        public override void Update(Microsoft.Xna.Framework.GameTime gameTime) //needs a parent class
+        public override void Update(GameTime gameTime, StoredInput input) //needs a parent class
         {
             //updates enemy's movement if speed is greater than 0 or not equal to null
             if (speed > 0 || speed != null)
@@ -193,13 +252,13 @@ namespace Moonwalk.Classes.Entities.Base
                 //changes position of enemy
                 if (isLeft)
                 {
-                    position.Y -= speed;
+                    vectorPosition.Y -= speed;
                     count -= speed;
                 }
 
                 else
                 {
-                    position.Y += speed;
+                    vectorPosition.Y += speed;
                     count += speed;
                 }
 
@@ -215,7 +274,87 @@ namespace Moonwalk.Classes.Entities.Base
                 }
             }
         }
-    }
-    }
-    */
+
+        public virtual void Movement(GameTime gt)
+        {
+            float time = (float)gt.ElapsedGameTime.TotalSeconds;
+
+            int iterationCounter = 1;       // Number of collision checks we've done
+
+            Point lastSafePosition = new Point(Position.X, Position.Y);        //Last point before a collision
+
+            velocity += acceleration * time;                                   //Update velocity
+
+            //Vertical
+            while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
+            {
+                if (!CheckCollision())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.Y) > maxYVelocity)
+                {
+                    velocity.Y = maxYVelocity * Math.Sign(velocity.Y);
+                }
+
+                vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
+
+                entity = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    entity.Width,
+                    entity.Height);                      // Update hitbox location
+
+                if (CheckCollision())                                                   // Check if there was a collision
+                {
+                    entity = new Rectangle(lastSafePosition, entity.Size);              // Revert hitbox position back to before collision
+                    vectorPosition = lastSafePosition.ToVector2();                      // Revert position
+                    velocity.Y = 0;
+                    break;
+                }
+
+                iterationCounter++;
+            }
+
+
+            //Do the same thing but in the X direction
+            iterationCounter = 1;
+
+            while (!CheckCollision() && iterationCounter <= CollisionAccuracy)
+            {
+                if (!CheckCollision())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.X) > maxXVelocity)
+                {
+                    velocity.X = maxXVelocity * Math.Sign(velocity.X);
+                }
+
+                vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
+
+                entity = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    entity.Width,
+                    entity.Height);
+
+                if (CheckCollision())
+                {
+                    entity = new Rectangle(lastSafePosition, entity.Size);
+                    vectorPosition = lastSafePosition.ToVector2();
+                    velocity.X = 0;
+                    break;
+                }
+                iterationCounter++;
+
+            }
+        }
+
+
+    }        
 }

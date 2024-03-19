@@ -119,7 +119,8 @@ namespace Moonwalk.Classes.Entities.Base
 
         public virtual void Update(
                 GameTime gameTime, 
-                StoredInput input) {
+                StoredInput input) 
+        {
             activeAnimation.UpdateAnimation(gameTime);
         }
 
@@ -308,6 +309,11 @@ namespace Moonwalk.Classes.Entities.Base
                 (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 600);
             acceleration = new Vector2(
                 acceleration.X, gravity);
+        }
+
+        public void Impulse(Vector2 destination)
+        {
+            velocity = (destination - vectorPosition) / 4f;
         }
     }
 }

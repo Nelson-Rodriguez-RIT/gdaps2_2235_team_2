@@ -17,7 +17,7 @@ namespace Moonwalk {
         GameManager gameManager;
         WindowManager windowManager;
 
-        private Vector2 DefaultScale = new Vector2(2, 2);
+        private Vector2 DefaultScale = new Vector2(1, 1);
 
         private static Vector2 activeScale;
 

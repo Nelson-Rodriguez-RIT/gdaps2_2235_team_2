@@ -52,18 +52,22 @@ namespace Moonwalk.Classes.Managers {
         }
 
         public static Texture2D LoadTexture(string path) {
+            if (path == "../../../Content/Maps/Demo/sprites/Thumb")
+                return null; // I haven't got a clue why it tries to search for this
+
             return content.Load<Texture2D>(path);
         }
+        // 		StackTrace	"   at Microsoft.Xna.Framework.Content.ContentManager.OpenStream(String assetName)\r\n   at Microsoft.Xna.Framework.Content.ContentManager.ReadAsset[T](String assetName, Action`1 recordDisposableObject)\r\n   at Microsoft.Xna.Framework.Content.ContentManager.Load[T](String assetName)\r\n   at Moonwalk.Classes.Managers.Loader.LoadTexture(String path) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\Loader.cs:line 55\r\n   at Moonwalk.Classes.Managers.Loader.LoadMap(String path) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\Loader.cs:line 126\r\n   at Moonwalk.Classes.Managers.Map.LoadMap(String mapRootFolderName) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\Map.cs:line 36\r\n   at Moonwalk.Classes.Managers.GameManager.Transition(GameState nextState) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\GameManager.cs:line 183\r\n   at Moonwalk.Classes.Managers.GameManager..ctor(ContentManager content, GraphicsDevice graphics) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\GameManager.cs:line 67\r\n   at Moonwalk.Classes.Managers.GameManager.GetInstance(ContentManager content, GraphicsDevice graphics) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\GameManager.cs:line 77\r\n   at Moonwalk.GameMain.LoadContent() in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\GameMain.cs:line 52\r\n   at Moonwalk.GameMain.Initialize() in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\GameMain.cs:line 45\r\n   at Microsoft.Xna.Framework.Game.DoInitialize()\r\n   at Microsoft.Xna.Framework.Game.Run(GameRunBehavior runBehavior)\r\n   at Program.<Main>$(String[] args) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Program.cs:line 3"	string
 
         public static (
                 List<int[][]> tiles,
                 List<Terrain> geometry,
-                Dictionary<int, Texture2D> sprites,
+               Texture2D spritesheet,
                 Vector2 tileSize) 
                 LoadMap(string path) {
             List<int[][]> bufferedTiles = new();
             List<Terrain> bufferedGeometry = new();
-            Dictionary<int, Texture2D> bufferedSprites = new();
+            Texture2D bufferedSpritesheet;
             Vector2 bufferdTileSize = new Vector2();
 
             Queue<string> fileData = new();
@@ -121,16 +125,18 @@ namespace Moonwalk.Classes.Managers {
             }
 
             // Get sprite data
-            string[] spriteFilePaths = Directory.GetFiles($"{path}sprites/"); // Gets paths to all images
-            for (int ID = 0; ID < spriteFilePaths.Length; ID++)
-                bufferedSprites.Add(
-                    ID + 1,                                         // Relevant ID of the tile sprite
-                    LoadTexture(spriteFilePaths[ID]                 // Relevant Texture2D 
-                        .Remove(spriteFilePaths[ID].Length - 4)));
+            bufferedSpritesheet = content.Load<Texture2D>($"{path}spritesheet");
+
+            //string[] spriteFilePaths = Directory.GetFiles($"{path}sprites/"); // Gets paths to all images
+            //for (int ID = 0; ID < spriteFilePaths.Length; ID++)
+            //    bufferedSprites.Add(
+            //        ID + 1,                                         // Relevant ID of the tile sprite
+            //        LoadTexture(spriteFilePaths[ID]                 // Relevant Texture2D 
+            //            .Remove(spriteFilePaths[ID].Length - 4)));
 
 
             return (bufferedTiles, bufferedGeometry,
-                    bufferedSprites, bufferdTileSize);
+                    bufferedSpritesheet, bufferdTileSize);
         }
 
         public static (

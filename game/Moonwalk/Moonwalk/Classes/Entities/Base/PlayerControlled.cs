@@ -117,6 +117,18 @@ namespace Moonwalk.Classes.Entities.Base
             return temp;
         }
 
+        public virtual bool CheckCollision<T>(Rectangle rectangle, List<T> list) where T : Entity
+        {
+            bool temp = list.Exists(item => item.Hitbox.Intersects(entity));
+
+            if (temp)
+            {
+                T intersected = list.Find(item => item.Hitbox.Intersects(entity));
+            }
+
+            return temp;
+        }
+
         protected override void LinearMotion(GameTime gt) 
         {
             float time = (float)gt.ElapsedGameTime.TotalSeconds;

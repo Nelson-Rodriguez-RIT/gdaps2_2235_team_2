@@ -249,7 +249,7 @@ namespace Moonwalk.Classes.Entities.Base
         public override void Update(GameTime gameTime, StoredInput input) //needs a parent class
         {
             //updates enemy's movement if speed is greater than 0 or not equal to null
-            if (speed > 0 || speed != null)
+            if (speed > 0)
             {
                 //changes position of enemy
                 if (isLeft)

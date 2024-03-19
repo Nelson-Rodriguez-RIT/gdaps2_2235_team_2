@@ -47,8 +47,9 @@ namespace Moonwalk.Classes.Entities
         public event GetRobotPosition GetRobotPosition;
 
         private Animations animation;
+        private FaceDirection faceDirection;
 
-        private double animationTimer;
+        private int animationTimer;
 
         /// <summary>
         /// Determines if the entity is grounded or not
@@ -84,7 +85,8 @@ namespace Moonwalk.Classes.Entities
         {
             cooldowns.Update(gameTime);
             base.Update(gameTime, input);
-            ChangeAnimation();
+            animationTimer --;
+            ChangeAnimation(input);
         }
 
         public override void Input(StoredInput input)
@@ -171,21 +173,45 @@ namespace Moonwalk.Classes.Entities
                 Color.White);
         }
 
-        private void ChangeAnimation()
+        private void ChangeAnimation(StoredInput input)
         {
+            if (animationTimer > 0)
+            {
+                return;
+            }
+            else
+            {
+                animationTimer = 0;
+            }
+
+            if (acceleration.X < 0)
+            {
+                faceDirection = FaceDirection.Left;
+            }
+            else
+            {
+                faceDirection = FaceDirection.Right;
+            }
+
             if (velocity.X == 0 && velocity.Y == 0)
             {
-                SwitchAnimation(Animations.Idle);
+                SwitchAnimation(Animations.Idle, false);
             }
 
             if (velocity.X != 0)
             {                
-                SwitchAnimation(Animations.Run);
+                SwitchAnimation(Animations.Run, false);
             }
 
             if (!Grounded)
             {
                 SwitchAnimation(Animations.Jump);
+            }
+
+            if (input.IsPressed(Keys.F))
+            {
+                SwitchAnimation(Animations.Attack, false);
+                animationTimer = activeAnimation.AnimationLength;
             }
         }
 

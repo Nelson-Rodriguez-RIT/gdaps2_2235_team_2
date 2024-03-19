@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Moonwalk.Classes;
+using Moonwalk.Classes.Helpful_Stuff;
 
 namespace Moonwalk.Classes
 {
@@ -18,11 +20,17 @@ namespace Moonwalk.Classes
         private MouseState previousMouse;
         private KeyboardState currentKeyboard;
         private KeyboardState previousKeyboard;
+
         /// <summary>
         /// In the future this will store buffered inputs 
         /// </summary>
-        private List<Keys> buffered;
+        private List<BufferedInput> buffered;
         bool hasUpdated = false;
+
+        public List<BufferedInput> Buffered
+        {
+            get { return buffered; }
+        }
 
         public MouseState CurrentMouse
         { get { return currentMouse; } }
@@ -36,6 +44,11 @@ namespace Moonwalk.Classes
         public KeyboardState PreviousKeyboard
         { get { return previousKeyboard; } }
 
+        public StoredInput()
+        {
+            buffered = new List<BufferedInput>();
+        }
+
         /// <summary>
         /// Updates the mouse and keyboard states
         /// </summary>
@@ -46,6 +59,20 @@ namespace Moonwalk.Classes
             {
                 currentKeyboard = Keyboard.GetState();
                 currentMouse = Mouse.GetState();
+
+                //Update buffered inputs
+                for (int i = 0; i < buffered.Count; i++)
+                {
+                    buffered[i].timer = buffered[i].timer - 1;
+
+                    if (buffered[i].timer == 0)
+                    {
+                        buffered.RemoveAt(i);
+                        i--;
+
+                    }
+                }
+
                 hasUpdated = true;
             }
             else
@@ -83,6 +110,16 @@ namespace Moonwalk.Classes
             }
 
             return false;
+        }
+
+        public void Buffer(Keys key)
+        {
+            if (!buffered.Exists(item => item.Key == key))
+            {
+                buffered.Add(new BufferedInput(key));
+            }
+
+            
         }
     }
 }

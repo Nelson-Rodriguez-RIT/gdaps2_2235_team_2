@@ -65,7 +65,7 @@ namespace Moonwalk.Classes.Entities
         {
             gravity = 50f;
             acceleration = new Vector2(0, gravity);
-            maxXVelocity = 60;
+            maxXVelocity = 45;
             maxYVelocity = 70;           
 
             SwitchAnimation(Animations.Idle);
@@ -108,11 +108,21 @@ namespace Moonwalk.Classes.Entities
             
 
             //Jump 
-            if (input.IsPressed(Keys.Space)
-                && !input.WasPressed(Keys.Space) 
-                && Grounded)
+            if ((input.IsPressed(Keys.Space)
+                && !input.WasPressed(Keys.Space))
+                || input.Buffered.Exists(item => item.Key == Keys.Space))
             {
-                velocity.Y = -60;
+                if (Grounded) 
+                {
+                    velocity.Y = -60;
+
+                    BufferedInput buffer = input.Buffered.Find(item => item.Key == Keys.Space);
+                    input.Buffered.Remove(buffer);
+                }   
+                else
+                {
+                    input.Buffer(Keys.Space);
+                }
             }
 
                 //Robot abilities:

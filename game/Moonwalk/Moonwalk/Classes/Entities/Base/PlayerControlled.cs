@@ -169,7 +169,6 @@ namespace Moonwalk.Classes.Entities.Base
                 if (!CheckCollision())
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);
-                    //oldVelocity = new Vector2(velocity.X, velocity.Y);
                 }                        
 
                 //Cap velocity

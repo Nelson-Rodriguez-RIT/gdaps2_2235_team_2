@@ -62,12 +62,12 @@ namespace Moonwalk.Classes.Managers {
         public static (
                 List<int[][]> tiles,
                 List<Terrain> geometry,
-                Dictionary<int, Texture2D> sprites,
+               Texture2D spritesheet,
                 Vector2 tileSize) 
                 LoadMap(string path) {
             List<int[][]> bufferedTiles = new();
             List<Terrain> bufferedGeometry = new();
-            Dictionary<int, Texture2D> bufferedSprites = new();
+            Texture2D bufferedSpritesheet;
             Vector2 bufferdTileSize = new Vector2();
 
             Queue<string> fileData = new();
@@ -125,16 +125,18 @@ namespace Moonwalk.Classes.Managers {
             }
 
             // Get sprite data
-            string[] spriteFilePaths = Directory.GetFiles($"{path}sprites/"); // Gets paths to all images
-            for (int ID = 0; ID < spriteFilePaths.Length; ID++)
-                bufferedSprites.Add(
-                    ID + 1,                                         // Relevant ID of the tile sprite
-                    LoadTexture(spriteFilePaths[ID]                 // Relevant Texture2D 
-                        .Remove(spriteFilePaths[ID].Length - 4)));
+            bufferedSpritesheet = content.Load<Texture2D>($"{path}spritesheet");
+
+            //string[] spriteFilePaths = Directory.GetFiles($"{path}sprites/"); // Gets paths to all images
+            //for (int ID = 0; ID < spriteFilePaths.Length; ID++)
+            //    bufferedSprites.Add(
+            //        ID + 1,                                         // Relevant ID of the tile sprite
+            //        LoadTexture(spriteFilePaths[ID]                 // Relevant Texture2D 
+            //            .Remove(spriteFilePaths[ID].Length - 4)));
 
 
             return (bufferedTiles, bufferedGeometry,
-                    bufferedSprites, bufferdTileSize);
+                    bufferedSpritesheet, bufferdTileSize);
         }
 
         public static (

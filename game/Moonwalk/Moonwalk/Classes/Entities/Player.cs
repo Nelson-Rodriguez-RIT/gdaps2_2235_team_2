@@ -32,7 +32,12 @@ namespace Moonwalk.Classes.Entities
         {
             get
             {
-                if (CheckCollision(new Rectangle(entity.X, entity.Y + 5, entity.Width, entity.Height)))
+                if (CheckCollision(new Rectangle(
+                        hitbox.X + (int)Position.X,
+                        hitbox.Y + (int)Position.Y + 5,
+                        hitbox.Width,
+                        hitbox.Height
+                        )))
                 {
                     return true;
                 }

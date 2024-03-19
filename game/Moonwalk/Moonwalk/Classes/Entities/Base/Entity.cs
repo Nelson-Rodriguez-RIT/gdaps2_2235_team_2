@@ -50,7 +50,7 @@ namespace Moonwalk.Classes.Entities.Base
         //Animation
         protected Texture2D spriteSheet;
 
-        //private Texture2D hitboxSprite = null;
+        private Texture2D hitboxSprite = null;
 
         public virtual Rectangle Hitbox
         {
@@ -115,8 +115,8 @@ namespace Moonwalk.Classes.Entities.Base
                 int.Parse(properties["HitboxY"])
                 );
 
-            //if (hitboxSprite == null)
-            //    hitboxSprite = Loader.LoadTexture("../../../Content/Entities/HitboxSprite");
+            if (hitboxSprite == null)
+                hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
         }
 
         
@@ -131,9 +131,10 @@ namespace Moonwalk.Classes.Entities.Base
         /// Switches the animation currently playing to another
         /// </summary>
         /// <param name="animation">The animation to switch to</param>
-        protected void SwitchAnimation(Enum animationEnum) {
+        protected void SwitchAnimation(Enum animationEnum, bool resetAnimation = true) {
             activeAnimation = animations[Convert.ToInt32(animationEnum)];
-            activeAnimation.Reset();
+            if (resetAnimation)
+                activeAnimation.Reset();
         }
 
         /// <summary>
@@ -155,12 +156,21 @@ namespace Moonwalk.Classes.Entities.Base
             //apply offset
             Vector2 temp = Camera.ApplyOffset(vectorPosition);
 
-            activeAnimation.Draw(batch, GameMain.ActiveScale * spriteScale, spritesheet, temp);
+            activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
         }
 
         
         public void DrawHitbox(SpriteBatch batch, Vector2 globalScale, GraphicsDevice graphics) {
-
+            batch.Draw(
+                hitboxSprite,
+                new Rectangle(
+                    (int)((hitbox.X + Position.X) * globalScale.X),
+                    (int)((hitbox.Y + Position.Y) * globalScale.Y),
+                    (int)(hitbox.Width * globalScale.X),
+                    (int)(hitbox.Height * globalScale.Y)
+                    ),
+                Color.White
+                );
             // // Doesn't work at the moment, but ill try to get it working later
             // This uses projection (omg Math Graphical Sim. actually has a purpose :O )
             // onto a 3D pane to create a box (this avoids having us to make predrawn boxes)

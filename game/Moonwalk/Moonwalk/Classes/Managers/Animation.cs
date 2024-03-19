@@ -39,6 +39,15 @@ namespace Moonwalk.Classes.Managers {
         private AnimationStyle style;
 
 
+        public int AnimationValue {
+            get {
+                if (style == AnimationStyle.Horizontal)
+                    return spritesheetBox.Y;
+
+                else return spritesheetBox.X;
+            }
+        }
+
         public Animation(
                 // This information should be gathered from a file (please don't manually type it)
                 Vector2 spriteSize,
@@ -114,8 +123,8 @@ namespace Moonwalk.Classes.Managers {
             batch.Draw(
                 spritesheet,
                 new Rectangle(
-                    (int)(position.X * scale.X),    // X position
-                    (int)(position.Y * scale.Y),    // Y position
+                    (int)(position.X),    // X position
+                    (int)(position.Y),    // Y position
                     (int)(spriteSize.X * scale.X),  // Width
                     (int)(spriteSize.Y * scale.Y)), // Height
                 spritesheetBox, // Sprite from spritesheet

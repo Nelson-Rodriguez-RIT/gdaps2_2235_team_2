@@ -18,7 +18,6 @@ namespace Moonwalk {
         WindowManager windowManager;
 
         private Vector2 DefaultScale = new Vector2(1, 1);
-        //private Vector2 DefaultScale = new Vector2(1, 1);
 
         private static Vector2 activeScale;
 
@@ -34,7 +33,7 @@ namespace Moonwalk {
 
         protected override void Initialize() {
             // Set initial window properties
-            Window.AllowUserResizing = true;
+            Window.AllowUserResizing = false; // This is going to be disabled until I come up with a position fix
 
             _graphics.PreferredBackBufferWidth = DefaultWindowWidth;
             _graphics.PreferredBackBufferHeight = DefaultWindowHeight;

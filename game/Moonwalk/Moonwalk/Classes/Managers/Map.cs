@@ -62,7 +62,7 @@ namespace Moonwalk.Classes.Managers
 
                         Rectangle sprite = new Rectangle(
                                 (int)((tiles[row][col] % (spritesheet.Width / tileSize.X) - 1) * tileSize.X),
-                                (int)(Math.Floor(tiles[row][col] / (spritesheet.Height / tileSize.Y) - 1) * tileSize.Y),
+                                (int)(Math.Floor(tiles[row][col] / (spritesheet.Height / tileSize.Y)) * tileSize.Y),
                                 (int)tileSize.X,
                                 (int)tileSize.Y
                                 );

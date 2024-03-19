@@ -7,6 +7,7 @@ using System.Reflection.Metadata;
 
 namespace Moonwalk {
     public class GameMain : Game {
+
         private const int DefaultWindowWidth = 1280;
         private const int DefaultWindowHeight = 720;
 
@@ -16,10 +17,13 @@ namespace Moonwalk {
         GameManager gameManager;
         WindowManager windowManager;
 
-        //private Vector2 DefaultScale = new Vector2(5, 5);
         private Vector2 DefaultScale = new Vector2(1, 1);
 
-        private Vector2 activeScale;
+        private static Vector2 activeScale;
+
+        public static Vector2 ActiveScale {
+            get { return activeScale; }
+        }
 
         public GameMain() {
             _graphics = new GraphicsDeviceManager(this);
@@ -29,7 +33,7 @@ namespace Moonwalk {
 
         protected override void Initialize() {
             // Set initial window properties
-            Window.AllowUserResizing = true;
+            Window.AllowUserResizing = false; // This is going to be disabled until I come up with a position fix
 
             _graphics.PreferredBackBufferWidth = DefaultWindowWidth;
             _graphics.PreferredBackBufferHeight = DefaultWindowHeight;
@@ -61,6 +65,7 @@ namespace Moonwalk {
             // Keep game logic inside of gameManager //
             gameManager.Update(gameTime);
 
+            activeScale *= DefaultScale;
             base.Update(gameTime);
         }
 
@@ -70,7 +75,7 @@ namespace Moonwalk {
             _spriteBatch.Begin(
                 samplerState: SamplerState.PointClamp); // Prevents blurry sprites
 
-            gameManager.Draw(_spriteBatch, activeScale * DefaultScale);
+            gameManager.Draw(_spriteBatch);
 
             _spriteBatch.End();
 

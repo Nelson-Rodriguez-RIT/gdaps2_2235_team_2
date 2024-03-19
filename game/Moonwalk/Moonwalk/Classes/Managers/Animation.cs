@@ -38,27 +38,15 @@ namespace Moonwalk.Classes.Managers {
         // Whether the animation sprites layed out horizontally or vertically on the spritesheet
         private AnimationStyle style;
 
-        public int FaceDirection = 0; // 0 for right, 1 for left
 
-        public int AnimationLength
-        {
-            get
-            {
-                return totalSprites * framesPerSprite;
-            }
-        }
-
-        public int AnimationValue
-        {
-            get
-            {
+        public int AnimationValue {
+            get {
                 if (style == AnimationStyle.Horizontal)
                     return spritesheetBox.Y;
 
                 else return spritesheetBox.X;
             }
         }
-
 
         public Animation(
                 // This information should be gathered from a file (please don't manually type it)
@@ -135,15 +123,15 @@ namespace Moonwalk.Classes.Managers {
             batch.Draw(
                 spritesheet,
                 new Rectangle(
-                    (int)position.X,    // X position
-                    (int)position.Y,    // Y position
+                    (int)(position.X),    // X position
+                    (int)(position.Y),    // Y position
                     (int)(spriteSize.X * scale.X),  // Width
                     (int)(spriteSize.Y * scale.Y)), // Height
                 spritesheetBox, // Sprite from spritesheet
                 Color.White,
                 0f,
-                new Vector2(0,0),
-                FaceDirection == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                origin,
+                SpriteEffects.None,
                 0);
         }
 

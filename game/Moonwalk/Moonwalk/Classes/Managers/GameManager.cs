@@ -86,9 +86,8 @@ namespace Moonwalk.Classes.Managers
             // Get user input
             storedInput.Update();
 
-            // Doesn't work atm
-            if (storedInput.CurrentKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw hitboxes
-                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F2))
+            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw hitboxes
+                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F1))
                 displayHitboxes = !displayHitboxes;
 
             switch (state) {
@@ -140,7 +139,7 @@ namespace Moonwalk.Classes.Managers
         /// <summary>
         /// Handles draw logic
         /// </summary>
-        public void Draw(SpriteBatch batch, Vector2 globalScale) {
+        public void Draw(SpriteBatch batch) {
             // Elements draw based on game state (i.e. GUI or menu elements)
             switch (state) {
                 case GameState.Test:
@@ -148,14 +147,14 @@ namespace Moonwalk.Classes.Managers
                     break;
             }
 
-            Map.Draw(batch, globalScale);
+            Map.Draw(batch);
 
             // Elements drawn ever iteration
             foreach (Entity entity in entities) {
-                entity.Draw(batch, globalScale);
+                entity.Draw(batch);
 
                 if (displayHitboxes)
-                    entity.DrawHitbox(batch, globalScale, graphics);
+                    entity.DrawHitbox(batch, GameMain.ActiveScale, graphics);
             }
                 
         }
@@ -186,10 +185,10 @@ namespace Moonwalk.Classes.Managers
 
                 case GameState.Demo:
 
-                    Map.LoadMap("Demo");
+                    Map.LoadMap("StartMap");
 
                     // Loads player + companion
-                    SpawnEntity<Player>(new Vector2(48, 48));
+                    SpawnEntity<Player>(new Vector2(50, 48));
                     SpawnEntity<Robot>(new Vector2(128, 48));
 
                     robot = ((Robot)entities[typeof(Robot)][0]);

@@ -135,15 +135,25 @@ namespace Moonwalk.Classes.Managers {
             batch.Draw(
                 spritesheet,
                 new Rectangle(
-                    (int)position.X,    // X position
-                    (int)position.Y,    // Y position
+                    (int)(position.X),    // X position
+                    (int)(position.Y),    // Y position
                     (int)(spriteSize.X * scale.X),  // Width
                     (int)(spriteSize.Y * scale.Y)), // Height
                 spritesheetBox, // Sprite from spritesheet
                 Color.White,
                 0f,
-                new Vector2(0,0),
+                origin,
                 FaceDirection == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                0);
+
+            batch.Draw(
+                spritesheet,
+                new Rectangle(),
+                spritesheetBox,
+                Color.White,
+                0f,
+                origin,
+                SpriteEffects.FlipHorizontally,
                 0);
         }
 

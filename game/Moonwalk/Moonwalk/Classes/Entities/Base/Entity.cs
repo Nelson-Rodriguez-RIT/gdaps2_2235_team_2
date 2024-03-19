@@ -30,7 +30,8 @@ namespace Moonwalk.Classes.Entities.Base
         // Contains the entity's sprite table and position
         protected Rectangle entity;
 
-        protected Vector2 hitbox;
+        // X and Y represent origin offsets
+        protected Rectangle hitbox;
 
         protected float gravity;
         /// <summary>
@@ -55,11 +56,11 @@ namespace Moonwalk.Classes.Entities.Base
         //Animation
         protected Texture2D spriteSheet;
 
-        //private Texture2D hitboxSprite = null;
+        private Texture2D hitboxSprite = null;
 
         public virtual Rectangle Hitbox
         {
-            get { return new Rectangle(0,0, (int) hitbox.X, (int)hitbox.Y); }
+            get { return hitbox; }
         }
 
         public virtual Point Position
@@ -113,12 +114,15 @@ namespace Moonwalk.Classes.Entities.Base
                 spritesheet = bufferedData.spritesheet;
             }
 
-            hitbox = new Vector2(
+            hitbox = new Rectangle(
+                int.Parse(properties["HitboxXOrigin"]),
+                int.Parse(properties["HitboxYOrigin"]),
                 int.Parse(properties["HitboxX"]),
-                int.Parse(properties["HitboxY"]));
+                int.Parse(properties["HitboxY"])
+                );
 
-            //if (hitboxSprite == null)
-            //    hitboxSprite = Loader.LoadTexture("../../../Content/Entities/HitboxSprite");
+            if (hitboxSprite == null)
+                hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
         }
 
         
@@ -134,8 +138,7 @@ namespace Moonwalk.Classes.Entities.Base
         /// Switches the animation currently playing to another
         /// </summary>
         /// <param name="animation">The animation to switch to</param>
-        protected void SwitchAnimation(Enum animationEnum, bool resetAnimation = true)
-        {
+        protected void SwitchAnimation(Enum animationEnum, bool resetAnimation = true) {
             activeAnimation = animations[Convert.ToInt32(animationEnum)];
             if (resetAnimation)
                 activeAnimation.Reset();
@@ -153,7 +156,7 @@ namespace Moonwalk.Classes.Entities.Base
             animation.Reset();
         }
 
-        public virtual void Draw(SpriteBatch batch, Vector2 globalScale)
+        public virtual void Draw(SpriteBatch batch)
         {
             if (spriteScale == 0)
             {
@@ -163,12 +166,21 @@ namespace Moonwalk.Classes.Entities.Base
             //apply offset
             Vector2 temp = Camera.ApplyOffset(vectorPosition);
 
-            activeAnimation.Draw(batch, globalScale * spriteScale, spritesheet, temp);
+            activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
         }
 
         
         public void DrawHitbox(SpriteBatch batch, Vector2 globalScale, GraphicsDevice graphics) {
-
+            batch.Draw(
+                hitboxSprite,
+                new Rectangle(
+                    (int)((hitbox.X + Position.X) * globalScale.X),
+                    (int)((hitbox.Y + Position.Y) * globalScale.Y),
+                    (int)(hitbox.Width * globalScale.X),
+                    (int)(hitbox.Height * globalScale.Y)
+                    ),
+                Color.White
+                );
             // // Doesn't work at the moment, but ill try to get it working later
             // This uses projection (omg Math Graphical Sim. actually has a purpose :O )
             // onto a 3D pane to create a box (this avoids having us to make predrawn boxes)

@@ -105,6 +105,14 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = velocity.X < 0 ? maxXVelocity * 2.5f : maxXVelocity * 2;
             }
 
+            if (velocity.X != 0 
+                && velocity.X < 0.5f 
+                && Math.Sign(acceleration.X) != Math.Sign(velocity.X))
+            {
+                velocity.X = 0;
+                acceleration.X = 0;
+            }
+
             //Slow down if not pressing anything
             if (!input.IsPressed(Keys.D) &&
                 !input.IsPressed(Keys.A)
@@ -114,7 +122,6 @@ namespace Moonwalk.Classes.Entities
 
             }
 
-            
 
             //Jump 
             if ((input.IsPressed(Keys.Space)
@@ -193,6 +200,8 @@ namespace Moonwalk.Classes.Entities
                 faceDirection = FaceDirection.Right;
             }
 
+            activeAnimation.FaceDirection = (int)faceDirection;
+
             if (velocity.X == 0 && velocity.Y == 0)
             {
                 SwitchAnimation(Animations.Idle, false);
@@ -208,9 +217,15 @@ namespace Moonwalk.Classes.Entities
                 SwitchAnimation(Animations.Jump);
             }
 
-            if (input.IsPressed(Keys.F))
+            if (input.IsPressed(Keys.E))
             {
                 SwitchAnimation(Animations.Attack, false);
+                animationTimer = activeAnimation.AnimationLength;
+            }
+
+            if (input.IsPressed(Keys.F))
+            {
+                SwitchAnimation(Animations.Shoot, false);
                 animationTimer = activeAnimation.AnimationLength;
             }
         }

@@ -38,6 +38,8 @@ namespace Moonwalk.Classes.Managers {
         // Whether the animation sprites layed out horizontally or vertically on the spritesheet
         private AnimationStyle style;
 
+        public int FaceDirection = 0; // 0 for right, 1 for left
+
         public int AnimationLength
         {
             get
@@ -138,7 +140,11 @@ namespace Moonwalk.Classes.Managers {
                     (int)(spriteSize.X * scale.X),  // Width
                     (int)(spriteSize.Y * scale.Y)), // Height
                 spritesheetBox, // Sprite from spritesheet
-                Color.White);
+                Color.White,
+                0f,
+                new Vector2(0,0),
+                FaceDirection == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                0);
         }
 
         public void Reset() {

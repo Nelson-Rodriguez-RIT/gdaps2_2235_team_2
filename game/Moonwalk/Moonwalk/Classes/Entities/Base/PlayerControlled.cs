@@ -222,9 +222,6 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-        public void Impulse(Vector2 destination)
-        {
-            velocity = (destination - vectorPosition) / 4f;
-        }
+        
     }
 }

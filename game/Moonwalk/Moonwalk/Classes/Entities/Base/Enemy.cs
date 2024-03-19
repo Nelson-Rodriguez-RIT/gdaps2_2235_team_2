@@ -151,14 +151,16 @@ namespace Moonwalk.Classes.Entities.Base
         /// <returns>True if a collision occurred</returns>
         public virtual bool CheckCollision()
         {
-            bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(entity));
+            // checks if there is a terrain that collides with this
+            bool collision = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(entity));
 
-            if (temp)
+            if (collision)
             {
+                // for testing purposes
                 Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(entity));
             }           
 
-            return temp;
+            return collision;
         }
 
         // All of this is unnecessary as it is done in Animation. Thanks Nelson! - Dante

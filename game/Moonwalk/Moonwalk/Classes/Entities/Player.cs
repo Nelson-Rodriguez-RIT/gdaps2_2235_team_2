@@ -58,12 +58,7 @@ namespace Moonwalk.Classes.Entities
         {
             get
             {
-                if (CheckCollision(new Rectangle(
-                        hitbox.X + (int)Position.X,
-                        hitbox.Y + (int)Position.Y + 5,
-                        hitbox.Width,
-                        hitbox.Height
-                        )))
+                if (CheckCollision(new Rectangle(entity.X, entity.Y + 5, entity.Width, entity.Height)))
                 {
                     return true;
                 }
@@ -175,9 +170,9 @@ namespace Moonwalk.Classes.Entities
 
         }
 
-        public override void Draw(SpriteBatch batch)
+        public override void Draw(SpriteBatch batch, Vector2 globalScale)
         {
-            base.Draw(batch);
+            base.Draw(batch, globalScale);
 
             batch.DrawString(GameManager.font, 
                 $"{vectorPosition.Y} - {velocity.Y} - {acceleration.Y} \n {Position.Y}",

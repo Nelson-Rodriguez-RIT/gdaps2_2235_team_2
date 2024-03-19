@@ -62,14 +62,14 @@ namespace Moonwalk.Classes.Managers {
         public static Vector2 ApplyOffset(Vector2 position, Vector2 offset) {
             if (focusStatic)
                 return new Vector2(
-                    ((position.X + offset.X) - vectorTarget.X + (globalOffset.X * GameMain.ActiveScale.X)),
-                                                                //(int)WindowManager.Instance.Center.X,   //apply offset from the center of the window
-                    ((position.Y + offset.Y) - vectorTarget.Y + (globalOffset.Y * GameMain.ActiveScale.Y)));
+                    (position.X + offset.X) - vectorTarget.X + globalOffset.X,
+                    //(int)WindowManager.Instance.Center.X,   //apply offset from the center of the window
+                    (position.Y + offset.Y) - vectorTarget.Y + globalOffset.Y);
             //(int)WindowManager.Instance.Center.Y);  //apply offset from the center of the window
             else
                 return new Vector2(
-                    ((position.X + offset.X) - rectTarget.X + globalOffset.X),
-                    ((position.Y + offset.Y) - rectTarget.Y + globalOffset.Y));
+                    (position.X + offset.X) - rectTarget.X + globalOffset.X,
+                    (position.Y + offset.Y) - rectTarget.Y + globalOffset.Y);
 
         }
     }

@@ -1,4 +1,4 @@
-﻿ using Moonwalk.Interfaces;
+﻿using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -91,16 +91,11 @@ namespace Moonwalk.Classes.Entities.Base
         /// <returns>True if a collision occurred</returns>
         public virtual bool CheckCollision()
         {
-            bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(new Rectangle(
-                    hitbox.X + (int)Position.X,
-                    hitbox.Y + (int)Position.Y,
-                    hitbox.Width,
-                    hitbox.Height
-                    )));
+            bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(entity));
 
             if (temp)
             {
-                Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(hitbox));
+                Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(entity));
             }
 
             return temp;

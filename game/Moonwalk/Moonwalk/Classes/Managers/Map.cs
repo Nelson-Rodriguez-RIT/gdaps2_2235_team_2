@@ -20,9 +20,7 @@ namespace Moonwalk.Classes.Managers
         private static List<int[][]> tiles;
         private static List<Terrain> geometry;
 
-        //private static Dictionary<int, Texture2D> sprites;
-        private static Texture2D spritesheet;
-
+        private static Dictionary<int, Texture2D> sprites;
         private static Vector2 tileSize;
 
         public static List<Terrain> Geometry 
@@ -36,7 +34,7 @@ namespace Moonwalk.Classes.Managers
         public static void LoadMap(string mapRootFolderName)
         {
             (List<int[][]> tiles, List<Terrain> geometry,
-                Texture2D spritesheet, Vector2 tileSize) bufferedData
+                Dictionary<int, Texture2D> sprites, Vector2 tileSize) bufferedData
                 = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
 
             tiles = bufferedData.tiles;
@@ -45,12 +43,12 @@ namespace Moonwalk.Classes.Managers
             //REMOVE THIS LATER (for testing purposes) - Dante
             geometry.Add(new Terrain(new Rectangle(0, 500, 1000, 100)));
 
-            spritesheet = bufferedData.spritesheet;
+            sprites = bufferedData.sprites;
             tileSize = bufferedData.tileSize;
         }
 
 
-        public static void Draw(SpriteBatch batch)
+        public static void Draw(SpriteBatch batch, Vector2 globalScale)
         {
             foreach (int[][] tiles in tiles) // This is for rendering several layers
                 for (int row = 0; row < tiles.Length; row++)
@@ -60,26 +58,15 @@ namespace Moonwalk.Classes.Managers
                         if (tiles[row][col] == 0)
                             continue;
 
-                        Rectangle sprite = new Rectangle(
-                                (int)((tiles[row][col] % (spritesheet.Width / tileSize.X) - 1) * tileSize.X),
-                                (int)(Math.Floor(tiles[row][col] / (spritesheet.Height / tileSize.Y) - 1) * tileSize.Y),
-                                (int)tileSize.X,
-                                (int)tileSize.Y
-                                );
-
                         // Draw the relevant map tile
                         batch.Draw(
-                            //sprites[tiles[row][col]],  // Uses tile ID to get a specific sprite
-                            spritesheet,
-                            Camera.ApplyOffset(new Vector2(col * tileSize.X, row * tileSize.Y)) * GameMain.ActiveScale,  // Position, with relevant offseets
-                            //new Vector2(col * tileSize.X, row * tileSize.Y),
-                            //null,           // Unused since we don't plan using sprite sheets for map tiles
-                            sprite,
+                            sprites[tiles[row][col]],  // Uses tile ID to get a specific sprite
+                            Camera.ApplyOffset(new Vector2(col * tileSize.X, row * tileSize.Y)) * globalScale,  // Position, with relevant offseets
+                            null,           // Unused since we don't plan using sprite sheets for map tiles
                             Color.White,    // Color
                             0f,             // Rotation
-                            //Camera.VectorTarget * globalScale,   // Origin
-                            Vector2.Zero,
-                            GameMain.ActiveScale,    // Image scale, DO NOT USE THIS
+                            Vector2.Zero,   // Origin
+                            globalScale,    // Image scale, affected by the initial default scale and the window size ration
                             SpriteEffects.None, // Image flipping
                             0);             // Layer
                     }

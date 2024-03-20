@@ -170,47 +170,22 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         
-        public void DrawHitbox(SpriteBatch batch, Vector2 globalScale, GraphicsDevice graphics) {
+        public void DrawHitbox(SpriteBatch batch) {
+            Vector2 position = Camera.ApplyOffset(new Vector2(
+                hitbox.X + Position.X,
+                hitbox.Y + Position.Y
+                ));
+
             batch.Draw(
                 hitboxSprite,
                 new Rectangle(
-                    (int)((hitbox.X + Position.X) * globalScale.X),
-                    (int)((hitbox.Y + Position.Y) * globalScale.Y),
-                    (int)(hitbox.Width * globalScale.X),
-                    (int)(hitbox.Height * globalScale.Y)
+                    (int)(position.X),
+                    (int)(position.Y),
+                    (int)(hitbox.Width * GameMain.ActiveScale.X),
+                    (int)(hitbox.Height * GameMain.ActiveScale.Y)
                     ),
                 Color.White
                 );
-            // // Doesn't work at the moment, but ill try to get it working later
-            // This uses projection (omg Math Graphical Sim. actually has a purpose :O )
-            // onto a 3D pane to create a box (this avoids having us to make predrawn boxes)
-            // https://stackoverflow.com/questions/23305577/draw-rectangle-in-monogame
-            /*
-            VertexPositionColor[] vertexPositions = new[] { 
-                // + new Vector3(Position.X, Position.Y, 0)
-                new VertexPositionColor(new Vector3(0, 0, 1), Color.Orange),
-                new VertexPositionColor(new Vector3(2, 0, 1), Color.Orange),
-                new VertexPositionColor(new Vector3(2, 2, 1), Color.Orange),
-                new VertexPositionColor(new Vector3(0, 2, 1), Color.Orange)
-            };
-
-            // We draw this like it is a shader (done via BasicEffect)
-            BasicEffect projection = new BasicEffect(graphics);
-            projection.World = Matrix.CreateOrthographicOffCenter(
-                0,                          // X cord of 0, 0, 0
-                graphics.Viewport.Width,    // Window width
-                graphics.Viewport.Height,   // Window height
-                0,                          // Y cord of 0, 0, 0
-                0,                          // Z cord of 0, 0, 0
-                1                           // Depth
-                );
-
-            // MonoGame has no docs for these some I'm not too sure what they do
-            EffectTechnique box = projection.Techniques[0];
-            box.Passes[0].Apply(); // Draws the box (shader)
-
-            graphics.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.LineStrip, vertexPositions, 0, 3);
-            */
         }
 
         /// <summary>

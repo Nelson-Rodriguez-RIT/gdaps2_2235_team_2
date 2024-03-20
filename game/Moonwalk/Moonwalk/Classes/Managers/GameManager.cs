@@ -7,6 +7,7 @@ using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
@@ -17,6 +18,7 @@ using System.Threading.Tasks;
 namespace Moonwalk.Classes.Managers
 {
     enum GameState {
+        MainMenu,
         Demo
     }
 
@@ -25,9 +27,11 @@ namespace Moonwalk.Classes.Managers
     /// </summary>
     internal sealed class GameManager {
 
+        private Dictionary<string, Texture2D> guiSprites;
+        private Dictionary<string, SpriteFont> fonts;
+
         public static SpriteFont font;
 
-        private GraphicsDevice graphics;
         private bool displayEntityHitboxes = false;
         private bool displayTerrainHitboxes = false;
 
@@ -42,29 +46,63 @@ namespace Moonwalk.Classes.Managers
         // Currently loaded entities
         private Assortment<Entity> entities;
 
+        List<Type> types;
+
         //Input handling:
         private StoredInput storedInput;
 
         // For testing purposes
         private Vector2 cameraTarget;
 
-        private GameManager(ContentManager content, GraphicsDevice graphics) {
+        private GameManager(ContentManager content) {
             // Get content for loading needs
             Loader.Content = content;
-            this.graphics = graphics;
             storedInput = new StoredInput();
             Camera.GlobalOffset = WindowManager.Instance.Center;
 
 
             //Testing for my new entity list concept
-            List<Type> types = new List<Type>();
+            types = new List<Type>();
             types.Add(typeof(Player));
             types.Add(typeof(Robot));
             entities = new Assortment<Entity>(types);
 
 
+            // Loads UI Sprites
+            {
+                guiSprites = new Dictionary<string, Texture2D>();
+                string directory = "../../../Content/GUI/";
+                foreach (string file in Directory.GetFiles(directory)) {
+                    string pathBuffer = file.Remove(file.Length - 4);
+                    string nameBuffer = pathBuffer.Remove(0, directory.Length);
+                    guiSprites.Add(
+                        nameBuffer,
+                        content.Load<Texture2D>(pathBuffer)
+                        );
+                }
+            }
+
+
+            // Loads fonts
+            {
+                fonts = new Dictionary<string, SpriteFont>();
+                string directory = "../../../Content/Fonts/";
+                foreach (string file in Directory.GetFiles(directory)) {
+                    string[] splitPath = file.Split('.');
+                    if (splitPath[splitPath.Length - 1] == "spritefont") {
+                        string pathBuffer = file.Remove(file.Length - 11);
+                        string nameBuffer = pathBuffer.Remove(0, directory.Length);
+                        fonts.Add(
+                            nameBuffer, 
+                            content.Load<SpriteFont>(pathBuffer));
+                    }
+                        
+                }
+            }
+
+
             // Prepares neccessary elements
-            Transition(GameState.Demo);
+            Transition(GameState.MainMenu);
         }
 
 
@@ -72,9 +110,9 @@ namespace Moonwalk.Classes.Managers
         /// Gets GameManager's singleton instance
         /// </summary>
         /// <returns>A GameManager object</returns>
-        public static GameManager GetInstance(ContentManager content, GraphicsDevice graphics) {
+        public static GameManager GetInstance(ContentManager content) {
             if (_instance == null)
-                _instance = new GameManager(content, graphics);
+                _instance = new GameManager(content);
 
             return _instance;
         }
@@ -94,17 +132,38 @@ namespace Moonwalk.Classes.Managers
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.F2))
                 displayTerrainHitboxes = !displayTerrainHitboxes;
 
+            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F3) && // Press F3 to reset the current map/gamestate
+                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F3))
+                Transition(state);
+
             switch (state) {
+                case GameState.MainMenu:
+                        if(storedInput.CurrentMouse.LeftButton == ButtonState.Pressed &&
+                                storedInput.PreviousMouse.LeftButton == ButtonState.Released) {
+                        Rectangle mousePosition = new Rectangle(
+                            (int)(storedInput.CurrentMouse.Position.X),
+                            (int)(storedInput.CurrentMouse.Position.Y),
+                            1,
+                            1);
+
+                        if (mousePosition.Intersects(new Rectangle(
+                                540, 310, 186, 66))) // Start button position and size
+                            Transition(GameState.Demo);
+
+                        if (mousePosition.Intersects(new Rectangle(
+                                540, 410, 186, 66))) // Exit button position
+                            GameMain.ExitGame();
+                    }
+                            
+                    break;
 
                 case GameState.Demo:
-
                     foreach (Entity entity in entities) {
                         if (entity is Player) {
                             cameraTarget = new Vector2(entity.Position.X, entity.Position.Y);
                             break;
                         }
                     }
-
 
                     Camera.VectorTarget = cameraTarget;
 
@@ -123,14 +182,59 @@ namespace Moonwalk.Classes.Managers
         /// <summary>
         /// Handles draw logic
         /// </summary>
-        public void Draw(SpriteBatch batch) {
+        public void Draw(SpriteBatch batch, GraphicsDevice graphics) {
             // Elements draw based on game state (i.e. GUI or menu elements)
             switch (state) {
+                case GameState.MainMenu:
+                    graphics.Clear(Color.Black);
+
+                    batch.DrawString(
+                        fonts["MonogramTitle"],
+                        "Moonwalk",
+                        WindowManager.Instance.Center - new Vector2(150, 150),
+                        Color.White
+                        );
+
+                    batch.Draw(
+                        guiSprites["ButtonStart"],
+                        new Rectangle(
+                            (int)(WindowManager.Instance.Center.X - 100),
+                            (int)(WindowManager.Instance.Center.Y - 50),
+                            guiSprites["ButtonStart"].Width * 2,
+                            guiSprites["ButtonStart"].Height * 2
+                            ),
+                        Color.White
+                        );
+
+                    batch.Draw(
+                        guiSprites["ButtonExit"],
+                        new Rectangle(
+                            (int)(WindowManager.Instance.Center.X - 100),
+                            (int)(WindowManager.Instance.Center.Y + 50),
+                            guiSprites["ButtonExit"].Width * 2,
+                            guiSprites["ButtonExit"].Height * 2
+                            ),
+                        Color.White
+                        );
+
+                    batch.Draw(
+                        guiSprites["MenuBorder"],
+                        new Rectangle(
+                            (int)(WindowManager.Instance.Center.X - 230),
+                            (int)(WindowManager.Instance.Center.Y - 245),
+                            guiSprites["MenuBorder"].Width * 10,
+                            guiSprites["MenuBorder"].Height * 10),
+                        Color.White
+                        );
+                    break;
+
                 case GameState.Demo:
+                    graphics.Clear(Color.Gray);
                     break;
             }
 
-            Map.Draw(batch, displayTerrainHitboxes);
+            if(Map.Loaded)
+                Map.Draw(batch, displayTerrainHitboxes);
 
             // Elements drawn ever iteration
             foreach (Entity entity in entities) {
@@ -146,8 +250,14 @@ namespace Moonwalk.Classes.Managers
         /// Handles logic when switching between game states
         /// </summary>
         /// <param name="nextState">The next game state to transition to</param>
-        private void Transition(GameState nextState) {
+        private void Transition(GameState nextState, bool clearEntities = true) {
+            if (clearEntities)
+                entities = new Assortment<Entity>(types);
+
             switch (nextState) {
+                case GameState.MainMenu:
+                    break;
+
                 case GameState.Demo:
 
                     //Map.LoadMap("StartMap");

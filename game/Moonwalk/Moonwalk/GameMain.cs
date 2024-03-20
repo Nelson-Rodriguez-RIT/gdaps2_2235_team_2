@@ -17,9 +17,11 @@ namespace Moonwalk {
         GameManager gameManager;
         WindowManager windowManager;
 
-        private Vector2 DefaultScale = new Vector2(1, 1);
+        private Vector2 DefaultScale = new Vector2(2, 2);
 
         private static Vector2 activeScale;
+
+        private static bool exitGameFlag = false;
 
         public static Vector2 ActiveScale {
             get { return activeScale; }
@@ -48,13 +50,16 @@ namespace Moonwalk {
 
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            gameManager = GameManager.GetInstance(Content, _graphics.GraphicsDevice);
+            gameManager = GameManager.GetInstance(Content);
             GameManager.font = Content.Load<SpriteFont>("File");
         }
 
 
 
         protected override void Update(GameTime gameTime) {
+            if (exitGameFlag)
+                Exit();
+
             activeScale = Vector2.One;
             // Non-game logic (i.e. updating the window size ratio) should go below //
             windowManager.Update( // Updates the scaling factor based on the window size
@@ -70,16 +75,20 @@ namespace Moonwalk {
         }
 
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color.Gray);
+            //GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(
                 samplerState: SamplerState.PointClamp); // Prevents blurry sprites
 
-            gameManager.Draw(_spriteBatch);
+            gameManager.Draw(_spriteBatch, GraphicsDevice);
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        public static void ExitGame() {
+            exitGameFlag = true;
         }
     }
 }

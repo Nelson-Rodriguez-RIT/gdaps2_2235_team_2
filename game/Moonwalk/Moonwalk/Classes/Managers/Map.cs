@@ -17,7 +17,7 @@ namespace Moonwalk.Classes.Managers
     {
         private const string RootDirectory = "../../../Content/Maps/";
 
-        private static List<int[][]> tilesSets;
+        private static List<int[][]> tilesSets = null;
         private static List<Terrain> geometry;
 
         //private static Dictionary<int, Texture2D> sprites;
@@ -26,6 +26,10 @@ namespace Moonwalk.Classes.Managers
         protected static Texture2D hitboxSprite;
 
         private static Vector2 tileSize;
+
+        public static bool Loaded {
+            get { return tilesSets != null; }
+        }
 
         public static List<Terrain> Geometry 
         { 

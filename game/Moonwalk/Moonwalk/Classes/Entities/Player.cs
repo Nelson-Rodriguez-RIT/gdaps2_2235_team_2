@@ -86,7 +86,7 @@ namespace Moonwalk.Classes.Entities
             acceleration = new Vector2(0, gravity);
             maxXVelocity = 40;
             maxYVelocity = 60;
-            maxAngVelocity = 500;
+            maxAngVelocity = 350;
 
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
@@ -135,7 +135,11 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = 0;
             }
 
+            if (animationTimer > 0)
+            {
                 animationTimer--;
+            }
+
             ChangeAnimation(input);
         }
 
@@ -187,6 +191,7 @@ namespace Moonwalk.Classes.Entities
                 acceleration = new Vector2(
                     acceleration.X, gravity);
 
+                ToggleBotLock();
                 LinearMotion(gt);
             }
         }
@@ -256,7 +261,6 @@ namespace Moonwalk.Classes.Entities
                 && input.CurrentMouse.RightButton == ButtonState.Pressed
                 && input.PreviousMouse.RightButton == ButtonState.Released
                 && cooldowns[Abilities.Tether] == 0)
-                //UseAbility(Abilities.Tether))
             {
                 Vector2 robotPos = GetRobotPosition();
 
@@ -276,8 +280,12 @@ namespace Moonwalk.Classes.Entities
                 && input.PreviousMouse.RightButton == ButtonState.Pressed)
             {
                 if (physicsState == PhysicsState.Rotational)
+                {
                     SetLinearVariables();
-                ToggleBotLock();
+                    ToggleBotLock();
+                }
+                    
+                
             }
 
         }
@@ -435,9 +443,12 @@ namespace Moonwalk.Classes.Entities
                 animationTimer = activeAnimation.AnimationLength;
             }
 
-            if (input.IsPressed(Keys.F))
+            if (input.IsPressed(Keys.F)
+                && activeAnimation.AnimationValue != (int)Animations.Shoot)
             {
-                SwitchAnimation(Animations.Shoot, false);
+                SwitchAnimation(Animations.Shoot, 
+                    false
+                    );
                 animationTimer = activeAnimation.AnimationLength;
             }
         }

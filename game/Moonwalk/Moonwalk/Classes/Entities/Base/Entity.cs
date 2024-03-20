@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
 using System;
 using System.Collections.Generic;
@@ -242,20 +243,14 @@ namespace Moonwalk.Classes.Entities.Base
             this.physicsState = PhysicsState.Rotational;
             this.pivot = centerOfCircle;
 
-            //Define the vector between the player and the companion
-            Vector2 hypotenuse = new Vector2(
-                pivot.X - vectorPosition.X,
-                pivot.Y - vectorPosition.Y);
+            //Define the vector between the entity and the pivot
+            Vector2 hypotenuse = VectorMath.VectorDifference(vectorPosition, pivot);
 
             //The magnitude of the previous vector,
             //or the radius of the circle on which the player will rotate
             swingRadius =
-                    (float)(
-                        Math.Sqrt(
-                            Math.Pow(hypotenuse.X, 2) +
-                            Math.Pow(hypotenuse.Y, 2)
-                        )
-                    );
+                (float)VectorMath.VectorMagnitude(hypotenuse);
+                    
 
             //Get the angle between the player and 0 degrees (right)
             theta = 180 - (float)((180 / Math.PI) * Math.Acos(
@@ -270,9 +265,7 @@ namespace Moonwalk.Classes.Entities.Base
             //perpendicular to the radius. A diagram is very helpful for understanding.
 
             //Magnitude of the entity's velocity
-            double velocityMag = Math.Sqrt(
-                Math.Pow(velocity.X, 2) +
-                Math.Pow(velocity.Y, 2));
+            double velocityMag = VectorMath.VectorMagnitude(velocity);
 
             //The length of the side opposite the angle we want
             double c = Math.Sqrt(
@@ -298,8 +291,8 @@ namespace Moonwalk.Classes.Entities.Base
                 angleBetween);
 
             //Set the initial angular velocity
-            angVelocity = (newVMag * 650 * -Math.Sign(hypotenuse.X)) / swingRadius;
-                                // 650: upscaling number
+            angVelocity = (newVMag * 550 * -Math.Sign(hypotenuse.X)) / swingRadius;
+                                // 550: upscaling number
         }
 
         public void SetLinearVariables()

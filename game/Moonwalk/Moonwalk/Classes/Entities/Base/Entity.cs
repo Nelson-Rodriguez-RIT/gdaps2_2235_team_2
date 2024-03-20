@@ -88,7 +88,7 @@ namespace Moonwalk.Classes.Entities.Base
 
         protected int spriteScale;
 
-        public Entity(Vector2 position, string directory, int width, int height) {
+        public Entity(Vector2 position, string directory, bool loadAnimations = true) {
             physicsState = PhysicsState.Linear;
             vectorPosition = position;
             velocity = Vector2.Zero;
@@ -97,17 +97,11 @@ namespace Moonwalk.Classes.Entities.Base
             maxYVelocity = int.MaxValue;
             maxXVelocity = int.MaxValue;
 
-            this.entity = new Rectangle(
-                (int)vectorPosition.X,
-                (int)vectorPosition.Y,
-                width,
-                height);
-
             this.directory = directory;
 
             if (properties == null) { // Load data if it isn't already loaded
                 (Dictionary<string, string> properties, List<Animation> animations,
-                Texture2D spritesheet) bufferedData = Loader.LoadEntity(directory);
+                Texture2D spritesheet) bufferedData = Loader.LoadEntity(directory, loadAnimations);
 
                 properties = bufferedData.properties;
                 animations = bufferedData.animations;

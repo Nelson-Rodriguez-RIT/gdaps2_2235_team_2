@@ -23,6 +23,7 @@
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.1.303" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Entities\MapLoadingTrigger\" />
     <Folder Include="Content\Entities\Robot\" />
     <Folder Include="Content\Entities\Player\" />
     <Folder Include="Content\Maps\LabMap\" />

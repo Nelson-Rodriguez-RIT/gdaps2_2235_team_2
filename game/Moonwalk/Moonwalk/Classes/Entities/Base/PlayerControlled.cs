@@ -56,8 +56,8 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-        public PlayerControlled(Vector2 position, string directory, int width, int height) 
-            : base(position, directory, width, height)
+        public PlayerControlled(Vector2 position, string directory) 
+            : base(position, directory)
         {
             physicsState = PhysicsState.Linear;
         }

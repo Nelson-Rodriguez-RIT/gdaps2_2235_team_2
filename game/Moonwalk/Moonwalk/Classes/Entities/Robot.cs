@@ -32,7 +32,7 @@ namespace Moonwalk.Classes.Entities
         }      
 
         //Change this to private later
-        public Robot(Vector2 position) : base(position, "../../../Content/Entities/TestEntity", 10, 10)
+        public Robot(Vector2 position, Object[] args) : base(position, "../../../Content/Entities/TestEntity")
         {
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);

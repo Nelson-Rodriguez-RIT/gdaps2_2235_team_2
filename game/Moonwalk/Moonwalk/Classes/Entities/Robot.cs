@@ -55,16 +55,34 @@ namespace Moonwalk.Classes.Entities
             //&& Math.Sign(acceleration.X) != Math.Sign(velocity.X))
             {
                 velocity.X = 0;
-                acceleration.X = 0;
             }
+
+            if (velocity.Y != 0
+                && Math.Abs(velocity.Y) < 0.5f)
+            //&& Math.Sign(acceleration.X) != Math.Sign(velocity.X))
+            {
+                velocity.Y = 0;
+            }
+
+            //Flip the sprite
+            if (velocity.X < 0)
+            {
+                activeAnimation.FaceDirection = (int)FaceDirection.Left;
+            }
+            else if (velocity.X > 0) 
+            {
+                activeAnimation.FaceDirection = (int)FaceDirection.Right;
+            }
+
+
 
             if (velocity.Y > 0 || velocity.X > 0)
             {
-                SwitchAnimation(Animations.Move);
+                SwitchAnimation(Animations.Move, false);
             }
             else
             {
-                SwitchAnimation(Animations.Idle);
+                SwitchAnimation(Animations.Idle, false);
             }
 
             

@@ -167,6 +167,12 @@ namespace Moonwalk.Classes.Managers
 
                     Camera.VectorTarget = cameraTarget;
 
+                    if (storedInput.IsPressed(Keys.Escape))
+                    {
+                        Map.UnloadMap();
+                        Transition(GameState.MainMenu);
+                    }
+
                     break;
             }
 

@@ -58,6 +58,17 @@ namespace Moonwalk.Classes.Managers
                 hitboxSprite = Loader.LoadTexture("../../../Content/Maps/hitbox");
         }
 
+        /// <summary>
+        /// Clears the map when exiting to menu
+        /// </summary>
+        public static void UnloadMap()
+        {
+            tilesSets = null;
+            geometry = null;
+            spritesheet = null;
+            tileSize = Vector2.Zero;
+        }
+
 
         public static void Draw(SpriteBatch batch, bool drawhitboxes)
         {

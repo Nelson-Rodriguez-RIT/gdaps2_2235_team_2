@@ -140,19 +140,18 @@ namespace Moonwalk.Classes.Managers
                 case GameState.MainMenu:
                         if(storedInput.CurrentMouse.LeftButton == ButtonState.Pressed &&
                                 storedInput.PreviousMouse.LeftButton == ButtonState.Released) {
-                        Rectangle mousePosition = new Rectangle(
-                            (int)(storedInput.CurrentMouse.Position.X),
-                            (int)(storedInput.CurrentMouse.Position.Y),
-                            1,
-                            1);
 
-                        if (mousePosition.Intersects(new Rectangle(
-                                540, 310, 186, 66))) // Start button position and size
-                            Transition(GameState.Demo);
+                        //Start button pressed
+                        if (new Rectangle
+                            (540, 310, 186, 66)     // Start button position and size
+                            .Contains(storedInput.CurrentMouse.Position))
+                                Transition(GameState.Demo);
 
-                        if (mousePosition.Intersects(new Rectangle(
-                                540, 410, 186, 66))) // Exit button position
-                            GameMain.ExitGame();
+                        //Exit button pressed
+                        if (new Rectangle(
+                            540, 410, 186, 66) // Exit button position    
+                            .Contains(storedInput.CurrentMouse.Position))
+                                GameMain.ExitGame();
                     }
                             
                     break;

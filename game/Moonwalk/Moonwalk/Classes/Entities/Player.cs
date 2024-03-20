@@ -76,10 +76,10 @@ namespace Moonwalk.Classes.Entities
         //Make private later
         public Player(Vector2 position) : base(position, "../../../Content/Entities/Player", 10, 10)
         {
-            gravity = 50f;
+            gravity = 70f;
             acceleration = new Vector2(0, gravity);
-            maxXVelocity = 45;
-            maxYVelocity = 70;           
+            maxXVelocity = 40;
+            maxYVelocity = 60;           
 
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
@@ -89,6 +89,15 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
+            if (!Grounded)
+            {
+                jumpTimer += gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            else
+            {
+                jumpTimer = 0;
+            }
+
             cooldowns.Update(gameTime);
             base.Update(gameTime, input);
 
@@ -129,9 +138,6 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = velocity.X < 0 ? maxXVelocity * 2.5f : maxXVelocity * 2;
             }
 
-            
-            
-
             //Jump 
             if ((input.IsPressed(Keys.Space)
                 && !input.WasPressed(Keys.Space))
@@ -139,7 +145,7 @@ namespace Moonwalk.Classes.Entities
             {
                 if (Grounded) 
                 {
-                    velocity.Y = -60;
+                    velocity.Y = -50;
 
                     BufferedInput buffer = input.Buffered.Find(item => item.Key == Keys.Space);
                     input.Buffered.Remove(buffer);
@@ -157,7 +163,7 @@ namespace Moonwalk.Classes.Entities
                 && input.PreviousMouse.LeftButton == ButtonState.Released
                 && cooldowns.UseAbility(Abilities.Gravity))
             {
-                //GravityAbility();
+                GravityAbility();
             }
 
             //Tether ability - planning to have this be able to swing blocks and stuff too, maybe send back projectiles?
@@ -184,9 +190,104 @@ namespace Moonwalk.Classes.Entities
             base.Draw(batch);
 
             batch.DrawString(GameManager.font, 
-                $"{vectorPosition.Y} - {velocity.Y} - {acceleration.Y} \n {Position.Y}",
+                $"{Math.Round(vectorPosition.Y)} - {Math.Round(velocity.Y)} - {Math.Round(acceleration.Y)} \n {Math.Round(velocity.X)}",
                 new Vector2(400, 50),
                 Color.White);
+        }
+
+        protected override void LinearMotion(GameTime gt)
+        {
+            float time = (float)gt.ElapsedGameTime.TotalSeconds;
+
+            int iterationCounter = 1;       // Number of collision checks we've done
+
+            Point lastSafePosition = new Point(Position.X, Position.Y);        //Last point before a collision
+
+            if (!Grounded)
+            {
+                acceleration.Y = gravity * (1 + (100 - Math.Abs(velocity.Y)) / 50);
+            }
+            
+
+
+            velocity += acceleration * time;                                   //Update velocity
+            Vector2 tempVelocity = new Vector2(velocity.X, velocity.Y);        //For if the player is airborne
+
+            
+
+            //Vertical
+            while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
+            {
+                if (!CheckCollision())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.Y) > maxYVelocity)
+                {
+                    velocity.Y = maxYVelocity * Math.Sign(tempVelocity.Y);
+                }
+
+                vectorPosition.Y += tempVelocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
+
+                entity = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    entity.Width,
+                    entity.Height);                      // Update hitbox location
+
+                if (CheckCollision())                                                   // Check if there was a collision
+                {
+                    entity = new Rectangle(lastSafePosition, entity.Size);              // Revert hitbox position back to before collision
+                    vectorPosition = lastSafePosition.ToVector2();                      // Revert position
+                    velocity.Y = 0;
+                    break;
+                }
+
+                iterationCounter++;
+            }
+
+
+            //Do the same thing but in the X direction
+            iterationCounter = 1;
+
+            while (!CheckCollision() && iterationCounter <= CollisionAccuracy)
+            {
+                if (!CheckCollision())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.X) > maxXVelocity)
+                {
+                    velocity.X = maxXVelocity * Math.Sign(velocity.X);
+                }
+
+                if (!Grounded)
+                {
+                    tempVelocity.X = velocity.X / 1.2f;
+                }
+
+                vectorPosition.X += tempVelocity.X * (time * iterationCounter / CollisionAccuracy);
+
+                entity = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    entity.Width,
+                    entity.Height);
+
+                if (CheckCollision())
+                {
+                    entity = new Rectangle(lastSafePosition, entity.Size);
+                    vectorPosition = lastSafePosition.ToVector2();
+                    velocity.X = 0;
+                    break;
+                }
+                iterationCounter++;
+
+            }
         }
 
         private void ChangeAnimation(StoredInput input)
@@ -226,7 +327,8 @@ namespace Moonwalk.Classes.Entities
                 SwitchAnimation(Animations.Jump);
             }
 
-            if (input.IsPressed(Keys.E))
+            if (input.IsPressed(Keys.E) && 
+                !input.WasPressed(Keys.E))
             {
                 SwitchAnimation(Animations.Attack, false);
                 animationTimer = activeAnimation.AnimationLength;

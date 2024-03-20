@@ -8,6 +8,15 @@ namespace Moonwalk.Interfaces
 {
     internal interface IDamageable
     {
-        int Health { get; }
+        /// <summary>
+        /// Health of the entity
+        /// </summary>
+        int Health { get; set; }
+
+        /// <summary>
+        /// Reduces health by a certain amount
+        /// </summary>
+        /// <param name="damage"></param>
+        void TakeDamage(int damage);
     }
 }

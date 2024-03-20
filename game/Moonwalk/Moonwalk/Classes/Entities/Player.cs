@@ -89,7 +89,6 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            ChangeAnimation(input);
 
             if (!Grounded)
             {
@@ -130,7 +129,7 @@ namespace Moonwalk.Classes.Entities
             }
 
                 animationTimer--;
-            
+            ChangeAnimation(input);
         }
 
         public override void Input(StoredInput input)

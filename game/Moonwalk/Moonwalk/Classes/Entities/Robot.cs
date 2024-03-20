@@ -42,7 +42,7 @@ namespace Moonwalk.Classes.Entities
         {
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);
-            spriteScale = 2;
+            spriteScale = 1;
         
         }
 

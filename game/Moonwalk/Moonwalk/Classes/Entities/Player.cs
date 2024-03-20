@@ -383,21 +383,20 @@ namespace Moonwalk.Classes.Entities
             foreach (IMovable movable in movables)
             {
                 //Check that entity is within range
-                if (VectorMath.VectorMagnitude(
-                        VectorMath.VectorDifference(
-                            movable.Position.ToVector2(),
-                            robotPos)
-                        )                   
-                    < 125)
+                if (Math.Sqrt(
+                        Math.Pow(movable.Position.X - robotPos.X, 2) +
+                        Math.Pow(movable.Position.Y - robotPos.Y, 2)
+                        )
+                    < 150)
                 {
                     Vector2 difference = VectorMath.VectorDifference(vectorPosition, robotPos);
                     movable.Impulse(new Vector2(
                         difference.X,
                         difference.Y));
                 }
-                    
+
             }
-            
+
         }
         
     }

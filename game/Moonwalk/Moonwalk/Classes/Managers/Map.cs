@@ -17,7 +17,7 @@ namespace Moonwalk.Classes.Managers
     {
         private const string RootDirectory = "../../../Content/Maps/";
 
-        private static List<int[][]> tiles;
+        private static List<int[][]> tilesSets;
         private static List<Terrain> geometry;
 
         //private static Dictionary<int, Texture2D> sprites;
@@ -39,7 +39,7 @@ namespace Moonwalk.Classes.Managers
                 Texture2D spritesheet, Vector2 tileSize) bufferedData
                 = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
 
-            tiles = bufferedData.tiles;
+            tilesSets = bufferedData.tiles;
             geometry = bufferedData.geometry;
 
             //REMOVE THIS LATER (for testing purposes) - Dante
@@ -52,7 +52,7 @@ namespace Moonwalk.Classes.Managers
 
         public static void Draw(SpriteBatch batch)
         {
-            foreach (int[][] tiles in tiles) // This is for rendering several layers
+            foreach (int[][] tiles in tilesSets) // This is for rendering several layers
                 for (int row = 0; row < tiles.Length; row++)
                     for (int col = 0; col < tiles[row].Length; col++)
                     {
@@ -60,9 +60,14 @@ namespace Moonwalk.Classes.Managers
                         if (tiles[row][col] == 0)
                             continue;
 
+                        int id = tiles[row][col] - 1;
+                        int spriteX = (int)(id % (spritesheet.Width / tileSize.X));
+
+                        int spriteY = (int)(Math.Floor(id / (spritesheet.Height / tileSize.Y)) - Math.Floor(tileSize.X / 16));
+
                         Rectangle sprite = new Rectangle(
-                                (int)((tiles[row][col] % (spritesheet.Width / tileSize.X) - 1) * tileSize.X),
-                                (int)(Math.Floor(tiles[row][col] / (spritesheet.Height / tileSize.Y)) * tileSize.Y),
+                                (int)(spriteX * tileSize.X),
+                                (int)(spriteY * tileSize.Y),
                                 (int)tileSize.X,
                                 (int)tileSize.Y
                                 );

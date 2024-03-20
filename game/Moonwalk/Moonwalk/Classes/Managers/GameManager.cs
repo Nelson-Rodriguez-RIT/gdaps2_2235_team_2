@@ -154,7 +154,7 @@ namespace Moonwalk.Classes.Managers
                 entity.Draw(batch);
 
                 if (displayHitboxes)
-                    entity.DrawHitbox(batch, GameMain.ActiveScale, graphics);
+                    entity.DrawHitbox(batch);
             }
                 
         }
@@ -185,6 +185,7 @@ namespace Moonwalk.Classes.Managers
 
                 case GameState.Demo:
 
+                    //Map.LoadMap("StartMap");
                     Map.LoadMap("Demo");
 
                     // Loads player + companion

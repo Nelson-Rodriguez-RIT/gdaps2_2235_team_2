@@ -89,6 +89,8 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
+            ChangeAnimation(input);
+
             if (!Grounded)
             {
                 jumpTimer += gameTime.ElapsedGameTime.TotalSeconds;
@@ -128,7 +130,7 @@ namespace Moonwalk.Classes.Entities
             }
 
                 animationTimer--;
-            ChangeAnimation(input);
+            
         }
 
         public override void Input(StoredInput input)
@@ -173,17 +175,28 @@ namespace Moonwalk.Classes.Entities
                 && input.PreviousMouse.LeftButton == ButtonState.Released
                 && cooldowns.UseAbility(Abilities.Gravity))
             {
-                GravityAbility();
+                Vector2 robotPos = GetRobotPosition();
+                GravityAbility(robotPos);
             }
 
             //Tether ability - planning to have this be able to swing blocks and stuff too, maybe send back projectiles?
             if (physicsState == PhysicsState.Linear
                 && input.CurrentMouse.RightButton == ButtonState.Pressed
                 && input.PreviousMouse.RightButton == ButtonState.Released
-                && cooldowns.UseAbility(Abilities.Tether))
+                && cooldowns[Abilities.Tether] == 0)
+                //UseAbility(Abilities.Tether))
             {
+                Vector2 robotPos = GetRobotPosition();
 
-                SetRotationalVariables(GetRobotPosition());
+                if (VectorMath.VectorMagnitude(
+                        VectorMath.VectorDifference(vectorPosition, robotPos)
+                        )
+                    < 125)
+                {
+                    cooldowns.UseAbility(Abilities.Tether);
+                    SetRotationalVariables(robotPos);
+                }
+                
 
             }
             else if (input.CurrentMouse.RightButton == ButtonState.Released
@@ -302,6 +315,7 @@ namespace Moonwalk.Classes.Entities
 
         private void ChangeAnimation(StoredInput input)
         {
+            //For animations that play until they are done
             if (animationTimer > 0)
             {
                 return;
@@ -311,6 +325,7 @@ namespace Moonwalk.Classes.Entities
                 animationTimer = 0;
             }
 
+            //Change facing direciton of the player
             if (velocity.X < 0
                 && faceDirection != FaceDirection.Left)
             {
@@ -359,7 +374,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         
-        private void GravityAbility()
+        private void GravityAbility(Vector2 robotPos)
         {
             
             //Get a list of movables from the game manager
@@ -369,12 +384,19 @@ namespace Moonwalk.Classes.Entities
             foreach (IMovable movable in movables)
             {
                 //Check that entity is within range
-                if (Math.Sqrt(
-                        Math.Pow(movable.Position.X - Position.X, 2) +
-                        Math.Pow(movable.Position.Y - Position.Y, 2)
-                        )
-                    < 375)
-                    movable.Impulse(GetRobotPosition());
+                if (VectorMath.VectorMagnitude(
+                        VectorMath.VectorDifference(
+                            movable.Position.ToVector2(),
+                            robotPos)
+                        )                   
+                    < 125)
+                {
+                    Vector2 difference = VectorMath.VectorDifference(vectorPosition, robotPos);
+                    movable.Impulse(new Vector2(
+                        difference.X,
+                        difference.Y));
+                }
+                    
             }
             
         }

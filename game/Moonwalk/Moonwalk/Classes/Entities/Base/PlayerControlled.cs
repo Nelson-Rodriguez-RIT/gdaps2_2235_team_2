@@ -160,11 +160,13 @@ namespace Moonwalk.Classes.Entities.Base
 
                 vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
 
+                
                 entity = new Rectangle(
                     (int)Math.Round(vectorPosition.X), 
                     (int)Math.Round(vectorPosition.Y), 
                     entity.Width,
                     entity.Height);                      // Update hitbox location
+                
 
                 if (CheckCollision())                                                   // Check if there was a collision
                 {

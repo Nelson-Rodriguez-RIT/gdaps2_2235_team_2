@@ -195,6 +195,12 @@ namespace Moonwalk.Classes.Entities.Base
 
             //Apply offset
             vectorPosition = Camera.ApplyOffset(vectorPosition);
+
+            entity = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    entity.Width,
+                    entity.Height);
         }
 
         /// <summary>
@@ -219,6 +225,12 @@ namespace Moonwalk.Classes.Entities.Base
 
 
             vectorPosition = temp;
+
+            entity = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    entity.Width,
+                    entity.Height);
         }
 
         /// <summary>
@@ -305,7 +317,7 @@ namespace Moonwalk.Classes.Entities.Base
 
         public void Impulse(Vector2 destination)
         {
-            velocity = (destination - vectorPosition) / 4f;
+            velocity = (destination);
         }
     }
 }

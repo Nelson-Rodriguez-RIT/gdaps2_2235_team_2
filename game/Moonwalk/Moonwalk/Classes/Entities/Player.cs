@@ -74,7 +74,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         //Make private later
-        public Player(Vector2 position) : base(position, "../../../Content/Entities/Player", 10, 10)
+        public Player(Vector2 position, Object[] args) : base(position, "../../../Content/Entities/Player")
         {
             gravity = 70f;
             acceleration = new Vector2(0, gravity);

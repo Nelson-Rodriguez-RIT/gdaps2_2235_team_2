@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 namespace Moonwalk.Classes.Managers
 {
     enum GameState {
-        Test,
         Demo
     }
 
@@ -91,26 +90,6 @@ namespace Moonwalk.Classes.Managers
                 displayHitboxes = !displayHitboxes;
 
             switch (state) {
-                case GameState.Test:
-
-                    
-                    // Set camera target to player's position
-                    // 
-                    // I wanted to have this in the player class but couldn't get it to work this time
-                    // - Dante
-                    foreach  (Entity entity in entities)
-                    {
-                        if (entity is Player)
-                        {
-                            cameraTarget = new Vector2(entity.Position.X, entity.Position.Y);
-                            break;
-                        }
-                    }
-                    
-
-                    Camera.VectorTarget = cameraTarget;
-
-                    break;
 
                 case GameState.Demo:
 
@@ -142,8 +121,7 @@ namespace Moonwalk.Classes.Managers
         public void Draw(SpriteBatch batch) {
             // Elements draw based on game state (i.e. GUI or menu elements)
             switch (state) {
-                case GameState.Test:
-                    
+                case GameState.Demo:
                     break;
             }
 
@@ -165,35 +143,15 @@ namespace Moonwalk.Classes.Managers
         /// <param name="nextState">The next game state to transition to</param>
         private void Transition(GameState nextState) {
             switch (nextState) {
-                case GameState.Test:
-                    
-
-                    // Loads the "TestMap" map
-                    Map.LoadMap("TestMap");
-
-                    // Loads the test entities
-                    SpawnEntity<Player>(new Vector2(200, 200));
-                    SpawnEntity<Robot>(new Vector2(400, 400));
-
-                    Robot robot = ((Robot)entities[typeof(Robot)][0]);
-                    Player player = ((Player)entities[typeof(Player)][0]);
-
-                    player.GetRobotPosition += robot.GetPosition;
-                    player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
-
-                    break;
-
                 case GameState.Demo:
 
                     //Map.LoadMap("StartMap");
                     Map.LoadMap("Demo");
 
                     // Loads player + companion
-                    SpawnEntity<Player>(new Vector2(50, 48));
-                    SpawnEntity<Robot>(new Vector2(128, 48));
+                    Player player = (Player) SpawnEntity<Player>(new Vector2(50, 48));
+                    Robot robot = (Robot) SpawnEntity<Robot>(new Vector2(128, 48));
 
-                    robot = ((Robot)entities[typeof(Robot)][0]);
-                    player = ((Player)entities[typeof(Player)][0]);
 
                     player.GetRobotPosition += robot.GetPosition;
                     player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
@@ -207,12 +165,11 @@ namespace Moonwalk.Classes.Managers
         /// <summary>
         /// Handles any neccassray logic when spawning an enemy
         /// </summary>
-        private void SpawnEntity<T>(Vector2 position) where T : class
-        { // No idea if this works by the way :P
-            // FYI you would class this class like:
-            // SpawnEntity(typeof(Player), new Vector(0, 0));
-            // This would add the class "Player" to the entities list and spawn them at 0, 0
-            entities.Add((Entity) Activator.CreateInstance(typeof(T), new object[] {position}));
+        private Entity SpawnEntity<T>(Vector2 position, Object[] args = null) where T : class {
+            Entity entity = (Entity)Activator.CreateInstance(typeof(T), new object[] { position, args });
+            entities.Add(entity);
+
+            return entity;
         }
 
         /// <summary>

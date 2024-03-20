@@ -138,26 +138,25 @@ namespace Moonwalk.Classes.Managers {
             return (bufferedTiles, bufferedGeometry,
                     bufferedSpritesheet, bufferdTileSize);
         }
-
+        
         public static (
                 Dictionary<string, string> properties,
                 List<Animation> animations,
                 Texture2D spritesheet)
-                LoadEntity(string path) {
+                LoadEntity(string path, bool loadAnimations = true) {
             Dictionary<string, string> bufferedProperties = new();
             List<Animation> bufferedAnimations = new();
-            Texture2D bufferedSpritesheet;
+            Texture2D bufferedSpritesheet = null;
 
             Queue<string> fileData;
             string[] splitData;
-
 
             // Get entity properties
             fileData = new Queue<string>(LoadFile($"{path}/", ".edf"));
 
             while (fileData.Count != 0) {
                 if (fileData.Peek()[0] == '/' || // Ignore comments or (likely) empty lines
-                        fileData.Peek()[0] == ' ') { 
+                        fileData.Peek()[0] == ' ') {
                     fileData.Dequeue();
                     continue;
                 }
@@ -170,87 +169,89 @@ namespace Moonwalk.Classes.Managers {
             }
 
 
-            // Get animation data
-            fileData = new Queue<string>(LoadFile($"{path}/", ".adf"));
+            if (loadAnimations) {
+                // Get animation data
+                fileData = new Queue<string>(LoadFile($"{path}/", ".adf"));
 
-            AnimationStyle style = AnimationStyle.Horizontal;
+                AnimationStyle style = AnimationStyle.Horizontal;
 
-            // Set up default fields with placeholder values
-            // Prevents crashes and allows us to compile :D
-            Vector2 defaultSpriteSize = Vector2.One;
-            Vector2 defaultOrigin = Vector2.Zero;
-            int defaultTotalSprites = 1;
-            int defaultFramesPerSprite = 1;
+                // Set up default fields with placeholder values
+                // Prevents crashes and allows us to compile :D
+                Vector2 defaultSpriteSize = Vector2.One;
+                Vector2 defaultOrigin = Vector2.Zero;
+                int defaultTotalSprites = 1;
+                int defaultFramesPerSprite = 1;
 
-            // This allows use to have custom Widths/Heights for each animation since this
-            // will inform the Animation where it should get its data from. This will be
-            // incremented by either a Width (for Vertical styles) or Height (for Horizontal styles)
-            int spaceTakenOnSpritesheet = 0;
+                // This allows use to have custom Widths/Heights for each animation since this
+                // will inform the Animation where it should get its data from. This will be
+                // incremented by either a Width (for Vertical styles) or Height (for Horizontal styles)
+                int spaceTakenOnSpritesheet = 0;
 
-            while (fileData.Count != 0) {
-                if (fileData.Peek().Length == 0) // Skip empty lines
-                    fileData.Dequeue();
-
-                switch (fileData.Peek()[0]) {
-                    case '/': // Ignore comments or (likely) empty lines
-                        case ' ':
+                while (fileData.Count != 0) {
+                    if (fileData.Peek().Length == 0) // Skip empty lines
                         fileData.Dequeue();
-                        break;
 
-                    case '&': // Set AnimationStyle
-                        if (fileData.Dequeue().Contains("Vertical"))
-                            style = AnimationStyle.Vertical;
-                        break;
+                    switch (fileData.Peek()[0]) {
+                        case '/': // Ignore comments or (likely) empty lines
+                        case ' ':
+                            fileData.Dequeue();
+                            break;
 
-                    case '@': // Set default values
-                        splitData = fileData.Dequeue().Split(",");
-                        splitData[0] = splitData[0].Remove(0, 1); // Removes line identifier
+                        case '&': // Set AnimationStyle
+                            if (fileData.Dequeue().Contains("Vertical"))
+                                style = AnimationStyle.Vertical;
+                            break;
 
-                        defaultSpriteSize = new Vector2(
-                            int.Parse(splitData[0].Split('x')[0]),
-                            int.Parse(splitData[0].Split('x')[1])
-                            );
+                        case '@': // Set default values
+                            splitData = fileData.Dequeue().Split(",");
+                            splitData[0] = splitData[0].Remove(0, 1); // Removes line identifier
 
-                        defaultOrigin = new Vector2(
-                            int.Parse(splitData[1].Split(':')[0]),
-                            int.Parse(splitData[1].Split(':')[1])
-                            );
+                            defaultSpriteSize = new Vector2(
+                                int.Parse(splitData[0].Split('x')[0]),
+                                int.Parse(splitData[0].Split('x')[1])
+                                );
 
-                        defaultTotalSprites = int.Parse(splitData[2]);
+                            defaultOrigin = new Vector2(
+                                int.Parse(splitData[1].Split(':')[0]),
+                                int.Parse(splitData[1].Split(':')[1])
+                                );
 
-                        defaultFramesPerSprite = int.Parse(splitData[3]);
-                        break;
+                            defaultTotalSprites = int.Parse(splitData[2]);
 
-                    default: // Create an animation using file data
-                        splitData = fileData.Dequeue().Split(',');
+                            defaultFramesPerSprite = int.Parse(splitData[3]);
+                            break;
 
-                        // If a # is detected, default values are used instead
-                        bufferedAnimations.Add(new Animation(
-                            splitData[0][0] == '#' ? defaultSpriteSize :
-                                new Vector2(
-                                    int.Parse(splitData[0].Split('x')[0]),
-                                    int.Parse(splitData[0].Split('x')[1])),
-                            splitData[1][0] == '#' ? defaultOrigin :
-                                new Vector2(
-                                    int.Parse(splitData[1].Split(':')[0]),
-                                    int.Parse(splitData[1].Split(':')[1])),
-                            splitData[2][0] == '#' ? defaultTotalSprites :
-                                int.Parse(splitData[2]),
-                            splitData[3][0] == '#' ? defaultFramesPerSprite :
-                                int.Parse(splitData[3]),
-                            style,
-                            spaceTakenOnSpritesheet));
+                        default: // Create an animation using file data
+                            splitData = fileData.Dequeue().Split(',');
 
-                        spaceTakenOnSpritesheet += style == AnimationStyle.Horizontal ?
-                            (splitData[0][0] == '#' ? (int)defaultSpriteSize.Y : int.Parse(splitData[0].Split('x')[1])) :
-                            (splitData[0][0] == '#' ? (int)defaultSpriteSize.X : int.Parse(splitData[0].Split('x')[0]));
-                        break;
+                            // If a # is detected, default values are used instead
+                            bufferedAnimations.Add(new Animation(
+                                splitData[0][0] == '#' ? defaultSpriteSize :
+                                    new Vector2(
+                                        int.Parse(splitData[0].Split('x')[0]),
+                                        int.Parse(splitData[0].Split('x')[1])),
+                                splitData[1][0] == '#' ? defaultOrigin :
+                                    new Vector2(
+                                        int.Parse(splitData[1].Split(':')[0]),
+                                        int.Parse(splitData[1].Split(':')[1])),
+                                splitData[2][0] == '#' ? defaultTotalSprites :
+                                    int.Parse(splitData[2]),
+                                splitData[3][0] == '#' ? defaultFramesPerSprite :
+                                    int.Parse(splitData[3]),
+                                style,
+                                spaceTakenOnSpritesheet));
+
+                            spaceTakenOnSpritesheet += style == AnimationStyle.Horizontal ?
+                                (splitData[0][0] == '#' ? (int)defaultSpriteSize.Y : int.Parse(splitData[0].Split('x')[1])) :
+                                (splitData[0][0] == '#' ? (int)defaultSpriteSize.X : int.Parse(splitData[0].Split('x')[0]));
+                            break;
+                    }
                 }
-            }
-                
 
-            // Get sprite sheet
-            bufferedSpritesheet = LoadTexture($"{path}/spritesheet");
+
+                // Get sprite sheet
+                bufferedSpritesheet = LoadTexture($"{path}/spritesheet");
+            }
 
 
             return (bufferedProperties, bufferedAnimations, bufferedSpritesheet);

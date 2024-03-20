@@ -85,7 +85,7 @@ namespace Moonwalk.Classes.Entities.Base
         /// <param name="color"></param>
         public Enemy(string directory, Vector2 position, int speed, bool isLeft, int health, int countMax,
             int width, int height)
-            : base(position, directory, width, height)
+            : base(position, directory)
         {
             active = true;
             this.speed = speed;

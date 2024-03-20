@@ -211,10 +211,9 @@ namespace Moonwalk.Classes.Entities.Base
         {
             //Determine the angular acceleration using the perpendicular component of gravity
             angAccel = gravity * 10 * Math.Cos((Math.PI / 180) * theta);
-            //angAccel -= Math.Sign(angAccel * 5);
 
             //Update velocity with acceleration and position with velocity
-            angVelocity += angAccel * gameTime.ElapsedGameTime.TotalSeconds /** gameTime.ElapsedGameTime.TotalSeconds*/;
+            angVelocity += angAccel * gameTime.ElapsedGameTime.TotalSeconds;
             theta += angVelocity * gameTime.ElapsedGameTime.TotalSeconds;
 
             //Determine new position using the new angle
@@ -226,6 +225,7 @@ namespace Moonwalk.Classes.Entities.Base
 
             vectorPosition = temp;
 
+            //Update position
             entity = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
@@ -298,8 +298,8 @@ namespace Moonwalk.Classes.Entities.Base
                 angleBetween);
 
             //Set the initial angular velocity
-            angVelocity = (newVMag *1000 * -Math.Sign(hypotenuse.X)) / swingRadius;
-
+            angVelocity = (newVMag * 650 * -Math.Sign(hypotenuse.X)) / swingRadius;
+                                // 650: upscaling number
         }
 
         public void SetLinearVariables()
@@ -308,9 +308,9 @@ namespace Moonwalk.Classes.Entities.Base
             //This determines the velocity the player will have after 
             //they stop swinging by converting the angular velocity
             //back to linear velocity.
-            velocity = new Vector2(                                       // 3000: random number for downscaling (it was too big)
-                (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 600),
-                (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 600);
+            velocity = new Vector2(                                       // 400: random number for downscaling (it was too big)
+                (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 400),
+                (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 400);
             acceleration = new Vector2(
                 acceleration.X, gravity);
         }

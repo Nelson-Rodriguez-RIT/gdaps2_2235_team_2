@@ -52,6 +52,9 @@ namespace Moonwalk.Classes.Entities
         private int animationTimer;
         private double jumpTimer;
 
+        private float swingChange;
+        private float maxAngVelocity;
+
         /// <summary>
         /// Determines if the entity is grounded or not
         /// </summary>
@@ -79,7 +82,8 @@ namespace Moonwalk.Classes.Entities
             gravity = 70f;
             acceleration = new Vector2(0, gravity);
             maxXVelocity = 40;
-            maxYVelocity = 60;           
+            maxYVelocity = 60;
+            maxAngVelocity = 500;
 
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
@@ -132,6 +136,58 @@ namespace Moonwalk.Classes.Entities
             ChangeAnimation(input);
         }
 
+        protected override void RotationalMotion(GameTime gt)
+        {
+            Vector2 oldPosition = new Vector2(vectorPosition.X, vectorPosition.Y);
+
+            //Determine the angular acceleration using the perpendicular component of gravity
+            angAccel = gravity * 10 * Math.Cos((Math.PI / 180) * theta);
+            angAccel += swingChange;
+
+            //Update velocity with acceleration and position with velocity
+            angVelocity += angAccel * gt.ElapsedGameTime.TotalSeconds;
+
+            if (Math.Abs(angVelocity) > maxAngVelocity)
+            {
+                angVelocity = Math.Sign(angVelocity) * maxAngVelocity;
+            }
+
+            theta += angVelocity * gt.ElapsedGameTime.TotalSeconds;
+
+            //Determine new position using the new angle
+            Vector2 temp = new Vector2(
+                    (float)(pivot.X + swingRadius * Math.Cos((Math.PI / 180) * (theta))),
+                    (float)(pivot.Y + swingRadius * Math.Sin((Math.PI / 180) * (theta))
+                    ));
+
+
+            vectorPosition = temp;
+
+            //Update position
+            entity = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    entity.Width,
+                    entity.Height);
+
+            if (CheckCollision())           // If there is a collision, switch back to linear motion
+            {
+                vectorPosition = oldPosition;
+                physicsState = PhysicsState.Linear;
+
+                //This determines the velocity the entity will have after 
+                //it stops swinging by converting the angular velocity
+                //back to linear velocity.
+                velocity = new Vector2(                                       // 3000: random number for downscaling (it was too big)
+                    (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 3000),
+                    (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 3000);
+                acceleration = new Vector2(
+                    acceleration.X, gravity);
+
+                LinearMotion(gt);
+            }
+        }
+
         public override void Input(StoredInput input)
         {
             
@@ -147,6 +203,20 @@ namespace Moonwalk.Classes.Entities
             {
                 // acceleration is higher if the player is moving in the opposite direction for smoother movement
                 acceleration.X = velocity.X < 0 ? maxXVelocity * 5f : maxXVelocity * 2f;
+            }
+
+            if (physicsState == PhysicsState.Rotational)
+            {
+                if (input.IsPressed(Keys.A) &&
+                !input.IsPressed(Keys.D))
+                {
+                    swingChange = 50;
+                }
+                else if (input.IsPressed(Keys.D) &&
+                    !input.IsPressed(Keys.A))
+                {
+                    swingChange = -50;
+                }
             }
 
             //Jump 

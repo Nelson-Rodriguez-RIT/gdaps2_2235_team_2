@@ -24,7 +24,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\Entities\MapLoadingTrigger\" />
-    <Folder Include="Content\Entities\Robot\" />
     <Folder Include="Content\Entities\Player\" />
     <Folder Include="Content\Maps\LabMap\" />
     <Folder Include="Content\Maps\StartMap\" />

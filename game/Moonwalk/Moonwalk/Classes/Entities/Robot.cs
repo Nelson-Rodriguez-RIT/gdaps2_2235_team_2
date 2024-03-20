@@ -20,6 +20,7 @@ namespace Moonwalk.Classes.Entities
     {
         protected enum Animations
         {
+            /*
             Idle,
             Idle_Blink,
             Walk,
@@ -29,10 +30,15 @@ namespace Moonwalk.Classes.Entities
             Hurt,
             Death,
             Attack,
+            */
+
+            Idle,
+            TransitionToMove,
+            Move
         }      
 
         //Change this to private later
-        public Robot(Vector2 position, Object[] args) : base(position, "../../../Content/Entities/TestEntity")
+        public Robot(Vector2 position, Object[] args) : base(position, "../../../Content/Entities/Robot")
         {
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);
@@ -43,6 +49,25 @@ namespace Moonwalk.Classes.Entities
         public override void Update(GameTime gameTime, StoredInput input)
         {           
             base.Update(gameTime, input);
+
+            if (velocity.X != 0
+                && Math.Abs(velocity.X) < 0.5f)
+            //&& Math.Sign(acceleration.X) != Math.Sign(velocity.X))
+            {
+                velocity.X = 0;
+                acceleration.X = 0;
+            }
+
+            if (velocity.Y > 0 || velocity.X > 0)
+            {
+                SwitchAnimation(Animations.Move);
+            }
+            else
+            {
+                SwitchAnimation(Animations.Idle);
+            }
+
+            
         }
 
         public override void Input(StoredInput input)

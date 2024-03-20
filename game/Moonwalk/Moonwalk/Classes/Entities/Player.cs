@@ -101,16 +101,26 @@ namespace Moonwalk.Classes.Entities
             cooldowns.Update(gameTime);
             base.Update(gameTime, input);
 
+            int sign = 0;
+
             //Slow down if not pressing anything
             if (!input.IsPressed(Keys.D) &&
                 !input.IsPressed(Keys.A)
                 && velocity.X != 0)
             {
-                acceleration.X = -Math.Sign(velocity.X) * 20;
+                sign = Math.Sign(velocity.X);
+                acceleration.X = -Math.Sign(velocity.X) * 80;
+            }
+
+            if (sign != Math.Sign(velocity.X + acceleration.X * gameTime.ElapsedGameTime.TotalSeconds)
+                && sign != 0)
+            {
+                acceleration.X = 0;
+                velocity.X = 0;
             }
 
             if (velocity.X != 0
-                && Math.Abs(velocity.X) < 0.5f)
+                && Math.Abs(velocity.X) < 1f)
                 //&& Math.Sign(acceleration.X) != Math.Sign(velocity.X))
             {
                 velocity.X = 0;
@@ -129,13 +139,13 @@ namespace Moonwalk.Classes.Entities
                 !input.IsPressed(Keys.D))
             {
                 // acceleration is higher if the player is moving in the opposite direction for smoother movement
-                acceleration.X = velocity.X > 0 ? -maxXVelocity * 2.5f : -maxXVelocity * 2;
+                acceleration.X = velocity.X > 0 ? -maxXVelocity * 5f : -maxXVelocity * 2f;
             }
             else if (input.IsPressed(Keys.D) &&
                 !input.IsPressed(Keys.A))
             {
                 // acceleration is higher if the player is moving in the opposite direction for smoother movement
-                acceleration.X = velocity.X < 0 ? maxXVelocity * 2.5f : maxXVelocity * 2;
+                acceleration.X = velocity.X < 0 ? maxXVelocity * 5f : maxXVelocity * 2f;
             }
 
             //Jump 
@@ -301,11 +311,13 @@ namespace Moonwalk.Classes.Entities
                 animationTimer = 0;
             }
 
-            if (velocity.X < 0)
+            if (velocity.X < 0
+                && faceDirection != FaceDirection.Left)
             {
                 faceDirection = FaceDirection.Left;
             }
-            else if (velocity.X > 0)
+            else if (velocity.X > 0
+                && faceDirection != FaceDirection.Right)
             {
                 faceDirection = FaceDirection.Right;
             }

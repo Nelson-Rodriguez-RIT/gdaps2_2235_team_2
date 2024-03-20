@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Moonwalk.Classes.Managers;
 
 namespace Moonwalk.Classes.Entities.Base {
     internal class Terrain {
         protected Rectangle hitbox;
+       
 
         public Rectangle Hitbox {
             get { return hitbox; }
@@ -14,7 +16,9 @@ namespace Moonwalk.Classes.Entities.Base {
 
 
         public Terrain(Rectangle hitbox) {
-            this.hitbox = hitbox; 
+            this.hitbox = hitbox;
+
+
         }
 
         public override string ToString()

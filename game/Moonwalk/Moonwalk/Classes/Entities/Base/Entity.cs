@@ -56,7 +56,7 @@ namespace Moonwalk.Classes.Entities.Base
         //Animation
         protected Texture2D spriteSheet;
 
-        private Texture2D hitboxSprite = null;
+        private static Texture2D hitboxSprite = null;
 
         public virtual Rectangle Hitbox
         {

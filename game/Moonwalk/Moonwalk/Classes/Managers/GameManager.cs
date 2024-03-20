@@ -28,7 +28,8 @@ namespace Moonwalk.Classes.Managers
         public static SpriteFont font;
 
         private GraphicsDevice graphics;
-        private bool displayHitboxes = false;
+        private bool displayEntityHitboxes = false;
+        private bool displayTerrainHitboxes = false;
 
         // Game element managers
         private static GameManager _instance = null;
@@ -85,9 +86,13 @@ namespace Moonwalk.Classes.Managers
             // Get user input
             storedInput.Update();
 
-            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw hitboxes
+            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw entity hitboxes
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.F1))
-                displayHitboxes = !displayHitboxes;
+                displayEntityHitboxes = !displayEntityHitboxes;
+
+            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F2) && // Toggle F2 to draw terrain hitboxes
+                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F2))
+                displayTerrainHitboxes = !displayTerrainHitboxes;
 
             switch (state) {
 
@@ -125,13 +130,13 @@ namespace Moonwalk.Classes.Managers
                     break;
             }
 
-            Map.Draw(batch);
+            Map.Draw(batch, displayTerrainHitboxes);
 
             // Elements drawn ever iteration
             foreach (Entity entity in entities) {
                 entity.Draw(batch);
 
-                if (displayHitboxes)
+                if (displayEntityHitboxes)
                     entity.DrawHitbox(batch);
             }
                 

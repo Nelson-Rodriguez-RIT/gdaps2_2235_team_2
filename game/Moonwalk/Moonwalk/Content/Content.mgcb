@@ -68,6 +68,18 @@
 /processorParam:TextureFormat=Color
 /build:Maps/Demo/spritesheet.png
 
+#begin Maps/hitbox.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Maps/hitbox.png
+
 #begin Maps/LabMap/spritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor

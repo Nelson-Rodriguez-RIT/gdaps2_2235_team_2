@@ -23,6 +23,8 @@ namespace Moonwalk.Classes.Managers
         //private static Dictionary<int, Texture2D> sprites;
         private static Texture2D spritesheet;
 
+        protected static Texture2D hitboxSprite;
+
         private static Vector2 tileSize;
 
         public static List<Terrain> Geometry 
@@ -47,10 +49,13 @@ namespace Moonwalk.Classes.Managers
 
             spritesheet = bufferedData.spritesheet;
             tileSize = bufferedData.tileSize;
+
+            if (hitboxSprite == null)
+                hitboxSprite = Loader.LoadTexture("../../../Content/Maps/hitbox");
         }
 
 
-        public static void Draw(SpriteBatch batch)
+        public static void Draw(SpriteBatch batch, bool drawhitboxes)
         {
             foreach (int[][] tiles in tilesSets) // This is for rendering several layers
                 for (int row = 0; row < tiles.Length; row++)
@@ -88,8 +93,25 @@ namespace Moonwalk.Classes.Managers
                             SpriteEffects.None, // Image flipping
                             0);             // Layer
                     }
+
+            if (drawhitboxes)
+                foreach (Terrain terrain in geometry) {
+                    Vector2 position = Camera.ApplyOffset(new Vector2(
+                    terrain.Hitbox.X,
+                    terrain.Hitbox.Y
+                    ));
+
+                    batch.Draw(
+                        hitboxSprite,
+                        new Rectangle(
+                            (int)(position.X),
+                            (int)(position.Y),
+                            (int)(terrain.Hitbox.Width * GameMain.ActiveScale.X),
+                            (int)(terrain.Hitbox.Height * GameMain.ActiveScale.Y)
+                            ),
+                        Color.White
+                        );
+                }
         }
-
-
     }
 }

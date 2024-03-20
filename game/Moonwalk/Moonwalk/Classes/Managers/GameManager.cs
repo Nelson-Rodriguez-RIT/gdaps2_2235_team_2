@@ -272,10 +272,11 @@ namespace Moonwalk.Classes.Managers
                     Player player = (Player) SpawnEntity<Player>(new Vector2(50, 48));
                     Robot robot = (Robot) SpawnEntity<Robot>(new Vector2(128, 48));
 
-
+                    //Add subscribers to player events
                     player.GetRobotPosition += robot.GetPosition;
                     player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
                     player.ToggleBotLock += robot.ToggleLock;
+                    player.GetEnemies += entities.GetAllOfType<IHostile>;
 
                     break;
             }

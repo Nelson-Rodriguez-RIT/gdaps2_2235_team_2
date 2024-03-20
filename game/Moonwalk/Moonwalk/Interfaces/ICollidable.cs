@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,11 @@ namespace Moonwalk.Interfaces
         /// </summary>
         int CollisionAccuracy
         { get; }
+
+        /// <summary>
+        /// Hitbox of the entity
+        /// </summary>
+        Rectangle Hitbox {  get; }
 
         /// <summary>
         /// Checks if the object has collided with another

@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 namespace Moonwalk.Classes.Entities
 {
     public delegate List<IMovable> OnGravityAbilityUsed();
+    public delegate List<IHostile> GetEnemies();
     public delegate Vector2 GetRobotPosition();
     public delegate void ToggleBotLock();
     //public delegate List<IDamageable> OnAttack();
@@ -20,7 +21,7 @@ namespace Moonwalk.Classes.Entities
     /// <summary>
     /// The player controlled character
     /// </summary>
-    internal class Player : PlayerControlled, IJump
+    internal class Player : PlayerControlled, IJump, IDamageable
     {
         protected enum Animations
         {
@@ -44,16 +45,22 @@ namespace Moonwalk.Classes.Entities
         /// </summary>
         protected AbilityCooldowns<Abilities> cooldowns;
 
+        int health;
+        int gunDmg;
+        int meleeDmg;
+
         //Events
         public event OnGravityAbilityUsed OnGravityAbilityUsed;
         public event GetRobotPosition GetRobotPosition;
         public event ToggleBotLock ToggleBotLock;
+        public event GetEnemies GetEnemies;
 
         private Animations animation;
         private FaceDirection faceDirection;
 
+        //Timers
         private int animationTimer;
-        private double jumpTimer;
+        private double iFrames;
 
         private float swingChange;
         private float maxAngVelocity;
@@ -79,6 +86,12 @@ namespace Moonwalk.Classes.Entities
             }
         }
 
+        public int Health
+        {
+            get { return health; }
+            set { health = value; }
+        }
+
         //Make private later
         public Player(Vector2 position, Object[] args) : base(position, "../../../Content/Entities/Player")
         {
@@ -87,6 +100,7 @@ namespace Moonwalk.Classes.Entities
             maxXVelocity = 40;
             maxYVelocity = 60;
             maxAngVelocity = 350;
+            health = 3;
 
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
@@ -96,15 +110,8 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-
-            if (!Grounded)
-            {
-                jumpTimer += gameTime.ElapsedGameTime.TotalSeconds;
-            }
-            else
-            {
-                jumpTimer = 0;
-            }
+            //Decrease Iframes if the timer is running
+            iFrames = iFrames > 0 ? iFrames - gameTime.ElapsedGameTime.TotalSeconds : 0;
 
             cooldowns.Update(gameTime);
             base.Update(gameTime, input);
@@ -141,6 +148,35 @@ namespace Moonwalk.Classes.Entities
             }
 
             ChangeAnimation(input);
+        }
+
+        public override void Movement(GameTime gt)
+        {
+            base.Movement(gt);
+
+            //Check if player hits an enemy
+            IHostile collision = null;
+
+            if ((collision = EnemyCollision()) != null
+                && iFrames <= 0)
+            {
+                TakeDamage(collision.Damage);
+
+                //Make the player invincible for a short time
+                iFrames = 1;
+
+                //Stop tether if swinging
+                if (physicsState == PhysicsState.Rotational)
+                {
+                    physicsState = PhysicsState.Linear;
+                }
+
+                //Knock the player back
+                Impulse(new Vector2(
+                    VectorMath.VectorDifference(vectorPosition, collision.Position.ToVector2()).X,
+                    10));
+
+            }
         }
 
         protected override void RotationalMotion(GameTime gt)
@@ -283,9 +319,7 @@ namespace Moonwalk.Classes.Entities
                 {
                     SetLinearVariables();
                     ToggleBotLock();
-                }
-                    
-                
+                }  
             }
 
         }
@@ -298,6 +332,35 @@ namespace Moonwalk.Classes.Entities
                 $"{Math.Round(vectorPosition.Y)} - {Math.Round(velocity.Y)} - {Math.Round(acceleration.Y)} \n {Math.Round(velocity.X)}",
                 new Vector2(400, 50),
                 Color.White);
+        }
+
+        protected IHostile EnemyCollision()
+        {
+            List<IHostile> list = GetEnemies();
+
+            IHostile collision = list.Find(enemy => enemy.Hitbox.Intersects(hitbox));
+
+            return collision;
+        }
+
+        /// <summary>
+        /// Use this to see if an attack hits an enemy
+        /// </summary>
+        /// <param name="hitbox"></param>
+        /// <returns></returns>
+        protected IHostile[] EnemyCollision(Rectangle hitbox)
+        {
+            List<IHostile> list = GetEnemies();
+
+            IHostile[] collisions = list.FindAll(enemy => enemy.Hitbox.Intersects(new Rectangle(
+                    hitbox.X,
+                    hitbox.Y,
+                    hitbox.Width,
+                    hitbox.Height
+                    )))
+                .ToArray();
+
+            return collisions;
         }
 
         protected override void LinearMotion(GameTime gt)
@@ -398,7 +461,7 @@ namespace Moonwalk.Classes.Entities
         private void ChangeAnimation(StoredInput input)
         {
             //For animations that play until they are done
-            if (animationTimer > 0)
+            if (animationTimer > 2)
             {
                 return;
             }
@@ -483,6 +546,11 @@ namespace Moonwalk.Classes.Entities
 
             }
 
+        }
+
+        public void TakeDamage(int damage)
+        {
+            Health -= damage;
         }
         
     }

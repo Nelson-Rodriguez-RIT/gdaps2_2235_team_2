@@ -35,7 +35,9 @@ namespace Moonwalk.Classes.Entities
             Idle,
             TransitionToMove,
             Move
-        }      
+        }
+
+        private bool locked;
 
         //Change this to private later
         public Robot(Vector2 position, Object[] args) : base(position, "../../../Content/Entities/Robot")
@@ -47,8 +49,13 @@ namespace Moonwalk.Classes.Entities
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
-        {           
-            base.Update(gameTime, input);
+        {
+            Input(input);
+
+            if (!locked)
+            Movement(gameTime);
+
+            activeAnimation.UpdateAnimation(gameTime);
 
             if (velocity.X != 0
                 && Math.Abs(velocity.X) < 0.5f)
@@ -97,6 +104,11 @@ namespace Moonwalk.Classes.Entities
         public Vector2 GetPosition()
         {
             return this.vectorPosition;
+        }
+
+        public void ToggleLock()
+        {
+            locked = !locked;
         }
     }
 

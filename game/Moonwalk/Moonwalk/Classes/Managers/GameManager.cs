@@ -270,6 +270,7 @@ namespace Moonwalk.Classes.Managers
 
                     player.GetRobotPosition += robot.GetPosition;
                     player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
+                    player.ToggleBotLock += robot.ToggleLock;
 
                     break;
             }

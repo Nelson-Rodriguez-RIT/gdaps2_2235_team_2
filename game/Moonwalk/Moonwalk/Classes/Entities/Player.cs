@@ -14,6 +14,7 @@ namespace Moonwalk.Classes.Entities
 {
     public delegate List<IMovable> OnGravityAbilityUsed();
     public delegate Vector2 GetRobotPosition();
+    public delegate void ToggleBotLock();
     //public delegate List<IDamageable> OnAttack();
 
     /// <summary>
@@ -43,8 +44,10 @@ namespace Moonwalk.Classes.Entities
         /// </summary>
         protected AbilityCooldowns<Abilities> cooldowns;
 
+        //Events
         public event OnGravityAbilityUsed OnGravityAbilityUsed;
         public event GetRobotPosition GetRobotPosition;
+        public event ToggleBotLock ToggleBotLock;
 
         private Animations animation;
         private FaceDirection faceDirection;
@@ -264,6 +267,7 @@ namespace Moonwalk.Classes.Entities
                 {
                     cooldowns.UseAbility(Abilities.Tether);
                     SetRotationalVariables(robotPos);
+                    ToggleBotLock();
                 }
                 
 
@@ -273,6 +277,7 @@ namespace Moonwalk.Classes.Entities
             {
                 if (physicsState == PhysicsState.Rotational)
                     SetLinearVariables();
+                ToggleBotLock();
             }
 
         }

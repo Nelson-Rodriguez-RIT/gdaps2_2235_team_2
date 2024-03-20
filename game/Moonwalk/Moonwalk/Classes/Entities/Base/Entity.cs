@@ -79,9 +79,9 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         // These rely on file data and only need to be loaded once
-        protected static Dictionary<string, string> properties = null;
-        protected static List<Animation> animations = null;
-        protected static Texture2D spritesheet = null;
+        protected Dictionary<string, string> properties = null;
+        protected List<Animation> animations = null;
+        protected Texture2D spritesheet = null;
 
         // Currently displayed animation
         protected Animation activeAnimation; // DO NOT manually change this, use SwitchAnimation() instead

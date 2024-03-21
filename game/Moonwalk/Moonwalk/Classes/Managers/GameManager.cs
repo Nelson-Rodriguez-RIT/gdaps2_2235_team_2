@@ -65,6 +65,7 @@ namespace Moonwalk.Classes.Managers
             types = new List<Type>();
             types.Add(typeof(Player));
             types.Add(typeof(Robot));
+            types.Add(typeof(Enemy));
             entities = new Assortment<Entity>(types);
 
 
@@ -269,8 +270,9 @@ namespace Moonwalk.Classes.Managers
                     Map.LoadMap("Demo");
 
                     // Loads player + companion
-                    Player player = (Player) SpawnEntity<Player>(new Vector2(50, 48));
-                    Robot robot = (Robot) SpawnEntity<Robot>(new Vector2(128, 48));
+                    Player player = SpawnEntity<Player>(new Vector2(50, 48));
+                    Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
+                    SpawnEntity<TestEnemy>(new Vector2(100, 50));
 
                     //Add subscribers to player events
                     player.GetRobotPosition += robot.GetPosition;
@@ -285,17 +287,17 @@ namespace Moonwalk.Classes.Managers
         }
 
         /// <summary>
-        /// Handles any neccassray logic when spawning an enemy
+        /// Handles any neccassray logic when spawning an entity
         /// </summary>
-        private Entity SpawnEntity<T>(Vector2 position, Object[] args = null) where T : class {
+        private T SpawnEntity<T>(Vector2 position, Object[] args = null) where T : Entity {
             Entity entity = (Entity)Activator.CreateInstance(typeof(T), new object[] { position, args });
             entities.Add(entity);
 
-            return entity;
+            return (T)entity;
         }
 
         /// <summary>
-        /// Handles any neccessary logic when despawning an enemy
+        /// Handles any neccessary logic when despawning an entity
         /// </summary>
         /// <param name="entity">Entity to despawn</param>
         private void DespawnEntity(Entity entity) {

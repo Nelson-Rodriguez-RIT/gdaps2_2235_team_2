@@ -15,8 +15,8 @@ namespace Moonwalk.Classes.Entities.Base
     internal abstract class Enemy : Entity, IHostile
     {
         //For Enemies specifically
-        int health;                         // enemy health       
-        int damage;
+        protected int health;                         // enemy health       
+        protected int damage;
 
         /// <summary>
         /// Property to determine how many checks to do when checking for collision
@@ -62,11 +62,10 @@ namespace Moonwalk.Classes.Entities.Base
         /// <param name="asset"></param>
         /// <param name="position"></param>
         /// <param name="color"></param>
-        public Enemy(string directory, Vector2 position, int health, int damage)
+        public Enemy(string directory, Vector2 position)
             : base(position, directory)
         {
-            this.health = health;
-            this.damage = damage;
+
         }
 
         /// <summary>
@@ -129,6 +128,7 @@ namespace Moonwalk.Classes.Entities.Base
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime, StoredInput input)
         {
+            AI();
             Movement(gameTime);
             base.Update(gameTime, input);
         }
@@ -213,6 +213,6 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-
+        protected abstract void AI();
     }        
 }

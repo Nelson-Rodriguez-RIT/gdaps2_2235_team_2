@@ -189,6 +189,16 @@ namespace Moonwalk.Classes.Managers
                         DespawnEntity(entity);
                     }
                 }
+
+                if (entity is Projectile)
+                {
+                    Projectile projectile = (Projectile) entity;
+
+                    if (projectile.Collisions <= 0)
+                    {
+                        DespawnEntity(entity);
+                    }
+                }
             }
 
 

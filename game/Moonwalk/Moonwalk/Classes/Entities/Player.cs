@@ -108,7 +108,7 @@ namespace Moonwalk.Classes.Entities
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
 
-            cooldowns = new AbilityCooldowns<Abilities>(directory);
+            cooldowns = new AbilityCooldowns<Abilities>(directory, 5);
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -553,18 +553,22 @@ namespace Moonwalk.Classes.Entities
 
         private void Attack()
         {
+            const int KnockBack = 50;
             IDamageable[] enemies =
                 EnemyCollision(
-                    new Rectangle(
-                        Position.X + hitbox.Width,
+                    new Rectangle(          //change this, currently it goes on both sides of the player
+                        Position.X - 100,
                         Position.Y,
-                        20,
+                        200,
                         hitbox.Height)
                     );
 
             for (int i = 0; i < enemies.Length; i++)
             {
                 enemies[i].TakeDamage(meleeDmg);
+                enemies[i].Impulse(new Vector2(
+                    KnockBack * Math.Sign(VectorMath.VectorDifference(vectorPosition, enemies[i].Position.ToVector2()).X),
+                    KnockBack));
             }
         }
 

@@ -27,7 +27,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             }
         }
 
-        public AbilityCooldowns(string directory) 
+        public AbilityCooldowns(string directory, double defaultValue) 
         { 
             //get cooldowns from file
             //string fileName = directory + "/cooldowns";
@@ -40,7 +40,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             for (int i = 0; i < enumArray.Length; i++)
             {
                 cooldowns.Add(enumArray[i], 0);
-                maxCooldowns.Add(enumArray[i], 5); //Placeholder; read cooldown from file
+                maxCooldowns.Add(enumArray[i], defaultValue); //Placeholder; read cooldown from file
             }
         }
 

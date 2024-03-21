@@ -12,12 +12,10 @@ using System.IO;
 
 namespace Moonwalk.Classes.Entities.Base
 {
-    
-    internal abstract class Enemy : Entity, IHostile
+    internal abstract class Projectile : Entity, IHostile
     {
-        //For Enemies specifically
-        protected int health;                         // enemy health       
         protected int damage;
+        protected int collisions;
 
         /// <summary>
         /// Property to determine how many checks to do when checking for collision
@@ -52,36 +50,22 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
+        /// <summary>
+        /// Number of collisions before despawn
+        /// </summary>
+        public int Collisions
+        {
+            get { return collisions; }
+        }
+
         public int Damage
         {
             get { return damage; }
         }
 
-        /// <summary>
-        /// Parameterized Constructor of moving enemy
-        /// </summary>
-        /// <param name="asset"></param>
-        /// <param name="position"></param>
-        /// <param name="color"></param>
-        public Enemy(Vector2 position, string directory)
-            : base(position, directory)
-        {
-
-        }
-
-        /// <summary>
-        /// Returns the health of the enemy
-        /// </summary>
-        public int Health 
-        {
-            get 
-            { 
-                return health; 
-            } 
-            set 
-            { 
-                health = value; 
-            } 
+        public Projectile(Vector2 position, string directory, Vector2 initialVelocity) : base(position, directory) 
+        { 
+            velocity = initialVelocity;
         }
 
         /// <summary>
@@ -107,7 +91,7 @@ namespace Moonwalk.Classes.Entities.Base
                     hitbox.Width,
                     hitbox.Height
                     )));
-            }           
+            }
 
             return collision;
         }
@@ -126,16 +110,6 @@ namespace Moonwalk.Classes.Entities.Base
             }
 
             return temp;
-        }
-
-        /// <summary>
-        /// Updates movement of enemy
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime, StoredInput input)
-        {
-            Movement(gameTime);
-            base.Update(gameTime, input);
         }
 
         public virtual void Movement(GameTime gt)
@@ -174,7 +148,8 @@ namespace Moonwalk.Classes.Entities.Base
                 {
                     entity = new Rectangle(lastSafePosition, entity.Size);              // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
-                    velocity.Y = 0;
+                    velocity.Y = -velocity.Y;
+                    collisions--;
                     break;
                 }
 
@@ -210,7 +185,8 @@ namespace Moonwalk.Classes.Entities.Base
                 {
                     entity = new Rectangle(lastSafePosition, entity.Size);
                     vectorPosition = lastSafePosition.ToVector2();
-                    velocity.X = 0;
+                    velocity.X = -velocity.X;
+                    collisions--;
                     break;
                 }
                 iterationCounter++;
@@ -218,7 +194,6 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-
         public abstract void AI(Vector2 target);
-    }        
+    }
 }

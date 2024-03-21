@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Moonwalk.Classes.Managers;
 using Moonwalk.Classes.Helpful_Stuff;
+using System.IO;
 
 namespace Moonwalk.Classes.Entities.Base
 {
@@ -62,7 +63,7 @@ namespace Moonwalk.Classes.Entities.Base
         /// <param name="asset"></param>
         /// <param name="position"></param>
         /// <param name="color"></param>
-        public Enemy(string directory, Vector2 position)
+        public Enemy(Vector2 position, string directory)
             : base(position, directory)
         {
 
@@ -111,12 +112,22 @@ namespace Moonwalk.Classes.Entities.Base
         public virtual bool CheckCollision()
         {
             // checks if there is a terrain that collides with this
-            bool collision = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(entity));
+            bool collision = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(new Rectangle(
+                    hitbox.X + (int)Position.X,
+                    hitbox.Y + (int)Position.Y,
+                    hitbox.Width,
+                    hitbox.Height
+                    )));
 
             if (collision)
             {
                 // for testing purposes
-                Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(entity));
+                Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(new Rectangle(
+                    hitbox.X + (int)Position.X,
+                    hitbox.Y + (int)Position.Y,
+                    hitbox.Width,
+                    hitbox.Height
+                    )));
             }           
 
             return collision;
@@ -128,7 +139,6 @@ namespace Moonwalk.Classes.Entities.Base
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            AI();
             Movement(gameTime);
             base.Update(gameTime, input);
         }
@@ -213,6 +223,11 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-        protected abstract void AI();
+        public override void Impulse(Vector2 destination)
+        {
+
+        }
+
+        public abstract void AI(Vector2 target);
     }        
 }

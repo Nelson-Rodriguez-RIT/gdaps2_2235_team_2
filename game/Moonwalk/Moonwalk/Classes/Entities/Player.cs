@@ -16,6 +16,7 @@ namespace Moonwalk.Classes.Entities
     public delegate List<IHostile> GetEnemies();
     public delegate Vector2 GetRobotPosition();
     public delegate void ToggleBotLock();
+    public delegate void EnemyAI(Vector2 target);
     //public delegate List<IDamageable> OnAttack();
 
     /// <summary>
@@ -54,6 +55,7 @@ namespace Moonwalk.Classes.Entities
         public event GetRobotPosition GetRobotPosition;
         public event ToggleBotLock ToggleBotLock;
         public event GetEnemies GetEnemies;
+        public event EnemyAI EnemyAI;
 
         private Animations animation;
         private FaceDirection faceDirection;
@@ -93,7 +95,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         //Make private later
-        public Player(Vector2 position, Object[] args) : base(position, "../../../Content/Entities/Player")
+        public Player(Vector2 position) : base(position, "../../../Content/Entities/Player")
         {
             gravity = 70f;
             acceleration = new Vector2(0, gravity);
@@ -148,12 +150,16 @@ namespace Moonwalk.Classes.Entities
             }
 
             ChangeAnimation(input);
+
+            
+            EnemyAI(vectorPosition);
+            
         }
 
         public override void Movement(GameTime gt)
         {
             base.Movement(gt);
-
+            
             //Check if player hits an enemy
             IHostile collision = null;
 
@@ -173,10 +179,11 @@ namespace Moonwalk.Classes.Entities
 
                 //Knock the player back
                 Impulse(new Vector2(
-                    VectorMath.VectorDifference(vectorPosition, collision.Position.ToVector2()).X,
-                    10));
+                    -45 * Math.Sign(VectorMath.VectorDifference(vectorPosition, collision.Position.ToVector2()).X),
+                    -35));
 
             }
+            
         }
 
         protected override void RotationalMotion(GameTime gt)
@@ -338,7 +345,20 @@ namespace Moonwalk.Classes.Entities
         {
             List<IHostile> list = GetEnemies();
 
-            IHostile collision = list.Find(enemy => enemy.Hitbox.Intersects(hitbox));
+            IHostile collision = list.Find(enemy => 
+            new Rectangle(
+                enemy.Position.X,
+                enemy.Position.Y,
+                enemy.Hitbox.Width,
+                enemy.Hitbox.Height)
+            .Intersects(
+                new Rectangle(
+                    Position.X,
+                    Position.Y,
+                    Hitbox.Width,
+                    Hitbox.Height)
+                )
+            );
 
             return collision;
         }

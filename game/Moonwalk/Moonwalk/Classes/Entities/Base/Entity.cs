@@ -307,7 +307,7 @@ namespace Moonwalk.Classes.Entities.Base
                 acceleration.X, gravity);
         }
 
-        public void Impulse(Vector2 destination)
+        public virtual void Impulse(Vector2 destination)
         {
             velocity = (destination);
         }

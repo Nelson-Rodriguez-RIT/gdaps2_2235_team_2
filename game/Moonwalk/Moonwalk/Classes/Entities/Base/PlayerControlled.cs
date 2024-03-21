@@ -98,11 +98,6 @@ namespace Moonwalk.Classes.Entities.Base
                     hitbox.Height
                     )));
 
-            if (temp)
-            {
-                Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(hitbox));
-            }
-
             return temp;
         }
 

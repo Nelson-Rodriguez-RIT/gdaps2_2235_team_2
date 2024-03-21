@@ -21,7 +21,10 @@ namespace Moonwalk.Classes
 
         public IList this[Type type]
         {
-            get { return lists[type]; }
+            get 
+            { 
+                return lists[type]; 
+            }
         }
 
         public Assortment()
@@ -67,7 +70,7 @@ namespace Moonwalk.Classes
         {
             Type itemType = item.GetType();
             
-            if (listTypes != null)
+            if (listTypes == null)
             {
                 //Add to the key if it already exists
                 if (lists.ContainsKey(itemType))
@@ -92,7 +95,8 @@ namespace Moonwalk.Classes
                 foreach (KeyValuePair<Type, IList> keyValuePair in lists)
                 {
                     //When you find it, add to that list
-                    if (itemType.IsSubclassOf(keyValuePair.Key))
+                    if (itemType.IsSubclassOf(keyValuePair.Key)
+                        || itemType.IsAssignableTo(keyValuePair.Key))
                     {
                         lists[keyValuePair.Key].Add(item);
                         break;

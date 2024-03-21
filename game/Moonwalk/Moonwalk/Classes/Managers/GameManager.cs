@@ -179,6 +179,16 @@ namespace Moonwalk.Classes.Managers
             foreach (Entity entity in entities)
             {
                 entity.Update(gt, storedInput);
+
+                if (entity is IDamageable)
+                {
+                    IDamageable damageable = (IDamageable) entity;
+
+                    if (damageable.Health <= 0)
+                    {
+                        entities.Remove(entity);
+                    }
+                }
             }
 
 
@@ -270,16 +280,21 @@ namespace Moonwalk.Classes.Managers
                     //Map.LoadMap("Demo");
 
                     // Loads player + companion
-                    Player player = SpawnEntity<Player>(new Vector2(50, 48));
+                    Player player = SpawnEntity<Player>(new Vector2(400, 48));
                     Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
-                    SpawnEntity<TestEnemy>(new Vector2(100, 50));
+                    SpawnEntity<TestEnemy>(new Vector2(400, 50));
 
                     //Add subscribers to player events
                     player.GetRobotPosition += robot.GetPosition;
                     player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
                     player.ToggleBotLock += robot.ToggleLock;
                     player.GetEnemies += entities.GetAllOfType<IHostile>;
-
+                    
+                    for (int i = 0; i < entities[typeof(Enemy)].Count; i++)
+                    {
+                        player.EnemyAI += ((Enemy)entities[typeof(Enemy)][i]).AI;
+                    }
+                    
                     break;
             }
 
@@ -290,7 +305,7 @@ namespace Moonwalk.Classes.Managers
         /// Handles any neccassray logic when spawning an entity
         /// </summary>
         private T SpawnEntity<T>(Vector2 position, Object[] args = null) where T : Entity {
-            Entity entity = (Entity)Activator.CreateInstance(typeof(T), new object[] { position, args });
+            Entity entity = (Entity)Activator.CreateInstance(typeof(T), new object[] { position });
             entities.Add(entity);
 
             return (T)entity;

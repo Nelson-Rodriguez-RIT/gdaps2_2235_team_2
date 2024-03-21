@@ -1,10 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Helpful_Stuff;
+using Moonwalk.Classes.Managers;
+using Moonwalk.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Entities
 {
@@ -22,17 +26,36 @@ namespace Moonwalk.Classes.Entities
             Death
         }
 
-        public TestEnemy(Vector2 position, Object[] args) :base("../../../Content/Entities/TestEnemy", position)
+        FaceDirection faceDirection;
+
+        public TestEnemy(Vector2 position) : base(position, "../../../Content/Entities/TestEnemy")
         {
             health = int.Parse(properties["Health"]);
             damage = int.Parse(properties["Damage"]);
             SwitchAnimation(Animations.Move);
             gravity = 50f;
+            acceleration = new Vector2(0, gravity);
+            spriteScale = 1;
+            maxXVelocity = 50;
+
         }
 
-        protected override void AI()
+        public override void AI(Vector2 target)
         {
-            throw new NotImplementedException();
+            float xDifference = VectorMath.VectorDifference(vectorPosition, target).X;
+
+            if (xDifference > 0)
+            {
+                faceDirection = FaceDirection.Right;
+            }
+            else if (xDifference < 0)
+            {
+                faceDirection = FaceDirection.Left;
+            }
+
+            acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
+            
         }
+
     }
 }

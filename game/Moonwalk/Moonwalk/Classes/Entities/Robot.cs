@@ -40,7 +40,7 @@ namespace Moonwalk.Classes.Entities
         private bool locked;
 
         //Change this to private later
-        public Robot(Vector2 position, Object[] args) : base(position, "../../../Content/Entities/Robot")
+        public Robot(Vector2 position) : base(position, "../../../Content/Entities/Robot")
         {
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);

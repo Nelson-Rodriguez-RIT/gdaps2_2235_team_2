@@ -14,10 +14,10 @@ namespace Moonwalk.Classes.Entities
 {
     public delegate List<IMovable> OnGravityAbilityUsed();
     public delegate List<IHostile> GetEnemies();
+    public delegate List<IDamageable> GetDamagables();
     public delegate Vector2 GetRobotPosition();
     public delegate void ToggleBotLock();
     public delegate void EnemyAI(Vector2 target);
-    //public delegate List<IDamageable> OnAttack();
 
     /// <summary>
     /// The player controlled character
@@ -47,8 +47,8 @@ namespace Moonwalk.Classes.Entities
         protected AbilityCooldowns<Abilities> cooldowns;
 
         int health;
-        int gunDmg;
-        int meleeDmg;
+        const int gunDmg = 1;
+        const int meleeDmg = 1;
 
         //Events
         public event OnGravityAbilityUsed OnGravityAbilityUsed;
@@ -56,6 +56,7 @@ namespace Moonwalk.Classes.Entities
         public event ToggleBotLock ToggleBotLock;
         public event GetEnemies GetEnemies;
         public event EnemyAI EnemyAI;
+        public event GetDamagables GetDamagables;
 
         private Animations animation;
         private FaceDirection faceDirection;
@@ -368,11 +369,18 @@ namespace Moonwalk.Classes.Entities
         /// </summary>
         /// <param name="hitbox"></param>
         /// <returns></returns>
-        protected IHostile[] EnemyCollision(Rectangle hitbox)
+        protected IDamageable[] EnemyCollision(Rectangle hitbox)
         {
-            List<IHostile> list = GetEnemies();
+            List<IDamageable> list = GetDamagables();
+            list.Remove(this);
 
-            IHostile[] collisions = list.FindAll(enemy => enemy.Hitbox.Intersects(new Rectangle(
+            IDamageable[] collisions = list.FindAll(damageable =>
+            new Rectangle(
+                damageable.Position.X,
+                damageable.Position.Y,
+                damageable.Hitbox.Width,
+                damageable.Hitbox.Height)
+            .Intersects(new Rectangle(
                     hitbox.X,
                     hitbox.Y,
                     hitbox.Width,
@@ -528,6 +536,7 @@ namespace Moonwalk.Classes.Entities
                 !input.WasPressed(Keys.E))
             {
                 SwitchAnimation(Animations.Attack, false);
+                Attack();
                 animationTimer = activeAnimation.AnimationLength;
             }
 
@@ -544,7 +553,19 @@ namespace Moonwalk.Classes.Entities
 
         private void Attack()
         {
-            // List<Enemy> enemies = 
+            IDamageable[] enemies =
+                EnemyCollision(
+                    new Rectangle(
+                        Position.X + hitbox.Width,
+                        Position.Y,
+                        20,
+                        hitbox.Height)
+                    );
+
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                enemies[i].TakeDamage(meleeDmg);
+            }
         }
 
         

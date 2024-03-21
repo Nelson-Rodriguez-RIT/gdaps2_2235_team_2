@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Interfaces
 {
-    internal interface IDamageable
+    public interface IDamageable : ICollidable
     {
         /// <summary>
         /// Health of the entity

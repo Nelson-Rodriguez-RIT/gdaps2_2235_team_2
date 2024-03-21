@@ -186,7 +186,7 @@ namespace Moonwalk.Classes.Managers
 
                     if (damageable.Health <= 0)
                     {
-                        entities.Remove(entity);
+                        DespawnEntity(entity);
                     }
                 }
             }
@@ -289,6 +289,7 @@ namespace Moonwalk.Classes.Managers
                     player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
                     player.ToggleBotLock += robot.ToggleLock;
                     player.GetEnemies += entities.GetAllOfType<IHostile>;
+                    player.GetDamagables += entities.GetAllOfType<IDamageable>;
                     
                     for (int i = 0; i < entities[typeof(Enemy)].Count; i++)
                     {

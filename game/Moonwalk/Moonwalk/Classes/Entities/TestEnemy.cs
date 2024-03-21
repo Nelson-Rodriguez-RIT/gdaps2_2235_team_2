@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Entities
 {
-    internal class TestEnemy : Enemy
+    internal class TestEnemy : Enemy, IDamageable, IJump
     {
         private enum Animations
         {
@@ -42,19 +42,37 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI(Vector2 target)
         {
-            float xDifference = VectorMath.VectorDifference(vectorPosition, target).X;
+            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, target));
 
-            if (xDifference > 0)
+            if (distance < 200) // range of aggrod
             {
-                faceDirection = FaceDirection.Right;
-            }
-            else if (xDifference < 0)
-            {
-                faceDirection = FaceDirection.Left;
-            }
+                SwitchAnimation(Animations.Move, false);
+                float xDifference = VectorMath.VectorDifference(vectorPosition, target).X;
 
-            acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
-            
+                if (xDifference > 0)
+                {
+                    faceDirection = FaceDirection.Right;
+                }
+                else if (xDifference < 0)
+                {
+                    faceDirection = FaceDirection.Left;
+                }
+
+                //activeAnimation.FaceDirection = (int)faceDirection;
+
+                acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
+            }
+            else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
+            {
+                velocity.X = 0;
+                acceleration.X = 0;
+                SwitchAnimation(Animations.StaticIdle);
+            }
+        }
+
+        public virtual void TakeDamage(int damage)
+        {
+            health -= damage;
         }
 
     }

@@ -223,10 +223,6 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-        public override void Impulse(Vector2 destination)
-        {
-
-        }
 
         public abstract void AI(Vector2 target);
     }        

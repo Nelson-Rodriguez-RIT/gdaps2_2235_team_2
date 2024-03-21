@@ -110,14 +110,38 @@ namespace Moonwalk.Classes
         {
             Type itemType = item.GetType();
 
-            if (!lists.ContainsKey(itemType))
+            if (listTypes == null)
             {
-                return;
-            }
+                //Add to the key if it already exists
+                if (lists.ContainsKey(itemType))
+                {
 
-            if (lists[itemType].Contains(item))
+                    lists[itemType].Remove(item);
+                }
+                else        //Add new key and list if not
+                {
+                    Type listType = typeof(List<>).MakeGenericType(itemType);
+
+                    lists.Add(itemType,
+                        (IList)Activator.CreateInstance(listType));
+
+
+                    lists[itemType].Remove(item);
+                }
+            }
+            else
             {
-                lists[itemType].Remove(item);
+                //Search for a type that the item being added inherits from
+                foreach (KeyValuePair<Type, IList> keyValuePair in lists)
+                {
+                    //When you find it, add to that list
+                    if (itemType.IsSubclassOf(keyValuePair.Key)
+                        || itemType.IsAssignableTo(keyValuePair.Key))
+                    {
+                        lists[keyValuePair.Key].Remove(item);
+                        break;
+                    }
+                }
             }
         }
 

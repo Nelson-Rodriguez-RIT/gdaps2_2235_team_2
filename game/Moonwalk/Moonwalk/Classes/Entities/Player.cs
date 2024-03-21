@@ -460,7 +460,7 @@ namespace Moonwalk.Classes.Entities
 
         private void ChangeAnimation(StoredInput input)
         {
-            //For animations that play until they are done
+            // For animations that play until they are done, don't change the animation until then
             if (animationTimer > 2)
             {
                 return;
@@ -470,7 +470,7 @@ namespace Moonwalk.Classes.Entities
                 animationTimer = 0;
             }
 
-            //Change facing direciton of the player
+            // Change facing direciton of the player
             if (velocity.X < 0
                 && faceDirection != FaceDirection.Left)
             {
@@ -482,23 +482,28 @@ namespace Moonwalk.Classes.Entities
                 faceDirection = FaceDirection.Right;
             }
 
+            // Update the face direction in the animation class
             activeAnimation.FaceDirection = (int)faceDirection;
 
+            // If not moving, play idle
             if (velocity.X == 0 && velocity.Y == 0)
             {
                 SwitchAnimation(Animations.Idle, false);
             }
 
+            // If moving horizontally, play run
             if (velocity.X != 0)
             {                
                 SwitchAnimation(Animations.Run, false);
             }
 
+            // If in the air, play airborne animation
             if (!Grounded)
             {
                 SwitchAnimation(Animations.Jump);
             }
 
+            // if E is pressed, play melee attack animation
             if (input.IsPressed(Keys.E) && 
                 !input.WasPressed(Keys.E))
             {
@@ -506,6 +511,7 @@ namespace Moonwalk.Classes.Entities
                 animationTimer = activeAnimation.AnimationLength;
             }
 
+            // if F is pressed, play ranged attack animation
             if (input.IsPressed(Keys.F)
                 && activeAnimation.AnimationValue != (int)Animations.Shoot)
             {
@@ -518,26 +524,27 @@ namespace Moonwalk.Classes.Entities
 
         private void Attack()
         {
-            //List<Enemy> enemies = 
+            // List<Enemy> enemies = 
         }
 
         
         private void GravityAbility(Vector2 robotPos)
         {
             
-            //Get a list of movables from the game manager
+            // Get a list of movables from the game manager
             List<IMovable> movables = OnGravityAbilityUsed();
 
-            //Make all entities move towards this
+            // Make all entities move towards this
             foreach (IMovable movable in movables)
             {
-                //Check that entity is within range
+                // Check that entity is within range
                 if (Math.Sqrt(
                         Math.Pow(movable.Position.X - robotPos.X, 2) +
                         Math.Pow(movable.Position.Y - robotPos.Y, 2)
                         )
                     < 150)
                 {
+                    // Apply the impulse towards the robot
                     Vector2 difference = VectorMath.VectorDifference(vectorPosition, robotPos);
                     movable.Impulse(new Vector2(
                         difference.X,
@@ -547,7 +554,7 @@ namespace Moonwalk.Classes.Entities
             }
 
         }
-
+        
         public void TakeDamage(int damage)
         {
             Health -= damage;

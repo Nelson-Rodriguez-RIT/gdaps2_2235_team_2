@@ -121,7 +121,6 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         
-
         public virtual void Update(
                 GameTime gameTime, 
                 StoredInput input) 

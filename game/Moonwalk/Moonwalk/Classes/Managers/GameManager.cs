@@ -266,8 +266,8 @@ namespace Moonwalk.Classes.Managers
 
                 case GameState.Demo:
 
-                    //Map.LoadMap("StartMap");
-                    Map.LoadMap("Demo");
+                    Map.LoadMap("StartMapTest");
+                    //Map.LoadMap("Demo");
 
                     // Loads player + companion
                     Player player = SpawnEntity<Player>(new Vector2(50, 48));

@@ -14,10 +14,10 @@ namespace Moonwalk.Classes.Entities
 {
     public delegate List<IMovable> OnGravityAbilityUsed();
     public delegate List<IHostile> GetEnemies();
+    public delegate List<IDamageable> GetDamagables();
     public delegate Vector2 GetRobotPosition();
     public delegate void ToggleBotLock();
     public delegate void EnemyAI(Vector2 target);
-    //public delegate List<IDamageable> OnAttack();
 
     /// <summary>
     /// The player controlled character
@@ -47,8 +47,8 @@ namespace Moonwalk.Classes.Entities
         protected AbilityCooldowns<Abilities> cooldowns;
 
         int health;
-        int gunDmg;
-        int meleeDmg;
+        const int gunDmg = 1;
+        const int meleeDmg = 1;
 
         //Events
         public event OnGravityAbilityUsed OnGravityAbilityUsed;
@@ -56,6 +56,7 @@ namespace Moonwalk.Classes.Entities
         public event ToggleBotLock ToggleBotLock;
         public event GetEnemies GetEnemies;
         public event EnemyAI EnemyAI;
+        public event GetDamagables GetDamagables;
 
         private Animations animation;
         private FaceDirection faceDirection;
@@ -107,7 +108,7 @@ namespace Moonwalk.Classes.Entities
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
 
-            cooldowns = new AbilityCooldowns<Abilities>(directory);
+            cooldowns = new AbilityCooldowns<Abilities>(directory, 5);
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -116,6 +117,9 @@ namespace Moonwalk.Classes.Entities
             iFrames = iFrames > 0 ? iFrames - gameTime.ElapsedGameTime.TotalSeconds : 0;
 
             cooldowns.Update(gameTime);
+
+            ChangeAnimation(input);
+
             base.Update(gameTime, input);
 
             int sign = 0;
@@ -143,14 +147,6 @@ namespace Moonwalk.Classes.Entities
                 velocity.X = 0;
                 acceleration.X = 0;
             }
-
-            if (animationTimer > 0)
-            {
-                animationTimer--;
-            }
-
-            ChangeAnimation(input);
-
             
             EnemyAI(vectorPosition);
             
@@ -368,11 +364,18 @@ namespace Moonwalk.Classes.Entities
         /// </summary>
         /// <param name="hitbox"></param>
         /// <returns></returns>
-        protected IHostile[] EnemyCollision(Rectangle hitbox)
+        protected IDamageable[] EnemyCollision(Rectangle hitbox)
         {
-            List<IHostile> list = GetEnemies();
+            List<IDamageable> list = GetDamagables();
+            list.Remove(this);
 
-            IHostile[] collisions = list.FindAll(enemy => enemy.Hitbox.Intersects(new Rectangle(
+            IDamageable[] collisions = list.FindAll(damageable =>
+            new Rectangle(
+                damageable.Position.X,
+                damageable.Position.Y,
+                damageable.Hitbox.Width,
+                damageable.Hitbox.Height)
+            .Intersects(new Rectangle(
                     hitbox.X,
                     hitbox.Y,
                     hitbox.Width,
@@ -480,15 +483,13 @@ namespace Moonwalk.Classes.Entities
 
         private void ChangeAnimation(StoredInput input)
         {
+            
             // For animations that play until they are done, don't change the animation until then
-            if (animationTimer > 2)
+            if (animationTimer > 0)
             {
+                animationTimer--;
                 return;
-            }
-            else
-            {
-                animationTimer = 0;
-            }
+            }         
 
             // Change facing direciton of the player
             if (velocity.X < 0
@@ -527,16 +528,17 @@ namespace Moonwalk.Classes.Entities
             if (input.IsPressed(Keys.E) && 
                 !input.WasPressed(Keys.E))
             {
-                SwitchAnimation(Animations.Attack, false);
+                SwitchAnimation(Animations.Attack);
+                Attack();
                 animationTimer = activeAnimation.AnimationLength;
             }
 
             // if F is pressed, play ranged attack animation
-            if (input.IsPressed(Keys.F)
-                && activeAnimation.AnimationValue != (int)Animations.Shoot)
+            if (input.IsPressed(Keys.F))
+                //&& activeAnimation.AnimationValue != (int)Animations.Shoot)
             {
                 SwitchAnimation(Animations.Shoot, 
-                    false
+                    true
                     );
                 animationTimer = activeAnimation.AnimationLength;
             }
@@ -544,7 +546,23 @@ namespace Moonwalk.Classes.Entities
 
         private void Attack()
         {
-            // List<Enemy> enemies = 
+            const int KnockBack = 50;
+            IDamageable[] enemies =
+                EnemyCollision(
+                    new Rectangle(          //change this, currently it goes on both sides of the player
+                        Position.X - 100,
+                        Position.Y,
+                        200,
+                        hitbox.Height)
+                    );
+
+            for (int i = 0; i < enemies.Length; i++)
+            {
+                enemies[i].TakeDamage(meleeDmg);
+                enemies[i].Impulse(new Vector2(
+                    KnockBack * Math.Sign(VectorMath.VectorDifference(vectorPosition, enemies[i].Position.ToVector2()).X),
+                    KnockBack));
+            }
         }
 
         

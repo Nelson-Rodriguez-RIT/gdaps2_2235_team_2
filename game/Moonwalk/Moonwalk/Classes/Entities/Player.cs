@@ -117,6 +117,9 @@ namespace Moonwalk.Classes.Entities
             iFrames = iFrames > 0 ? iFrames - gameTime.ElapsedGameTime.TotalSeconds : 0;
 
             cooldowns.Update(gameTime);
+
+            ChangeAnimation(input);
+
             base.Update(gameTime, input);
 
             int sign = 0;
@@ -144,14 +147,6 @@ namespace Moonwalk.Classes.Entities
                 velocity.X = 0;
                 acceleration.X = 0;
             }
-
-            if (animationTimer > 0)
-            {
-                animationTimer--;
-            }
-
-            ChangeAnimation(input);
-
             
             EnemyAI(vectorPosition);
             
@@ -488,15 +483,13 @@ namespace Moonwalk.Classes.Entities
 
         private void ChangeAnimation(StoredInput input)
         {
+            
             // For animations that play until they are done, don't change the animation until then
-            if (animationTimer > 2)
+            if (animationTimer > 0)
             {
+                animationTimer--;
                 return;
-            }
-            else
-            {
-                animationTimer = 0;
-            }
+            }         
 
             // Change facing direciton of the player
             if (velocity.X < 0
@@ -545,7 +538,7 @@ namespace Moonwalk.Classes.Entities
                 && activeAnimation.AnimationValue != (int)Animations.Shoot)
             {
                 SwitchAnimation(Animations.Shoot, 
-                    false
+                    true
                     );
                 animationTimer = activeAnimation.AnimationLength;
             }

@@ -44,7 +44,7 @@ namespace Moonwalk.Classes.Managers {
         {
             get
             {
-                return totalSprites * framesPerSprite;
+                return totalSprites * framesPerSprite - 1;
             }
         }
 
@@ -53,9 +53,20 @@ namespace Moonwalk.Classes.Managers {
             get
             {
                 if (style == AnimationStyle.Horizontal)
-                    return spritesheetBox.Y;
+                    return spritesheetBox.Y / (int)spriteSize.Y;
 
-                else return spritesheetBox.X;
+                else return spritesheetBox.X / (int)spriteSize.X;
+            }
+        }
+
+        public int CurrentFrame
+        {
+            get
+            {
+                if (style == AnimationStyle.Horizontal)
+                    return spritesheetBox.X / (int)spriteSize.X;
+
+                else return spritesheetBox.Y / (int)spriteSize.Y;
             }
         }
 

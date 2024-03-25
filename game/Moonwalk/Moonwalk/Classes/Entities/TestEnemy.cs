@@ -189,7 +189,7 @@ namespace Moonwalk.Classes.Entities
                     if (Grounded && cooldowns[Abilities.Jump] == 0)
                     {
                         //Jump!
-                        velocity.Y = -40;
+                        velocity.Y = -42;
                         cooldowns.UseAbility(Abilities.Jump);
                     }
 

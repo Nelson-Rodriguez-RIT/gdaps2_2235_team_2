@@ -528,17 +528,17 @@ namespace Moonwalk.Classes.Entities
             if (input.IsPressed(Keys.E) && 
                 !input.WasPressed(Keys.E))
             {
-                SwitchAnimation(Animations.Attack, false);
+                SwitchAnimation(Animations.Attack);
                 Attack();
                 animationTimer = activeAnimation.AnimationLength;
             }
 
             // if F is pressed, play ranged attack animation
-            if (input.IsPressed(Keys.F)
-                && activeAnimation.AnimationValue != (int)Animations.Shoot)
+            if (input.IsPressed(Keys.F))
+                //&& activeAnimation.AnimationValue != (int)Animations.Shoot)
             {
                 SwitchAnimation(Animations.Shoot, 
-                    false
+                    true
                     );
                 animationTimer = activeAnimation.AnimationLength;
             }

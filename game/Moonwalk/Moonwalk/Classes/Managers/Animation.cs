@@ -44,7 +44,7 @@ namespace Moonwalk.Classes.Managers {
         {
             get
             {
-                return totalSprites * framesPerSprite - 1;
+                return totalSprites * framesPerSprite;
             }
         }
 

@@ -538,7 +538,7 @@ namespace Moonwalk.Classes.Entities
                 && activeAnimation.AnimationValue != (int)Animations.Shoot)
             {
                 SwitchAnimation(Animations.Shoot, 
-                    true
+                    false
                     );
                 animationTimer = activeAnimation.AnimationLength;
             }

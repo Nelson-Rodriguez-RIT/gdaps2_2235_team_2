@@ -43,22 +43,5 @@ namespace Noah_s_Level_Design_Concept
                 Camera.ApplyOffset(position),
                 Color.Red); 
         }
-        /*
-        public void Movement(Player player)
-        {
-            movementDirection = Vector2.Zero;
-
-            if (player.MovingLeft) //if player is moving left
-            {
-                movementDirection += Vector2.UnitX * 6;
-                this.position.X += (int)movementDirection.X;
-            }
-            if (player.MovingRight) //if player is moving left)
-            {
-                movementDirection += Vector2.UnitX * 6;
-                this.position.X -= (int)movementDirection.X;
-            }
-        }
-        */
     }
 }

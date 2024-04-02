@@ -1,8 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
-using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Managers {
     internal static class Camera {

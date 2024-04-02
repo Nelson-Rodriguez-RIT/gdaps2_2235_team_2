@@ -1,68 +1,67 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace Moonwalk.Classes.Managers
-{
-    internal class Map
-    {
+namespace Moonwalk.Classes.Managers {
+    internal class Map {
+        // Root folder for all maps
         private const string RootDirectory = "../../../Content/Maps/";
 
-        private static List<int[][]> tilesSets = null;
-        private static List<Terrain> geometry;
+        // Contains IDs that dictate what tile, and where, to display
+        private static List<int[][]> tilesSets = null; // Data read from MDF
 
-        //private static Dictionary<int, Texture2D> sprites;
+        // Contains collision elements
+        private static List<Terrain> geometry = null; // Data read from MDF
+
+        // Sprite sheet the map will use. Each tile correlates to an ID
+        // Starts at ID 1 and increases as it goes right (and down)
+        // NOTICE: Make sure to use the SAME sprite sheet you used in Tiled
+        // any inconsistencies will cause the map to be displayed improperly
         private static Texture2D spritesheet;
 
+        // Sprite to use when map collision debugging is turned on (F2)
+        // This sprite should consist of a single pixel (it is scaled as needed)
         protected static Texture2D hitboxSprite;
 
+        // The wdith and height of an individual tile (usually 16x16)
         private static Vector2 tileSize;
 
         public static bool Loaded {
             get { return tilesSets != null; }
         }
 
-        public static List<Terrain> Geometry 
-        { 
-            get
-            {
-                return geometry;
-            } 
+        public static List<Terrain> Geometry {
+            get { return geometry; }
         }
 
-        public static void LoadMap(string mapRootFolderName)
-        {
-            (List<int[][]> tiles, List<Terrain> geometry,
-                Texture2D spritesheet, Vector2 tileSize) bufferedData
-                = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
 
+        /// <summary>
+        /// Loads a map (and relevant file data)
+        /// </summary>
+        /// <param name="mapRootFolderName">Name of the map</param>
+        public static void LoadMap(string mapRootFolderName) {
+            // Get data from file
+            (List<int[][]> tiles, List<Terrain> geometry,
+                Texture2D spritesheet, Vector2 tileSize) 
+                bufferedData = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
+
+            // Store data
             tilesSets = bufferedData.tiles;
             geometry = bufferedData.geometry;
-
-            //REMOVE THIS LATER (for testing purposes) - Dante
-            geometry.Add(new Terrain(new Rectangle(0, 500, 1000, 100)));
-
             spritesheet = bufferedData.spritesheet;
             tileSize = bufferedData.tileSize;
 
+            // Load hitbox sprite if it hasn't already
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Maps/hitbox");
         }
 
         /// <summary>
-        /// Clears the map when exiting to menu
+        /// Unloads a map (and relevant file data)
         /// </summary>
-        public static void UnloadMap()
-        {
+        public static void UnloadMap() {
             tilesSets = null;
             geometry = null;
             spritesheet = null;
@@ -70,51 +69,37 @@ namespace Moonwalk.Classes.Managers
         }
 
 
-        public static void Draw(SpriteBatch batch, bool drawhitboxes)
-        {
-            foreach (int[][] tiles in tilesSets) // This is for rendering several layers
+        public static void Draw(SpriteBatch batch, bool drawhitboxes) {
+            // Renders each layer on top of the previous ones
+            // Order is based on how they appear in the MDF
+            foreach (int[][] tiles in tilesSets)
                 for (int row = 0; row < tiles.Length; row++)
-                    for (int col = 0; col < tiles[row].Length; col++)
-                    {
+                    for (int col = 0; col < tiles[row].Length; col++) {
                         // 0's are empty space
                         if (tiles[row][col] == 0)
                             continue;
 
-                        int id = tiles[row][col] - 1;
-                        int spriteX = (int)(id % (spritesheet.Width / tileSize.X));
-
-                        int spriteY = (int)(Math.Floor(id / (spritesheet.Width / tileSize.X)));
-
-                        Rectangle sprite = new Rectangle(
-                                (int)(spriteX * tileSize.X),
-                                (int)(spriteY * tileSize.Y),
+                        batch.Draw(
+                            spritesheet,                                                                // Sprite sheet
+                            Camera.RelativePosition(new Vector2(col * tileSize.X, row * tileSize.Y)),   // Position
+                            new Rectangle(                                                              // Sprite from sprite sheet
+                                (int)(((tiles[row][col] - 1) % (spritesheet.Width / tileSize.X)) * tileSize.X),
+                                (int)(Math.Floor((tiles[row][col] - 1) / (spritesheet.Width / tileSize.X)) * tileSize.Y),
                                 (int)tileSize.X,
                                 (int)tileSize.Y
-                                );
-
-                        // Draw the relevant map tile
-                        batch.Draw(
-                            //sprites[tiles[row][col]],  // Uses tile ID to get a specific sprite
-                            spritesheet,
-                            Camera.RelativePosition(new Vector2(col * tileSize.X, row * tileSize.Y)),  // Position, with relevant offseets
-                            //new Vector2(col * tileSize.X, row * tileSize.Y),
-                            //null,           // Unused since we don't plan using sprite sheets for map tiles
-                            sprite,
-                            Color.White,    // Color
-                            0f,             // Rotation
-                            //Camera.VectorTarget * globalScale,   // Origin
-                            Vector2.Zero,
-                            GameMain.ActiveScale,    // Image scale
-                            SpriteEffects.None, // Image flipping
-                            0);             // Layer
+                                ),
+                            Color.White,                                                                // Color
+                            0f,                                                                         // Rotation (unused)
+                            Vector2.Zero,                                                               // Origin (unused)
+                            GameMain.ActiveScale,                                                       // Image scale
+                            SpriteEffects.None,                                                         // Image flipping (unused)
+                            0);                                                                         // Layer (unused)
                     }
 
+            // Draw collision if toggled (via F2)
             if (drawhitboxes)
                 foreach (Terrain terrain in geometry) {
-                    Vector2 position = Camera.RelativePosition(new Vector2(
-                    terrain.Hitbox.X,
-                    terrain.Hitbox.Y
-                    ));
+                    Vector2 position = Camera.RelativePosition(terrain.Hitbox);
 
                     batch.Draw(
                         hitboxSprite,

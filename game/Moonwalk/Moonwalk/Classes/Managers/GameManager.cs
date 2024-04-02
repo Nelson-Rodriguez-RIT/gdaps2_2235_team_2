@@ -165,8 +165,6 @@ namespace Moonwalk.Classes.Managers
                         }
                     }
 
-                    Camera.VectorTarget = cameraTarget;
-
                     if (storedInput.IsPressed(Keys.Escape))
                     {
                         Map.UnloadMap();
@@ -293,6 +291,9 @@ namespace Moonwalk.Classes.Managers
                     Player player = SpawnEntity<Player>(new Vector2(400, 48));
                     Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
                     SpawnEntity<TestEnemy>(new Vector2(400, 50));
+
+                    // Set player as the Camera's target
+                    Camera.SetTarget(player);
 
                     //Add subscribers to player events
                     player.GetRobotPosition += robot.GetPosition;

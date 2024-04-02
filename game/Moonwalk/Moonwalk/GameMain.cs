@@ -7,7 +7,6 @@ using System.Reflection.Metadata;
 
 namespace Moonwalk {
     public class GameMain : Game {
-
         private const int DefaultWindowWidth = 1280;
         private const int DefaultWindowHeight = 720;
 

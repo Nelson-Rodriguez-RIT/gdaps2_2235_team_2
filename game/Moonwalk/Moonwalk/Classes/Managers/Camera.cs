@@ -1,33 +1,23 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Entities.Base;
 using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Managers {
     internal static class Camera {
-        private static Vector2 globalOffset;
+        // Global position shift for all calls of RelativePosition()
+        // Make this a vector point to where you want the camera to focus on
+        // i.e. making this the center of the window will center your target
+        private static Vector2 globalOffset = Vector2.Zero;
 
-        // What the camera is focusing on
-        private static Rectangle rectTarget;        // i.e. the player
-        private static Vector2 vectorTarget;        // Invisable map geometry for a boss fight
+        // This is where the camera will focus. Will automatically be set if
+        // targetEntity is set, otherwise it will manually need to bet set
+        private static Vector2 targetPosition = Vector2.Zero; // Required (if targetEntity isn't set)
 
-        private static bool focusStatic;            // What ever is the most recent target set
-                                                    // will be the focused Camera target
-
-        public static Rectangle RectTarget {
-            get { return rectTarget; }
-            set {
-                focusStatic = false;
-                rectTarget = value; }
-        }
-
-        public static Vector2 VectorTarget {
-            get { return vectorTarget; }
-            set {
-                focusStatic = true;
-                vectorTarget = value; 
-            }
-        }
+        // This is what the camera will focus on
+        // i.e you would set reference to the player to continously follow the player
+        private static Entity targetEntity = null; // Optional (but recommended for most cases)
 
         public static Vector2 GlobalOffset {
             get { return globalOffset; }
@@ -35,42 +25,60 @@ namespace Moonwalk.Classes.Managers {
         }
 
 
-        public static Rectangle ApplyOffset(Rectangle position) {
-            return ApplyOffset(position, Vector2.Zero);
-        }
+        private static void UpdateTargetPosition() {
+            if (targetEntity == null) // Ignore empty references
+                return;
 
-        public static Rectangle ApplyOffset(Rectangle position, Vector2 offset) {
-            if (focusStatic)
-                return new Rectangle(
-                   (position.X + (int)offset.X) - (int)vectorTarget.X + (int)globalOffset.X + (int)WindowManager.Instance.Center.X,
-                   (position.Y + (int)offset.Y) - (int)vectorTarget.Y + (int)globalOffset.Y + (int)WindowManager.Instance.Center.Y,
-                   position.Width,
-                   position.Height);
-            else
-                return new Rectangle(
-                   (position.X + (int)offset.X) - rectTarget.X + (int)globalOffset.X,
-                   (position.Y + (int)offset.Y) - rectTarget.Y + (int)globalOffset.Y,
-                   position.Width,
-                   position.Height);
+            targetPosition = new Vector2(targetEntity.Position.X, targetEntity.Position.Y);
         }
 
 
-        public static Vector2 ApplyOffset(Vector2 position) {
-            return ApplyOffset(position, Vector2.Zero);
+        /// <summary>
+        /// Set a position for the camera to focus on.
+        /// </summary>
+        public static void SetTarget(Vector2 target) {
+            targetPosition = target;
+            targetEntity = null; // Reset this to prevent unwanted changes to targetPosition
         }
 
-        public static Vector2 ApplyOffset(Vector2 position, Vector2 offset) {
-            if (focusStatic)
-                return new Vector2(
-                    ((position.X + offset.X - vectorTarget.X) * GameMain.ActiveScale.X + globalOffset.X),
-                                                                //(int)WindowManager.Instance.Center.X,   //apply offset from the center of the window
-                    ((position.Y + offset.Y - vectorTarget.Y) * GameMain.ActiveScale.Y + globalOffset.Y));
-            //(int)WindowManager.Instance.Center.Y);  //apply offset from the center of the window
-            else
-                return new Vector2(
-                    ((position.X + offset.X) - rectTarget.X + globalOffset.X),
-                    ((position.Y + offset.Y) - rectTarget.Y + globalOffset.Y));
+        /// <summary>
+        /// Set an entity for the camera to focus on
+        /// </summary>
+        public static void SetTarget(Entity target) {
+            if (target == null) // Ignore empty references
+                return;
 
+            targetEntity = target;
+
+            // Setup targetPosition
+            UpdateTargetPosition();
+        }
+
+        /// <summary>
+        /// Takes a provided vector and makes it relative to the target's position.
+        /// This will also take sprite scalings into account.
+        /// </summary>
+        public static Vector2 RelativePosition(Vector2 position) {
+            UpdateTargetPosition();
+            return (position - targetPosition) * GameMain.ActiveScale + globalOffset;
+        }
+
+        /// <summary>
+        /// Takes a provided point and makes it relative to the target's position.
+        /// This will also take sprite scalings into account.
+        /// </summary>
+        public static Vector2 RelativePosition(Point position) {
+            UpdateTargetPosition();
+            return (new Vector2(position.X, position.Y) - targetPosition) * GameMain.ActiveScale + globalOffset;
+        }
+
+        /// <summary>
+        /// Takes a provided rectangle and makes it relative to the target's position.
+        /// This will also take sprite scalings into account.
+        /// </summary>
+        public static Vector2 RelativePosition(Rectangle position) {
+            UpdateTargetPosition();
+            return (new Vector2(position.X, position.Y) - targetPosition) * GameMain.ActiveScale + globalOffset;
         }
     }
 

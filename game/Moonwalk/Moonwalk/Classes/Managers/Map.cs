@@ -96,7 +96,7 @@ namespace Moonwalk.Classes.Managers
                         batch.Draw(
                             //sprites[tiles[row][col]],  // Uses tile ID to get a specific sprite
                             spritesheet,
-                            Camera.ApplyOffset(new Vector2(col * tileSize.X, row * tileSize.Y)),  // Position, with relevant offseets
+                            Camera.RelativePosition(new Vector2(col * tileSize.X, row * tileSize.Y)),  // Position, with relevant offseets
                             //new Vector2(col * tileSize.X, row * tileSize.Y),
                             //null,           // Unused since we don't plan using sprite sheets for map tiles
                             sprite,
@@ -111,7 +111,7 @@ namespace Moonwalk.Classes.Managers
 
             if (drawhitboxes)
                 foreach (Terrain terrain in geometry) {
-                    Vector2 position = Camera.ApplyOffset(new Vector2(
+                    Vector2 position = Camera.RelativePosition(new Vector2(
                     terrain.Hitbox.X,
                     terrain.Hitbox.Y
                     ));

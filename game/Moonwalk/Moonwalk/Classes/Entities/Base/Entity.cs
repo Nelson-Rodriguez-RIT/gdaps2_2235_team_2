@@ -158,17 +158,18 @@ namespace Moonwalk.Classes.Entities.Base
             }
 
             //apply offset
-            Vector2 temp = Camera.ApplyOffset(vectorPosition);
+            Vector2 temp = Camera.RelativePosition(Position);
 
             activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
         }
 
         
         public void DrawHitbox(SpriteBatch batch) {
-            Vector2 position = Camera.ApplyOffset(new Vector2(
-                hitbox.X + Position.X,
-                hitbox.Y + Position.Y
-                ));
+            Vector2 position = Camera.RelativePosition(
+                new Vector2(
+                    hitbox.X + Position.X,
+                    hitbox.Y + Position.Y
+                    ));
 
             batch.Draw(
                 hitboxSprite,
@@ -194,7 +195,7 @@ namespace Moonwalk.Classes.Entities.Base
             vectorPosition += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //Apply offset
-            vectorPosition = Camera.ApplyOffset(vectorPosition);
+            vectorPosition = Camera.RelativePosition(vectorPosition);
 
             entity = new Rectangle(
                     (int)Math.Round(vectorPosition.X),

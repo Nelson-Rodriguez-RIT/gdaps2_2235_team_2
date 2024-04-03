@@ -117,7 +117,7 @@ namespace Moonwalk.Classes.Entities.Base
             return temp;
         }
 
-        public virtual bool CheckCollision<T>(Rectangle rectangle, List<T> list) where T : Entity
+        public virtual bool CheckCollision<T>(List<T> list) where T : Entity
         {
             bool temp = list.Exists(item => item.Hitbox.Intersects(hitbox));
 

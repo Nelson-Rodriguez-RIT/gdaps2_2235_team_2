@@ -177,7 +177,7 @@ namespace Moonwalk.Classes.Entities.Base
                     (int)(hitbox.Width * GameMain.ActiveScale.X),
                     (int)(hitbox.Height * GameMain.ActiveScale.Y)
                     ),
-                Color.White
+                Color.Blue
                 );
             
         }

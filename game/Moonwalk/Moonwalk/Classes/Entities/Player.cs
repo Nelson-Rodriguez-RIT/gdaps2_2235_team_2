@@ -547,7 +547,42 @@ namespace Moonwalk.Classes.Entities
 
         private void Attack()
         {
-            const int KnockBack = 50;
+            Hitbox attack = null;
+
+            if (faceDirection == FaceDirection.Right) 
+            {
+                attack = new Hitbox(
+                20,
+                this,
+                new Point(
+                    14,
+                    20),
+                typeof(IDamageable),
+                GetDamagables(),
+                new Point(
+                    10, -2));
+            }
+            else
+            {
+                attack = new Hitbox(
+                20,
+                this,
+                new Point(
+                    14,
+                    20),
+                typeof(IDamageable),
+                GetDamagables(),
+                new Point(
+                    -16, -2));
+            }
+
+            
+
+            attack.targetEntered += this.DealDamage;
+
+            
+
+            /*
             IDamageable[] enemies =
                 EnemyCollision(
                     new Rectangle(          //change this, currently it goes on both sides of the player
@@ -557,12 +592,28 @@ namespace Moonwalk.Classes.Entities
                         hitbox.Height)
                     );
 
+
             for (int i = 0; i < enemies.Length; i++)
             {
                 enemies[i].TakeDamage(meleeDmg);
                 enemies[i].Impulse(new Vector2(
                     KnockBack * Math.Sign(VectorMath.VectorDifference(vectorPosition, enemies[i].Position.ToVector2()).X),
                     KnockBack));
+            }
+
+            */
+        }
+
+        private void DealDamage(List<IDamageable> list)
+        {
+            const int Knockback = 50;
+
+            foreach (IDamageable item in list)
+            {
+                item.TakeDamage(meleeDmg);
+                item.Impulse(new Vector2(
+                    Knockback * Math.Sign(VectorMath.VectorDifference(vectorPosition, item.Position.ToVector2()).X),
+                    Knockback));
             }
         }
 

@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities;
 using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -199,6 +200,18 @@ namespace Moonwalk.Classes.Managers
                 }
             }
 
+            for (int i = 0; i < Hitbox.activeHitboxes.Count; i++)
+            {
+                int length = Hitbox.activeHitboxes.Count;
+
+                Hitbox.activeHitboxes[i].Update(gt);
+
+                if (Hitbox.activeHitboxes.Count < length)
+                {
+                    i--;
+                }
+            }
+
 
             storedInput.UpdatePrevious();
         }
@@ -266,6 +279,14 @@ namespace Moonwalk.Classes.Managers
 
                 if (displayEntityHitboxes)
                     entity.DrawHitbox(batch);
+            }
+
+            if (Hitbox.drawHitbox)
+            {
+                foreach (Hitbox h in Hitbox.activeHitboxes)
+                {
+                    h.DrawHitbox(batch);
+                }
             }
                 
         }

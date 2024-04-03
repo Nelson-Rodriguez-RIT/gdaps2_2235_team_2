@@ -55,7 +55,6 @@ namespace Moonwalk.Classes.Entities
         public event GetRobotPosition GetRobotPosition;
         public event ToggleBotLock ToggleBotLock;
         public event GetEnemies GetEnemies;
-        public event EnemyAI EnemyAI;
         public event GetDamagables GetDamagables;
 
         private Animations animation;
@@ -109,6 +108,8 @@ namespace Moonwalk.Classes.Entities
             spriteScale = 1;
 
             cooldowns = new AbilityCooldowns<Abilities>(directory, 5);
+
+            Enemy.target = this;
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -146,9 +147,7 @@ namespace Moonwalk.Classes.Entities
             {
                 velocity.X = 0;
                 acceleration.X = 0;
-            }
-            
-            EnemyAI(vectorPosition);
+            }        
             
         }
 

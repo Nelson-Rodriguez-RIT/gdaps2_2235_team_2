@@ -19,6 +19,8 @@ namespace Moonwalk.Classes.Entities.Base
         protected int health;                         // enemy health       
         protected int damage;
 
+        public static Entity target;
+
         /// <summary>
         /// Property to determine how many checks to do when checking for collision
         /// </summary>
@@ -134,6 +136,7 @@ namespace Moonwalk.Classes.Entities.Base
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime, StoredInput input)
         {
+            AI();
             Movement(gameTime);
             base.Update(gameTime, input);
         }
@@ -219,6 +222,6 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
 
-        public abstract void AI(Vector2 target);
+        public abstract void AI();
     }        
 }

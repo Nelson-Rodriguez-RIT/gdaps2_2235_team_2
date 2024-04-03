@@ -71,14 +71,14 @@ namespace Moonwalk.Classes.Entities
             cooldowns = new(directory, 1.5);
         }
 
-        public override void AI(Vector2 target)
+        public override void AI()
         {
-            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, target));
+            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, target.Position.ToVector2()));
 
-            if (distance < 200) // range of aggrod
+            if (distance < 200) // range of aggro
             {
                 SwitchAnimation(Animations.Move, false);
-                float xDifference = VectorMath.VectorDifference(vectorPosition, target).X;
+                float xDifference = VectorMath.VectorDifference(vectorPosition, target.Position.ToVector2()).X;
 
                 if (xDifference > 0)
                 {

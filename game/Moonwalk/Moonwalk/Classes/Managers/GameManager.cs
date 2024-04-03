@@ -300,12 +300,7 @@ namespace Moonwalk.Classes.Managers
                     player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
                     player.ToggleBotLock += robot.ToggleLock;
                     player.GetEnemies += entities.GetAllOfType<IHostile>;
-                    player.GetDamagables += entities.GetAllOfType<IDamageable>;
-                    
-                    for (int i = 0; i < entities[typeof(Enemy)].Count; i++)
-                    {
-                        player.EnemyAI += ((Enemy)entities[typeof(Enemy)][i]).AI;
-                    }
+                    player.GetDamagables += entities.GetAllOfType<IDamageable>;                   
                     
                     break;
             }

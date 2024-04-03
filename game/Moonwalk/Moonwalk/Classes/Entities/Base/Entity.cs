@@ -28,9 +28,6 @@ namespace Moonwalk.Classes.Entities.Base
             Left
         }
 
-        // Contains the entity's sprite table and position
-        protected Rectangle entity;
-
         // X and Y represent origin offsets
         protected Rectangle hitbox;
 
@@ -66,7 +63,7 @@ namespace Moonwalk.Classes.Entities.Base
 
         public virtual Point Position
         {
-            get { return entity.Location; }
+            get { return hitbox.Location; }
         }
 
         public virtual Vector2 Velocity
@@ -167,10 +164,11 @@ namespace Moonwalk.Classes.Entities.Base
         public void DrawHitbox(SpriteBatch batch) {
             Vector2 position = Camera.RelativePosition(
                 new Vector2(
-                    hitbox.X + Position.X,
-                    hitbox.Y + Position.Y
-                    ));
-
+                    hitbox.X,
+                    hitbox.Y
+                    )
+                );
+            
             batch.Draw(
                 hitboxSprite,
                 new Rectangle(
@@ -181,6 +179,7 @@ namespace Moonwalk.Classes.Entities.Base
                     ),
                 Color.White
                 );
+            
         }
 
         /// <summary>
@@ -197,11 +196,11 @@ namespace Moonwalk.Classes.Entities.Base
             //Apply offset
             vectorPosition = Camera.RelativePosition(vectorPosition);
 
-            entity = new Rectangle(
+            hitbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    entity.Width,
-                    entity.Height);
+                    hitbox.Width,
+                    hitbox.Height);
         }
 
         /// <summary>
@@ -227,11 +226,11 @@ namespace Moonwalk.Classes.Entities.Base
             vectorPosition = temp;
 
             //Update position
-            entity = new Rectangle(
+            hitbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    entity.Width,
-                    entity.Height);
+                    hitbox.Width,
+                    hitbox.Height);
         }
 
         /// <summary>

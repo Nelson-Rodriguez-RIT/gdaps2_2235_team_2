@@ -331,10 +331,12 @@ namespace Moonwalk.Classes.Entities
         {
             base.Draw(batch);
 
+            /*
             batch.DrawString(GameManager.font, 
                 $"{Math.Round(vectorPosition.Y)} - {Math.Round(velocity.Y)} - {Math.Round(acceleration.Y)} \n {Math.Round(velocity.X)}",
                 new Vector2(400, 50),
                 Color.White);
+            */
         }
 
         protected IHostile EnemyCollision()

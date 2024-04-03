@@ -9,6 +9,7 @@ using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
 using Moonwalk.Interfaces;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Moonwalk.Classes.Entities
 {
@@ -38,6 +39,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         private bool locked;
+        private Vector2 target;
 
         //Change this to private later
         public Robot(Vector2 position) : base(position, "../../../Content/Entities/Robot")
@@ -99,8 +101,8 @@ namespace Moonwalk.Classes.Entities
         {
             //Velocity points towards the mouse cursor
             //velocity = input.CurrentMouse.Position.ToVector2() - (Camera.RelativePosition(vectorPosition));
-
-            vectorPosition = Camera.RelativePosition(input.CurrentMouse.Position.ToVector2());
+            target = Camera.RelativePosition(input.CurrentMouse.Position.ToVector2());
+            vectorPosition = Camera.RelativePosition(target) * GameMain.ActiveScale;
         }
 
         public Vector2 GetPosition()
@@ -111,6 +113,16 @@ namespace Moonwalk.Classes.Entities
         public void ToggleLock()
         {
             locked = !locked;
+        }
+
+        public override void Draw(SpriteBatch batch)
+        {
+            base.Draw(batch);
+
+            batch.DrawString(GameManager.font,
+                $"{Math.Round(target.X)} - {Math.Round(target.Y)}",
+                new Vector2(400, 50),
+                Color.White);
         }
     }
 

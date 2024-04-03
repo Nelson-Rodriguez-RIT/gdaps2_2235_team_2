@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities;
 using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -133,8 +134,12 @@ namespace Moonwalk.Classes.Managers
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.F2))
                 displayTerrainHitboxes = !displayTerrainHitboxes;
 
-            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F3) && // Press F3 to reset the current map/gamestate
+            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F3) && // Toggle F3 to draw hitbox hitboxes
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.F3))
+                Hitbox.drawHitbox = !Hitbox.drawHitbox;
+
+            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F4) && // Press F4 to reset the current map/gamestate
+                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F4))
                 Transition(state);
 
             switch (state) {
@@ -196,6 +201,18 @@ namespace Moonwalk.Classes.Managers
                     {
                         DespawnEntity(entity);
                     }
+                }
+            }
+
+            for (int i = 0; i < Hitbox.activeHitboxes.Count; i++)
+            {
+                int length = Hitbox.activeHitboxes.Count;
+
+                Hitbox.activeHitboxes[i].Update(gt);
+
+                if (Hitbox.activeHitboxes.Count < length)
+                {
+                    i--;
                 }
             }
 
@@ -267,6 +284,14 @@ namespace Moonwalk.Classes.Managers
                 if (displayEntityHitboxes)
                     entity.DrawHitbox(batch);
             }
+
+            if (Hitbox.drawHitbox)
+            {
+                foreach (Hitbox h in Hitbox.activeHitboxes)
+                {
+                    h.DrawHitbox(batch);
+                }
+            }
                 
         }
 
@@ -290,7 +315,7 @@ namespace Moonwalk.Classes.Managers
                     // Loads player + companion
                     Player player = SpawnEntity<Player>(new Vector2(400, 48));
                     Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
-                    SpawnEntity<TestEnemy>(new Vector2(400, 50));
+                    SpawnEntity<TestEnemy>(new Vector2(200, 250));
 
                     // Set player as the Camera's target
                     Camera.SetTarget(player);
@@ -300,12 +325,7 @@ namespace Moonwalk.Classes.Managers
                     player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
                     player.ToggleBotLock += robot.ToggleLock;
                     player.GetEnemies += entities.GetAllOfType<IHostile>;
-                    player.GetDamagables += entities.GetAllOfType<IDamageable>;
-                    
-                    for (int i = 0; i < entities[typeof(Enemy)].Count; i++)
-                    {
-                        player.EnemyAI += ((Enemy)entities[typeof(Enemy)][i]).AI;
-                    }
+                    player.GetDamagables += entities.GetAllOfType<IDamageable>;                   
                     
                     break;
             }

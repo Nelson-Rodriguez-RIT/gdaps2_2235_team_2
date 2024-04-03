@@ -40,10 +40,10 @@ namespace Moonwalk.Classes.Entities
             get
             {
                 if (CheckCollision(new Rectangle(
-                        hitbox.X + (int)Position.X,
-                        hitbox.Y + (int)Position.Y + 5,
-                        hitbox.Width,
-                        hitbox.Height
+                        hurtbox.X,
+                        hurtbox.Y + 5,
+                        hurtbox.Width,
+                        hurtbox.Height
                         )))
                 {
                     return true;
@@ -71,14 +71,14 @@ namespace Moonwalk.Classes.Entities
             cooldowns = new(directory, 1.5);
         }
 
-        public override void AI(Vector2 target)
+        public override void AI()
         {
-            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, target));
+            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, target.Position.ToVector2()));
 
-            if (distance < 200) // range of aggrod
+            if (distance < 200) // range of aggro
             {
                 SwitchAnimation(Animations.Move, false);
-                float xDifference = VectorMath.VectorDifference(vectorPosition, target).X;
+                float xDifference = VectorMath.VectorDifference(vectorPosition, target.Position.ToVector2()).X;
 
                 if (xDifference > 0)
                 {
@@ -138,15 +138,15 @@ namespace Moonwalk.Classes.Entities
 
                 vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
 
-                entity = new Rectangle(
+                hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    entity.Width,
-                    entity.Height);                      // Update hitbox location
+                    hurtbox.Width,
+                    hurtbox.Height);                      // Update hitbox location
 
                 if (CheckCollision())                                                   // Check if there was a collision
                 {
-                    entity = new Rectangle(lastSafePosition, entity.Size);              // Revert hitbox position back to before collision
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
                     velocity.Y = 0;
                     break;
@@ -174,15 +174,15 @@ namespace Moonwalk.Classes.Entities
 
                 vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
 
-                entity = new Rectangle(
+                hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    entity.Width,
-                    entity.Height);
+                    hurtbox.Width,
+                    hurtbox.Height);
 
                 if (CheckCollision())
                 {
-                    entity = new Rectangle(lastSafePosition, entity.Size);
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
                     vectorPosition = lastSafePosition.ToVector2();
                     velocity.X = 0;
                     

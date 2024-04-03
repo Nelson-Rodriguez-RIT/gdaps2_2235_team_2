@@ -101,7 +101,7 @@ namespace Moonwalk.Classes.Entities
         {
             //Velocity points towards the mouse cursor
             //velocity = input.CurrentMouse.Position.ToVector2() - (Camera.RelativePosition(vectorPosition));
-            target = input.CurrentMouse.Position.ToVector2() - ;
+            target = Camera.RelativePosition(input.CurrentMouse.Position.ToVector2());
             vectorPosition = Camera.RelativePosition(target) * GameMain.ActiveScale;
         }
 

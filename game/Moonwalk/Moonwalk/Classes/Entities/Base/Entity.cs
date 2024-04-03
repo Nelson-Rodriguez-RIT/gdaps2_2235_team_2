@@ -29,7 +29,7 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         // X and Y represent origin offsets
-        protected Rectangle hitbox;
+        protected Rectangle hurtbox;
 
         protected float gravity;
         /// <summary>
@@ -58,12 +58,12 @@ namespace Moonwalk.Classes.Entities.Base
 
         public virtual Rectangle Hitbox
         {
-            get { return hitbox; }
+            get { return hurtbox; }
         }
 
         public virtual Point Position
         {
-            get { return hitbox.Location; }
+            get { return hurtbox.Location; }
         }
 
         public virtual Vector2 Velocity
@@ -106,7 +106,7 @@ namespace Moonwalk.Classes.Entities.Base
                 spritesheet = bufferedData.spritesheet;
             }
 
-            hitbox = new Rectangle(
+            hurtbox = new Rectangle(
                 int.Parse(properties["HitboxXOrigin"]),
                 int.Parse(properties["HitboxYOrigin"]),
                 int.Parse(properties["HitboxX"]),
@@ -164,8 +164,8 @@ namespace Moonwalk.Classes.Entities.Base
         public void DrawHitbox(SpriteBatch batch) {
             Vector2 position = Camera.RelativePosition(
                 new Vector2(
-                    hitbox.X,
-                    hitbox.Y
+                    hurtbox.X,
+                    hurtbox.Y
                     )
                 );
             
@@ -174,8 +174,8 @@ namespace Moonwalk.Classes.Entities.Base
                 new Rectangle(
                     (int)(position.X),
                     (int)(position.Y),
-                    (int)(hitbox.Width * GameMain.ActiveScale.X),
-                    (int)(hitbox.Height * GameMain.ActiveScale.Y)
+                    (int)(hurtbox.Width * GameMain.ActiveScale.X),
+                    (int)(hurtbox.Height * GameMain.ActiveScale.Y)
                     ),
                 Color.Blue
                 );
@@ -196,11 +196,11 @@ namespace Moonwalk.Classes.Entities.Base
             //Apply offset
             vectorPosition = Camera.RelativePosition(vectorPosition);
 
-            hitbox = new Rectangle(
+            hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    hitbox.Width,
-                    hitbox.Height);
+                    hurtbox.Width,
+                    hurtbox.Height);
         }
 
         /// <summary>
@@ -226,11 +226,11 @@ namespace Moonwalk.Classes.Entities.Base
             vectorPosition = temp;
 
             //Update position
-            hitbox = new Rectangle(
+            hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    hitbox.Width,
-                    hitbox.Height);
+                    hurtbox.Width,
+                    hurtbox.Height);
         }
 
         /// <summary>

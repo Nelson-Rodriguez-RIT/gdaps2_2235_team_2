@@ -134,8 +134,12 @@ namespace Moonwalk.Classes.Managers
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.F2))
                 displayTerrainHitboxes = !displayTerrainHitboxes;
 
-            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F3) && // Press F3 to reset the current map/gamestate
+            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F3) && // Toggle F3 to draw hitbox hitboxes
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.F3))
+                Hitbox.drawHitbox = !Hitbox.drawHitbox;
+
+            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F4) && // Press F4 to reset the current map/gamestate
+                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F4))
                 Transition(state);
 
             switch (state) {

@@ -18,7 +18,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
     {
         public static Texture2D hitboxSprite;
         public static List<Hitbox> activeHitboxes = new List<Hitbox>();
-        public static bool drawHitbox = true;
+        public static bool drawHitbox = false;
 
         private Rectangle box;
         private Entity source;

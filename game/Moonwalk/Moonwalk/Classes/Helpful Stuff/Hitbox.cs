@@ -22,7 +22,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         private Rectangle box;
         private Entity source;
-        private int frameDuration;
+        private int frameDuration;  //set to -1 for infinitely present hitbox
         private Point offset;
         private List<IDamageable> targets;
         private List<IDamageable> alreadyHit;

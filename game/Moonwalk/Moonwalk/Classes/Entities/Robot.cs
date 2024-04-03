@@ -98,7 +98,9 @@ namespace Moonwalk.Classes.Entities
         public override void Input(StoredInput input)
         {
             //Velocity points towards the mouse cursor
-            velocity = input.CurrentMouse.Position.ToVector2() - Camera.RelativePosition(vectorPosition);         
+            //velocity = input.CurrentMouse.Position.ToVector2() - (Camera.RelativePosition(vectorPosition));
+
+            vectorPosition = Camera.RelativePosition(input.CurrentMouse.Position.ToVector2());
         }
 
         public Vector2 GetPosition()

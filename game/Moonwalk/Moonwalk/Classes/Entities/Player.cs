@@ -55,7 +55,6 @@ namespace Moonwalk.Classes.Entities
         public event GetRobotPosition GetRobotPosition;
         public event ToggleBotLock ToggleBotLock;
         public event GetEnemies GetEnemies;
-        public event EnemyAI EnemyAI;
         public event GetDamagables GetDamagables;
 
         private Animations animation;
@@ -76,10 +75,10 @@ namespace Moonwalk.Classes.Entities
             get
             {
                 if (CheckCollision(new Rectangle(
-                        hitbox.X + (int)Position.X,
-                        hitbox.Y + (int)Position.Y + 5,
-                        hitbox.Width,
-                        hitbox.Height
+                        hurtbox.X,
+                        hurtbox.Y + 5,
+                        hurtbox.Width,
+                        hurtbox.Height
                         )))
                 {
                     return true;
@@ -109,6 +108,8 @@ namespace Moonwalk.Classes.Entities
             spriteScale = 1;
 
             cooldowns = new AbilityCooldowns<Abilities>(directory, 5);
+
+            Enemy.target = this;
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -146,9 +147,7 @@ namespace Moonwalk.Classes.Entities
             {
                 velocity.X = 0;
                 acceleration.X = 0;
-            }
-            
-            EnemyAI(vectorPosition);
+            }        
             
         }
 
@@ -210,11 +209,11 @@ namespace Moonwalk.Classes.Entities
             vectorPosition = temp;
 
             //Update position
-            entity = new Rectangle(
+            hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    entity.Width,
-                    entity.Height);
+                    hurtbox.Width,
+                    hurtbox.Height);
 
             if (CheckCollision())           // If there is a collision, switch back to linear motion
             {
@@ -331,10 +330,12 @@ namespace Moonwalk.Classes.Entities
         {
             base.Draw(batch);
 
+            /*
             batch.DrawString(GameManager.font, 
                 $"{Math.Round(vectorPosition.Y)} - {Math.Round(velocity.Y)} - {Math.Round(acceleration.Y)} \n {Math.Round(velocity.X)}",
                 new Vector2(400, 50),
                 Color.White);
+            */
         }
 
         protected IHostile EnemyCollision()
@@ -422,15 +423,15 @@ namespace Moonwalk.Classes.Entities
 
                 vectorPosition.Y += tempVelocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
 
-                entity = new Rectangle(
+                hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    entity.Width,
-                    entity.Height);                      // Update hitbox location
+                    hurtbox.Width,
+                    hurtbox.Height);                      // Update hitbox location
 
                 if (CheckCollision())                                                   // Check if there was a collision
                 {
-                    entity = new Rectangle(lastSafePosition, entity.Size);              // Revert hitbox position back to before collision
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
                     velocity.Y = 0;
                     break;
@@ -463,15 +464,15 @@ namespace Moonwalk.Classes.Entities
 
                 vectorPosition.X += tempVelocity.X * (time * iterationCounter / CollisionAccuracy);
 
-                entity = new Rectangle(
+                hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    entity.Width,
-                    entity.Height);
+                    hurtbox.Width,
+                    hurtbox.Height);
 
                 if (CheckCollision())
                 {
-                    entity = new Rectangle(lastSafePosition, entity.Size);
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
                     vectorPosition = lastSafePosition.ToVector2();
                     velocity.X = 0;
                     break;
@@ -546,7 +547,42 @@ namespace Moonwalk.Classes.Entities
 
         private void Attack()
         {
-            const int KnockBack = 50;
+            Hitbox attack = null;
+
+            if (faceDirection == FaceDirection.Right) 
+            {
+                attack = new Hitbox(
+                20,
+                this,
+                new Point(
+                    14,
+                    20),
+                typeof(IDamageable),
+                GetDamagables(),
+                new Point(
+                    10, -2));
+            }
+            else
+            {
+                attack = new Hitbox(
+                20,
+                this,
+                new Point(
+                    14,
+                    20),
+                typeof(IDamageable),
+                GetDamagables(),
+                new Point(
+                    -16, -2));
+            }
+
+            
+
+            attack.targetEntered += this.DealDamage;
+
+            
+
+            /*
             IDamageable[] enemies =
                 EnemyCollision(
                     new Rectangle(          //change this, currently it goes on both sides of the player
@@ -556,12 +592,28 @@ namespace Moonwalk.Classes.Entities
                         hitbox.Height)
                     );
 
+
             for (int i = 0; i < enemies.Length; i++)
             {
                 enemies[i].TakeDamage(meleeDmg);
                 enemies[i].Impulse(new Vector2(
                     KnockBack * Math.Sign(VectorMath.VectorDifference(vectorPosition, enemies[i].Position.ToVector2()).X),
                     KnockBack));
+            }
+
+            */
+        }
+
+        private void DealDamage(List<IDamageable> list)
+        {
+            const int Knockback = 50;
+
+            foreach (IDamageable item in list)
+            {
+                item.TakeDamage(meleeDmg);
+                item.Impulse(new Vector2(
+                    Knockback * Math.Sign(VectorMath.VectorDifference(vectorPosition, item.Position.ToVector2()).X),
+                    Knockback));
             }
         }
 

@@ -76,20 +76,20 @@ namespace Moonwalk.Classes.Entities.Base
         {
             // checks if there is a terrain that collides with this
             bool collision = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(new Rectangle(
-                    hitbox.X + (int)Position.X,
-                    hitbox.Y + (int)Position.Y,
-                    hitbox.Width,
-                    hitbox.Height
+                    hurtbox.X,
+                    hurtbox.Y,
+                    hurtbox.Width,
+                    hurtbox.Height
                     )));
 
             if (collision)
             {
                 // for testing purposes
                 Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(new Rectangle(
-                    hitbox.X + (int)Position.X,
-                    hitbox.Y + (int)Position.Y,
-                    hitbox.Width,
-                    hitbox.Height
+                    hurtbox.X,
+                    hurtbox.Y,
+                    hurtbox.Width,
+                    hurtbox.Height
                     )));
             }
 
@@ -138,15 +138,15 @@ namespace Moonwalk.Classes.Entities.Base
 
                 vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
 
-                entity = new Rectangle(
+                hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    entity.Width,
-                    entity.Height);                      // Update hitbox location
+                    hurtbox.Width,
+                    hurtbox.Height);                      // Update hitbox location
 
                 if (CheckCollision())                                                   // Check if there was a collision
                 {
-                    entity = new Rectangle(lastSafePosition, entity.Size);              // Revert hitbox position back to before collision
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
                     velocity.Y = -velocity.Y;
                     collisions--;
@@ -175,15 +175,15 @@ namespace Moonwalk.Classes.Entities.Base
 
                 vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
 
-                entity = new Rectangle(
+                hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
-                    entity.Width,
-                    entity.Height);
+                    hurtbox.Width,
+                    hurtbox.Height);
 
                 if (CheckCollision())
                 {
-                    entity = new Rectangle(lastSafePosition, entity.Size);
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
                     vectorPosition = lastSafePosition.ToVector2();
                     velocity.X = -velocity.X;
                     collisions--;

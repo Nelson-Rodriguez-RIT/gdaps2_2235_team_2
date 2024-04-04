@@ -109,7 +109,7 @@ namespace Moonwalk.Classes.Managers {
                             (int)(terrain.Hitbox.Width * GameMain.ActiveScale.X),
                             (int)(terrain.Hitbox.Height * GameMain.ActiveScale.Y)
                             ),
-                        Color.White
+                        Color.LightGreen
                         );
                 }
         }

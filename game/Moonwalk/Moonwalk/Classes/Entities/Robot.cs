@@ -39,7 +39,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         private bool locked;
-        private Vector2 target;
+        
 
         //Change this to private later
         public Robot(Vector2 position) : base(position, "../../../Content/Entities/Robot")
@@ -101,8 +101,20 @@ namespace Moonwalk.Classes.Entities
         {
             //Velocity points towards the mouse cursor
             //velocity = input.CurrentMouse.Position.ToVector2() - (Camera.RelativePosition(vectorPosition));
-            target = Camera.RelativePosition(input.CurrentMouse.Position.ToVector2());
-            vectorPosition = Camera.RelativePosition(target) * GameMain.ActiveScale;
+            //Matrix transformedMousePosition = 
+            //    (Matrix.CreateTranslation(new Vector3(input.CurrentMouse.Position.X, input.CurrentMouse.Position.Y, 0)));
+
+            //target = (
+            //    new Vector2(transformedMousePosition.Translation.X, transformedMousePosition.Translation.X));
+
+            int windowWidth = GameMain.Graphics.PreferredBackBufferWidth;
+            int windowHeight = GameMain.Graphics.PreferredBackBufferHeight;
+
+            Vector2 target = new Vector2(
+                input.CurrentMouse.X - windowWidth / 2,
+                input.CurrentMouse.Y - windowHeight / 2);
+
+            vectorPosition = (Camera.Target + target);
         }
 
         public Vector2 GetPosition()
@@ -119,11 +131,8 @@ namespace Moonwalk.Classes.Entities
         {
             base.Draw(batch);
 
-            batch.DrawString(GameManager.font,
-                $"{Math.Round(target.X)} - {Math.Round(target.Y)}",
-                new Vector2(400, 50),
-                Color.White);
         }
+
     }
 
 }

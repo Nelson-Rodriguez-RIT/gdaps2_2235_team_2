@@ -5,53 +5,45 @@ using System;
 using System.Collections.Generic;
 
 namespace Moonwalk.Classes.Managers {
-    internal class Map {
+    internal static class Map {
         // Root folder for all maps
         private const string RootDirectory = "../../../Content/Maps/";
 
         // Contains IDs that dictate what tile, and where, to display
-        private static List<int[][]> tilesSets = null; // Data read from MDF
+        internal static List<int[][]> tiles = null; // Data read from MDF
 
         // Contains collision elements
-        private static List<Terrain> geometry = null; // Data read from MDF
+        internal static List<Terrain> geometry = null; // Data read from MDF
 
         // Sprite sheet the map will use. Each tile correlates to an ID
         // Starts at ID 1 and increases as it goes right (and down)
         // NOTICE: Make sure to use the SAME sprite sheet you used in Tiled
         // any inconsistencies will cause the map to be displayed improperly
-        private static Texture2D spritesheet;
+        internal static Texture2D spritesheet;
 
         // Sprite to use when map collision debugging is turned on (F2)
         // This sprite should consist of a single pixel (it is scaled as needed)
-        protected static Texture2D hitboxSprite;
+        private static Texture2D hitboxSprite;
 
         // The wdith and height of an individual tile (usually 16x16)
-        private static Vector2 tileSize;
+        internal static Vector2 tileSize;
 
         public static bool Loaded {
-            get { return tilesSets != null; }
+            get { return tiles != null; }
         }
 
         public static List<Terrain> Geometry {
             get { return geometry; }
         }
 
-
         /// <summary>
         /// Loads a map (and relevant file data)
         /// </summary>
         /// <param name="mapRootFolderName">Name of the map</param>
         public static void LoadMap(string mapRootFolderName) {
-            // Get data from file
-            (List<int[][]> tiles, List<Terrain> geometry,
-                Texture2D spritesheet, Vector2 tileSize) 
-                bufferedData = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
-
-            // Store data
-            tilesSets = bufferedData.tiles;
-            geometry = bufferedData.geometry;
-            spritesheet = bufferedData.spritesheet;
-            tileSize = bufferedData.tileSize;
+            // Get and load data from file
+            MapDataFile bufferedData = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
+            bufferedData.Load();
 
             // Load hitbox sprite if it hasn't already
             if (hitboxSprite == null)
@@ -62,21 +54,19 @@ namespace Moonwalk.Classes.Managers {
         /// Unloads a map (and relevant file data)
         /// </summary>
         public static void UnloadMap() {
-            tilesSets = null;
+            tiles = null;
             geometry = null;
             spritesheet = null;
             tileSize = Vector2.Zero;
         }
 
-
         public static void Draw(SpriteBatch batch, bool drawhitboxes) {
             // Renders each layer on top of the previous ones
             // Order is based on how they appear in the MDF
-            foreach (int[][] tiles in tilesSets)
+            foreach (int[][] tiles in tiles)
                 for (int row = 0; row < tiles.Length; row++)
                     for (int col = 0; col < tiles[row].Length; col++) {
-                        // 0's are empty space
-                        if (tiles[row][col] == 0)
+                        if (tiles[row][col] == 0) // Ignore empty space (ID of 0)
                             continue;
 
                         batch.Draw(
@@ -88,12 +78,12 @@ namespace Moonwalk.Classes.Managers {
                                 (int)tileSize.X,
                                 (int)tileSize.Y
                                 ),
-                            Color.White,                                                                // Color
-                            0f,                                                                         // Rotation (unused)
-                            Vector2.Zero,                                                               // Origin (unused)
-                            GameMain.ActiveScale,                                                       // Image scale
-                            SpriteEffects.None,                                                         // Image flipping (unused)
-                            0);                                                                         // Layer (unused)
+                            Color.White,            // Color
+                            0f,                     // Rotation (unused)
+                            Vector2.Zero,           // Origin (unused)
+                            GameMain.ActiveScale,   // Image scale
+                            SpriteEffects.None,     // Image flipping (unused)
+                            0);                     // Layer (unused)
                     }
 
             // Draw collision if toggled (via F2)
@@ -113,5 +103,33 @@ namespace Moonwalk.Classes.Managers {
                         );
                 }
         }
+    }
+
+    // These are used to buffer information gotten from a map's .mdf file
+    // They aren't necessary but they keep the code a bit more clean
+    internal class MapDataFile {
+        // Buffers for file data
+        private List<int[][]> bufferedTiles;
+        private List<Terrain> bufferedGeometry;
+        private Texture2D bufferedSpritesheet;
+        Vector2 bufferedTileSize;
+
+        public MapDataFile(List<int[][]> tiles, List<Terrain> geometry, Texture2D spritesheet, Vector2 tileSize) {
+            bufferedTiles = tiles;
+            bufferedGeometry = geometry;
+            bufferedSpritesheet = spritesheet;
+            bufferedTileSize = tileSize;
+        }
+
+        // For loading buffered data
+        public void Load() {
+            Map.tiles = bufferedTiles;
+            Map.geometry = bufferedGeometry;
+            Map.spritesheet = bufferedSpritesheet;
+            Map.tileSize = bufferedTileSize;
+        }
+
+        // Also why don't they want us defining multiple classes for a single file?
+        // Seems really useful for small, locally relevant data structures
     }
 }

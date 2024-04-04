@@ -11,6 +11,9 @@ using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Managers {
     internal static class Loader {
+        // Used to load content such as PNGs from file
+        // More useful to have it here so we can load files only
+        // when we need too, instead of all at once on start up
         private static ContentManager content = null;
 
         public static ContentManager Content {
@@ -20,6 +23,12 @@ namespace Moonwalk.Classes.Managers {
             }
         }
 
+
+        /// <summary>
+        /// Reads file content
+        /// </summary>
+        /// <param name="path">File to read</param>
+        /// <returns>A List containing each line of the file</returns>
         public static List<string> LoadFile(string path) {
             StreamReader reader = new StreamReader(path); ;
             List<string> data = new();
@@ -33,6 +42,12 @@ namespace Moonwalk.Classes.Managers {
             return data;
         }
 
+        /// <summary>
+        /// Looks for a specific file type and reads its content
+        /// </summary>
+        /// <param name="directory">Directory to search</param>
+        /// <param name="fileType">File type to look for</param>
+        /// <returns>A List containing each line of the file</returns>
         public static List<string> LoadFile(string directory, string fileType) {
             string[] paths = Directory.GetFiles(directory);
             string relevantPath = null;
@@ -51,42 +66,49 @@ namespace Moonwalk.Classes.Managers {
             return LoadFile(relevantPath);
         }
 
+        /// <summary>
+        /// Loads texture data from file
+        /// </summary>
+        /// <param name="path">Texture file to load</param>
         public static Texture2D LoadTexture(string path) {
+            // StackTrace	"   at Microsoft.Xna.Framework.Content.ContentManager.OpenStream(String assetName)\r\n   at Microsoft.Xna.Framework.Content.ContentManager.ReadAsset[T](String assetName, Action`1 recordDisposableObject)\r\n   at Microsoft.Xna.Framework.Content.ContentManager.Load[T](String assetName)\r\n   at Moonwalk.Classes.Managers.Loader.LoadTexture(String path) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\Loader.cs:line 55\r\n   at Moonwalk.Classes.Managers.Loader.LoadMap(String path) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\Loader.cs:line 126\r\n   at Moonwalk.Classes.Managers.Map.LoadMap(String mapRootFolderName) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\Map.cs:line 36\r\n   at Moonwalk.Classes.Managers.GameManager.Transition(GameState nextState) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\GameManager.cs:line 183\r\n   at Moonwalk.Classes.Managers.GameManager..ctor(ContentManager content, GraphicsDevice graphics) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\GameManager.cs:line 67\r\n   at Moonwalk.Classes.Managers.GameManager.GetInstance(ContentManager content, GraphicsDevice graphics) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\GameManager.cs:line 77\r\n   at Moonwalk.GameMain.LoadContent() in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\GameMain.cs:line 52\r\n   at Moonwalk.GameMain.Initialize() in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\GameMain.cs:line 45\r\n   at Microsoft.Xna.Framework.Game.DoInitialize()\r\n   at Microsoft.Xna.Framework.Game.Run(GameRunBehavior runBehavior)\r\n   at Program.<Main>$(String[] args) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Program.cs:line 3"	string
             if (path == "../../../Content/Maps/Demo/sprites/Thumb")
                 return null; // I haven't got a clue why it tries to search for this
 
             return content.Load<Texture2D>(path);
         }
-        // 		StackTrace	"   at Microsoft.Xna.Framework.Content.ContentManager.OpenStream(String assetName)\r\n   at Microsoft.Xna.Framework.Content.ContentManager.ReadAsset[T](String assetName, Action`1 recordDisposableObject)\r\n   at Microsoft.Xna.Framework.Content.ContentManager.Load[T](String assetName)\r\n   at Moonwalk.Classes.Managers.Loader.LoadTexture(String path) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\Loader.cs:line 55\r\n   at Moonwalk.Classes.Managers.Loader.LoadMap(String path) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\Loader.cs:line 126\r\n   at Moonwalk.Classes.Managers.Map.LoadMap(String mapRootFolderName) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\Map.cs:line 36\r\n   at Moonwalk.Classes.Managers.GameManager.Transition(GameState nextState) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\GameManager.cs:line 183\r\n   at Moonwalk.Classes.Managers.GameManager..ctor(ContentManager content, GraphicsDevice graphics) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\GameManager.cs:line 67\r\n   at Moonwalk.Classes.Managers.GameManager.GetInstance(ContentManager content, GraphicsDevice graphics) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Classes\\Managers\\GameManager.cs:line 77\r\n   at Moonwalk.GameMain.LoadContent() in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\GameMain.cs:line 52\r\n   at Moonwalk.GameMain.Initialize() in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\GameMain.cs:line 45\r\n   at Microsoft.Xna.Framework.Game.DoInitialize()\r\n   at Microsoft.Xna.Framework.Game.Run(GameRunBehavior runBehavior)\r\n   at Program.<Main>$(String[] args) in Z:\\IGMProfile\\Documents\\GitHub\\gdaps2_2235_team_2\\game\\Moonwalk\\Moonwalk\\Program.cs:line 3"	string
 
-        public static (
-                List<int[][]> tiles,
-                List<Terrain> geometry,
-               Texture2D spritesheet,
-                Vector2 tileSize) 
-                LoadMap(string path) {
+        /// <summary>
+        /// Loads a map's MDF and sprite sheet
+        /// </summary>
+        /// <param name="path">Should (usually) be a valid map's name</param>
+        public static MapDataFile LoadMap(string path) {
             List<int[][]> bufferedTiles = new();
             List<Terrain> bufferedGeometry = new();
             Texture2D bufferedSpritesheet;
             Vector2 bufferdTileSize = new Vector2();
 
+
+            // MDF file reading //
             Queue<string> fileData = new();
             string data;
             string[] dataBlock;
 
+            // Begin reading mdf file data
             fileData = new Queue<string>(LoadFile(path, ".mdf"));
+            while (fileData.Count != 0) { // Peek() or Dequeue() will throw exceptions if Queue is empty :(
+                data = fileData.Dequeue();
 
-            while (fileData.Count != 0) {
-                // Ill probably refactor this to be more efficient later
-                // For now its just important that it works
-                if (fileData.Peek().Contains("TILESTART")) {
-                    fileData.Dequeue();
-                    List<int[]> tileRows = new();
-                    while ((data = fileData.Dequeue()) != "TILEEND") {
-                        dataBlock = data.Split(',');
-                        int[] row = new int[dataBlock.Length];
+                // Tile data uses a keyword system (which differs from the typical Header=Body sytem)
+                // To add on to this system, add an else if statement. If you need to add on to the Header=Body
+                // format, add a case to the switch statement inside the else block
+                if (data == "TILESTART") {
+                    List<int[]> tileRows = new(); // New layer
+                    while ((data = fileData.Dequeue()) != "TILEEND") { // Continue untill TILEEND keyword
+                        dataBlock = data.Split(',');            // Prepare data to be read
+                        int[] row = new int[dataBlock.Length];  // Properly size storage
 
-                        for (int i = 0; i < row.Length - 1; i++)
+                        for (int i = 0; i < row.Length - 1; i++) // Reading data
                             row[i] = int.Parse(dataBlock[i]);
 
                         tileRows.Add(row);
@@ -100,42 +122,41 @@ namespace Moonwalk.Classes.Managers {
                     bufferedTiles.Add(formattedTileRows);
                 }
 
-                else if (fileData.Peek().Contains("SIZE")) {
-                    // Ignore the SIZE= and split the csvs
-                    dataBlock = fileData.Dequeue().Split('=')[1].Split(',');
-                    bufferdTileSize = new Vector2(
-                        int.Parse(dataBlock[0]),    // Width
-                        int.Parse(dataBlock[1])     // Height
-                        );
-                }
+                // Header=Body
+                // FYI if you want to add new types of collision (or really any type of data)
+                // via object layers, do it here.
+                else {
+                    dataBlock = data.Split("=");
 
-                else if (fileData.Peek().Contains("Terrain")) {
-                    // Ignore the Terrain= and split the csvs
-                    dataBlock = fileData.Dequeue().Split('=')[1].Split(',');
-                    bufferedGeometry.Add(new Terrain(new Rectangle (
-                        int.Parse(dataBlock[0]),
-                        int.Parse(dataBlock[1]),
-                        int.Parse(dataBlock[2]),
-                        int.Parse(dataBlock[3])
-                        )));
-                }
+                    switch(dataBlock[0].ToUpper()) {
+                        // Information about the width and height of an individual tile
+                        case "SIZE":
+                            bufferdTileSize = new Vector2(
+                                int.Parse(dataBlock[0]),    // Width
+                                int.Parse(dataBlock[1])     // Height
+                                );
+                            break;
 
-                else // Ignore any unexpectedly formatted data
-                    fileData.Dequeue();
+                        // Represents the most basic form of collision
+                        // TMX to MDF converter looks at the name of the object layer
+                        // when rewriting relevant information to file
+                        case "TERRAIN":
+                            bufferedGeometry.Add(new Terrain(new Rectangle(
+                                int.Parse(dataBlock[0]),    // X
+                                int.Parse(dataBlock[1]),    // Y
+                                int.Parse(dataBlock[2]),    // Width
+                                int.Parse(dataBlock[3])     // Height
+                                )));
+                            break;
+                    }
+                }
             }
 
             // Get sprite data
             bufferedSpritesheet = content.Load<Texture2D>($"{path}spritesheet");
 
-            //string[] spriteFilePaths = Directory.GetFiles($"{path}sprites/"); // Gets paths to all images
-            //for (int ID = 0; ID < spriteFilePaths.Length; ID++)
-            //    bufferedSprites.Add(
-            //        ID + 1,                                         // Relevant ID of the tile sprite
-            //        LoadTexture(spriteFilePaths[ID]                 // Relevant Texture2D 
-            //            .Remove(spriteFilePaths[ID].Length - 4)));
 
-
-            return (bufferedTiles, bufferedGeometry,
+            return new MapDataFile(bufferedTiles, bufferedGeometry,
                     bufferedSpritesheet, bufferdTileSize);
         }
         

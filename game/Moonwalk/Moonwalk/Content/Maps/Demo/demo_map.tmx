@@ -69,7 +69,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="2" name="Collision">
+ <objectgroup id="2" name="TerraiN">
   <object id="1" x="0" y="0" width="48" height="256"/>
   <object id="2" x="48" y="208" width="128" height="48"/>
   <object id="3" x="176" y="224" width="144" height="32"/>

@@ -163,7 +163,12 @@ namespace Moonwalk.Classes.Managers {
                     bufferedSpritesheet, bufferdTileSize);
         }
         
-        public static EntityData LoadEntity(string path, bool loadAnimations = true) {
+        /// <summary>
+        /// Loads an entity's data from both their EDF and ADF files
+        /// </summary>
+        /// <param name="path">Path to related file contents</param>
+        /// <param name="loadAnimations">Whether or not this entity has animations to be loaded</param>
+        public static EntityData LoadEntity(string path, bool loadAnimations = true, bool loadProperties = true) {
             Dictionary<string, string> bufferedProperties = new();
             List<Animation> bufferedAnimations = new();
             Texture2D bufferedSpritesheet = null;
@@ -171,6 +176,9 @@ namespace Moonwalk.Classes.Managers {
             Queue<string> fileData;
             string data;
             string[] dataBlocks;
+
+            if (!loadProperties)
+                goto animations; // Skips properties loading 
 
             // Entity Data File Reading //
             // Get and process properties file data
@@ -191,6 +199,7 @@ namespace Moonwalk.Classes.Managers {
 
 
             // Animation Data File Reading //
+            animations:
             if (!loadAnimations) // Used for entities not meant to have visible sprites
                 return new EntityData(bufferedProperties, bufferedAnimations, bufferedSpritesheet);
 

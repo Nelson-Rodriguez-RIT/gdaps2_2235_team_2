@@ -86,10 +86,10 @@ namespace Moonwalk.Classes.Entities.Base
 
         protected int spriteScale;
 
-        public Entity(Vector2 position, string directory, bool loadAnimations = true) {
+        public Entity(Vector2 position, string directory, bool loadAnimations = true, bool loadProperties = true) {
             // File data setup
             this.directory = directory;
-            EntityData bufferedData = Loader.LoadEntity(directory, loadAnimations);
+            EntityData bufferedData = Loader.LoadEntity(directory, loadAnimations, loadProperties);
             bufferedData.Load(this);
 
             // Physics set up

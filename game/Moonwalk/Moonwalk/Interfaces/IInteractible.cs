@@ -8,16 +8,16 @@ using Moonwalk.Classes.Entities.Base;
 
 namespace Moonwalk.Interfaces
 {
-    internal interface IInteractible
+    public interface IInteractible
     {
         //needs a hitbox for collision
         Rectangle Hitbox { get; }
 
         //need a way to check if currently colliding (with player)
-        bool CheckCollision(Entity entity);
+        //bool CheckCollision(Entity entity);
 
         //need a way to check if object has been interacted with
-        bool IsInteracted(Entity entity);
+        //bool IsInteracted(Entity entity);
 
     }
 }

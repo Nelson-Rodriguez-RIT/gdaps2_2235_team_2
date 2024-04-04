@@ -317,6 +317,7 @@ namespace Moonwalk.Classes.Managers
                     Player player = SpawnEntity<Player>(new Vector2(150, 50));
                     Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
                     SpawnEntity<TestEnemy>(new Vector2(200, 250));
+                    KeyObject key = SpawnEntity<KeyObject>(new Vector2(200, 250));
 
                     // Set player as the Camera's target
                     Camera.SetTarget(player);
@@ -326,7 +327,8 @@ namespace Moonwalk.Classes.Managers
                     player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
                     player.ToggleBotLock += robot.ToggleLock;
                     player.GetEnemies += entities.GetAllOfType<IHostile>;
-                    player.GetDamagables += entities.GetAllOfType<IDamageable>;                   
+                    player.GetDamagables += entities.GetAllOfType<IDamageable>;
+                    player.GetInteractibles += entities.GetAllOfType<IInteractible>;
                     
                     break;
             }

@@ -11,6 +11,11 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Content\Entities\NewFolder\**" />
+    <EmbeddedResource Remove="Content\Entities\NewFolder\**" />
+    <None Remove="Content\Entities\NewFolder\**" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Icon.ico" />
     <None Remove="Icon.bmp" />
   </ItemGroup>

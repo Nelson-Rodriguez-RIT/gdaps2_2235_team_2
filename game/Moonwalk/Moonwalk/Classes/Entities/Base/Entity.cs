@@ -101,14 +101,15 @@ namespace Moonwalk.Classes.Entities.Base
             maxYVelocity = int.MaxValue;
             maxXVelocity = int.MaxValue;
 
-
+            if (loadProperties) 
+            { 
             hurtbox = new Rectangle(
                 int.Parse(properties["HitboxXOrigin"]),
                 int.Parse(properties["HitboxYOrigin"]),
                 int.Parse(properties["HitboxX"]),
                 int.Parse(properties["HitboxY"])
                 );
-
+            }
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
         }

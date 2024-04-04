@@ -15,6 +15,7 @@ namespace Moonwalk.Classes.Entities
     public delegate List<IMovable> OnGravityAbilityUsed();
     public delegate List<IHostile> GetEnemies();
     public delegate List<IDamageable> GetDamagables();
+    public delegate List<IInteractible> GetInteractibles();
     public delegate Vector2 GetRobotPosition();
     public delegate void ToggleBotLock();
     public delegate void EnemyAI(Vector2 target);
@@ -56,6 +57,7 @@ namespace Moonwalk.Classes.Entities
         public event ToggleBotLock ToggleBotLock;
         public event GetEnemies GetEnemies;
         public event GetDamagables GetDamagables;
+        public event GetInteractibles GetInteractibles;
 
         private Animations animation;
         private FaceDirection faceDirection;

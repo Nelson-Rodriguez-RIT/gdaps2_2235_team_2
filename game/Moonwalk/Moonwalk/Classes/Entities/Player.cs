@@ -329,13 +329,12 @@ namespace Moonwalk.Classes.Entities
         public override void Draw(SpriteBatch batch)
         {
             base.Draw(batch);
-
-            /*
+            
             batch.DrawString(GameManager.font, 
-                $"{Math.Round(vectorPosition.Y)} - {Math.Round(velocity.Y)} - {Math.Round(acceleration.Y)} \n {Math.Round(velocity.X)}",
+                $"{Math.Round(vectorPosition.Y)} - {Math.Round(vectorPosition.X)} ",
                 new Vector2(400, 50),
                 Color.White);
-            */
+            
         }
 
         protected IHostile EnemyCollision()

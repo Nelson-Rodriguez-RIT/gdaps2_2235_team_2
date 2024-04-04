@@ -10,8 +10,13 @@ namespace Moonwalk {
         private const int DefaultWindowWidth = 1280;
         private const int DefaultWindowHeight = 720;
 
-        private GraphicsDeviceManager _graphics;
+        private static GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
+        public static GraphicsDeviceManager Graphics
+        {
+            get { return _graphics; }
+        }
 
         GameManager gameManager;
         WindowManager windowManager;

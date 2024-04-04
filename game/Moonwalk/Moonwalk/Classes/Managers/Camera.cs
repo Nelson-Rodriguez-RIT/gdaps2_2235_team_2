@@ -16,6 +16,11 @@ namespace Moonwalk.Classes.Managers {
         // i.e you would set reference to the player to continously follow the player
         private static Entity targetEntity = null; // Optional (but recommended for most cases)
 
+        public static Vector2 Target
+        {
+            get { return targetEntity.Position.ToVector2(); }
+        }
+
         public static Vector2 GlobalOffset {
             get { return globalOffset; }
             set { globalOffset = value; }

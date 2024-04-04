@@ -77,16 +77,22 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         // These rely on file data and only need to be loaded once
-        protected Dictionary<string, string> properties = null;
-        protected List<Animation> animations = null;
-        protected Texture2D spritesheet = null;
+        internal protected Dictionary<string, string> properties = null;
+        internal protected List<Animation> animations = null;
+        internal protected Texture2D spritesheet = null;
 
         // Currently displayed animation
-        protected Animation activeAnimation; // DO NOT manually change this, use SwitchAnimation() instead
+        protected Animation activeAnimation; // Do NOT manually change this, use SwitchAnimation() instead
 
         protected int spriteScale;
 
         public Entity(Vector2 position, string directory, bool loadAnimations = true) {
+            // File data setup
+            this.directory = directory;
+            EntityData bufferedData = Loader.LoadEntity(directory, loadAnimations);
+            bufferedData.Load(this);
+
+            // Physics set up
             physicsState = PhysicsState.Linear;
             vectorPosition = position;
             velocity = Vector2.Zero;
@@ -95,16 +101,6 @@ namespace Moonwalk.Classes.Entities.Base
             maxYVelocity = int.MaxValue;
             maxXVelocity = int.MaxValue;
 
-            this.directory = directory;
-
-            if (properties == null) { // Load data if it isn't already loaded
-                (Dictionary<string, string> properties, List<Animation> animations,
-                Texture2D spritesheet) bufferedData = Loader.LoadEntity(directory, loadAnimations);
-
-                properties = bufferedData.properties;
-                animations = bufferedData.animations;
-                spritesheet = bufferedData.spritesheet;
-            }
 
             hurtbox = new Rectangle(
                 int.Parse(properties["HitboxXOrigin"]),
@@ -133,18 +129,6 @@ namespace Moonwalk.Classes.Entities.Base
             activeAnimation = animations[Convert.ToInt32(animationEnum)];
             if (resetAnimation)
                 activeAnimation.Reset();
-        }
-
-
-
-
-        /// <summary>
-        /// Switches the animation currently playing to another
-        /// </summary>
-        /// <param name="animation">The animation to switch to</param>
-        protected void SwitchAnimation(Animation animation) {
-            activeAnimation = animation;
-            animation.Reset();
         }
 
         public virtual void Draw(SpriteBatch batch)
@@ -310,6 +294,25 @@ namespace Moonwalk.Classes.Entities.Base
         public virtual void Impulse(Vector2 destination)
         {
             velocity = (destination);
+        }
+    }
+
+    internal class EntityData {
+        private Dictionary<string, string> properties;
+        private List<Animation> animations;
+        private Texture2D spritesheet;
+
+        public EntityData(Dictionary<string, string> properties, 
+                List<Animation> animations, Texture2D spritesheet) {
+            this.properties = properties;
+            this.animations = animations;
+            this.spritesheet = spritesheet;
+        }
+
+        public void Load(Entity entity) {
+            entity.properties = properties;
+            entity.animations = animations;
+            entity.spritesheet = spritesheet;
         }
     }
 }

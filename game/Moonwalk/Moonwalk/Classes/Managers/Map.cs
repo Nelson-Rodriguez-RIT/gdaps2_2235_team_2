@@ -42,7 +42,7 @@ namespace Moonwalk.Classes.Managers {
         /// <param name="mapRootFolderName">Name of the map</param>
         public static void LoadMap(string mapRootFolderName) {
             // Get and load data from file
-            MapDataFile bufferedData = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
+            MapData bufferedData = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
             bufferedData.Load();
 
             // Load hitbox sprite if it hasn't already
@@ -107,14 +107,14 @@ namespace Moonwalk.Classes.Managers {
 
     // These are used to buffer information gotten from a map's .mdf file
     // They aren't necessary but they keep the code a bit more clean
-    internal class MapDataFile {
+    internal class MapData {
         // Buffers for file data
         private List<int[][]> bufferedTiles;
         private List<Terrain> bufferedGeometry;
         private Texture2D bufferedSpritesheet;
         Vector2 bufferedTileSize;
 
-        public MapDataFile(List<int[][]> tiles, List<Terrain> geometry, Texture2D spritesheet, Vector2 tileSize) {
+        public MapData(List<int[][]> tiles, List<Terrain> geometry, Texture2D spritesheet, Vector2 tileSize) {
             bufferedTiles = tiles;
             bufferedGeometry = geometry;
             bufferedSpritesheet = spritesheet;

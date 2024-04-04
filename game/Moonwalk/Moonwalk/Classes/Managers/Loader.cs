@@ -82,7 +82,7 @@ namespace Moonwalk.Classes.Managers {
         /// Loads a map's MDF and sprite sheet
         /// </summary>
         /// <param name="path">Should (usually) be a valid map's name</param>
-        public static MapDataFile LoadMap(string path) {
+        public static MapData LoadMap(string path) {
             List<int[][]> bufferedTiles = new();
             List<Terrain> bufferedGeometry = new();
             Texture2D bufferedSpritesheet;
@@ -92,7 +92,8 @@ namespace Moonwalk.Classes.Managers {
             // MDF file reading //
             Queue<string> fileData = new();
             string data;
-            string[] dataBlock;
+            string[] dataBlocks;
+            string[] buffer;
 
             // Begin reading mdf file data
             fileData = new Queue<string>(LoadFile(path, ".mdf"));
@@ -105,11 +106,11 @@ namespace Moonwalk.Classes.Managers {
                 if (data == "TILESTART") {
                     List<int[]> tileRows = new(); // New layer
                     while ((data = fileData.Dequeue()) != "TILEEND") { // Continue untill TILEEND keyword
-                        dataBlock = data.Split(',');            // Prepare data to be read
-                        int[] row = new int[dataBlock.Length];  // Properly size storage
+                        dataBlocks = data.Split(',');            // Prepare data to be read
+                        int[] row = new int[dataBlocks.Length];  // Properly size storage
 
                         for (int i = 0; i < row.Length - 1; i++) // Reading data
-                            row[i] = int.Parse(dataBlock[i]);
+                            row[i] = int.Parse(dataBlocks[i]);
 
                         tileRows.Add(row);
                     }
@@ -126,14 +127,15 @@ namespace Moonwalk.Classes.Managers {
                 // FYI if you want to add new types of collision (or really any type of data)
                 // via object layers, do it here.
                 else {
-                    dataBlock = data.Split("=");
+                    dataBlocks = data.Split("=");
 
-                    switch(dataBlock[0].ToUpper()) {
+                    switch(dataBlocks[0].ToUpper()) {
                         // Information about the width and height of an individual tile
                         case "SIZE":
+                            buffer = dataBlocks[1].Split(',');
                             bufferdTileSize = new Vector2(
-                                int.Parse(dataBlock[0]),    // Width
-                                int.Parse(dataBlock[1])     // Height
+                                int.Parse(buffer[0]),    // Width
+                                int.Parse(buffer[1])     // Height
                                 );
                             break;
 
@@ -141,11 +143,12 @@ namespace Moonwalk.Classes.Managers {
                         // TMX to MDF converter looks at the name of the object layer
                         // when rewriting relevant information to file
                         case "TERRAIN":
+                            buffer = dataBlocks[1].Split(',');
                             bufferedGeometry.Add(new Terrain(new Rectangle(
-                                int.Parse(dataBlock[0]),    // X
-                                int.Parse(dataBlock[1]),    // Y
-                                int.Parse(dataBlock[2]),    // Width
-                                int.Parse(dataBlock[3])     // Height
+                                int.Parse(buffer[0]),    // X
+                                int.Parse(buffer[1]),    // Y
+                                int.Parse(buffer[2]),    // Width
+                                int.Parse(buffer[3])     // Height
                                 )));
                             break;
                     }
@@ -156,126 +159,127 @@ namespace Moonwalk.Classes.Managers {
             bufferedSpritesheet = content.Load<Texture2D>($"{path}spritesheet");
 
 
-            return new MapDataFile(bufferedTiles, bufferedGeometry,
+            return new MapData(bufferedTiles, bufferedGeometry,
                     bufferedSpritesheet, bufferdTileSize);
         }
         
-        public static (
-                Dictionary<string, string> properties,
-                List<Animation> animations,
-                Texture2D spritesheet)
-                LoadEntity(string path, bool loadAnimations = true) {
+        public static EntityData LoadEntity(string path, bool loadAnimations = true) {
             Dictionary<string, string> bufferedProperties = new();
             List<Animation> bufferedAnimations = new();
             Texture2D bufferedSpritesheet = null;
 
             Queue<string> fileData;
-            string[] splitData;
+            string data;
+            string[] dataBlocks;
 
-            // Get entity properties
+            // Entity Data File Reading //
+            // Get and process properties file data
             fileData = new Queue<string>(LoadFile($"{path}/", ".edf"));
-
             while (fileData.Count != 0) {
-                if (fileData.Peek()[0] == '/' || // Ignore comments or (likely) empty lines
-                        fileData.Peek()[0] == ' ') {
-                    fileData.Dequeue();
+                data = fileData.Dequeue();
+
+                // Ignore comments and empty lines
+                if (data == null || data[0] == '/')
                     continue;
-                }
 
                 // Break data into its header and body components
-                splitData = fileData.Dequeue().Split('=');
+                dataBlocks = data.Split('=');
 
                 // Format and store data
-                bufferedProperties.Add(splitData[0], splitData[1]);
+                bufferedProperties.Add(dataBlocks[0], dataBlocks[1]);
             }
 
 
-            if (loadAnimations) {
-                // Get animation data
-                fileData = new Queue<string>(LoadFile($"{path}/", ".adf"));
+            // Animation Data File Reading //
+            if (!loadAnimations) // Used for entities not meant to have visible sprites
+                return new EntityData(bufferedProperties, bufferedAnimations, bufferedSpritesheet);
 
-                AnimationStyle style = AnimationStyle.Horizontal;
+            // Defaults
+            AnimationStyle style = AnimationStyle.Horizontal;
+            Vector2 defaultSpriteSize = Vector2.One;
+            Vector2 defaultOrigin = Vector2.Zero;
+            int defaultTotalSprites = 1;
+            int defaultFramesPerSprite = 1;
 
-                // Set up default fields with placeholder values
-                // Prevents crashes and allows us to compile :D
-                Vector2 defaultSpriteSize = Vector2.One;
-                Vector2 defaultOrigin = Vector2.Zero;
-                int defaultTotalSprites = 1;
-                int defaultFramesPerSprite = 1;
+            // This allows use to have custom Widths/Heights for each animation since this
+            // will inform the Animation where it should get its data from. This will be
+            // incremented by either a Width (for Vertical styles) or Height (for Horizontal styles)
+            int spaceTakenOnSpritesheet = 0;
 
-                // This allows use to have custom Widths/Heights for each animation since this
-                // will inform the Animation where it should get its data from. This will be
-                // incremented by either a Width (for Vertical styles) or Height (for Horizontal styles)
-                int spaceTakenOnSpritesheet = 0;
+            // Get and process animation file data
+            fileData = new Queue<string>(LoadFile($"{path}/", ".adf"));
+            while (fileData.Count != 0) {
+                data = fileData.Dequeue();
 
-                while (fileData.Count != 0) {
-                    if (fileData.Peek().Length == 0) // Skip empty lines
-                        fileData.Dequeue();
+                // Ignore comments and empty lines
+                if (data == "" || data[0] == '/')
+                    continue;
 
-                    switch (fileData.Peek()[0]) {
-                        case '/': // Ignore comments or (likely) empty lines
-                        case ' ':
-                            fileData.Dequeue();
-                            break;
+                switch (data.First()) {
+                    // Determines the direction, in terms of sprite sheet layout, where
+                    // following sprites of the same animation are positioned
+                    case '&':
+                        style = data.Contains("Vertical") ? AnimationStyle.Vertical : AnimationStyle.Horizontal;
+                        break;
 
-                        case '&': // Set AnimationStyle
-                            if (fileData.Dequeue().Contains("Vertical"))
-                                style = AnimationStyle.Vertical;
-                            break;
+                    // Sets default values. These are used in order to reduce the amount of repeative type
+                    // and reduces the likelyhood that incorrect data will be used for animations
+                    case '@':
+                        dataBlocks = data.Remove(0, 1).Split(',');
+                        string[] buffer;
 
-                        case '@': // Set default values
-                            splitData = fileData.Dequeue().Split(",");
-                            splitData[0] = splitData[0].Remove(0, 1); // Removes line identifier
+                        buffer = dataBlocks[0].Split('x');
+                        defaultSpriteSize = new Vector2(
+                            int.Parse(buffer[0]),
+                            int.Parse(buffer[1])
+                            );
 
-                            defaultSpriteSize = new Vector2(
-                                int.Parse(splitData[0].Split('x')[0]),
-                                int.Parse(splitData[0].Split('x')[1])
-                                );
+                        buffer = dataBlocks[1].Split(':');
+                        defaultOrigin = new Vector2(
+                            int.Parse(buffer[0]),
+                            int.Parse(buffer[1])
+                            );
 
-                            defaultOrigin = new Vector2(
-                                int.Parse(splitData[1].Split(':')[0]),
-                                int.Parse(splitData[1].Split(':')[1])
-                                );
+                        defaultFramesPerSprite = int.Parse(dataBlocks[2]);
+                        defaultTotalSprites = int.Parse(dataBlocks[3]);
+                        break;
 
-                            defaultTotalSprites = int.Parse(splitData[2]);
+                    // Creates an animation out of the data provided on this line
+                    // If the character # is found, default data will be used
+                    default:
+                        // Process file data
+                        dataBlocks = data.Split(',');
 
-                            defaultFramesPerSprite = int.Parse(splitData[3]);
-                            break;
+                        buffer = dataBlocks[0] == "#" ? null : dataBlocks[0].Split('x');
+                        Vector2 size = buffer == null ? defaultSpriteSize : 
+                            new Vector2(int.Parse(buffer[0]), int.Parse(buffer[1]));
 
-                        default: // Create an animation using file data
-                            splitData = fileData.Dequeue().Split(',');
+                        buffer = dataBlocks[1] == "#" ? null : dataBlocks[1].Split(':');
+                        Vector2 origin = buffer == null ? defaultOrigin :
+                            new Vector2(int.Parse(buffer[0]), int.Parse(buffer[1]));
 
-                            // If a # is detected, default values are used instead
-                            bufferedAnimations.Add(new Animation(
-                                splitData[0][0] == '#' ? defaultSpriteSize :
-                                    new Vector2(
-                                        int.Parse(splitData[0].Split('x')[0]),
-                                        int.Parse(splitData[0].Split('x')[1])),
-                                splitData[1][0] == '#' ? defaultOrigin :
-                                    new Vector2(
-                                        int.Parse(splitData[1].Split(':')[0]),
-                                        int.Parse(splitData[1].Split(':')[1])),
-                                splitData[2][0] == '#' ? defaultTotalSprites :
-                                    int.Parse(splitData[2]),
-                                splitData[3][0] == '#' ? defaultFramesPerSprite :
-                                    int.Parse(splitData[3]),
-                                style,
-                                spaceTakenOnSpritesheet));
+                        int totalSprites = dataBlocks[2] == "#" 
+                            ? defaultTotalSprites : int.Parse(dataBlocks[2]);
 
-                            spaceTakenOnSpritesheet += style == AnimationStyle.Horizontal ?
-                                (splitData[0][0] == '#' ? (int)defaultSpriteSize.Y : int.Parse(splitData[0].Split('x')[1])) :
-                                (splitData[0][0] == '#' ? (int)defaultSpriteSize.X : int.Parse(splitData[0].Split('x')[0]));
-                            break;
-                    }
+                        int framesPerSprite = dataBlocks[3] == "#"
+                            ? defaultFramesPerSprite : int.Parse(dataBlocks[3]);
+
+                        // Create animation
+                        bufferedAnimations.Add(new Animation(
+                            size, origin, totalSprites, framesPerSprite,
+                            style, spaceTakenOnSpritesheet));
+
+
+                        spaceTakenOnSpritesheet +=
+                            (int)(style == AnimationStyle.Horizontal ? size.Y : size.X);
+                        break;
                 }
-
-
-                // Get sprite sheet
-                bufferedSpritesheet = LoadTexture($"{path}/spritesheet");
             }
 
+            // Get sprite sheet
+            bufferedSpritesheet = LoadTexture($"{path}/spritesheet");
 
-            return (bufferedProperties, bufferedAnimations, bufferedSpritesheet);
+            return new EntityData(bufferedProperties, bufferedAnimations, bufferedSpritesheet);
         }
     }
 }

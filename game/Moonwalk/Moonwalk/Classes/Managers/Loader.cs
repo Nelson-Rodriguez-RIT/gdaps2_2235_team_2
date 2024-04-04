@@ -163,6 +163,11 @@ namespace Moonwalk.Classes.Managers {
                     bufferedSpritesheet, bufferdTileSize);
         }
         
+        /// <summary>
+        /// Loads an entity's data from both their EDF and ADF files
+        /// </summary>
+        /// <param name="path">Path to related file contents</param>
+        /// <param name="loadAnimations">Whether or not this entity has animations to be loaded</param>
         public static EntityData LoadEntity(string path, bool loadAnimations = true) {
             Dictionary<string, string> bufferedProperties = new();
             List<Animation> bufferedAnimations = new();

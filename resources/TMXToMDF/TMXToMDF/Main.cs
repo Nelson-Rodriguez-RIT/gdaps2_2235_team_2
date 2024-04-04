@@ -216,8 +216,7 @@ namespace TMXToMDF {
                 }
 
                 else if (rawData.Peek().Contains("<objectgroup")) {
-                    // Ignore tmx file formatting
-                    rawData.Dequeue();
+                    string header = rawData.Dequeue().Split('=').Last().Trim('>').Trim('"');
 
                     while (!rawData.Peek().Contains("</objectgroup")) {
                         // Get relevant numerical data
@@ -227,7 +226,7 @@ namespace TMXToMDF {
                         // We care for the 2nd, 3rd, 4th, and 5th numeric values in the file
                         // Tiled doesn't allow for special geometry, therefore we assume all
                         // geometry is basic Terrain
-                        formatData.Add($"Terrain=" +    
+                        formatData.Add($"{header}=" +    
                             $"{(int)float.Parse(dataBlock[1])}," +  // Collision's relative X position
                             $"{(int)float.Parse(dataBlock[2])}," +  // Collision's relative Y position
                             $"{(int)float.Parse(dataBlock[3])}," +  // Collision's width

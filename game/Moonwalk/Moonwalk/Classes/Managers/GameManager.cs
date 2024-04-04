@@ -309,7 +309,7 @@ namespace Moonwalk.Classes.Managers
 
                 case GameState.Demo:
 
-                    Map.LoadMap("StartMapTest");
+                    Map.LoadMap("MoonwalkMap");
                     //Map.LoadMap("Demo");
 
                     // Loads player + companion

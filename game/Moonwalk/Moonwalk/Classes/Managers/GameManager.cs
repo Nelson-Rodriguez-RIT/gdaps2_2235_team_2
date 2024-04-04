@@ -20,7 +20,8 @@ namespace Moonwalk.Classes.Managers
 {
     enum GameState {
         MainMenu,
-        Demo
+        Demo,
+        Dead
     }
 
     /// <summary>
@@ -313,7 +314,7 @@ namespace Moonwalk.Classes.Managers
                     //Map.LoadMap("Demo");
 
                     // Loads player + companion
-                    Player player = SpawnEntity<Player>(new Vector2(400, 48));
+                    Player player = SpawnEntity<Player>(new Vector2(150, 50));
                     Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
                     SpawnEntity<TestEnemy>(new Vector2(200, 250));
 

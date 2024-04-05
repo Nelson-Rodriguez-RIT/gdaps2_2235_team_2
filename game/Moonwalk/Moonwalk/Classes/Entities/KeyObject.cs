@@ -26,6 +26,7 @@ namespace Moonwalk.Classes.Entities
             this.isColliding = false; //should not start by colliding with anything
 
             spriteSheet = Loader.LoadTexture("Entities/Key/key");
+            spriteScale = 1;
         }
 
         //methods

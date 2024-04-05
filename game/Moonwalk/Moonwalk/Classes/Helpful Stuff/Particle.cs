@@ -76,14 +76,15 @@ namespace Moonwalk.Classes.Helpful_Stuff
             for (int i = 0; i < number - 1; i++)
             {
                 double angle = random.NextDouble() * 360;
+                int distance = random.Next(0, radius + 1);
 
                 Effects.Add(new Particle(
-                    duration,
+                    random.Next(0, duration),
                     color,
                     effect,
                     position + new Point(
-                        (int)(Math.Sin(angle) * radius),
-                        (int)(Math.Cos(angle) * radius)),
+                        (int)(Math.Sin(angle) * distance),
+                        (int)(Math.Cos(angle) * distance)),
                     this.direction,
                     frequency)
                     );

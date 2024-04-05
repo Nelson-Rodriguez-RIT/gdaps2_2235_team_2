@@ -12,13 +12,8 @@ using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Entities
 {
-    public delegate List<IMovable> OnGravityAbilityUsed();
-    public delegate List<IHostile> GetEnemies();
-    public delegate List<IDamageable> GetDamagables();
-    public delegate List<IInteractible> GetInteractibles();
     public delegate Vector2 GetRobotPosition();
     public delegate void ToggleBotLock();
-    public delegate void EnemyAI(Vector2 target);
 
     /// <summary>
     /// The player controlled character

@@ -25,6 +25,8 @@ namespace Moonwalk.Classes.Entities
             //this.hurtbox = new Rectangle((int)position.X, (int)position.Y, 16, 16); //position/hitbox
             this.isColliding = false; //should not start by colliding with anything
 
+            hurtbox = new Rectangle(0, 0, 20, 20);
+
             spriteSheet = Loader.LoadTexture("Entities/Key/key");
         }
 
@@ -53,7 +55,11 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            
+            hurtbox = new Rectangle(
+                (int)vectorPosition.X,
+                (int)vectorPosition.Y,
+                hurtbox.Width, 
+                hurtbox.Height);
         }
 
         public override void Draw(SpriteBatch batch)

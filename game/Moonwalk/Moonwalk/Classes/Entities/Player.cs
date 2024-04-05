@@ -186,9 +186,14 @@ namespace Moonwalk.Classes.Entities
                         * slice * i; //increment every iteration
 
                     Particle.Effects.Add(new Particle
-                        (2, Color.SkyBlue, ParticleEffects.Random,
+                        (1, 
+                        Color.SkyBlue, 
+                        ParticleEffects.Random,
                         (hurtbox.Center.ToVector2() + thing)
-                            .ToPoint())
+                            .ToPoint(),
+                        0, 
+                        10, 
+                        5)
                         );
                 }
             }

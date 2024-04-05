@@ -37,13 +37,13 @@ namespace Moonwalk.Classes.Helpful_Stuff
         private int timer;
         Vector2 direction;
 
-        public Particle(int duration, Color color, ParticleEffects effect, Point position, int frequency = 0, int number = 1) 
+        public Particle(int duration, Color color, ParticleEffects effect, Point position, int frequency = 0, int number = 1, int radius = 0) 
         {
             this.duration = duration;
             this.color = color;
             this.effect = effect;
             this.position = position;
-            this.direction = Vector2.Zero;
+            this.direction = new Vector2(0, 0);
 
             //Timer is how often things happen
             maxTimer = frequency;
@@ -51,11 +51,17 @@ namespace Moonwalk.Classes.Helpful_Stuff
             //add more particles if needed
             for (int i = 0; i < number - 1; i++)
             {
+                double angle = random.NextDouble() * 360;
+                int distance = random.Next(0, radius + 1);
+
                 Effects.Add(new Particle(
-                    duration,
+                    random.Next(0, duration),
                     color,
                     effect,
-                    position)
+                    position + new Point(
+                        (int)(Math.Sin(angle) * distance),
+                        (int)(Math.Cos(angle) * distance)),
+                    frequency)
                     );
             }
         }
@@ -130,5 +136,9 @@ namespace Moonwalk.Classes.Helpful_Stuff
             batch.Draw(image, new Rectangle((int)temp.X, (int)temp.Y, 3, 3), color); 
         }
 
+        public override string ToString()
+        {
+            return $"{position.ToString()}";
+        }
     }
 }

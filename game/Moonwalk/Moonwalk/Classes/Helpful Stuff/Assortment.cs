@@ -43,7 +43,12 @@ namespace Moonwalk.Classes
             {
                 foreach (Type type2 in listTypes)
                 {
-                    if (type.IsSubclassOf(type2))
+                    if (type2 == typeof(T))
+                    {
+                        break;
+                    }
+
+                    if (type.IsSubclassOf(type2) )
                     {
                         throw new Exception("No types in the list can inherit from one other");
                     }
@@ -52,17 +57,35 @@ namespace Moonwalk.Classes
 
 
             lists = new();
-            this.listTypes = listTypes;       
+            this.listTypes = listTypes;
+
+            bool containsBaseType = false;
 
             //Add each key to the list
             foreach (Type type in listTypes)
             {
+                if (type == typeof(T))
+                {
+                    containsBaseType = true;
+                    break;
+                }
+
                 Type listType = typeof(List<>).MakeGenericType(type);
 
                 IList list = 
                     (IList)Activator.CreateInstance(listType);
 
                 lists.Add(type, list);
+            }
+
+            if (containsBaseType)
+            {
+                Type listType = typeof(List<>).MakeGenericType(typeof(T));
+
+                IList list =
+                    (IList)Activator.CreateInstance(listType);
+
+                lists.Add(typeof(T), list);
             }
         }
 

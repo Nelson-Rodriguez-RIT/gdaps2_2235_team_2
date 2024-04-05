@@ -668,6 +668,7 @@ namespace Moonwalk.Classes.Entities
 
             }
 
+            //draw gravity effect
             const int Particles = 72;
             double slice = 360 / Particles;
 

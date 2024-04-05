@@ -44,6 +44,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             this.effect = effect;
             this.position = position;
 
+            //Timer is how often things happen
             switch (effect)
             {
                 case ParticleEffects.Fall:
@@ -54,6 +55,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
                     break;
             }
 
+            //add more particles if needed
             for (int i = 0; i < number - 1; i++)
             {
                 Effects.Add(new Particle(

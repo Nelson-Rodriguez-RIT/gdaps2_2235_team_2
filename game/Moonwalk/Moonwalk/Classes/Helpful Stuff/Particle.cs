@@ -19,7 +19,8 @@ namespace Moonwalk.Classes.Helpful_Stuff
     {
         None,
         Random,
-        FallSlowly
+        Fall,
+        RandomFall,
     }
 
     internal class Particle
@@ -36,7 +37,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
         private int maxTimer;
         private int timer;
 
-        public Particle(int duration, Color color, ParticleEffects effect, Point position) 
+        public Particle(int duration, Color color, ParticleEffects effect, Point position, int number = 1) 
         {
             this.duration = duration;
             this.color = color;
@@ -45,12 +46,22 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
             switch (effect)
             {
-                case ParticleEffects.FallSlowly:
+                case ParticleEffects.Fall:
                     maxTimer = 5;
                     break;
                 case ParticleEffects.Random:
-                    maxTimer = 2;
+                    maxTimer = 1;
                     break;
+            }
+
+            for (int i = 0; i < number - 1; i++)
+            {
+                Effects.Add(new Particle(
+                    duration,
+                    color,
+                    effect,
+                    position)
+                    );
             }
         }
 
@@ -73,7 +84,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
                             random.Next(-1, 2),
                             random.Next(-1, 2));
                         break;
-                    case ParticleEffects.FallSlowly:
+                    case ParticleEffects.Fall:
                         position = new Point(position.X, position.Y + 1);
                         break;
                 }

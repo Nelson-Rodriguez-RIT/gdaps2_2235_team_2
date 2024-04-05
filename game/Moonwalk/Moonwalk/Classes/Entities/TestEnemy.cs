@@ -74,13 +74,14 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
-            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, target.Position.ToVector2()));
+            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()));
 
             if (distance < 200) // range of aggro
             {
                 SwitchAnimation(Animations.Move, false);
-                float xDifference = VectorMath.VectorDifference(vectorPosition, target.Position.ToVector2()).X;
+                float xDifference = VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()).X;
 
+                //Change the facing direction
                 if (xDifference > 0)
                 {
                     faceDirection = FaceDirection.Right;
@@ -92,18 +93,20 @@ namespace Moonwalk.Classes.Entities
 
                 //activeAnimation.FaceDirection = (int)faceDirection;
 
+                //Enemy accelerates towards the player's x direction
                 acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
 
                 if (cooldowns[Abilities.Shoot] == 0)
                 {
                     //Shoot
                     GameManager.SpawnEntity<TestProjectile>(vectorPosition, new Object[] {
-                    VectorMath.VectorDifference(vectorPosition, target.Position.ToVector2()) });
+                    VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()) });
                     cooldowns.UseAbility(Abilities.Shoot);
                 }
             }
             else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
             {
+                //Deactivate the enemy if out of range
                 velocity.X = 0;
                 acceleration.X = 0;
                 SwitchAnimation(Animations.StaticIdle);

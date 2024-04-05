@@ -111,8 +111,6 @@ namespace Moonwalk.Classes.Entities
             spriteScale = 1;
 
             cooldowns = new AbilityCooldowns<Abilities>(directory, 5);
-
-            Enemy.target = this;
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -154,9 +152,6 @@ namespace Moonwalk.Classes.Entities
 
             Location = this.Position;
 
-            //testing
-            Particle.Effects.Add(new Particle(30, Color.SkyBlue, ParticleEffects.Random, hurtbox.Center));
-
             
         }
 
@@ -186,6 +181,24 @@ namespace Moonwalk.Classes.Entities
                     -45 * Math.Sign(VectorMath.VectorDifference(vectorPosition, collision.Position.ToVector2()).X),
                     -35));
 
+            }
+
+            if (physicsState == PhysicsState.Rotational)
+            {
+                const int Links = 10;
+
+                int slice = (int)(swingRadius / Links);
+
+                for (int i = 1; i < Links; i++)
+                {
+                    Vector2 thing = Vector2.Normalize(VectorMath.VectorDifference(vectorPosition, pivot)) * slice * i;
+
+                    Particle.Effects.Add(new Particle
+                        (2, Color.SkyBlue, ParticleEffects.Random,
+                        (vectorPosition + thing)
+                            .ToPoint())
+                        );
+                }
             }
             
         }

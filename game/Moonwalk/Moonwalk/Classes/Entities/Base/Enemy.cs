@@ -19,7 +19,6 @@ namespace Moonwalk.Classes.Entities.Base
         protected int health;                         // enemy health       
         protected int damage;
 
-        public static Entity target;
 
         /// <summary>
         /// Property to determine how many checks to do when checking for collision
@@ -220,7 +219,6 @@ namespace Moonwalk.Classes.Entities.Base
 
             }
         }
-
 
         public abstract void AI();
     }        

@@ -12,5 +12,10 @@ namespace Moonwalk.Interfaces
         /// Amount of damage this deals
         /// </summary>
         int Damage { get; }
+
+        /// <summary>
+        /// Controls the entity's movement
+        /// </summary>
+        void AI();
     }
 }

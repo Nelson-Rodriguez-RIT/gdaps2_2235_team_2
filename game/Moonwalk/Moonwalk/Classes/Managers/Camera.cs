@@ -82,6 +82,19 @@ namespace Moonwalk.Classes.Managers {
             UpdateTargetPosition();
             return (new Vector2(position.X, position.Y) - targetPosition) * GameMain.ActiveScale + globalOffset;
         }
+
+        // (x - offset) / scale + targetPosition = position
+
+        /// <summary>
+        /// Inverse of RelativePosition
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        public static Vector2 WorldToScreen(Vector2 position)
+        {
+            UpdateTargetPosition();
+            return ((position - globalOffset) / GameMain.ActiveScale) + targetPosition;
+        }
     }
 
 

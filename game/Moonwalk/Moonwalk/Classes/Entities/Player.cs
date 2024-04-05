@@ -349,10 +349,20 @@ namespace Moonwalk.Classes.Entities
         {
             base.Draw(batch);
             
+            /*
             batch.DrawString(GameManager.font, 
-                $"{Math.Round(vectorPosition.Y)} - {Math.Round(vectorPosition.X)} ",
+                $"{Math.Round(vectorPosition.X)} - {Math.Round(vectorPosition.Y)} ",
                 new Vector2(400, 50),
                 Color.White);
+            */
+
+            Vector2 temp = Camera.RelativePosition((Camera.RelativePosition((Vector2.Zero)) + vectorPosition * GameMain.ActiveScale - Camera.GlobalOffset);
+            //testing
+            //Continue here future Dante (converting coordinates)
+            batch.Draw(hitboxSprite, new Rectangle(
+                (int)temp.X,
+                (int)temp.Y,
+                20, 20), Color.White);
             
         }
 

@@ -54,7 +54,7 @@ namespace Moonwalk.Classes.Entities.Base
         //Animation
         protected Texture2D spriteSheet;
 
-        private static Texture2D hitboxSprite = null;
+        protected static Texture2D hitboxSprite = null;
 
         public virtual Rectangle Hitbox
         {
@@ -182,7 +182,7 @@ namespace Moonwalk.Classes.Entities.Base
             vectorPosition += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             //Apply offset
-            vectorPosition = Camera.RelativePosition(vectorPosition);
+           // vectorPosition = Camera.RelativePosition(vectorPosition);
 
             hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),

@@ -39,7 +39,8 @@ namespace Moonwalk.Classes.Entities
         }
 
         private bool locked;
-        
+        const float MoveSpeed = 40f;
+        private Point mousepos;
 
         //Change this to private later
         public Robot(Vector2 position) : base(position, "../../../Content/Entities/Robot")
@@ -55,7 +56,7 @@ namespace Moonwalk.Classes.Entities
             Input(input);
 
             if (!locked)
-            Movement(gameTime);
+            //Movement(gameTime);
 
             activeAnimation.UpdateAnimation(gameTime);
 
@@ -99,22 +100,14 @@ namespace Moonwalk.Classes.Entities
 
         public override void Input(StoredInput input)
         {
-            //Velocity points towards the mouse cursor
-            //velocity = input.CurrentMouse.Position.ToVector2() - (Camera.RelativePosition(vectorPosition));
-            //Matrix transformedMousePosition = 
-            //    (Matrix.CreateTranslation(new Vector3(input.CurrentMouse.Position.X, input.CurrentMouse.Position.Y, 0)));
+            mousepos = input.CurrentMouse.Position;
+            Vector2 pos = (Camera.RelativePosition(mousepos.ToVector2()) + Camera.Target * GameMain.ActiveScale - Camera.GlobalOffset);
+            //pos.Normalize();
 
-            //target = (
-            //    new Vector2(transformedMousePosition.Translation.X, transformedMousePosition.Translation.X));
+            //vectorPosition = Camera.RelativePosition(pos) ;
 
-            int windowWidth = GameMain.Graphics.PreferredBackBufferWidth;
-            int windowHeight = GameMain.Graphics.PreferredBackBufferHeight;
+            vectorPosition = pos;
 
-            Vector2 target = new Vector2(
-                input.CurrentMouse.X - windowWidth / 2,
-                input.CurrentMouse.Y - windowHeight / 2);
-
-            vectorPosition = (Camera.Target + target);
         }
 
         public Vector2 GetPosition()
@@ -129,10 +122,32 @@ namespace Moonwalk.Classes.Entities
 
         public override void Draw(SpriteBatch batch)
         {
-            base.Draw(batch);
+            if (spriteScale == 0)
+            {
+                throw new Exception("You forgot to set the sprite scale");
+            }
 
+            //apply offset
+            Vector2 temp = (vectorPosition);
+
+            activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
+
+            batch.DrawString(GameManager.font,
+                $"Hitbox: {hurtbox.X} - {hurtbox.Y} ",
+                new Vector2(400, 50),
+                Color.White);
+
+            batch.DrawString(GameManager.font,
+                $"Drawing: {Math.Round(temp.Y)} - {Math.Round(temp.X)} ",
+                new Vector2(400, 75),
+                Color.White);
+
+
+            batch.DrawString(GameManager.font,
+                $"Position: {(mousepos.Y)} - {(mousepos.X)} ",
+                new Vector2(400, 100),
+                Color.White);
         }
-
     }
 
 }

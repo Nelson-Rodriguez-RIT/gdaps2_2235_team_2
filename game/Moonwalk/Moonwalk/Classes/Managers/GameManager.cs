@@ -337,10 +337,6 @@ namespace Moonwalk.Classes.Managers
                         //Add subscribers to player events
                         player.GetRobotPosition += robot.GetPosition;
                         player.ToggleBotLock += robot.ToggleLock;
-                        player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
-                        player.GetEnemies += entities.GetAllOfType<IHostile>;
-                        player.GetDamagables += entities.GetAllOfType<IDamageable>;
-                        player.GetInteractibles += entities.GetAllOfType<IInteractible>;
                     }
                     else {
                         // Loads player + companion

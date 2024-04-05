@@ -86,7 +86,7 @@ namespace Moonwalk.Classes.Managers
         /// <param name="path">Should (usually) be a valid map's name</param>
         public static MapData LoadMap(string path) {
             List<int[][]> bufferedTiles = new();
-            Assortment<Terrain> bufferedGeometry = new Assortment<Terrain>(new List<Type>(){typeof(MapTrigger), typeof(Terrain) });
+            Assortment<Terrain> bufferedGeometry = new Assortment<Terrain>(new List<Type>(){ typeof(Terrain), typeof(MapTrigger) });
             Texture2D bufferedSpritesheet;
             Vector2 bufferdTileSize = new Vector2();
 

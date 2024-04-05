@@ -50,7 +50,7 @@ namespace Moonwalk.Classes
 
                     if (type.IsSubclassOf(type2) )
                     {
-                        throw new Exception("No types in the list can inherit from one other");
+                        throw new Exception("No types in the list can inherit from one other unless it is the base class");
                     }
                 }
             }
@@ -67,7 +67,7 @@ namespace Moonwalk.Classes
                 if (type == typeof(T))
                 {
                     containsBaseType = true;
-                    break;
+                    continue;
                 }
 
                 Type listType = typeof(List<>).MakeGenericType(type);

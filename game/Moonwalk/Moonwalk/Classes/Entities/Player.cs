@@ -53,12 +53,8 @@ namespace Moonwalk.Classes.Entities
         const int meleeDmg = 1;
 
         //Events
-        public event OnGravityAbilityUsed OnGravityAbilityUsed;
         public event GetRobotPosition GetRobotPosition;
         public event ToggleBotLock ToggleBotLock;
-        public event GetEnemies GetEnemies;
-        public event GetDamagables GetDamagables;
-        public event GetInteractibles GetInteractibles;
 
         private Animations animation;
         private FaceDirection faceDirection;
@@ -363,7 +359,7 @@ namespace Moonwalk.Classes.Entities
 
         protected IHostile EnemyCollision()
         {
-            List<IHostile> list = GetEnemies();
+            List<IHostile> list = GameManager.entities.GetAllOfType<IHostile>();
 
             IHostile collision = list.Find(enemy => 
             new Rectangle(
@@ -390,7 +386,7 @@ namespace Moonwalk.Classes.Entities
         /// <returns></returns>
         protected IDamageable[] EnemyCollision(Rectangle hitbox)
         {
-            List<IDamageable> list = GetDamagables();
+            List<IDamageable> list = GameManager.entities.GetAllOfType<IDamageable>();
             list.Remove(this);
 
             IDamageable[] collisions = list.FindAll(damageable =>
@@ -580,7 +576,7 @@ namespace Moonwalk.Classes.Entities
                     14,
                     20),
                 typeof(IDamageable),
-                GetDamagables(),
+                GameManager.entities.GetAllOfType<IDamageable>(),
                 new Point(
                     10, -2));
             }
@@ -593,7 +589,7 @@ namespace Moonwalk.Classes.Entities
                     14,
                     20),
                 typeof(IDamageable),
-                GetDamagables(),
+                GameManager.entities.GetAllOfType<IDamageable>(),
                 new Point(
                     -16, -2));
             }

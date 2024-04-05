@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Moonwalk.Classes.Managers;
 using Moonwalk.Classes.Helpful_Stuff;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Moonwalk.Classes.Helpful_Stuff
 {
@@ -18,9 +19,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
     enum ParticleEffects
     {
         None,
-        Random,
-        Fall,
-        RandomFall,
+        Random
     }
 
     internal class Particle
@@ -36,24 +35,18 @@ namespace Moonwalk.Classes.Helpful_Stuff
         private Point position;
         private int maxTimer;
         private int timer;
+        Vector2 direction;
 
-        public Particle(int duration, Color color, ParticleEffects effect, Point position, int number = 1) 
+        public Particle(int duration, Color color, ParticleEffects effect, Point position, int frequency = 0, int number = 1) 
         {
             this.duration = duration;
             this.color = color;
             this.effect = effect;
             this.position = position;
+            this.direction = Vector2.Zero;
 
             //Timer is how often things happen
-            switch (effect)
-            {
-                case ParticleEffects.Fall:
-                    maxTimer = 5;
-                    break;
-                case ParticleEffects.Random:
-                    maxTimer = 1;
-                    break;
-            }
+            maxTimer = frequency;
 
             //add more particles if needed
             for (int i = 0; i < number - 1; i++)
@@ -63,6 +56,32 @@ namespace Moonwalk.Classes.Helpful_Stuff
                     color,
                     effect,
                     position)
+                    );
+            }
+        }
+
+        public Particle(int duration, Color color, ParticleEffects effect, Point position, Vector2 direction, int frequency = 0, int number = 1)
+        {
+            this.duration = duration;
+            this.color = color;
+            this.effect = effect;
+            this.position = position;
+            this.direction = direction;
+            this.direction.Normalize();
+
+            //Timer is how often things happen
+            maxTimer = frequency;
+
+            //add more particles if needed
+            for (int i = 0; i < number - 1; i++)
+            {
+                Effects.Add(new Particle(
+                    duration,
+                    color,
+                    effect,
+                    position,
+                    this.direction,
+                    frequency)
                     );
             }
         }
@@ -86,13 +105,14 @@ namespace Moonwalk.Classes.Helpful_Stuff
                             random.Next(-1, 2),
                             random.Next(-1, 2));
                         break;
-                    case ParticleEffects.Fall:
-                        position = new Point(position.X, position.Y + 1);
-                        break;
                 }
 
                 timer = maxTimer;
             }
+
+            position += new Point(
+                (int)Math.Round(direction.X),
+                (int)Math.Round(direction.Y));
             
             
             duration--;

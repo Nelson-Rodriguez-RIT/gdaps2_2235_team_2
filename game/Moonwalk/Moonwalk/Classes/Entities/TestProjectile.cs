@@ -21,7 +21,7 @@ namespace Moonwalk.Classes.Entities
             //Projectile will despawn after hitting something
             collisions = 1;
             spriteSheet = Loader.LoadTexture("particle");
-            hurtbox = new Rectangle(Position, new Point(10, 10));
+            hurtbox = new Rectangle(Position, new Point(5, 5));
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -29,7 +29,13 @@ namespace Moonwalk.Classes.Entities
             base.Update(gameTime, input);
 
             //Trail effect
-            Particle.Effects.Add(new Particle(10, Color.SkyBlue, ParticleEffects.Random, hurtbox.Center, 3));
+            Particle.Effects.Add(new Particle(5, Color.SkyBlue, ParticleEffects.Random, hurtbox.Center,
+                new Vector2(
+                    -velocity.X,
+                    -velocity.Y
+                    ),
+                1, 3));
+            
         }
 
         public override void AI()

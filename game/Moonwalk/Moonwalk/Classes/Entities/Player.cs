@@ -140,9 +140,8 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = 0;
             }
 
+            //Change publically available position
             Location = this.Position;
-
-            
         }
 
         public override void Movement(GameTime gt)
@@ -625,11 +624,12 @@ namespace Moonwalk.Classes.Entities
                     < Range
                     && movable is not Robot)
                 {
+                    const int GravityStrength = 100;
+
                     // Apply the impulse towards the robot
                     Vector2 difference = VectorMath.VectorDifference(vectorPosition, robotPos);
-                    movable.Impulse(new Vector2(
-                        difference.X,
-                        difference.Y));
+                    difference.Normalize();
+                    movable.Impulse(difference * GravityStrength);
                 }
 
             }

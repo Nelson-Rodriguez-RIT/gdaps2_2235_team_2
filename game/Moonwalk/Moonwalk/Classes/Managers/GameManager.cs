@@ -68,6 +68,7 @@ namespace Moonwalk.Classes.Managers
             types.Add(typeof(Player));
             types.Add(typeof(Robot));
             types.Add(typeof(Enemy));
+            types.Add(typeof(KeyObject));
             entities = new Assortment<Entity>(types);
 
 
@@ -314,10 +315,10 @@ namespace Moonwalk.Classes.Managers
                     //Map.LoadMap("Demo");
 
                     // Loads player + companion
-                    Player player = SpawnEntity<Player>(new Vector2(150, 50));
+                    Player player = SpawnEntity<Player>(new Vector2(800, 290));
                     Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
                     SpawnEntity<TestEnemy>(new Vector2(200, 250));
-                    KeyObject key = SpawnEntity<KeyObject>(new Vector2(200, 250));
+                    SpawnEntity<KeyObject>(new Vector2(900, 250));
 
                     // Set player as the Camera's target
                     Camera.SetTarget(player);

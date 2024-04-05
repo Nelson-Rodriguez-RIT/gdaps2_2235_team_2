@@ -84,7 +84,7 @@ namespace Moonwalk.Classes.Entities.Base
         // Currently displayed animation
         protected Animation activeAnimation; // Do NOT manually change this, use SwitchAnimation() instead
 
-        protected int spriteScale;
+        protected float spriteScale;
 
         public Entity(Vector2 position, string directory, bool loadAnimations = true, bool loadProperties = true) {
             // File data setup

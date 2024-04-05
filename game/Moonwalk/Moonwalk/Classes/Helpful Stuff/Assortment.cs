@@ -235,5 +235,14 @@ namespace Moonwalk.Classes
 
             return list.Cast<T2>().ToList();
         }
+
+        public List<T> ToList() {
+            List<T> list = new();
+
+            foreach (T data in this)
+                list.Add(data);
+
+            return list;
+        }
     }
 }

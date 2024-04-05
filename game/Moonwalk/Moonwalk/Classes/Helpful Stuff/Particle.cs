@@ -60,7 +60,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             }
         }
 
-        public Particle(int duration, Color color, ParticleEffects effect, Point position, Vector2 direction, int frequency = 0, int number = 1)
+        public Particle(int duration, Color color, ParticleEffects effect, Point position, Vector2 direction, int frequency = 0, int number = 1, int radius = 0)
         {
             this.duration = duration;
             this.color = color;
@@ -75,11 +75,15 @@ namespace Moonwalk.Classes.Helpful_Stuff
             //add more particles if needed
             for (int i = 0; i < number - 1; i++)
             {
+                double angle = random.NextDouble() * 360;
+
                 Effects.Add(new Particle(
                     duration,
                     color,
                     effect,
-                    position,
+                    position + new Point(
+                        (int)(Math.Sin(angle) * radius),
+                        (int)(Math.Cos(angle) * radius)),
                     this.direction,
                     frequency)
                     );

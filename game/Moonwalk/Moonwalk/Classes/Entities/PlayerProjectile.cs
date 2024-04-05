@@ -1,0 +1,100 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Helpful_Stuff;
+using Moonwalk.Classes.Managers;
+using Moonwalk.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
+namespace Moonwalk.Classes.Entities
+{
+    /// <summary>
+    /// Special enemy that hits enemies instead of players
+    /// </summary>
+    internal class PlayerProjectile : Projectile
+    {
+        public PlayerProjectile(Vector2 position, Vector2 direction)
+            : base(position, "", direction, 60f, 1)
+        {
+            damage = 1;
+
+            //Projectile will despawn after hitting something
+            collisions = 1;
+            spriteSheet = Loader.LoadTexture("particle");
+            hurtbox = new Rectangle(Position, new Point(5, 5));
+        }
+
+        public override void Update(GameTime gameTime, StoredInput input)
+        {
+            base.Update(gameTime, input);
+
+            IDamageable collision = null;
+
+            if ((collision = DamageableCollision()) != null)
+            {
+                const int Knockback = 50;
+
+                collision.TakeDamage(this.damage);
+                collision.Impulse(new Vector2(
+                    Knockback * Math.Sign(VectorMath.VectorDifference(vectorPosition, collision.Position.ToVector2()).X),
+                    Knockback));
+                collisions--;
+            }
+
+            //Trail
+            Particle.Effects.Add(new Particle(3, Color.White, ParticleEffects.Random, hurtbox.Center,
+                new Vector2(
+                    -velocity.X,
+                    -velocity.Y
+                    ),
+                1, 20, 5));
+        }
+
+        public override void AI()
+        {
+            //No AI
+        }
+
+        protected IDamageable DamageableCollision()
+        {
+            List<IDamageable> list = GameManager.entities.GetAllOfType<IDamageable>();
+
+            IDamageable collision = list.Find(enemy =>
+            enemy is not Player && 
+            new Rectangle(
+                enemy.Position.X,
+                enemy.Position.Y,
+                enemy.Hitbox.Width,
+                enemy.Hitbox.Height)
+            .Intersects(
+                new Rectangle(
+                    Position.X,
+                    Position.Y,
+                    Hitbox.Width,
+                    Hitbox.Height)
+                )
+            );
+
+            return collision;
+        }
+
+        public override void Draw(SpriteBatch batch)
+        {
+            batch.Draw(
+                spriteSheet,
+                Camera.RelativePosition(hurtbox.Center),
+                null,
+                Color.White,
+                0f,
+                new Vector2(0, 0),
+                new Vector2(1f, 1),
+                SpriteEffects.None,
+                0
+                );
+        }
+    }
+}

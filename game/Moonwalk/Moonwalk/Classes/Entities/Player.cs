@@ -44,8 +44,7 @@ namespace Moonwalk.Classes.Entities
         protected AbilityCooldowns<Abilities> cooldowns;
 
         int health;
-        const int gunDmg = 1;
-        const int meleeDmg = 1;
+        const int meleeDmg = 2;
 
         //Events
         public event GetRobotPosition GetRobotPosition;
@@ -148,11 +147,12 @@ namespace Moonwalk.Classes.Entities
         {
             base.Movement(gt);
             
-            //Check if player hits an enemy
+            //Check if player hits an enemy or projectile
             IHostile collision = null;
 
-            if ((collision = EnemyCollision()) != null
-                && iFrames <= 0)
+            if ((collision = HostileCollision()) != null
+                && iFrames <= 0
+                && collision is not PlayerProjectile)
             {
                 TakeDamage(collision.Damage);
 
@@ -351,7 +351,7 @@ namespace Moonwalk.Classes.Entities
             
         }
 
-        protected IHostile EnemyCollision()
+        protected IHostile HostileCollision()
         {
             List<IHostile> list = GameManager.entities.GetAllOfType<IHostile>();
 
@@ -548,11 +548,21 @@ namespace Moonwalk.Classes.Entities
             }
 
             // if F is pressed, play ranged attack animation
-            if (input.IsPressed(Keys.F))
+            if (input.IsPressed(Keys.F) &&
+                activeAnimation.AnimationValue != (int)(Animations.Shoot))
             {
                 SwitchAnimation(Animations.Shoot, 
                     true
                     );
+                GameManager.SpawnEntity<PlayerProjectile>(
+                    hurtbox.Center.ToVector2() + new Vector2(
+                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width, 
+                        -4),
+                    new object[]
+                    {
+                        faceDirection == FaceDirection.Left ? new Vector2(-1, 0) : new Vector2(1, 0)
+                    });
+
                 animationTimer = activeAnimation.AnimationLength;
             }
         }

@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TMXToMDF {
@@ -177,7 +173,7 @@ namespace TMXToMDF {
 
             // Format raw data by extracting useful elements
             while (rawData.Count != 0) {
-                
+
                 // Tile data
                 if (rawData.Peek().Contains("<layer")) {
                     // Ignore tmx file formatting
@@ -219,18 +215,27 @@ namespace TMXToMDF {
                     string header = rawData.Dequeue().Split('=').Last().Trim('>').Trim('"');
 
                     while (!rawData.Peek().Contains("</objectgroup")) {
+                        string _data = rawData.Dequeue();
+                        string output = $"{header}=";
+
+                        // Get data if object has data attached to it via its name
+                        if (_data.Contains("name="))
+                            output += $"{(dataBlock = _data.Split('"'))[3]},";
+
                         // Get relevant numerical data
-                        parsedData = Regex.Matches(rawData.Dequeue(), @"[.\d]+");
+                        parsedData = Regex.Matches(_data, @"[.\d]+");
                         dataBlock = parsedData.Cast<Match>().Select(match => match.Value).ToArray();
 
                         // We care for the 2nd, 3rd, 4th, and 5th numeric values in the file
                         // Tiled doesn't allow for special geometry, therefore we assume all
                         // geometry is basic Terrain
-                        formatData.Add($"{header}=" +    
+                        output +=
                             $"{(int)float.Parse(dataBlock[1])}," +  // Collision's relative X position
                             $"{(int)float.Parse(dataBlock[2])}," +  // Collision's relative Y position
                             $"{(int)float.Parse(dataBlock[3])}," +  // Collision's width
-                            $"{(int)float.Parse(dataBlock[4])}");   // Collision's height
+                            $"{(int)float.Parse(dataBlock[4])}";   // Collision's height
+
+                        formatData.Add(output);
                     }
                 }
 

@@ -8,8 +8,10 @@ using System;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Moonwalk.Classes.Maps;
 
-namespace Moonwalk.Classes.Managers {
+namespace Moonwalk.Classes.Managers
+{
     internal static class Loader {
         // Used to load content such as PNGs from file
         // More useful to have it here so we can load files only
@@ -84,7 +86,7 @@ namespace Moonwalk.Classes.Managers {
         /// <param name="path">Should (usually) be a valid map's name</param>
         public static MapData LoadMap(string path) {
             List<int[][]> bufferedTiles = new();
-            List<Terrain> bufferedGeometry = new();
+            Assortment<Terrain> bufferedGeometry = new Assortment<Terrain>(new List<Type>(){typeof(MapTrigger), typeof(Terrain) });
             Texture2D bufferedSpritesheet;
             Vector2 bufferdTileSize = new Vector2();
 
@@ -150,6 +152,22 @@ namespace Moonwalk.Classes.Managers {
                                 int.Parse(buffer[2]),    // Width
                                 int.Parse(buffer[3])     // Height
                                 )));
+                            break;
+
+                        // Loads a map upon collision
+                        case "MAPTRIGGER":
+                            buffer = dataBlocks[1].Split(',');
+                            bufferedGeometry.Add(
+                                new MapTrigger(
+                                    new Rectangle(
+                                        int.Parse(buffer[1]),   // X
+                                        int.Parse(buffer[2]),   // Y
+                                        int.Parse(buffer[3]),   // Width
+                                        int.Parse(buffer[4])    // Height
+                                        ),
+                                    buffer[0]                   // Map to load
+                                    )
+                                );
                             break;
                     }
                 }

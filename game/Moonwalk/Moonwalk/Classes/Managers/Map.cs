@@ -1,19 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Maps;
 using System;
 using System.Collections.Generic;
 
-namespace Moonwalk.Classes.Managers {
+namespace Moonwalk.Classes.Managers
+{
     internal static class Map {
         // Root folder for all maps
         private const string RootDirectory = "../../../Content/Maps/";
+        private static string activeMapName;
 
         // Contains IDs that dictate what tile, and where, to display
         internal static List<int[][]> tiles = null; // Data read from MDF
 
         // Contains collision elements
-        internal static List<Terrain> geometry = null; // Data read from MDF
+        internal static Assortment<Terrain> geometry = null; // Data read from MDF
 
         // Sprite sheet the map will use. Each tile correlates to an ID
         // Starts at ID 1 and increases as it goes right (and down)
@@ -32,7 +34,11 @@ namespace Moonwalk.Classes.Managers {
             get { return tiles != null; }
         }
 
-        public static List<Terrain> Geometry {
+        public static string LoadedMapName {
+            get { return activeMapName; }
+        }
+
+        public static Assortment<Terrain> Geometry {
             get { return geometry; }
         }
 
@@ -40,10 +46,12 @@ namespace Moonwalk.Classes.Managers {
         /// Loads a map (and relevant file data)
         /// </summary>
         /// <param name="mapRootFolderName">Name of the map</param>
-        public static void LoadMap(string mapRootFolderName) {
+        public static void LoadMap(string mapRootFolderName, bool resetState = false) {
             // Get and load data from file
             MapData bufferedData = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
             bufferedData.Load();
+
+            activeMapName = mapRootFolderName;
 
             // Load hitbox sprite if it hasn't already
             if (hitboxSprite == null)
@@ -110,11 +118,11 @@ namespace Moonwalk.Classes.Managers {
     internal class MapData {
         // Buffers for file data
         private List<int[][]> bufferedTiles;
-        private List<Terrain> bufferedGeometry;
+        private Assortment<Terrain> bufferedGeometry;
         private Texture2D bufferedSpritesheet;
         Vector2 bufferedTileSize;
 
-        public MapData(List<int[][]> tiles, List<Terrain> geometry, Texture2D spritesheet, Vector2 tileSize) {
+        public MapData(List<int[][]> tiles, Assortment<Terrain> geometry, Texture2D spritesheet, Vector2 tileSize) {
             bufferedTiles = tiles;
             bufferedGeometry = geometry;
             bufferedSpritesheet = spritesheet;

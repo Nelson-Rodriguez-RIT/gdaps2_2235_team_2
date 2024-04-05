@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Moonwalk.Classes.Managers;
 using Moonwalk.Classes.Helpful_Stuff;
 using System.IO;
+using Moonwalk.Classes.Maps;
 
 namespace Moonwalk.Classes.Entities.Base
 {
@@ -27,7 +28,7 @@ namespace Moonwalk.Classes.Entities.Base
                 switch (physicsState)
                 {
                     case PhysicsState.Linear:
-
+                        
                         // Min accuracy is 1
                         if (velocity.X == 0 &&
                             velocity.Y == 0)
@@ -83,7 +84,7 @@ namespace Moonwalk.Classes.Entities.Base
         public virtual bool CheckCollision()
         {
             // checks if there is a terrain that collides with this
-            bool collision = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(new Rectangle(
+            bool collision = Map.Geometry.ToList().Exists(terrain => terrain.Hitbox.Intersects(new Rectangle(
                     hurtbox.X,
                     hurtbox.Y,
                     hurtbox.Width,
@@ -93,7 +94,7 @@ namespace Moonwalk.Classes.Entities.Base
             if (collision)
             {
                 // for testing purposes
-                Terrain intersectedTerrain = Map.Geometry.Find(terrain => terrain.Hitbox.Intersects(new Rectangle(
+                Terrain intersectedTerrain = Map.Geometry.ToList().Find(terrain => terrain.Hitbox.Intersects(new Rectangle(
                     hurtbox.X,
                     hurtbox.Y,
                     hurtbox.Width,
@@ -110,7 +111,7 @@ namespace Moonwalk.Classes.Entities.Base
         /// <returns>True if a collision occurred</returns>
         public virtual bool CheckCollision(Rectangle rectangle)
         {
-            bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(rectangle));
+            bool temp = Map.Geometry.ToList().Exists(terrain => terrain.Hitbox.Intersects(rectangle));
 
             if (temp)
             {

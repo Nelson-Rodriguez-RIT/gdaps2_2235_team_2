@@ -5,16 +5,12 @@ using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities;
 using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Classes.Helpful_Stuff;
+using Moonwalk.Classes.Maps;
 using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+
 
 namespace Moonwalk.Classes.Managers
 {
@@ -329,28 +325,50 @@ namespace Moonwalk.Classes.Managers
 
                 case GameState.Demo:
 
-                    Map.LoadMap("MoonwalkMap");
-                    //Map.LoadMap("Demo");
+                    if (!Map.Loaded) {
+                        Map.LoadMap("Demo");
 
-                    // Loads player + companion
-                    Player player = SpawnEntity<Player>(new Vector2(800, 290));
-                    Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
-                    SpawnEntity<TestEnemy>(new Vector2(200, 250));
-                    SpawnEntity<KeyObject>(new Vector2(900, 250));
+                        Player player = SpawnEntity<Player>(new Vector2(64, 0));
+                        Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
 
-                    // Set player as the Camera's target
-                    Camera.SetTarget(player);
+                        // Set player as the Camera's target
+                        Camera.SetTarget(player);
 
-                    //Add subscribers to player events
-                    player.GetRobotPosition += robot.GetPosition;
-                    player.ToggleBotLock += robot.ToggleLock;
-                    player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;                   
-                    player.GetEnemies += entities.GetAllOfType<IHostile>;
-                    player.GetDamagables += entities.GetAllOfType<IDamageable>;
-                    player.GetInteractibles += entities.GetAllOfType<IInteractible>;
+                        //Add subscribers to player events
+                        player.GetRobotPosition += robot.GetPosition;
+                        player.ToggleBotLock += robot.ToggleLock;
+                        player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
+                        player.GetEnemies += entities.GetAllOfType<IHostile>;
+                        player.GetDamagables += entities.GetAllOfType<IDamageable>;
+                        player.GetInteractibles += entities.GetAllOfType<IInteractible>;
+                    }
+                    else {
+                        // Loads player + companion
+                        Player player = SpawnEntity<Player>(new Vector2(800, 290));
+                        Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
+                        SpawnEntity<TestEnemy>(new Vector2(200, 250));
+                        SpawnEntity<KeyObject>(new Vector2(900, 250));
+
+                        // Set player as the Camera's target
+                        Camera.SetTarget(player);
+
+                        //Add subscribers to player events
+                        player.GetRobotPosition += robot.GetPosition;
+                        player.ToggleBotLock += robot.ToggleLock;
+                        player.OnGravityAbilityUsed += entities.GetAllOfType<IMovable>;
+                        player.GetEnemies += entities.GetAllOfType<IHostile>;
+                        player.GetDamagables += entities.GetAllOfType<IDamageable>;
+                        player.GetInteractibles += entities.GetAllOfType<IInteractible>;
+                    }
+                        
                     
                     break;
             }
+
+            // Set up map loading triggers
+            if (Map.Loaded)
+                foreach (MapTrigger trigger in Map.Geometry[typeof(MapTrigger)])
+                    trigger.OnCollision += Reset;
 
             state = nextState;
         }
@@ -387,7 +405,9 @@ namespace Moonwalk.Classes.Managers
             entities.Remove(entity);
         }
 
-        
+        private void Reset() {
+            Transition(state);
+        }
     }
 
 

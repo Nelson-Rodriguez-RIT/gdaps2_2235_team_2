@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Moonwalk.Classes.Managers;
+﻿using Microsoft.Xna.Framework;
 
-namespace Moonwalk.Classes.Entities.Base {
+namespace Moonwalk.Classes.Maps {
+
+
     internal class Terrain {
+        public delegate void OnCollisionHandler();
+        public event OnCollisionHandler OnCollision;
+
         protected Rectangle hitbox;
-       
 
         public Rectangle Hitbox {
             get { return hitbox; }
@@ -18,11 +17,15 @@ namespace Moonwalk.Classes.Entities.Base {
         public Terrain(Rectangle hitbox) {
             this.hitbox = hitbox;
 
-
+            
         }
 
-        public override string ToString()
-        {
+        public virtual void Collide() {
+            OnCollision();
+        }
+
+
+        public override string ToString() {
             return hitbox.X + " - " + hitbox.Y + " - " + hitbox.Width + " - " + hitbox.Height;
         }
     }

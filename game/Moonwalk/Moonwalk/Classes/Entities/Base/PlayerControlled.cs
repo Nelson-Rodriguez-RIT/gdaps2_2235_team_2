@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Managers;
 using System.Net.Http.Headers;
+using Moonwalk.Classes.Maps;
 
 namespace Moonwalk.Classes.Entities.Base
 {
@@ -91,14 +92,23 @@ namespace Moonwalk.Classes.Entities.Base
         /// <returns>True if a collision occurred</returns>
         public virtual bool CheckCollision()
         {
-            bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(new Rectangle(
+            bool isColliding = false;
+            Rectangle hitbox = new Rectangle(
                     hurtbox.X,
                     hurtbox.Y,
                     hurtbox.Width,
                     hurtbox.Height
-                    )));
+                    );
 
-            return temp;
+            foreach (Terrain element in Map.Geometry.ToList())
+                if (element.Hitbox.Intersects(hitbox)) {
+                    isColliding = true;
+
+                    if (this is Player && element is MapTrigger)
+                        element.Collide();
+                }
+
+            return isColliding;
         }
 
         /// <summary>
@@ -107,14 +117,26 @@ namespace Moonwalk.Classes.Entities.Base
         /// <returns>True if a collision occurred</returns>
         public virtual bool CheckCollision(Rectangle rectangle)
         {
-            bool temp = Map.Geometry.Exists(terrain => terrain.Hitbox.Intersects(rectangle));
+            bool isColliding = false;
 
-            if (temp)
-            {
-                //for debugging
-            }
+            foreach (Terrain element in Map.Geometry.ToList())
+                if (element.Hitbox.Intersects(rectangle)) {
+                    isColliding = true;
 
-            return temp;
+                    if (element is MapTrigger)
+                        element.Collide();
+                }
+
+            return isColliding;
+
+            //bool temp = Map.Geometry.ToList().Exists(terrain => terrain.Hitbox.Intersects(rectangle));
+
+            //if (temp)
+            //{
+            //    //for debugging
+            //}
+
+            //return temp;
         }
 
         public virtual bool CheckCollision<T>(List<T> list) where T : Entity

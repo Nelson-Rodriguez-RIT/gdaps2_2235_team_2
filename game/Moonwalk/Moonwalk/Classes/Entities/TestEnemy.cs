@@ -28,7 +28,8 @@ namespace Moonwalk.Classes.Entities
 
         private enum Abilities
         {
-            Jump
+            Jump,
+            Shoot
         }
 
         FaceDirection faceDirection;
@@ -92,6 +93,14 @@ namespace Moonwalk.Classes.Entities
                 //activeAnimation.FaceDirection = (int)faceDirection;
 
                 acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
+
+                if (cooldowns[Abilities.Shoot] == 0)
+                {
+                    //Shoot
+                    GameManager.SpawnEntity<TestProjectile>(vectorPosition, new Object[] {
+                    VectorMath.VectorDifference(vectorPosition, target.Position.ToVector2()) });
+                    cooldowns.UseAbility(Abilities.Shoot);
+                }
             }
             else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
             {
@@ -99,6 +108,8 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = 0;
                 SwitchAnimation(Animations.StaticIdle);
             }
+
+            
         }
 
         public virtual void TakeDamage(int damage)

@@ -46,7 +46,7 @@ namespace Moonwalk.Classes.Managers
         private MouseState msState;
 
         // Currently loaded entities
-        private Assortment<Entity> entities;
+        public static Assortment<Entity> entities;
 
         List<Type> types;
 
@@ -69,6 +69,7 @@ namespace Moonwalk.Classes.Managers
             types.Add(typeof(Robot));
             types.Add(typeof(Enemy));
             types.Add(typeof(KeyObject));
+            types.Add(typeof(Projectile));
             entities = new Assortment<Entity>(types);
 
 
@@ -218,6 +219,18 @@ namespace Moonwalk.Classes.Managers
                 }
             }
 
+            for (int i = 0; i < Particle.Effects.Count; i++)
+            {
+                int length = Particle.Effects.Count;
+
+                Particle.Effects[i].Update(gt);
+
+                if (Particle.Effects.Count < length)
+                {
+                    i--;
+                }
+            }
+
 
             storedInput.UpdatePrevious();
         }
@@ -227,6 +240,9 @@ namespace Moonwalk.Classes.Managers
         /// </summary>
         public void Draw(SpriteBatch batch, GraphicsDevice graphics) {
             // Elements draw based on game state (i.e. GUI or menu elements)
+            if (Map.Loaded)
+                Map.Draw(batch, displayTerrainHitboxes);
+
             switch (state) {
                 case GameState.MainMenu:
                     graphics.Clear(Color.Black);
@@ -276,9 +292,6 @@ namespace Moonwalk.Classes.Managers
                     break;
             }
 
-            if(Map.Loaded)
-                Map.Draw(batch, displayTerrainHitboxes);
-
             // Elements drawn ever iteration
             foreach (Entity entity in entities) {
                 entity.Draw(batch);
@@ -294,7 +307,12 @@ namespace Moonwalk.Classes.Managers
                     h.DrawHitbox(batch);
                 }
             }
-                
+
+            foreach (Particle p in Particle.Effects)
+            {
+                p.Draw(batch);
+            }
+
         }
 
         /// <summary>
@@ -340,8 +358,22 @@ namespace Moonwalk.Classes.Managers
         /// <summary>
         /// Handles any neccassray logic when spawning an entity
         /// </summary>
-        private T SpawnEntity<T>(Vector2 position, Object[] args = null) where T : Entity {
-            Entity entity = (Entity)Activator.CreateInstance(typeof(T), new object[] { position });
+        public static T SpawnEntity<T>(Vector2 position, Object[] args = null) where T : Entity {
+            //Copy everything into args
+            object[] newArgs = new object[
+                args != null ? args.Length + 1 : 1
+                ];
+            newArgs[0] = position;
+
+            if (args != null )
+            {
+                for (int i = 0; i < args.Length; i++)
+                {
+                    newArgs[i + 1] = args[i];
+                }
+            } 
+
+            Entity entity = (Entity)Activator.CreateInstance(typeof(T), newArgs);
             entities.Add(entity);
 
             return (T)entity;
@@ -351,7 +383,7 @@ namespace Moonwalk.Classes.Managers
         /// Handles any neccessary logic when despawning an entity
         /// </summary>
         /// <param name="entity">Entity to despawn</param>
-        private void DespawnEntity(Entity entity) {
+        public static void DespawnEntity(Entity entity) {
             entities.Remove(entity);
         }
 

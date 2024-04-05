@@ -92,6 +92,8 @@ namespace Moonwalk.Classes.Entities.Base
             EntityData bufferedData = Loader.LoadEntity(directory, loadAnimations, loadProperties);
             bufferedData.Load(this);
 
+            spriteScale = 1;
+
             // Physics set up
             physicsState = PhysicsState.Linear;
             vectorPosition = position;
@@ -119,6 +121,7 @@ namespace Moonwalk.Classes.Entities.Base
                 GameTime gameTime, 
                 StoredInput input) 
         {
+            if (activeAnimation  != null)
             activeAnimation.UpdateAnimation(gameTime);
         }
 

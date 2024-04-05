@@ -63,9 +63,17 @@ namespace Moonwalk.Classes.Entities.Base
             get { return damage; }
         }
 
-        public Projectile(Vector2 position, string directory, Vector2 initialVelocity) : base(position, directory) 
+        public Projectile(Vector2 position, string directory, Vector2 direction, float speed, int damage) : base(position, directory, false, false) 
         { 
-            velocity = initialVelocity;
+            velocity = Vector2.Normalize(direction) * speed;
+            this.damage = damage;
+        }
+
+        public override void Update(GameTime gameTime, StoredInput input)
+        {
+            AI();
+            Movement(gameTime);
+            base.Update(gameTime, input);
         }
 
         /// <summary>
@@ -194,6 +202,6 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-        public abstract void AI(Vector2 target);
+        public abstract void AI();
     }
 }

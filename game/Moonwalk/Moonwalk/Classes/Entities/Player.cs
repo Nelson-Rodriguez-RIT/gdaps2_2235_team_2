@@ -25,6 +25,7 @@ namespace Moonwalk.Classes.Entities
     /// </summary>
     internal class Player : PlayerControlled, IJump, IDamageable
     {
+        public static Point Location;
         protected enum Animations
         {
             Idle,
@@ -149,7 +150,13 @@ namespace Moonwalk.Classes.Entities
             {
                 velocity.X = 0;
                 acceleration.X = 0;
-            }        
+            }
+
+            Location = this.Position;
+
+            //testing
+            Particle.Effects.Add(new Particle(30, Color.SkyBlue, ParticleEffects.Random, hurtbox.Center));
+
             
         }
 

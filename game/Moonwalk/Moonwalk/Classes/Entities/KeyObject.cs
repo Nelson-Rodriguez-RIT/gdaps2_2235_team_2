@@ -27,7 +27,7 @@ namespace Moonwalk.Classes.Entities
 
             hurtbox = new Rectangle(0, 0, 20, 20);
 
-            spriteSheet = Loader.LoadTexture("Entities/Key/key");
+            spriteSheet = Loader.LoadTexture("Entities/Key/keycard");
             spriteScale = 1;
         }
 
@@ -65,7 +65,17 @@ namespace Moonwalk.Classes.Entities
 
         public override void Draw(SpriteBatch batch)
         {
-            batch.Draw(spriteSheet, Camera.RelativePosition(Position), Color.White);
+            batch.Draw(
+                spriteSheet, 
+                Camera.RelativePosition(Position), 
+                null,
+                Color.White,
+                0f,
+                new Vector2 (0,0),
+                new Vector2 (.25f, .25f),
+                SpriteEffects.None,
+                0
+                );
         }
 
     }

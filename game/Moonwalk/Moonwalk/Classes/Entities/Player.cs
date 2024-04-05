@@ -188,12 +188,12 @@ namespace Moonwalk.Classes.Entities
                     Particle.Effects.Add(new Particle
                         (1, 
                         Color.SkyBlue, 
-                        ParticleEffects.Random,
+                        ParticleEffects.None,
                         (hurtbox.Center.ToVector2() + thing)
                             .ToPoint(),
                         0, 
-                        10, 
-                        5)
+                        3, 
+                        4)
                         );
                 }
             }

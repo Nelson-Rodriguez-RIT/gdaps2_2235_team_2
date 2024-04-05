@@ -144,7 +144,6 @@ namespace Moonwalk.Classes.Entities
 
             if (velocity.X != 0
                 && Math.Abs(velocity.X) < 1f)
-                //&& Math.Sign(acceleration.X) != Math.Sign(velocity.X))
             {
                 velocity.X = 0;
                 acceleration.X = 0;
@@ -560,7 +559,6 @@ namespace Moonwalk.Classes.Entities
 
             // if F is pressed, play ranged attack animation
             if (input.IsPressed(Keys.F))
-                //&& activeAnimation.AnimationValue != (int)Animations.Shoot)
             {
                 SwitchAnimation(Animations.Shoot, 
                     true
@@ -603,29 +601,6 @@ namespace Moonwalk.Classes.Entities
             
 
             attack.targetEntered += this.DealDamage;
-
-            
-
-            /*
-            IDamageable[] enemies =
-                EnemyCollision(
-                    new Rectangle(          //change this, currently it goes on both sides of the player
-                        Position.X - 100,
-                        Position.Y,
-                        200,
-                        hitbox.Height)
-                    );
-
-
-            for (int i = 0; i < enemies.Length; i++)
-            {
-                enemies[i].TakeDamage(meleeDmg);
-                enemies[i].Impulse(new Vector2(
-                    KnockBack * Math.Sign(VectorMath.VectorDifference(vectorPosition, enemies[i].Position.ToVector2()).X),
-                    KnockBack));
-            }
-
-            */
         }
 
         private void DealDamage(List<IDamageable> list)
@@ -646,7 +621,7 @@ namespace Moonwalk.Classes.Entities
         {
             const int Range = 120;
             // Get a list of movables from the game manager
-            List<IMovable> movables = OnGravityAbilityUsed();
+            List<IMovable> movables = GameManager.entities.GetAllOfType<IMovable>();
 
             // Make all entities move towards this
             foreach (IMovable movable in movables)

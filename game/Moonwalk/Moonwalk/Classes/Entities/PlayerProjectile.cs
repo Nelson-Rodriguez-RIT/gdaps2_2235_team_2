@@ -25,7 +25,7 @@ namespace Moonwalk.Classes.Entities
             //Projectile will despawn after hitting something
             collisions = 1;
             spriteSheet = Loader.LoadTexture("particle");
-            hurtbox = new Rectangle(Position, new Point(5, 5));
+            hurtbox = new Rectangle(Position, new Point(7, 7));
         }
 
         public override void Update(GameTime gameTime, StoredInput input)

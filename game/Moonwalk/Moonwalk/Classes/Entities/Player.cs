@@ -185,17 +185,20 @@ namespace Moonwalk.Classes.Entities
 
             if (physicsState == PhysicsState.Rotational)
             {
+                //number of links to make
                 const int Links = 10;
 
+                //Distance between each link
                 int slice = (int)(swingRadius / Links);
 
                 for (int i = 1; i < Links; i++)
                 {
-                    Vector2 thing = Vector2.Normalize(VectorMath.VectorDifference(vectorPosition, pivot)) * slice * i;
+                    Vector2 thing = Vector2.Normalize(VectorMath.VectorDifference(hurtbox.Center.ToVector2(), pivot)) 
+                        * slice * i; //increment every iteration
 
                     Particle.Effects.Add(new Particle
                         (2, Color.SkyBlue, ParticleEffects.Random,
-                        (vectorPosition + thing)
+                        (hurtbox.Center.ToVector2() + thing)
                             .ToPoint())
                         );
                 }
@@ -641,7 +644,7 @@ namespace Moonwalk.Classes.Entities
         
         private void GravityAbility(Vector2 robotPos)
         {
-            
+            const int Range = 120;
             // Get a list of movables from the game manager
             List<IMovable> movables = OnGravityAbilityUsed();
 
@@ -653,7 +656,8 @@ namespace Moonwalk.Classes.Entities
                         Math.Pow(movable.Position.X - robotPos.X, 2) +
                         Math.Pow(movable.Position.Y - robotPos.Y, 2)
                         )
-                    < 150)
+                    < Range
+                    && movable is not Robot)
                 {
                     // Apply the impulse towards the robot
                     Vector2 difference = VectorMath.VectorDifference(vectorPosition, robotPos);
@@ -664,6 +668,26 @@ namespace Moonwalk.Classes.Entities
 
             }
 
+            const int Particles = 72;
+            double slice = 360 / Particles;
+
+            for (int i = 0; i < Particles; i++)
+            {
+                Vector2 pos = new Vector2(
+                    (float)Math.Sin(slice * i) * Range,
+                    (float)Math.Cos(slice * i) * Range);
+
+                pos.Normalize();
+
+                Point location = robotPos.ToPoint() + (pos * Range).ToPoint();
+
+                Particle.Effects.Add(
+                    new Particle(
+                        30,
+                        Color.Lime,
+                        ParticleEffects.Random,
+                        location));
+            }
         }
         
         public void TakeDamage(int damage)

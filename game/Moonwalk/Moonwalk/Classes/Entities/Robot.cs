@@ -39,9 +39,15 @@ namespace Moonwalk.Classes.Entities
             Move
         }
 
-        private bool locked;
+        private static bool locked;
         const float MoveSpeed = 40f;
         internal Point mousepos; // Internal used for GUIRobotDebugElement
+        public static IMovable Tether;
+
+        public static bool Locked
+        {
+            get { return locked; }
+        }
 
         //Change this to private later
         public Robot(Vector2 position) : base(position, "../../../Content/Entities/Robot")
@@ -50,6 +56,7 @@ namespace Moonwalk.Classes.Entities
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
 
+            
             //GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
         }
 

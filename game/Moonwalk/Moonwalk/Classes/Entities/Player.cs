@@ -8,6 +8,7 @@ using Moonwalk.Classes.Managers;
 using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Entities
@@ -248,7 +249,7 @@ namespace Moonwalk.Classes.Entities
                 acceleration = new Vector2(
                     acceleration.X, gravity);
 
-                ToggleBotLock();
+                //ToggleBotLock();
                 LinearMotion(gt);
             }
         }
@@ -317,7 +318,8 @@ namespace Moonwalk.Classes.Entities
             if (physicsState == PhysicsState.Linear
                 && input.CurrentMouse.RightButton == ButtonState.Pressed
                 && input.PreviousMouse.RightButton == ButtonState.Released
-                && cooldowns[Abilities.Tether] == 0)
+                && cooldowns[Abilities.Tether] == 0
+                && !Robot.Locked)
             {
                 Vector2 robotPos = GetRobotPosition();
 
@@ -326,21 +328,41 @@ namespace Moonwalk.Classes.Entities
                         )
                     < 125)
                 {
+                    Robot.Tether = this;
                     cooldowns.UseAbility(Abilities.Tether);
                     SetRotationalVariables(robotPos);
                     ToggleBotLock();
                 }
-                
+                else
+                {
+                    List<IMovable> list = GameManager.entities.GetAllOfType<IMovable>();
+                    list.Remove(list.Find(item => item is Robot));
 
+                    if (list.Count > 0)
+                    {
+                        Robot.Tether = list.MinBy(item =>
+                            VectorMath.VectorMagnitude(
+                                VectorMath.VectorDifference(
+                                    item.Position.ToVector2(),
+                                    robotPos)
+                                )
+                            );
+
+                        Robot.Tether.SetRotationalVariables(robotPos);
+                        ToggleBotLock();
+                    }
+
+
+                }
             }
             else if (input.CurrentMouse.RightButton == ButtonState.Released
-                && input.PreviousMouse.RightButton == ButtonState.Pressed)
+                && input.PreviousMouse.RightButton == ButtonState.Pressed
+                && Robot.Tether != null)
             {
-                if (physicsState == PhysicsState.Rotational)
-                {
-                    SetLinearVariables();
+
+                    Robot.Tether.SetLinearVariables();
+                    Robot.Tether = null;
                     ToggleBotLock();
-                }  
             }
 
         }
@@ -348,22 +370,6 @@ namespace Moonwalk.Classes.Entities
         public override void Draw(SpriteBatch batch)
         {
             base.Draw(batch);
-
-            /*
-            batch.DrawString(GUI.GetFont("File"), 
-                $"{Math.Round(vectorPosition.X)} - {Math.Round(vectorPosition.Y)} ",
-                new Vector2(400, 50),
-                Color.White);
-            */
-
-            Vector2 temp = Camera.WorldToScreen(Camera.RelativePosition(new Vector2(0,0)));
-                //Camera.RelativePosition((Camera.RelativePosition((Vector2.Zero)) + vectorPosition * GameMain.ActiveScale - Camera.GlobalOffset));
-            //testing
-            //Continue here future Dante (converting coordinates)
-            batch.Draw(hitboxSprite, new Rectangle(
-                (int)temp.X,
-                (int)temp.Y,
-                20, 20), Color.White);
             
         }
 

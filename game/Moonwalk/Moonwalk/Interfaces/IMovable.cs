@@ -38,5 +38,9 @@ namespace Moonwalk.Interfaces
         /// <param name="destination"></param>
         void Impulse(Vector2 destination);
 
+        void SetRotationalVariables(Vector2 center);
+
+        void SetLinearVariables();
+
     }
 }

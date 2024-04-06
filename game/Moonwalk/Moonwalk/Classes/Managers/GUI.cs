@@ -58,8 +58,7 @@ namespace Moonwalk.Classes.Managers {
         private Vector2 position;
         private string text;
         private SpriteFont font;
-        private Color color;
-
+        private Color color;        
 
         public GUITextElement(Vector2 position, string text, string fontName, Color color) {
             this.position = position;
@@ -72,7 +71,7 @@ namespace Moonwalk.Classes.Managers {
         public override void Draw(SpriteBatch batch) {
             batch.DrawString(font, text, position, color);
         }
-    }
+    }    
 
     /// <summary>
     /// A simple GUI element that draws a Texture2D on the screen

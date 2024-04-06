@@ -70,6 +70,7 @@ namespace Moonwalk.Classes.Entities
             spriteScale = 1;
             maxXVelocity = 50;
             cooldowns = new(directory, 1.5);
+
         }
 
         public override void AI()

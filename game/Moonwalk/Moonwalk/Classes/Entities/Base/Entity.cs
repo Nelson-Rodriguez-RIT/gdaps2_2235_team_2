@@ -240,11 +240,17 @@ namespace Moonwalk.Classes.Entities.Base
                     
 
             //Get the angle between the player and 0 degrees (right)
-            theta = 180 - (float)((180 / Math.PI) * Math.Acos(
+            theta = //vectorPosition.Y > pivot.Y ? -1 : 1 *
+                (180 - (float)((180 / Math.PI) * Math.Acos(
                     hypotenuse.X
                     /
                     swingRadius
-                    ));
+                    )));
+
+            if (vectorPosition.Y < pivot.Y)
+            {
+                theta += 2 * (180 - theta);
+            }
 
             //The rest of the code in this is for determining the 
             //entity's initial velocity when they start swinging. You need to 
@@ -278,7 +284,7 @@ namespace Moonwalk.Classes.Entities.Base
                 angleBetween);
 
             //Set the initial angular velocity
-            angVelocity = (newVMag * 550 * -Math.Sign(hypotenuse.X)) / swingRadius;
+            angVelocity = (newVMag * 550 * Math.Sign(pivot.Y - vectorPosition.Y)) / swingRadius;
                                 // 550: upscaling number
         }
 

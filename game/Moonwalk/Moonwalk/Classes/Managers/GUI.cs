@@ -97,7 +97,10 @@ namespace Moonwalk.Classes.Managers {
         }
     }
 
-    // This class is just for fun, pay it no mind :)
+    /// <summary>
+    /// A GUI element that uses pointers to access data at a specific variable,
+    /// allow for values to be dynamic and change in real time. Outputed via text
+    /// <summary>
     public unsafe class GUIDynamicTextElement : GUIElement {
         private Vector2 position;
         // Using pointers because I want to access data inside an object

@@ -132,18 +132,18 @@ namespace Moonwalk.Classes.Entities
 
             activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
 
-            batch.DrawString(GameManager.font,
+            batch.DrawString(GUI.GetFont("File"),
                 $"Hitbox: {hurtbox.X} - {hurtbox.Y} ",
                 new Vector2(400, 50),
                 Color.White);
 
-            batch.DrawString(GameManager.font,
+            batch.DrawString(GUI.GetFont("File"),
                 $"Drawing: {Math.Round(temp.Y)} - {Math.Round(temp.X)} ",
                 new Vector2(400, 75),
                 Color.White);
 
 
-            batch.DrawString(GameManager.font,
+            batch.DrawString(GUI.GetFont("File"),
                 $"Position: {(mousepos.Y)} - {(mousepos.X)} ",
                 new Vector2(400, 100),
                 Color.White);

@@ -19,7 +19,6 @@ namespace Moonwalk.Classes.Entities
             : base(position, "", direction, 50f, 1)
         {
             //Projectile will despawn after hitting something
-            collisions = 1;
             spriteSheet = Loader.LoadTexture("particle");
             hurtbox = new Rectangle(Position, new Point(5, 5));
         }
@@ -34,28 +33,14 @@ namespace Moonwalk.Classes.Entities
                     -velocity.X,
                     -velocity.Y
                     ),
-                1, 3));
-            
+                1, 3)); 
         }
 
         public override void AI()
         {
-            //no change in motion
+            acceleration = (Player.Location - Position).ToVector2();
         }
 
-        public override void Draw(SpriteBatch batch)
-        {
-            batch.Draw(
-                spriteSheet,
-                Camera.RelativePosition(hurtbox.Center),
-                null,
-                Color.White,
-                0f,
-                new Vector2(0, 0),
-                new Vector2(1f, 1),
-                SpriteEffects.None,
-                0
-                );
-        }
+        
     }
 }

@@ -64,10 +64,12 @@ namespace Moonwalk.Classes.Entities.Base
             get { return damage; }
         }
 
-        public Projectile(Vector2 position, string directory, Vector2 direction, float speed, int damage) : base(position, directory, false, false) 
+        public Projectile(Vector2 position, string directory, Vector2 direction, float speed, int damage, int collisions = 1) 
+            : base(position, directory, false, false) 
         { 
             velocity = Vector2.Normalize(direction) * speed;
             this.damage = damage;
+            this.collisions = collisions;
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -204,5 +206,20 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         public abstract void AI();
+
+        public override void Draw(SpriteBatch batch)
+        {
+            batch.Draw(
+                spriteSheet,
+                Camera.RelativePosition(hurtbox.Center),
+                null,
+                Color.White,
+                0f,
+                new Vector2(0, 0),
+                new Vector2(1f, 1),
+                SpriteEffects.None,
+                0
+                );
+        }
     }
 }

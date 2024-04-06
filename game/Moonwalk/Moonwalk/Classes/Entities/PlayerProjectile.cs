@@ -45,7 +45,7 @@ namespace Moonwalk.Classes.Entities
                 collisions--;
             }
 
-            //Trail
+            //Trail  
             Particle.Effects.Add(new Particle(6, Color.White, ParticleEffects.Random, hurtbox.Center,
                 new Vector2(
                     -velocity.X,

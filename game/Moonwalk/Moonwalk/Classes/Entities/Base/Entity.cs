@@ -299,6 +299,7 @@ namespace Moonwalk.Classes.Entities.Base
         {
             velocity = (destination);
         }
+
     }
 
     internal class EntityData {

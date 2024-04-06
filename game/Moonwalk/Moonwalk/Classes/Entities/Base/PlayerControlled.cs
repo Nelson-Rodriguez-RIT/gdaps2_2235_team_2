@@ -93,20 +93,11 @@ namespace Moonwalk.Classes.Entities.Base
         public virtual bool CheckCollision()
         {
             bool isColliding = false;
-            Rectangle hitbox = new Rectangle(
-                    hurtbox.X,
-                    hurtbox.Y,
-                    hurtbox.Width,
-                    hurtbox.Height
-                    );
 
             foreach (Terrain element in Map.Geometry.ToList())
-                if (element.Hitbox.Intersects(hitbox)) {
+                if (element.Hitbox.Intersects(hurtbox)) {
                     if (element.Collidable)
                         isColliding = true;
-
-                    //if (this is Player && element is MapTrigger)
-                    //    element.Collide();
                 }
 
             return isColliding;
@@ -121,36 +112,24 @@ namespace Moonwalk.Classes.Entities.Base
             bool isColliding = false;
 
             foreach (Terrain element in Map.Geometry.ToList())
-                if (element.Hitbox.Intersects(rectangle)) {
-                    isColliding = true;
-
-                    if (element is MapTrigger)
-                        element.Collide();
-                }
+                if (element.Hitbox.Intersects(rectangle))
+                    if (element.Collidable)
+                        isColliding = true;
 
             return isColliding;
-
-            //bool temp = Map.Geometry.ToList().Exists(terrain => terrain.Hitbox.Intersects(rectangle));
-
-            //if (temp)
-            //{
-            //    //for debugging
-            //}
-
-            //return temp;
         }
 
-        public virtual bool CheckCollision<T>(List<T> list) where T : Entity
-        {
-            bool temp = list.Exists(item => item.Hitbox.Intersects(hurtbox));
+        //public virtual bool CheckCollision<T>(List<T> list) where T : Entity
+        //{
+        //    bool temp = list.Exists(item => item.Hitbox.Intersects(hurtbox));
 
-            if (temp)
-            {
-                T intersected = list.Find(item => item.Hitbox.Intersects(hurtbox));
-            }
+        //    if (temp)
+        //    {
+        //        T intersected = list.Find(item => item.Hitbox.Intersects(hurtbox));
+        //    }
 
-            return temp;
-        }
+        //    return temp;
+        //}
 
         protected override void LinearMotion(GameTime gt) 
         {

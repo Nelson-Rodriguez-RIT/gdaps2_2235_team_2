@@ -356,7 +356,8 @@ namespace Moonwalk.Classes.Entities
                 Color.White);
             */
 
-            Vector2 temp = Camera.RelativePosition((Camera.RelativePosition((Vector2.Zero)) + vectorPosition * GameMain.ActiveScale - Camera.GlobalOffset));
+            Vector2 temp = Camera.WorldToScreen(Camera.RelativePosition(new Vector2(0,0)));
+                //Camera.RelativePosition((Camera.RelativePosition((Vector2.Zero)) + vectorPosition * GameMain.ActiveScale - Camera.GlobalOffset));
             //testing
             //Continue here future Dante (converting coordinates)
             batch.Draw(hitboxSprite, new Rectangle(

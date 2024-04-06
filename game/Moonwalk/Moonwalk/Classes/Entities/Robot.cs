@@ -56,7 +56,7 @@ namespace Moonwalk.Classes.Entities
             Input(input);
 
             if (!locked)
-            //Movement(gameTime);
+            Movement(gameTime);
 
             activeAnimation.UpdateAnimation(gameTime);
 
@@ -101,12 +101,19 @@ namespace Moonwalk.Classes.Entities
         public override void Input(StoredInput input)
         {
             mousepos = input.CurrentMouse.Position;
-            Vector2 pos = (Camera.RelativePosition(mousepos.ToVector2()) + Camera.Target * GameMain.ActiveScale - Camera.GlobalOffset);
-            //pos.Normalize();
 
-            //vectorPosition = Camera.RelativePosition(pos) ;
+            
+            Vector2 pos = Camera.WorldToScreen(mousepos.ToVector2() / 2);
 
-            vectorPosition = pos;
+
+            if (!locked)
+            velocity = (pos + Camera.GlobalOffset / 2) - vectorPosition;
+
+            if (VectorMath.VectorMagnitude(velocity) < 5)
+            {
+                vectorPosition = (pos + Camera.GlobalOffset / 2);
+            }
+
 
         }
 
@@ -128,7 +135,7 @@ namespace Moonwalk.Classes.Entities
             }
 
             //apply offset
-            Vector2 temp = (vectorPosition);
+            Vector2 temp = Camera.RelativePosition(vectorPosition);
 
             activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
 

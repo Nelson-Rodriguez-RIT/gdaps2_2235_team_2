@@ -279,7 +279,7 @@ namespace Moonwalk.Classes.Managers {
                     if (!Map.Loaded) {
                         Map.LoadMap("Demo");
 
-                        Player player = SpawnEntity<Player>(new Vector2(64, 0));
+                        Player player = SpawnEntity<Player>();
                         Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
 
                         // Set player as the Camera's target
@@ -291,7 +291,7 @@ namespace Moonwalk.Classes.Managers {
                     }
                     else {
                         // Loads player + companion
-                        Player player = SpawnEntity<Player>(new Vector2(800, 290));
+                        Player player = SpawnEntity<Player>();
                         Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
                         SpawnEntity<TestEnemy>(new Vector2(200, 250));
                         SpawnEntity<KeyObject>(new Vector2(900, 250));
@@ -333,6 +333,17 @@ namespace Moonwalk.Classes.Managers {
             }
 
             Entity entity = (Entity)Activator.CreateInstance(typeof(T), newArgs);
+            entities.Add(entity);
+
+            return (T)entity;
+        }
+
+        /// <summary>
+        /// Handles any neccassray logic when spawning an entity
+        /// </summary>
+        public static T SpawnEntity<T>(Object[] args = null) where T : Entity
+        {
+            Entity entity = (Entity)Activator.CreateInstance(typeof(T), args);
             entities.Add(entity);
 
             return (T)entity;

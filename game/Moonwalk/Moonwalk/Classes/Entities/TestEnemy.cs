@@ -101,7 +101,7 @@ namespace Moonwalk.Classes.Entities
                 if (cooldowns[Abilities.Shoot] == 0)
                 {
                     //Shoot
-                    GameManager.SpawnEntity<TestProjectile>(vectorPosition, new Object[] {
+                    GameManager.SpawnEntity<StandardProjectile>(vectorPosition, new Object[] {
                     VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()) });
                     cooldowns.UseAbility(Abilities.Shoot);
                 }

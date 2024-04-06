@@ -23,6 +23,8 @@ namespace Moonwalk.Classes.Entities
     internal class Player : PlayerControlled, IJump, IDamageable
     {
         public static Point Location;
+        public static Checkpoint MostRecentCheckpoint;
+
         protected enum Animations
         {
             Idle,
@@ -90,7 +92,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         //Make private later
-        public Player(Vector2 position) : base(position, "../../../Content/Entities/Player")
+        public Player() : base(MostRecentCheckpoint.Hitbox.Location.ToVector2(), "../../../Content/Entities/Player")
         {
             gravity = 70f;
             acceleration = new Vector2(0, gravity);
@@ -139,6 +141,19 @@ namespace Moonwalk.Classes.Entities
             {
                 velocity.X = 0;
                 acceleration.X = 0;
+            }
+
+            Checkpoint temp = null;
+
+            if (CheckTerrainCollision<Checkpoint>(out temp) && MostRecentCheckpoint != temp)
+            {
+                MostRecentCheckpoint = temp;
+            }
+
+            if (input.IsPressed(Keys.R)
+                && !input.WasPressed(Keys.R)) 
+            {
+                vectorPosition = MostRecentCheckpoint.Hitbox.Location.ToVector2();
             }
 
             //Change publically available position
@@ -201,6 +216,8 @@ namespace Moonwalk.Classes.Entities
             }
             
         }
+
+   
 
         protected override void RotationalMotion(GameTime gt)
         {
@@ -699,14 +716,19 @@ namespace Moonwalk.Classes.Entities
             Health -= damage;
         }
 
-        public override bool CheckCollision() {
-            bool isColliding = false;
 
-            foreach (Terrain element in Map.Geometry.ToList())
+        public bool CheckTerrainCollision<T>(out T thing) where T : Terrain
+        {
+            bool isColliding = false;
+            thing = null;
+
+            List<T> list = Map.Geometry.GetAllOfType<T>();
+            foreach (T element in list)
                 if (element.Hitbox.Intersects(hurtbox)) {
                     if (element.Collidable)
                         isColliding = true;
 
+                    thing = element;
                     if (element is MapTrigger)
                         element.Collide();
                 }
@@ -714,5 +736,12 @@ namespace Moonwalk.Classes.Entities
             return isColliding;
         }
 
+        public static void Respawn()
+        {
+            GameManager.entities[typeof(Player)].Clear();
+            GameManager.SpawnEntity<Player>();
+        }
     }
+
+    
 }

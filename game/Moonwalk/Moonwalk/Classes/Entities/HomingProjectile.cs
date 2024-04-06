@@ -13,9 +13,9 @@ using Moonwalk.Classes.Entities.Base;
 
 namespace Moonwalk.Classes.Entities
 {
-    internal class TestProjectile : Projectile
+    internal class HomingProjectile : Projectile
     {
-        public TestProjectile(Vector2 position, Vector2 direction)
+        public HomingProjectile(Vector2 position, Vector2 direction)
             : base(position, "", direction, 50f, 1)
         {
             //Projectile will despawn after hitting something

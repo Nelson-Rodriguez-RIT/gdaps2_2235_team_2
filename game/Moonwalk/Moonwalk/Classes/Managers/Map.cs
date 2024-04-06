@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Moonwalk.Classes.Maps;
 using System;
 using System.Collections.Generic;
+using Moonwalk.Classes.Entities;
 
 namespace Moonwalk.Classes.Managers
 {
@@ -56,6 +57,17 @@ namespace Moonwalk.Classes.Managers
             // Load hitbox sprite if it hasn't already
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Maps/hitbox");
+
+            //testing, clear later
+            Checkpoint first = new Checkpoint(new Rectangle(200, -30, 20, 20));
+            Player.MostRecentCheckpoint = first;
+            geometry.Add(first);
+            geometry.Add(new Checkpoint(new Rectangle(100, 100, 20, 20)));
+
+            GUI.AddElement(new GUITextElement(new Vector2(50, 50),
+                "Remember to remove tests from Map.LoadMap",
+                "File",
+                Color.White));
         }
 
         /// <summary>

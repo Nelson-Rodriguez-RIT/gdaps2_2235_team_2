@@ -664,7 +664,9 @@ namespace Moonwalk.Classes.Entities
                     // Apply the impulse towards the robot
                     Vector2 difference = VectorMath.VectorDifference(movable.Position.ToVector2(), robotPos);
                     difference.Normalize();
-                    movable.Impulse(difference * GravityStrength);
+                    movable.Impulse(difference * 
+                        (movable is Player ? GravityStrength : 60)
+                        );
                 }
 
             }

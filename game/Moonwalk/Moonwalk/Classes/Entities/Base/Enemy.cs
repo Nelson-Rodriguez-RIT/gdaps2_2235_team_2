@@ -141,7 +141,21 @@ namespace Moonwalk.Classes.Entities.Base
             base.Update(gameTime, input);
         }
 
-        public virtual void Movement(GameTime gt)
+        public virtual void Movement(GameTime time)
+        {
+            switch (physicsState)
+            {
+                case PhysicsState.Linear:
+                    LinearMotion(time);
+                    break;
+                case PhysicsState.Rotational:
+                    RotationalMotion(time);
+                    break;
+            }
+
+        }
+
+        private void LinearMotion(GameTime gt)
         {
             float time = (float)gt.ElapsedGameTime.TotalSeconds;
 

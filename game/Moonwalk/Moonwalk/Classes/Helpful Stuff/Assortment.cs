@@ -220,7 +220,7 @@ namespace Moonwalk.Classes
             return list.GetEnumerator();
         }
 
-        public List<T2> GetAllOfType<T2>() where T2 : class
+        public List<T2> GetAllOfType<T2>()
         {
             List<T> list = new List<T>();
 

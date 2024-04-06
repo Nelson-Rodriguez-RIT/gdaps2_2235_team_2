@@ -10,6 +10,7 @@ using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
 using Moonwalk.Interfaces;
 using Microsoft.Xna.Framework.Graphics;
+using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Entities
 {
@@ -40,7 +41,7 @@ namespace Moonwalk.Classes.Entities
 
         private bool locked;
         const float MoveSpeed = 40f;
-        private Point mousepos;
+        internal Point mousepos; // Internal used for GUIRobotDebugElement
 
         //Change this to private later
         public Robot(Vector2 position) : base(position, "../../../Content/Entities/Robot")
@@ -48,7 +49,8 @@ namespace Moonwalk.Classes.Entities
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
-        
+
+            //GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -157,4 +159,29 @@ namespace Moonwalk.Classes.Entities
         }
     }
 
+
+    #region GUIElements
+    internal class GUIRobotDebugElement : GUIElement {
+        private Vector2 position;
+        private SpriteFont font;
+        private Robot target;
+
+        public GUIRobotDebugElement(Vector2 position, string fontName, Robot target) {
+            this.position = position;
+            font = GUI.GetFont(fontName);
+            this.target = target;
+        }
+
+        public override void Draw(SpriteBatch batch) {
+            batch.DrawString(
+                font,
+                    $"Hitbox: {target.hurtbox.X} - {target.hurtbox.Y}\n" +
+                    $"Drawing: {Math.Round(target.vectorPosition.Y)} - {Math.Round(target.vectorPosition.X)}\n" +
+                    $"Position: {target.mousepos.Y} - {target.mousepos.X}",
+                position,
+                Color.White
+                );
+        }
+    }
+    #endregion
 }

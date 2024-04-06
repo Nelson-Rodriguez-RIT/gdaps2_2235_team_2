@@ -26,13 +26,8 @@ namespace Moonwalk.Classes.Managers
     internal sealed class GameManager {
         private static GameManager _instance = null;
 
-        // To be removed
-        //private Dictionary<string, Texture2D> guiSprites;
-        //public static SpriteFont font;
-
         private bool displayEntityHitboxes = false;
         private bool displayTerrainHitboxes = false;
-
 
         // Gameplay related states
         private GameState state;
@@ -211,6 +206,7 @@ namespace Moonwalk.Classes.Managers
 
                 case GameState.Demo:
                     graphics.Clear(Color.Gray);
+                    GUI.Draw(batch);
                     break;
             }
 

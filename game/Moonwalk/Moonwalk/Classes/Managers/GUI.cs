@@ -47,7 +47,6 @@ namespace Moonwalk.Classes.Managers {
 
 
     #region GUIElements
-
     public abstract class GUIElement {
         public abstract void Draw(SpriteBatch batch);
     }
@@ -96,38 +95,5 @@ namespace Moonwalk.Classes.Managers {
             batch.Draw(texture, plane, color);
         }
     }
-
-    /// <summary>
-    /// A GUI element that uses pointers to access data at a specific variable,
-    /// allow for values to be dynamic and change in real time. Outputed via text
-    /// <summary>
-    public unsafe class GUIDynamicTextElement : GUIElement {
-        private Vector2 position;
-        // Using pointers because I want to access data inside an object
-        // that is dynamic in order to have constantly update value.
-        // Additional, literals can be used for static data
-        private void*[] pDynamicValues = null;
-
-        private string fontName;
-
-        public GUIDynamicTextElement(Vector2 position, string fontName, void*[] values) {
-            this.position = position;
-            this.fontName = fontName;
-
-            pDynamicValues = new void*[values.Length];
-            for (int index = 0; index < pDynamicValues.Length; index++)
-                pDynamicValues[index] = values[index];
-        }
-
-        public override void Draw(SpriteBatch batch) {
-            string output = "";
-
-            foreach (void* pValue in pDynamicValues)
-                output += (*(object*)pValue).ToString();
-
-            batch.DrawString(GUI.GetFont(fontName), output, position, Color.White);
-        }
-    }
-
     #endregion
 }

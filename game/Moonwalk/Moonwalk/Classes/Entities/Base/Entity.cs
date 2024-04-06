@@ -29,7 +29,7 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         // X and Y represent origin offsets
-        protected Rectangle hurtbox;
+        internal protected Rectangle hurtbox; // Internal used for GUIRobotDebugElement
 
         protected float gravity;
         /// <summary>
@@ -38,7 +38,7 @@ namespace Moonwalk.Classes.Entities.Base
         protected PhysicsState physicsState;
 
         //linear motion
-        protected Vector2 vectorPosition;
+        internal protected Vector2 vectorPosition; // Internal used for GUIRobotDebugElement
         protected Vector2 velocity;
         protected Vector2 acceleration;
         protected int maxYVelocity;
@@ -104,13 +104,13 @@ namespace Moonwalk.Classes.Entities.Base
             maxXVelocity = int.MaxValue;
 
             if (loadProperties) 
-            { 
-            hurtbox = new Rectangle(
-                int.Parse(properties["HitboxXOrigin"]),
-                int.Parse(properties["HitboxYOrigin"]),
-                int.Parse(properties["HitboxX"]),
-                int.Parse(properties["HitboxY"])
-                );
+            {  
+                hurtbox = new Rectangle(
+                    int.Parse(properties["HitboxXOrigin"]),
+                    int.Parse(properties["HitboxYOrigin"]),
+                    int.Parse(properties["HitboxX"]),
+                    int.Parse(properties["HitboxY"])
+                    );
             }
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");

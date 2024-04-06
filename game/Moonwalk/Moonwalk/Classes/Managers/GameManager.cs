@@ -9,11 +9,9 @@ using Moonwalk.Classes.Maps;
 using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 
-namespace Moonwalk.Classes.Managers
-{
+namespace Moonwalk.Classes.Managers {
     enum GameState {
         MainMenu,
         Demo,
@@ -45,12 +43,17 @@ namespace Moonwalk.Classes.Managers
         // For testing purposes
         private Vector2 cameraTarget;
 
+        private bool isPauseEnabled;
+        private bool isGamePaused;
+
         private GameManager(ContentManager content) {
             // Get content for loading needs
             Loader.Content = content;
             storedInput = new StoredInput();
             Camera.GlobalOffset = WindowManager.Instance.Center;
 
+            isPauseEnabled = false;
+            isGamePaused = false;
 
             //Testing for my new entity list concept
             types = new List<Type>();
@@ -84,6 +87,11 @@ namespace Moonwalk.Classes.Managers
             // Get user input
             storedInput.Update();
 
+            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.Escape) && // Press ESC to pause the game
+                    storedInput.CurrentKeyboard.IsKeyUp(Keys.Escape) &&
+                    isPauseEnabled)
+                isGamePaused = !isGamePaused;
+
             if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw entity hitboxes
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.F1))
                 displayEntityHitboxes = !displayEntityHitboxes;
@@ -101,81 +109,74 @@ namespace Moonwalk.Classes.Managers
                 Map.UnloadMap();
                 Transition(state);
             }
-                
 
-            switch (state) {
-                case GameState.MainMenu:
-                        if(storedInput.CurrentMouse.LeftButton == ButtonState.Pressed &&
+            if (!isGamePaused) {
+                switch (state) {
+                    case GameState.MainMenu:
+                        if (storedInput.CurrentMouse.LeftButton == ButtonState.Pressed &&
                                 storedInput.PreviousMouse.LeftButton == ButtonState.Released) {
 
-                        //Start button pressed
-                        if (new Rectangle
-                            (540, 310, 186, 66)     // Start button position and size
-                            .Contains(storedInput.CurrentMouse.Position))
+                            //Start button pressed
+                            if (new Rectangle
+                                (540, 310, 186, 66)     // Start button position and size
+                                .Contains(storedInput.CurrentMouse.Position))
                                 Transition(GameState.Demo);
 
-                        //Exit button pressed
-                        if (new Rectangle(
-                            540, 410, 186, 66) // Exit button position    
-                            .Contains(storedInput.CurrentMouse.Position))
+                            //Exit button pressed
+                            if (new Rectangle(
+                                540, 410, 186, 66) // Exit button position    
+                                .Contains(storedInput.CurrentMouse.Position))
                                 GameMain.ExitGame();
-                    }
-                            
-                    break;
+                        }
 
-                case GameState.Demo:
+                        break;
 
-                    break;
-            }
+                    case GameState.Demo:
 
-            foreach (Entity entity in entities)
-            {
-                entity.Update(gt, storedInput);
-
-                if (entity is IDamageable)
-                {
-                    IDamageable damageable = (IDamageable) entity;
-
-                    if (damageable.Health <= 0)
-                    {
-                        DespawnEntity(entity);
-                    }
+                        break;
                 }
 
-                if (entity is Projectile)
-                {
-                    Projectile projectile = (Projectile) entity;
+                foreach (Entity entity in entities) {
+                    entity.Update(gt, storedInput);
 
-                    if (projectile.Collisions <= 0)
-                    {
-                        DespawnEntity(entity);
+                    if (entity is IDamageable) {
+                        IDamageable damageable = (IDamageable)entity;
+
+                        if (damageable.Health <= 0) {
+                            DespawnEntity(entity);
+                        }
+                    }
+
+                    if (entity is Projectile) {
+                        Projectile projectile = (Projectile)entity;
+
+                        if (projectile.Collisions <= 0) {
+                            DespawnEntity(entity);
+                        }
                     }
                 }
-            }
 
-            for (int i = 0; i < Hitbox.activeHitboxes.Count; i++)
-            {
-                int length = Hitbox.activeHitboxes.Count;
+                for (int i = 0; i < Hitbox.activeHitboxes.Count; i++) {
+                    int length = Hitbox.activeHitboxes.Count;
 
-                Hitbox.activeHitboxes[i].Update(gt);
+                    Hitbox.activeHitboxes[i].Update(gt);
 
-                if (Hitbox.activeHitboxes.Count < length)
-                {
-                    i--;
+                    if (Hitbox.activeHitboxes.Count < length) {
+                        i--;
+                    }
+                }
+
+                for (int i = 0; i < Particle.Effects.Count; i++) {
+                    int length = Particle.Effects.Count;
+
+                    Particle.Effects[i].Update(gt);
+
+                    if (Particle.Effects.Count < length) {
+                        i--;
+                    }
                 }
             }
 
-            for (int i = 0; i < Particle.Effects.Count; i++)
-            {
-                int length = Particle.Effects.Count;
-
-                Particle.Effects[i].Update(gt);
-
-                if (Particle.Effects.Count < length)
-                {
-                    i--;
-                }
-            }
 
 
             storedInput.UpdatePrevious();
@@ -189,15 +190,16 @@ namespace Moonwalk.Classes.Managers
             if (Map.Loaded)
                 Map.Draw(batch, displayTerrainHitboxes);
 
-            switch (state) {
-                case GameState.MainMenu:
-                    graphics.Clear(Color.Black);
-                    break;
+            if (!isGamePaused)
+                switch (state) {
+                    case GameState.MainMenu:
+                        graphics.Clear(Color.Black);
+                        break;
 
-                case GameState.Demo:
-                    graphics.Clear(Color.Gray);
-                    break;
-            }
+                    case GameState.Demo:
+                        graphics.Clear(Color.Gray);
+                        break;
+                }
 
             // Elements drawn ever iteration
             GUI.Draw(batch);
@@ -208,16 +210,13 @@ namespace Moonwalk.Classes.Managers
                     entity.DrawHitbox(batch);
             }
 
-            if (Hitbox.drawHitbox)
-            {
-                foreach (Hitbox h in Hitbox.activeHitboxes)
-                {
+            if (Hitbox.drawHitbox) {
+                foreach (Hitbox h in Hitbox.activeHitboxes) {
                     h.DrawHitbox(batch);
                 }
             }
 
-            foreach (Particle p in Particle.Effects)
-            {
+            foreach (Particle p in Particle.Effects) {
                 p.Draw(batch);
             }
 
@@ -233,6 +232,8 @@ namespace Moonwalk.Classes.Managers
 
             switch (nextState) {
                 case GameState.MainMenu:
+                    isPauseEnabled = false;
+
                     GUI.AddElement(new GUITextElement(
                         WindowManager.Instance.Center - new Vector2(150, 150),
                         "Moonwalk",
@@ -273,6 +274,7 @@ namespace Moonwalk.Classes.Managers
 
                 case GameState.Demo:
                     GUI.Clear();
+                    isPauseEnabled = true;
 
                     if (!Map.Loaded) {
                         Map.LoadMap("Demo");
@@ -301,8 +303,8 @@ namespace Moonwalk.Classes.Managers
                         player.GetRobotPosition += robot.GetPosition;
                         player.ToggleBotLock += robot.ToggleLock;
                     }
-                        
-                    
+
+
                     break;
             }
 
@@ -324,13 +326,11 @@ namespace Moonwalk.Classes.Managers
                 ];
             newArgs[0] = position;
 
-            if (args != null )
-            {
-                for (int i = 0; i < args.Length; i++)
-                {
+            if (args != null) {
+                for (int i = 0; i < args.Length; i++) {
                     newArgs[i + 1] = args[i];
                 }
-            } 
+            }
 
             Entity entity = (Entity)Activator.CreateInstance(typeof(T), newArgs);
             entities.Add(entity);
@@ -350,6 +350,4 @@ namespace Moonwalk.Classes.Managers
             Transition(state);
         }
     }
-
-
 }

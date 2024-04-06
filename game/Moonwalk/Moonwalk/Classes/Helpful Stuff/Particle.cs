@@ -24,6 +24,9 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
     internal class Particle
     {
+        /// <summary>
+        /// List of all particles
+        /// </summary>
         public static List<Particle> Effects = new List<Particle>();
 
         private static Texture2D image = Loader.LoadTexture("particle");

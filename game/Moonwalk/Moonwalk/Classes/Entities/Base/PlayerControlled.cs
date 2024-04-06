@@ -234,7 +234,7 @@ namespace Moonwalk.Classes.Entities.Base
                 acceleration = new Vector2(
                     acceleration.X, gravity);
 
-                LinearMotion(gt);
+                angVelocity = 0;
             }
         }
 

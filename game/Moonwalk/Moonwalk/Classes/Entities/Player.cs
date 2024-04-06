@@ -205,6 +205,7 @@ namespace Moonwalk.Classes.Entities
         protected override void RotationalMotion(GameTime gt)
         {
             Vector2 oldPosition = new Vector2(vectorPosition.X, vectorPosition.Y);
+            double oldTheta = theta;
 
             //Determine the angular acceleration using the perpendicular component of gravity
             angAccel = gravity * 10 * Math.Cos((Math.PI / 180) * theta);
@@ -239,8 +240,8 @@ namespace Moonwalk.Classes.Entities
             if (CheckCollision())           // If there is a collision, switch back to linear motion
             {
                 vectorPosition = oldPosition;
-                physicsState = PhysicsState.Linear;
-
+                //physicsState = PhysicsState.Linear;
+                /*
                 //This determines the velocity the entity will have after 
                 //it stops swinging by converting the angular velocity
                 //back to linear velocity.
@@ -249,9 +250,10 @@ namespace Moonwalk.Classes.Entities
                     (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 3000);
                 acceleration = new Vector2(
                     acceleration.X, gravity);
-
+                */
                 //ToggleBotLock();
-                LinearMotion(gt);
+                theta = oldTheta;
+                angVelocity = 0;
             }
         }
 
@@ -660,7 +662,7 @@ namespace Moonwalk.Classes.Entities
                     const int GravityStrength = 100;
 
                     // Apply the impulse towards the robot
-                    Vector2 difference = VectorMath.VectorDifference(vectorPosition, robotPos);
+                    Vector2 difference = VectorMath.VectorDifference(movable.Position.ToVector2(), robotPos);
                     difference.Normalize();
                     movable.Impulse(difference * GravityStrength);
                 }

@@ -87,6 +87,10 @@ namespace Moonwalk.Classes.Managers {
             // Get user input
             storedInput.Update();
 
+            if (storedInput.PreviousMouse.LeftButton == ButtonState.Pressed &&
+                    storedInput.CurrentMouse.LeftButton == ButtonState.Pressed)
+                storedInput.Click();
+
             if (storedInput.PreviousKeyboard.IsKeyDown(Keys.Escape) && // Press ESC to pause the game
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.Escape) &&
                     isPauseEnabled)
@@ -113,26 +117,17 @@ namespace Moonwalk.Classes.Managers {
             if (!isGamePaused) {
                 switch (state) {
                     case GameState.MainMenu:
-                        if (storedInput.CurrentMouse.LeftButton == ButtonState.Pressed &&
-                                storedInput.PreviousMouse.LeftButton == ButtonState.Released) {
+                        //Start button pressed
+                        if (GUI.ClickableElements["ButtonStart"].Clicked)
+                            Transition(GameState.Demo);
 
-                            //Start button pressed
-                            if (new Rectangle
-                                (540, 310, 186, 66)     // Start button position and size
-                                .Contains(storedInput.CurrentMouse.Position))
-                                Transition(GameState.Demo);
-
-                            //Exit button pressed
-                            if (new Rectangle(
-                                540, 410, 186, 66) // Exit button position    
-                                .Contains(storedInput.CurrentMouse.Position))
-                                GameMain.ExitGame();
-                        }
+                        //Exit button pressed
+                        if (GUI.ClickableElements["ButtonExit"].Clicked)
+                            GameMain.ExitGame();
 
                         break;
 
                     case GameState.Demo:
-
                         break;
                 }
 
@@ -241,7 +236,7 @@ namespace Moonwalk.Classes.Managers {
                         Color.White
                         ));
 
-                    GUI.AddElement(new GUITextureElement(
+                    GUI.AddElement(new GUIButtonElement(
                         new Rectangle(
                             (int)(WindowManager.Instance.Center.X - 100),
                             (int)(WindowManager.Instance.Center.Y - 50),
@@ -251,7 +246,7 @@ namespace Moonwalk.Classes.Managers {
                         "ButtonStart",
                         Color.White));
 
-                    GUI.AddElement(new GUITextureElement(
+                    GUI.AddElement(new GUIButtonElement(
                         new Rectangle(
                             (int)(WindowManager.Instance.Center.X - 100),
                             (int)(WindowManager.Instance.Center.Y + 50),

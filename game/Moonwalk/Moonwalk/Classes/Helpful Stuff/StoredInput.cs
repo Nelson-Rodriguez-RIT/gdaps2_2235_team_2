@@ -11,11 +11,14 @@ using Moonwalk.Classes.Helpful_Stuff;
 
 namespace Moonwalk.Classes
 {
+    public delegate void ClickHandler(Point mouse);
     /// <summary>
     /// Stores current and previous mouse states, and contains methods to update them
     /// </summary>
     internal class StoredInput
     {
+        public static event ClickHandler UserClick;
+
         private MouseState currentMouse;
         private MouseState previousMouse;
         private KeyboardState currentKeyboard;
@@ -120,6 +123,10 @@ namespace Moonwalk.Classes
             }
 
             
+        }
+
+        public void Click() {
+            UserClick(currentMouse.Position);
         }
     }
 }

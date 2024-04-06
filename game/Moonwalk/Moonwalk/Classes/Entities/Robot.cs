@@ -22,18 +22,6 @@ namespace Moonwalk.Classes.Entities
     {
         protected enum Animations
         {
-            /*
-            Idle,
-            Idle_Blink,
-            Walk,
-            Run,
-            Crouch,
-            Jump,
-            Hurt,
-            Death,
-            Attack,
-            */
-
             Idle,
             TransitionToMove,
             Move
@@ -57,7 +45,7 @@ namespace Moonwalk.Classes.Entities
             spriteScale = 1;
 
             
-            //GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
+            GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -147,22 +135,6 @@ namespace Moonwalk.Classes.Entities
             Vector2 temp = Camera.RelativePosition(vectorPosition);
 
             activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
-
-            batch.DrawString(GUI.GetFont("File"),
-                $"Hitbox: {hurtbox.X} - {hurtbox.Y} ",
-                new Vector2(400, 50),
-                Color.White);
-
-            batch.DrawString(GUI.GetFont("File"),
-                $"Drawing: {Math.Round(temp.Y)} - {Math.Round(temp.X)} ",
-                new Vector2(400, 75),
-                Color.White);
-
-
-            batch.DrawString(GUI.GetFont("File"),
-                $"Position: {(mousepos.Y)} - {(mousepos.X)} ",
-                new Vector2(400, 100),
-                Color.White);
         }
     }
 

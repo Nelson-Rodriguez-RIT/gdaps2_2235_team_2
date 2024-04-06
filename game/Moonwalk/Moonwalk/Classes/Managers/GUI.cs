@@ -13,12 +13,16 @@ namespace Moonwalk.Classes.Managers {
         private static Dictionary<string, SpriteFont> fonts = new();
         private static Dictionary<string, Texture2D> textures = new();
 
-        private static LinkedList<GUIElement> elements = new();
+        private static Assortment<GUIElement> elements = new(new List<System.Type>() { typeof(GUIButtonElement)});
 
+        public static List<GUIElement> GUIElementList { get { return elements.ToList(); } }
 
         // For managing displayed GUI elements
-        public static void AddElement(GUIElement element) { elements.AddLast(element); }
+        public static void AddElement(GUIElement element) { elements.Add(element); }
         public static void RemoveElement(GUIElement element) { elements.Remove(element); }
+        public static List<GUIElement> GetElement<T>(System.Type element) {
+            return elements.GetAllOfType<typeof(T)>();
+        }
         public static void Clear() { elements = new(); }
 
 
@@ -77,9 +81,9 @@ namespace Moonwalk.Classes.Managers {
     /// A simple GUI element that draws a Texture2D on the screen
     /// </summary>
     public class GUITextureElement : GUIElement {
-        private Rectangle plane;
-        private Texture2D texture;
-        private Color color;
+        protected Rectangle plane;
+        protected Texture2D texture;
+        protected Color color;
 
         public GUITextureElement(Rectangle plane, string textureName, Color color) {
             this.plane = plane;
@@ -93,6 +97,22 @@ namespace Moonwalk.Classes.Managers {
         public override void Draw(SpriteBatch batch) {
             batch.Draw(texture, plane, color);
         }
+    }
+
+    public class GUIButtonElement : GUITextureElement {
+        protected bool clicked;
+        public bool Clicked { get { return clicked; } }
+         
+        public GUIButtonElement(Rectangle plane, string textureName, Color color) 
+                : base(plane, textureName, color) {
+            clicked = false;
+            StoredInput.UserClick += CheckIfClicked;
+        }
+
+        public void CheckIfClicked(Point mouse) {
+            if (plane.Contains(mouse))
+                clicked = true;
+        } 
     }
     #endregion
 }

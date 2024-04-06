@@ -201,16 +201,15 @@ namespace Moonwalk.Classes.Managers
             switch (state) {
                 case GameState.MainMenu:
                     graphics.Clear(Color.Black);
-                    GUI.Draw(batch);
                     break;
 
                 case GameState.Demo:
                     graphics.Clear(Color.Gray);
-                    GUI.Draw(batch);
                     break;
             }
 
             // Elements drawn ever iteration
+            GUI.Draw(batch);
             foreach (Entity entity in entities) {
                 entity.Draw(batch);
 

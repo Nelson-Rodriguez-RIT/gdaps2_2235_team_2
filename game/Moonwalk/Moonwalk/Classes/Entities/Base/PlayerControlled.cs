@@ -102,10 +102,11 @@ namespace Moonwalk.Classes.Entities.Base
 
             foreach (Terrain element in Map.Geometry.ToList())
                 if (element.Hitbox.Intersects(hitbox)) {
-                    isColliding = true;
+                    if (element.Collidable)
+                        isColliding = true;
 
-                    if (this is Player && element is MapTrigger)
-                        element.Collide();
+                    //if (this is Player && element is MapTrigger)
+                    //    element.Collide();
                 }
 
             return isColliding;

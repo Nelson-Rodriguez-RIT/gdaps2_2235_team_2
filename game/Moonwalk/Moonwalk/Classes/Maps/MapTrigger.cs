@@ -12,6 +12,7 @@ namespace Moonwalk.Classes.Maps
 
         public MapTrigger(Rectangle hitbox, string target)
                 : base(hitbox) {
+            this.collidable = false;
             this.target = target;
             OnCollision += LoadMap;
         }

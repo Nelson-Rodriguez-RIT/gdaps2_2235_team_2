@@ -39,7 +39,7 @@ namespace Moonwalk.Classes.Managers
 
         List<Type> types;
 
-        //Input handling:
+        //Input handling
         private StoredInput storedInput;
 
         // For testing purposes
@@ -97,8 +97,11 @@ namespace Moonwalk.Classes.Managers
                 Hitbox.drawHitbox = !Hitbox.drawHitbox;
 
             if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F4) && // Press F4 to reset the current map/gamestate
-                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F4))
+                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F4)) {
+                Map.UnloadMap();
                 Transition(state);
+            }
+                
 
             switch (state) {
                 case GameState.MainMenu:
@@ -121,18 +124,6 @@ namespace Moonwalk.Classes.Managers
                     break;
 
                 case GameState.Demo:
-                    foreach (Entity entity in entities) {
-                        if (entity is Player) {
-                            cameraTarget = new Vector2(entity.Position.X, entity.Position.Y);
-                            break;
-                        }
-                    }
-
-                    if (storedInput.IsPressed(Keys.Escape))
-                    {
-                        Map.UnloadMap();
-                        Transition(GameState.MainMenu);
-                    }
 
                     break;
             }
@@ -201,16 +192,15 @@ namespace Moonwalk.Classes.Managers
             switch (state) {
                 case GameState.MainMenu:
                     graphics.Clear(Color.Black);
-                    GUI.Draw(batch);
                     break;
 
                 case GameState.Demo:
                     graphics.Clear(Color.Gray);
-                    GUI.Draw(batch);
                     break;
             }
 
             // Elements drawn ever iteration
+            GUI.Draw(batch);
             foreach (Entity entity in entities) {
                 entity.Draw(batch);
 

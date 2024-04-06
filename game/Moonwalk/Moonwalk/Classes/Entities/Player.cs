@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
+using Moonwalk.Classes.Maps;
 using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -693,6 +694,21 @@ namespace Moonwalk.Classes.Entities
         {
             Health -= damage;
         }
-        
+
+        public override bool CheckCollision() {
+            bool isColliding = false;
+
+            foreach (Terrain element in Map.Geometry.ToList())
+                if (element.Hitbox.Intersects(hurtbox)) {
+                    if (element.Collidable)
+                        isColliding = true;
+
+                    if (element is MapTrigger)
+                        element.Collide();
+                }
+
+            return isColliding;
+        }
+
     }
 }

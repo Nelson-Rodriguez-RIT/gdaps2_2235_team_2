@@ -308,5 +308,13 @@ namespace Moonwalk.Classes.Managers
 
             return new EntityData(bufferedProperties, bufferedAnimations, bufferedSpritesheet);
         }
+
+        /// <summary>
+        /// Loads a font
+        /// </summary>
+        /// <param name="fontName">File path (without file extension)</param>
+        public static SpriteFont LoadFont(string fontName) {
+            return content.Load<SpriteFont>(fontName);
+        }
     }
 }

@@ -97,12 +97,12 @@
 /processorParam:TextureFormat=Color
 /build:Entities/TestEnemy/spritesheet.png
 
-#begin File.spritefont
+#begin Fonts/File.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:File.spritefont
+/build:Fonts/File.spritefont
 
 #begin Fonts/MonogramTitle.spritefont
 /importer:FontDescriptionImporter

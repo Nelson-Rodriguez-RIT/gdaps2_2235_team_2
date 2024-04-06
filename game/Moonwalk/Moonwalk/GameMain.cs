@@ -55,7 +55,6 @@ namespace Moonwalk {
 
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             gameManager = GameManager.GetInstance(Content);
-            GameManager.font = Content.Load<SpriteFont>("File");
         }
 
 

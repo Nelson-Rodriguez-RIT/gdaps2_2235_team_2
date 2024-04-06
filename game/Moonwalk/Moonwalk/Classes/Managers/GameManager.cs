@@ -24,17 +24,15 @@ namespace Moonwalk.Classes.Managers
     /// Central class that controls/ maintains all elements of the game
     /// </summary>
     internal sealed class GameManager {
+        private static GameManager _instance = null;
 
-        private Dictionary<string, Texture2D> guiSprites;
-        private Dictionary<string, SpriteFont> fonts;
-
-        public static SpriteFont font;
+        // To be removed
+        //private Dictionary<string, Texture2D> guiSprites;
+        //public static SpriteFont font;
 
         private bool displayEntityHitboxes = false;
         private bool displayTerrainHitboxes = false;
 
-        // Game element managers
-        private static GameManager _instance = null;
 
         // Gameplay related states
         private GameState state;
@@ -67,40 +65,6 @@ namespace Moonwalk.Classes.Managers
             types.Add(typeof(KeyObject));
             types.Add(typeof(Projectile));
             entities = new Assortment<Entity>(types);
-
-
-            // Loads UI Sprites
-            {
-                guiSprites = new Dictionary<string, Texture2D>();
-                string directory = "../../../Content/GUI/";
-                foreach (string file in Directory.GetFiles(directory)) {
-                    string pathBuffer = file.Remove(file.Length - 4);
-                    string nameBuffer = pathBuffer.Remove(0, directory.Length);
-                    guiSprites.Add(
-                        nameBuffer,
-                        content.Load<Texture2D>(pathBuffer)
-                        );
-                }
-            }
-
-
-            // Loads fonts
-            {
-                fonts = new Dictionary<string, SpriteFont>();
-                string directory = "../../../Content/Fonts/";
-                foreach (string file in Directory.GetFiles(directory)) {
-                    string[] splitPath = file.Split('.');
-                    if (splitPath[splitPath.Length - 1] == "spritefont") {
-                        string pathBuffer = file.Remove(file.Length - 11);
-                        string nameBuffer = pathBuffer.Remove(0, directory.Length);
-                        fonts.Add(
-                            nameBuffer, 
-                            content.Load<SpriteFont>(pathBuffer));
-                    }
-                        
-                }
-            }
-
 
             // Prepares neccessary elements
             Transition(GameState.MainMenu);
@@ -242,45 +206,7 @@ namespace Moonwalk.Classes.Managers
             switch (state) {
                 case GameState.MainMenu:
                     graphics.Clear(Color.Black);
-
-                    batch.DrawString(
-                        fonts["MonogramTitle"],
-                        "Moonwalk",
-                        WindowManager.Instance.Center - new Vector2(150, 150),
-                        Color.White
-                        );
-
-                    batch.Draw(
-                        guiSprites["ButtonStart"],
-                        new Rectangle(
-                            (int)(WindowManager.Instance.Center.X - 100),
-                            (int)(WindowManager.Instance.Center.Y - 50),
-                            guiSprites["ButtonStart"].Width * 2,
-                            guiSprites["ButtonStart"].Height * 2
-                            ),
-                        Color.White
-                        );
-
-                    batch.Draw(
-                        guiSprites["ButtonExit"],
-                        new Rectangle(
-                            (int)(WindowManager.Instance.Center.X - 100),
-                            (int)(WindowManager.Instance.Center.Y + 50),
-                            guiSprites["ButtonExit"].Width * 2,
-                            guiSprites["ButtonExit"].Height * 2
-                            ),
-                        Color.White
-                        );
-
-                    batch.Draw(
-                        guiSprites["MenuBorder"],
-                        new Rectangle(
-                            (int)(WindowManager.Instance.Center.X - 230),
-                            (int)(WindowManager.Instance.Center.Y - 245),
-                            guiSprites["MenuBorder"].Width * 10,
-                            guiSprites["MenuBorder"].Height * 10),
-                        Color.White
-                        );
+                    GUI.Draw(batch);
                     break;
 
                 case GameState.Demo:
@@ -321,9 +247,46 @@ namespace Moonwalk.Classes.Managers
 
             switch (nextState) {
                 case GameState.MainMenu:
+                    GUI.AddElement(new GUITextElement(
+                        WindowManager.Instance.Center - new Vector2(150, 150),
+                        "Moonwalk",
+                        "MonogramTitle",
+                        Color.White
+                        ));
+
+                    GUI.AddElement(new GUITextureElement(
+                        new Rectangle(
+                            (int)(WindowManager.Instance.Center.X - 100),
+                            (int)(WindowManager.Instance.Center.Y - 50),
+                            GUI.GetTexture("ButtonStart").Width * 2,
+                            GUI.GetTexture("ButtonStart").Height * 2
+                            ),
+                        "ButtonStart",
+                        Color.White));
+
+                    GUI.AddElement(new GUITextureElement(
+                        new Rectangle(
+                            (int)(WindowManager.Instance.Center.X - 100),
+                            (int)(WindowManager.Instance.Center.Y + 50),
+                            GUI.GetTexture("ButtonExit").Width * 2,
+                            GUI.GetTexture("ButtonExit").Height * 2
+                            ),
+                        "ButtonExit",
+                        Color.White));
+
+                    GUI.AddElement(new GUITextureElement(
+                        new Rectangle(
+                            (int)(WindowManager.Instance.Center.X - 230),
+                            (int)(WindowManager.Instance.Center.Y - 245),
+                            GUI.GetTexture("MenuBorder").Width * 10,
+                            GUI.GetTexture("MenuBorder").Height * 10),
+                        "MenuBorder",
+                        Color.White));
+
                     break;
 
                 case GameState.Demo:
+                    GUI.Clear();
 
                     if (!Map.Loaded) {
                         Map.LoadMap("Demo");

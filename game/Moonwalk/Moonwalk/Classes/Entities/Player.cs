@@ -349,9 +349,14 @@ namespace Moonwalk.Classes.Entities
         {
             base.Draw(batch);
             
+<<<<<<< Updated upstream
             /*
             batch.DrawString(GameManager.font, 
                 $"{Math.Round(vectorPosition.X)} - {Math.Round(vectorPosition.Y)} ",
+=======
+            batch.DrawString(GUI.GetFont("File"), 
+                $"{Math.Round(vectorPosition.Y)} - {Math.Round(vectorPosition.X)} ",
+>>>>>>> Stashed changes
                 new Vector2(400, 50),
                 Color.White);
             */

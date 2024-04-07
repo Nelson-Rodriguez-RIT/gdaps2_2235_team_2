@@ -34,7 +34,9 @@ namespace Moonwalk.Classes.Managers {
 
         // Currently loaded entities
         public static Assortment<Entity> entities;
-        public static Dictionary<string, GUIButtonElement> guiButtonElements;
+        // private static Dictionary<string, GUIButtonElement> guiButtonElements;
+        private static Dictionary<string, List<GUIElement>> guiBuffers;
+        
 
         List<Type> types;
 
@@ -65,7 +67,8 @@ namespace Moonwalk.Classes.Managers {
             types.Add(typeof(Projectile));
 
             entities = new Assortment<Entity>(types);
-            guiButtonElements = new Dictionary<string, GUIButtonElement>();
+            //guiButtonElements = new Dictionary<string, GUIButtonElement>();
+            guiBuffers = new Dictionary<string, List<GUIElement>>();
 
             // Prepares neccessary elements
             Transition(GameState.MainMenu);
@@ -96,8 +99,42 @@ namespace Moonwalk.Classes.Managers {
 
             if (storedInput.PreviousKeyboard.IsKeyDown(Keys.Escape) && // Press ESC to pause the game
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.Escape) &&
-                    isPauseEnabled)
+                    isPauseEnabled) {
+                if (isGamePaused) { // Prepare to unpause game
+                    foreach (GUIButtonElement button in guiBuffers["PauseMenu"])
+                        GUI.RemoveElement(button);
+
+                    guiBuffers.Remove("PauseMenu");
+                }
+                else { // Prepare to pause game
+                    guiBuffers.Add("PauseMenu", new List<GUIElement>());
+
+                    guiBuffers["PauseMenu"].Add(new GUIButtonElement(
+                        new Rectangle(
+                            (int)(WindowManager.Instance.Center.X - 100),
+                            (int)(WindowManager.Instance.Center.Y - 50),
+                            GUI.GetTexture("ButtonStart").Width * 2,
+                            GUI.GetTexture("ButtonStart").Height * 2
+                            ),
+                        "ButtonResume",
+                        Color.White));
+                    GUI.AddElement(guiBuffers["PauseMenu"][0]);
+
+                    guiBuffers["PauseMenu"].Add(new GUIButtonElement(
+                        new Rectangle(
+                            (int)(WindowManager.Instance.Center.X - 100),
+                            (int)(WindowManager.Instance.Center.Y + 50),
+                            GUI.GetTexture("ButtonExit").Width * 2,
+                            GUI.GetTexture("ButtonExit").Height * 2
+                            ),
+                        "ButtonMainMenu",
+                        Color.White));
+                    GUI.AddElement(guiBuffers["PauseMenu"][1]);
+                }
+
                 isGamePaused = !isGamePaused;
+            }
+                
 
             if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw entity hitboxes
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.F1))
@@ -121,13 +158,12 @@ namespace Moonwalk.Classes.Managers {
                 switch (state) {
                     case GameState.MainMenu:
                         //Start button pressed
-                        if (guiButtonElements["ButtonStart"].Clicked)
+                        if (((GUIButtonElement)guiBuffers["MainMenu"][0]).Clicked)
                             Transition(GameState.Demo);
 
                         //Exit button pressed
-                        if (guiButtonElements["ButtonExit"].Clicked)
+                        else if (((GUIButtonElement)guiBuffers["MainMenu"][1]).Clicked)
                             GameMain.ExitGame();
-
                         break;
 
                     case GameState.Demo:
@@ -174,8 +210,22 @@ namespace Moonwalk.Classes.Managers {
                     }
                 }
             }
+            else {
+                //Resume button pressed
+                if (((GUIButtonElement)guiBuffers["PauseMenu"][0]).Clicked) {
+                    foreach (GUIButtonElement button in guiBuffers["PauseMenu"])
+                        GUI.RemoveElement(button);
 
-
+                    guiBuffers.Remove("PauseMenu");
+                    isGamePaused = false;
+                }
+                    
+                //Main Menu button pressed
+                else if (((GUIButtonElement)guiBuffers["PauseMenu"][1]).Clicked) {
+                    Transition(GameState.MainMenu);
+                    isGamePaused = false;
+                }
+            }
 
             storedInput.UpdatePrevious();
         }
@@ -198,9 +248,11 @@ namespace Moonwalk.Classes.Managers {
                         graphics.Clear(Color.Gray);
                         break;
                 }
+            else {
+                
+            }
 
             // Elements drawn ever iteration
-            GUI.Draw(batch);
             foreach (Entity entity in entities) {
                 entity.Draw(batch);
 
@@ -218,6 +270,7 @@ namespace Moonwalk.Classes.Managers {
                 p.Draw(batch);
             }
 
+            GUI.Draw(batch);
         }
 
         /// <summary>
@@ -230,6 +283,10 @@ namespace Moonwalk.Classes.Managers {
 
             switch (nextState) {
                 case GameState.MainMenu:
+                    guiBuffers.Clear();
+                    GUI.Clear();
+
+                    guiBuffers.Add("MainMenu", new List<GUIElement>());
                     isPauseEnabled = false;
 
                     GUI.AddElement(new GUITextElement(
@@ -239,7 +296,7 @@ namespace Moonwalk.Classes.Managers {
                         Color.White
                         ));
 
-                    guiButtonElements.Add("ButtonStart", new GUIButtonElement(
+                    guiBuffers["MainMenu"].Add(new GUIButtonElement(
                         new Rectangle(
                             (int)(WindowManager.Instance.Center.X - 100),
                             (int)(WindowManager.Instance.Center.Y - 50),
@@ -248,9 +305,9 @@ namespace Moonwalk.Classes.Managers {
                             ),
                         "ButtonStart",
                         Color.White));
-                    GUI.AddElement(guiButtonElements["ButtonStart"]);
+                    GUI.AddElement(guiBuffers["MainMenu"][0]);
 
-                    guiButtonElements.Add("ButtonExit", new GUIButtonElement(
+                    guiBuffers["MainMenu"].Add(new GUIButtonElement(
                         new Rectangle(
                             (int)(WindowManager.Instance.Center.X - 100),
                             (int)(WindowManager.Instance.Center.Y + 50),
@@ -259,7 +316,7 @@ namespace Moonwalk.Classes.Managers {
                             ),
                         "ButtonExit",
                         Color.White));
-                    GUI.AddElement(guiButtonElements["ButtonExit"]);
+                    GUI.AddElement(guiBuffers["MainMenu"][1]);
 
                     GUI.AddElement(new GUITextureElement(
                         new Rectangle(
@@ -274,6 +331,7 @@ namespace Moonwalk.Classes.Managers {
 
                 case GameState.Demo:
                     GUI.Clear();
+                    guiBuffers.Clear();
                     isPauseEnabled = true;
 
                     if (!Map.Loaded) {

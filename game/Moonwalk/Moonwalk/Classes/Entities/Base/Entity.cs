@@ -50,7 +50,6 @@ namespace Moonwalk.Classes.Entities.Base
         protected double angAccel;
         protected float swingRadius;
         protected Vector2 pivot;
-        protected double velocityMag;
 
         //Animation
         protected Texture2D spriteSheet;
@@ -65,19 +64,16 @@ namespace Moonwalk.Classes.Entities.Base
         public virtual Point Position
         {
             get { return hurtbox.Location; }
-            set { hurtbox.Location = value;}
         }
 
         public virtual Vector2 Velocity
         {
             get { return velocity; }
-            set { velocity = value; }
         }
 
         public virtual Vector2 Acceleration
         {
-            get { return acceleration; }
-            set { acceleration = value; }   
+            get { return acceleration; } 
         }
 
         // These rely on file data and only need to be loaded once
@@ -262,14 +258,7 @@ namespace Moonwalk.Classes.Entities.Base
             //perpendicular to the radius. A diagram is very helpful for understanding.
 
             //Magnitude of the entity's velocity
-            if ((velocity.X > 0 || velocity.Y > 0) || (velocity.X < 0 || velocity.Y < 0))
-            {
-                double velocityMag = VectorMath.VectorMagnitude(velocity);
-            }
-            else
-            {
-                double velocityMag = VectorMath.VectorMagnitude(new Vector2(1,1));
-            }
+            double velocityMag = VectorMath.VectorMagnitude(velocity);
 
             //The length of the side opposite the angle we want
             double c = Math.Sqrt(

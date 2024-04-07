@@ -64,7 +64,6 @@ namespace Moonwalk.Classes.Entities
 
         private float swingChange;
         private float maxAngVelocity;
-        private Point oldPosition = new Point(0, 0);
         private Vector2 oldVelocity = new Vector2(0, 0);
 
         /// <summary>
@@ -763,16 +762,6 @@ namespace Moonwalk.Classes.Entities
             GameManager.entities[typeof(Player)].Clear();
             GameManager.SpawnEntity<Player>();
         }
-
-        private void ResetStats()
-        {
-            this.Position = new Point((int)oldPosition.X, (int)oldPosition.Y);
-            this.Velocity = new Vector2(0, 0);
-            this.Acceleration = new Vector2(0, 0);
-            this.angAccel = 0;
-            this.angVelocity = 0;
-        }
-
     }
 
     internal class GUIPlayerStatusElement : GUIElement {

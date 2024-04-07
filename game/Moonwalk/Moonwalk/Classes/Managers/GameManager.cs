@@ -352,7 +352,8 @@ namespace Moonwalk.Classes.Managers {
                         Player player = SpawnEntity<Player>();
                         Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
                         SpawnEntity<TestEnemy>(new Vector2(200, 250));
-                        SpawnEntity<KeyObject>(new Vector2(900, 250));
+                        SpawnEntity<KeyObject>(new Vector2(900, 262));
+
 
                         // Set player as the Camera's target
                         Camera.SetTarget(player);

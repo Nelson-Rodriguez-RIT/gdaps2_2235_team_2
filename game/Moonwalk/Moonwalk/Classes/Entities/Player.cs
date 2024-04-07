@@ -63,8 +63,6 @@ namespace Moonwalk.Classes.Entities
 
         private float swingChange;
         private float maxAngVelocity;
-        private Point oldPosition = new Point(0, 0);
-        private Vector2 oldVelocity = new Vector2(0, 0);
 
         /// <summary>
         /// Determines if the entity is grounded or not
@@ -121,8 +119,6 @@ namespace Moonwalk.Classes.Entities
             base.Update(gameTime, input);
 
             int sign = 0;
-            if (float.IsNaN(velocity.X) == true) 
-            { velocity = oldVelocity; }
 
             //Slow down if not pressing anything
             if (!input.IsPressed(Keys.D) &&
@@ -155,20 +151,19 @@ namespace Moonwalk.Classes.Entities
             }
 
             if (input.IsPressed(Keys.R)
-                && !input.WasPressed(Keys.R))
+                && !input.WasPressed(Keys.R)) 
             {
                 vectorPosition = MostRecentCheckpoint.Hitbox.Location.ToVector2();
             }
 
             //Change publically available position
             Location = this.Position;
-            oldVelocity = velocity;
         }
 
         public override void Movement(GameTime gt)
         {
             base.Movement(gt);
-
+            
             //Check if player hits an enemy or projectile
             IHostile collision = null;
 
@@ -204,25 +199,25 @@ namespace Moonwalk.Classes.Entities
 
                 for (int i = 1; i < Links; i++)
                 {
-                    Vector2 thing = Vector2.Normalize(VectorMath.VectorDifference(hurtbox.Center.ToVector2(), pivot))
+                    Vector2 thing = Vector2.Normalize(VectorMath.VectorDifference(hurtbox.Center.ToVector2(), pivot)) 
                         * slice * i; //increment every iteration
 
                     Particle.Effects.Add(new Particle
-                        (1,
-                        Color.SkyBlue,
+                        (1, 
+                        Color.SkyBlue, 
                         ParticleEffects.None,
                         (hurtbox.Center.ToVector2() + thing)
                             .ToPoint(),
-                        0,
-                        3,
+                        0, 
+                        3, 
                         4)
                         );
                 }
             }
-
+            
         }
 
-
+   
 
         protected override void RotationalMotion(GameTime gt)
         {
@@ -281,7 +276,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void Input(StoredInput input)
         {
-
+            
             //Horizontal movement
             if (input.IsPressed(Keys.A) &&
                 !input.IsPressed(Keys.D))
@@ -315,20 +310,20 @@ namespace Moonwalk.Classes.Entities
                 && !input.WasPressed(Keys.Space))
                 || input.Buffered.Exists(item => item.Key == Keys.Space))
             {
-                if (Grounded)
+                if (Grounded) 
                 {
                     velocity.Y = -50;
 
                     BufferedInput buffer = input.Buffered.Find(item => item.Key == Keys.Space);
                     input.Buffered.Remove(buffer);
-                }
+                }   
                 else
                 {
                     input.Buffer(Keys.Space);
                 }
             }
 
-            //Robot abilities:
+                //Robot abilities:
 
             //Gravity ability
             if (input.CurrentMouse.LeftButton == ButtonState.Pressed
@@ -385,9 +380,9 @@ namespace Moonwalk.Classes.Entities
                 && Robot.Tether != null)
             {
 
-                Robot.Tether.SetLinearVariables();
-                Robot.Tether = null;
-                ToggleBotLock();
+                    Robot.Tether.SetLinearVariables();
+                    Robot.Tether = null;
+                    ToggleBotLock();
             }
 
         }
@@ -395,14 +390,14 @@ namespace Moonwalk.Classes.Entities
         public override void Draw(SpriteBatch batch)
         {
             base.Draw(batch);
-
+            
         }
 
         protected IHostile HostileCollision()
         {
             List<IHostile> list = GameManager.entities.GetAllOfType<IHostile>();
 
-            IHostile collision = list.Find(enemy =>
+            IHostile collision = list.Find(enemy => 
             new Rectangle(
                 enemy.Position.X,
                 enemy.Position.Y,
@@ -459,13 +454,13 @@ namespace Moonwalk.Classes.Entities
             {
                 acceleration.Y = gravity * (1 + (100 - Math.Abs(velocity.Y)) / 50);
             }
-
+            
 
 
             velocity += acceleration * time;                                   //Update velocity
             Vector2 tempVelocity = new Vector2(velocity.X, velocity.Y);        //For if the player is airborne
 
-
+            
 
             //Vertical
             while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
@@ -544,13 +539,13 @@ namespace Moonwalk.Classes.Entities
 
         private void ChangeAnimation(StoredInput input)
         {
-
+            
             // For animations that play until they are done, don't change the animation until then
             if (animationTimer > 0)
             {
                 animationTimer--;
                 return;
-            }
+            }         
 
             // Change facing direciton of the player
             if (velocity.X < 0
@@ -575,7 +570,7 @@ namespace Moonwalk.Classes.Entities
 
             // If moving horizontally, play run
             if (velocity.X != 0)
-            {
+            {                
                 SwitchAnimation(Animations.Run, false);
             }
 
@@ -586,7 +581,7 @@ namespace Moonwalk.Classes.Entities
             }
 
             // if E is pressed, play melee attack animation
-            if (input.IsPressed(Keys.E) &&
+            if (input.IsPressed(Keys.E) && 
                 !input.WasPressed(Keys.E))
             {
                 SwitchAnimation(Animations.Attack);
@@ -598,12 +593,12 @@ namespace Moonwalk.Classes.Entities
             if (input.IsPressed(Keys.F) &&
                 activeAnimation.AnimationValue != (int)(Animations.Shoot))
             {
-                SwitchAnimation(Animations.Shoot,
+                SwitchAnimation(Animations.Shoot, 
                     true
                     );
                 GameManager.SpawnEntity<PlayerProjectile>(
                     hurtbox.Center.ToVector2() + new Vector2(
-                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width,
+                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width, 
                         -4),
                     new object[]
                     {
@@ -618,7 +613,7 @@ namespace Moonwalk.Classes.Entities
         {
             Hitbox attack = null;
 
-            if (faceDirection == FaceDirection.Right)
+            if (faceDirection == FaceDirection.Right) 
             {
                 attack = new Hitbox(
                 20,
@@ -645,7 +640,7 @@ namespace Moonwalk.Classes.Entities
                     -16, -2));
             }
 
-
+            
 
             attack.targetEntered += this.DealDamage;
         }
@@ -663,7 +658,7 @@ namespace Moonwalk.Classes.Entities
             }
         }
 
-
+        
         private void GravityAbility(Vector2 robotPos)
         {
             const int Range = 120;
@@ -686,7 +681,7 @@ namespace Moonwalk.Classes.Entities
                     // Apply the impulse towards the robot
                     Vector2 difference = VectorMath.VectorDifference(movable.Position.ToVector2(), robotPos);
                     difference.Normalize();
-                    movable.Impulse(difference *
+                    movable.Impulse(difference * 
                         (movable is Player ? GravityStrength : 60)
                         );
                 }
@@ -715,7 +710,7 @@ namespace Moonwalk.Classes.Entities
                         location));
             }
         }
-
+        
         public void TakeDamage(int damage)
         {
             Health -= damage;
@@ -730,8 +725,8 @@ namespace Moonwalk.Classes.Entities
             List<T> list = Map.Geometry.GetAllOfType<T>();
             foreach (T element in list)
                 if (element.Hitbox.Intersects(hurtbox)) {
-                    //if (element.Collidable)
-                    //    isColliding = true;
+                    if (element.Collidable)
+                        isColliding = true;
 
                     thing = element;
                     if (element is MapTrigger)
@@ -746,16 +741,6 @@ namespace Moonwalk.Classes.Entities
             GameManager.entities[typeof(Player)].Clear();
             GameManager.SpawnEntity<Player>();
         }
-
-        private void ResetStats()
-        {
-            this.Position = new Point((int)oldPosition.X, (int)oldPosition.Y);
-            this.Velocity = new Vector2(0, 0);
-            this.Acceleration = new Vector2(0, 0);
-            this.angAccel = 0;
-            this.angVelocity = 0;
-        }
-
     }
 
     

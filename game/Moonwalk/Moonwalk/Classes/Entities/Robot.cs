@@ -29,7 +29,7 @@ namespace Moonwalk.Classes.Entities
 
         private static bool locked;
         const float MoveSpeed = 40f;
-        internal Point mousepos; // Internal used for GUIRobotDebugElement
+        protected internal Point mousepos; // Internal used for GUIRobotDebugElement
         public static IMovable Tether;
 
         public static bool Locked

@@ -10,6 +10,7 @@ using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Entities
@@ -47,7 +48,7 @@ namespace Moonwalk.Classes.Entities
         /// </summary>
         protected AbilityCooldowns<Abilities> cooldowns;
 
-        int health;
+        protected internal int health;
         const int meleeDmg = 2;
 
         //Events
@@ -101,12 +102,14 @@ namespace Moonwalk.Classes.Entities
             maxXVelocity = 40;
             maxYVelocity = 60;
             maxAngVelocity = 350;
-            health = 3;
+            health = int.Parse(properties["MaxHealth"]);
 
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
 
             cooldowns = new AbilityCooldowns<Abilities>(directory, 5);
+
+            GUI.AddElement(new GUIPlayerStatusElement(new Vector2(10, 10), this));
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -721,6 +724,20 @@ namespace Moonwalk.Classes.Entities
             Health -= damage;
         }
 
+        public override bool CheckCollision() {
+            bool isColliding = false;
+
+            foreach (Terrain element in Map.Geometry)
+                if (element.Hitbox.Intersects(hurtbox)) {
+                    if (element.Collidable)
+                        isColliding = true;
+
+                    if (element is MapTrigger)
+                        element.Collide();
+                }
+
+            return isColliding;
+        }
 
         public bool CheckTerrainCollision<T>(out T thing) where T : Terrain
         {
@@ -733,7 +750,7 @@ namespace Moonwalk.Classes.Entities
                     //if (element.Collidable)
                     //    isColliding = true;
 
-                    thing = element;
+                    
                     if (element is MapTrigger)
                         element.Collide();
                 }
@@ -758,5 +775,47 @@ namespace Moonwalk.Classes.Entities
 
     }
 
-    
+    internal class GUIPlayerStatusElement : GUIElement {
+        const int Size = 2;
+
+        protected Vector2 position;
+        protected Player player;
+
+        protected Texture2D healthBar;
+        protected Texture2D healthTick;
+
+        public GUIPlayerStatusElement(Vector2 position, Player player) {
+            this.position = position;
+            this.player = player;
+
+            healthBar = GUI.GetTexture("HealthBar");
+            healthTick = GUI.GetTexture("HealthTick");
+        }
+
+        public override void Draw(SpriteBatch batch) {
+            // Draw health guage
+            batch.Draw(
+                healthBar, 
+                new Rectangle(
+                    (int)position.X,
+                    (int)position.Y,
+                    48 * Size,
+                    12 * Size
+                    ), 
+                Color.White);
+
+            // Draw health ticks
+            for (int tick = 0; tick < player.health; tick++)
+                batch.Draw(
+                    healthTick,
+                    new Rectangle(
+                        (int)(position.X + (8 * Size) + ((tick * Size) + (Size) - 1) + (tick * (3 * Size))),
+                        (int)(position.Y + (3 * Size)),
+                        3 * Size,
+                        6 * Size
+                        ),
+                    Color.White
+                    );
+        }
+    }
 }

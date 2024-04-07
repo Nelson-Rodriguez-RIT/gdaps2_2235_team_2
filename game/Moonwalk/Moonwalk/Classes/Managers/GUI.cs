@@ -20,7 +20,7 @@ namespace Moonwalk.Classes.Managers {
         // For managing displayed GUI elements
         public static void AddElement(GUIElement element) { elements.Add(element); }
         public static void RemoveElement(GUIElement element) { elements.Remove(element); }
-        public static List<GUIElement> GetElement<T>(System.Type element) {
+        public static List<GUIElement> GetElement<T>() {
             return elements.GetAllOfType<T>().Cast<GUIElement>().ToList();
         }
         public static void Clear() { elements = new(); }

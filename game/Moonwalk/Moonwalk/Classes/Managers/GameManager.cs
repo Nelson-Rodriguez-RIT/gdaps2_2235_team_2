@@ -34,6 +34,7 @@ namespace Moonwalk.Classes.Managers {
 
         // Currently loaded entities
         public static Assortment<Entity> entities;
+        public static Dictionary<string, GUIButtonElement> guiButtonElements;
 
         List<Type> types;
 
@@ -62,7 +63,9 @@ namespace Moonwalk.Classes.Managers {
             types.Add(typeof(Enemy));
             types.Add(typeof(KeyObject));
             types.Add(typeof(Projectile));
+
             entities = new Assortment<Entity>(types);
+            guiButtonElements = new Dictionary<string, GUIButtonElement>();
 
             // Prepares neccessary elements
             Transition(GameState.MainMenu);
@@ -118,11 +121,11 @@ namespace Moonwalk.Classes.Managers {
                 switch (state) {
                     case GameState.MainMenu:
                         //Start button pressed
-                        if (GUI.ClickableElements["ButtonStart"].Clicked)
+                        if (guiButtonElements["ButtonStart"].Clicked)
                             Transition(GameState.Demo);
 
                         //Exit button pressed
-                        if (GUI.ClickableElements["ButtonExit"].Clicked)
+                        if (guiButtonElements["ButtonExit"].Clicked)
                             GameMain.ExitGame();
 
                         break;
@@ -236,7 +239,7 @@ namespace Moonwalk.Classes.Managers {
                         Color.White
                         ));
 
-                    GUI.AddElement(new GUIButtonElement(
+                    guiButtonElements.Add("ButtonStart", new GUIButtonElement(
                         new Rectangle(
                             (int)(WindowManager.Instance.Center.X - 100),
                             (int)(WindowManager.Instance.Center.Y - 50),
@@ -245,8 +248,9 @@ namespace Moonwalk.Classes.Managers {
                             ),
                         "ButtonStart",
                         Color.White));
+                    GUI.AddElement(guiButtonElements["ButtonStart"]);
 
-                    GUI.AddElement(new GUIButtonElement(
+                    guiButtonElements.Add("ButtonExit", new GUIButtonElement(
                         new Rectangle(
                             (int)(WindowManager.Instance.Center.X - 100),
                             (int)(WindowManager.Instance.Center.Y + 50),
@@ -255,6 +259,7 @@ namespace Moonwalk.Classes.Managers {
                             ),
                         "ButtonExit",
                         Color.White));
+                    GUI.AddElement(guiButtonElements["ButtonExit"]);
 
                     GUI.AddElement(new GUITextureElement(
                         new Rectangle(

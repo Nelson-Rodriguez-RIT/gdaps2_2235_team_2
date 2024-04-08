@@ -149,7 +149,8 @@ namespace Moonwalk.Classes.Entities
 
             Checkpoint temp = null;
 
-            if (CheckTerrainCollision<Checkpoint>(out temp) && MostRecentCheckpoint != temp)
+            if (CheckTerrainCollision<Checkpoint>(out temp) )
+                //&& MostRecentCheckpoint != temp)
             {
                 MostRecentCheckpoint = temp;
             }
@@ -744,11 +745,12 @@ namespace Moonwalk.Classes.Entities
 
             List<T> list = Map.Geometry.GetAllOfType<T>();
             foreach (T element in list)
-                if (element.Hitbox.Intersects(hurtbox)) {
-                    if (element.Collidable)
-                        isColliding = true;
-
+                if (element.Hitbox.Intersects(hurtbox)) 
+                {
                     
+                    isColliding = true;
+                    thing = element;
+
                     if (element is MapTrigger)
                         element.Collide();
                 }

@@ -12,7 +12,7 @@ using Moonwalk.Classes.Managers;
 
 namespace Moonwalk.Classes.Entities
 {
-    internal class KeyObject : Entity, IInteractible
+    internal class KeyObject : Entity
     {
         
         //fields

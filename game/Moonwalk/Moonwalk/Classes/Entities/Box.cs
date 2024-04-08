@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Entities
 {
-    internal class Box : Entity, ICollidable
+    internal class Box : Entity, ISolid
     {
         enum Animations
         {
@@ -223,6 +223,24 @@ namespace Moonwalk.Classes.Entities
                     if (element.Collidable)
                         isColliding = true;
                 }
+
+            
+            foreach (ISolid solid in GameManager.entities.GetAllOfType<ISolid>())
+            {
+                if (solid != this && solid.Hitbox.Intersects(hurtbox))
+                {
+                    isColliding = true;
+                }
+            }
+
+            foreach (ISoft soft in GameManager.entities.GetAllOfType<ISoft>())
+            {
+                if (soft.Hitbox.Intersects(hurtbox))
+                {
+                    isColliding = true;
+                }
+            }
+
 
             return isColliding;
         }

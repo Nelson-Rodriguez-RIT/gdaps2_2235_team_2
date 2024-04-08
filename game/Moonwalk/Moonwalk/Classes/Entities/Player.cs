@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 
 namespace Moonwalk.Classes.Entities
 {
@@ -21,7 +22,7 @@ namespace Moonwalk.Classes.Entities
     /// <summary>
     /// The player controlled character
     /// </summary>
-    internal class Player : PlayerControlled, IJump, IDamageable
+    internal class Player : PlayerControlled, IJump, IDamageable, ISoft
     {
         public static Point Location;
         public static Checkpoint MostRecentCheckpoint;
@@ -106,7 +107,7 @@ namespace Moonwalk.Classes.Entities
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
 
-            cooldowns = new AbilityCooldowns<Abilities>(directory, 5);
+            cooldowns = new AbilityCooldowns<Abilities>(properties);
 
             GUI.AddElement(new GUIPlayerStatusElement(new Vector2(10, 10), this));
         }
@@ -118,9 +119,10 @@ namespace Moonwalk.Classes.Entities
 
             cooldowns.Update(gameTime);
 
+            base.Update(gameTime, input);
+
             ChangeAnimation(input);
 
-            base.Update(gameTime, input);
 
             int sign = 0;
 
@@ -155,6 +157,8 @@ namespace Moonwalk.Classes.Entities
                 MostRecentCheckpoint = temp;
             }
 
+            CheckTerrainCollision<OutOfBounds>(out OutOfBounds thing);
+
             if (input.IsPressed(Keys.R)
                 && !input.WasPressed(Keys.R)) 
             {
@@ -163,6 +167,11 @@ namespace Moonwalk.Classes.Entities
 
             //Change publically available position
             Location = this.Position;
+
+            if (health <= 0)
+            {
+                Respawn();
+            }
         }
 
         public override void Movement(GameTime gt)
@@ -288,12 +297,14 @@ namespace Moonwalk.Classes.Entities
             {
                 // acceleration is higher if the player is moving in the opposite direction for smoother movement
                 acceleration.X = velocity.X > 0 ? -maxXVelocity * 5f : -maxXVelocity * 2f;
+                faceDirection = FaceDirection.Left;
             }
             else if (input.IsPressed(Keys.D) &&
                 !input.IsPressed(Keys.A))
             {
                 // acceleration is higher if the player is moving in the opposite direction for smoother movement
                 acceleration.X = velocity.X < 0 ? maxXVelocity * 5f : maxXVelocity * 2f;
+                faceDirection = FaceDirection.Right;
             }
 
             if (physicsState == PhysicsState.Rotational)
@@ -333,6 +344,7 @@ namespace Moonwalk.Classes.Entities
             //Gravity ability
             if (input.CurrentMouse.LeftButton == ButtonState.Pressed
                 && input.PreviousMouse.LeftButton == ButtonState.Released
+                && GetRobotPosition != null
                 && cooldowns.UseAbility(Abilities.Gravity))
             {
                 Vector2 robotPos = GetRobotPosition();
@@ -555,6 +567,7 @@ namespace Moonwalk.Classes.Entities
                 return;
             }         
 
+            /*
             // Change facing direciton of the player
             if (acceleration.X < 0
                 && faceDirection != FaceDirection.Left)
@@ -566,6 +579,7 @@ namespace Moonwalk.Classes.Entities
             {
                 faceDirection = FaceDirection.Right;
             }
+            */
 
             // Update the face direction in the animation class
             activeAnimation.FaceDirection = (int)faceDirection;
@@ -736,6 +750,14 @@ namespace Moonwalk.Classes.Entities
                         element.Collide();
                 }
 
+            foreach (ISolid solid in GameManager.entities.GetAllOfType<ISolid>())
+            {
+                if (solid.Hitbox.Intersects(hurtbox))
+                {
+                    isColliding = true;
+                }
+            }
+
             return isColliding;
         }
 
@@ -752,7 +774,7 @@ namespace Moonwalk.Classes.Entities
                     isColliding = true;
                     thing = element;
 
-                    if (element is MapTrigger)
+                    if (element is MapTrigger || element is OutOfBounds)
                         element.Collide();
                 }
 
@@ -762,7 +784,8 @@ namespace Moonwalk.Classes.Entities
         public static void Respawn()
         {
             GameManager.entities[typeof(Player)].Clear();
-            GameManager.SpawnEntity<Player>();
+            Player player = GameManager.SpawnEntity<Player>();
+            Camera.SetTarget(player);
         }
     }
 

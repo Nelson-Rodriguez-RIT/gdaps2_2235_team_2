@@ -69,7 +69,7 @@ namespace Moonwalk.Classes.Entities
             acceleration = new Vector2(0, gravity);
             spriteScale = 1;
             maxXVelocity = 50;
-            cooldowns = new(directory, 1.5);
+            cooldowns = new(properties);
 
         }
 
@@ -117,10 +117,7 @@ namespace Moonwalk.Classes.Entities
             
         }
 
-        public virtual void TakeDamage(int damage)
-        {
-            health -= damage;
-        }
+        
 
         public override void Movement(GameTime gameTime)
         {

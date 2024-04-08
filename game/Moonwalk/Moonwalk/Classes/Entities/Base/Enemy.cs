@@ -14,7 +14,7 @@ using Moonwalk.Classes.Maps;
 namespace Moonwalk.Classes.Entities.Base
 {
 
-    internal abstract class Enemy : Entity, IHostile
+    internal abstract class Enemy : Entity, IHostile, IDamageable, ISoft
     {
         //For Enemies specifically
         protected int health;                         // enemy health       
@@ -68,7 +68,8 @@ namespace Moonwalk.Classes.Entities.Base
         public Enemy(Vector2 position, string directory)
             : base(position, directory)
         {
-
+            damage = int.Parse(properties["Damage"]);
+            health = int.Parse(properties["Health"]);
         }
 
         /// <summary>
@@ -139,6 +140,11 @@ namespace Moonwalk.Classes.Entities.Base
             AI();
             Movement(gameTime);
             base.Update(gameTime, input);
+
+            if (health <= 0)
+            {
+                GameManager.DespawnEntity(this);
+            }
         }
 
         public virtual void Movement(GameTime time)
@@ -233,6 +239,11 @@ namespace Moonwalk.Classes.Entities.Base
                 iterationCounter++;
 
             }
+        }
+
+        public virtual void TakeDamage(int damage)
+        {
+            health -= damage;
         }
 
         public abstract void AI();

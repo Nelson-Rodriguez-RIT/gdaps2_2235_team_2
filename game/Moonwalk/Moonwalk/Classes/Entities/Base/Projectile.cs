@@ -17,6 +17,7 @@ namespace Moonwalk.Classes.Entities.Base
     {
         protected int damage;
         protected int collisions;
+        protected double timer;
 
         /// <summary>
         /// Property to determine how many checks to do when checking for collision
@@ -59,17 +60,23 @@ namespace Moonwalk.Classes.Entities.Base
             get { return collisions; }
         }
 
+        public double Timer
+        {
+            get { return timer; }
+        }
+
         public int Damage
         {
             get { return damage; }
         }
 
-        public Projectile(Vector2 position, string directory, Vector2 direction, float speed, int damage, int collisions = 1) 
+        public Projectile(Vector2 position, string directory, Vector2 direction, float speed, int damage, int collisions = 1, double timer = 10) 
             : base(position, directory, false, false) 
         { 
             velocity = Vector2.Normalize(direction) * speed;
             this.damage = damage;
             this.collisions = collisions;
+            this.timer = timer;
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -77,6 +84,13 @@ namespace Moonwalk.Classes.Entities.Base
             AI();
             Movement(gameTime);
             base.Update(gameTime, input);
+
+            timer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (timer <= 0 || collisions == 0) 
+            { 
+                GameManager.DespawnEntity(this);
+            }
         }
 
         /// <summary>
@@ -102,6 +116,14 @@ namespace Moonwalk.Classes.Entities.Base
                     hurtbox.Width,
                     hurtbox.Height
                     )));
+            }
+
+            foreach (ISolid solid in GameManager.entities.GetAllOfType<ISolid>())
+            {
+                if (solid.Hitbox.Intersects(hurtbox))
+                {
+                    return true;
+                }
             }
 
             return collision;

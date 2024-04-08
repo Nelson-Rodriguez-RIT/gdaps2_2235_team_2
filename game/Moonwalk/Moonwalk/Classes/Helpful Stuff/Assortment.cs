@@ -121,6 +121,7 @@ namespace Moonwalk.Classes
                     if (itemType.IsSubclassOf(keyValuePair.Key)
                         || itemType.IsAssignableTo(keyValuePair.Key))
                     {
+
                         lists[keyValuePair.Key].Add(item);
                         break;
                     }

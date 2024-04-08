@@ -183,9 +183,6 @@ namespace Moonwalk.Classes.Entities.Base
             //Update position
             vectorPosition += velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            //Apply offset
-           // vectorPosition = Camera.RelativePosition(vectorPosition);
-
             hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),

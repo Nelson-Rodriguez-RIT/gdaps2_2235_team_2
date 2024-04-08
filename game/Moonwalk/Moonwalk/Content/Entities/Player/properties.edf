@@ -3,3 +3,5 @@ HitboxY=22
 HitboxXOrigin=0
 HitboxYOrigin=0
 MaxHealth=8
+Gravity=3.5
+Tether=5

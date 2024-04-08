@@ -27,7 +27,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             }
         }
 
-        public AbilityCooldowns(string directory, double defaultValue) 
+        public AbilityCooldowns(Dictionary<string, string> properties) 
         { 
             //get cooldowns from file
             //string fileName = directory + "/cooldowns";
@@ -36,11 +36,21 @@ namespace Moonwalk.Classes.Helpful_Stuff
             maxCooldowns = new Dictionary<TEnum, double>();
 
             TEnum[] enumArray = Enum.GetValues(typeof(TEnum)).Cast<TEnum>().ToArray();
+            string[] abilityNames = Enum.GetNames(typeof(TEnum));
 
             for (int i = 0; i < enumArray.Length; i++)
             {
                 cooldowns.Add(enumArray[i], 0);
-                maxCooldowns.Add(enumArray[i], defaultValue); //Placeholder; read cooldown from file
+
+                if (properties.ContainsKey(abilityNames[i]))
+                {
+                    maxCooldowns.Add(enumArray[i], double.Parse(properties[abilityNames[i]]));
+                }
+                else
+                {
+                    throw new Exception(abilityNames[i] + " was not given a cooldown");
+                }
+                
             }
         }
 

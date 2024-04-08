@@ -13,9 +13,5 @@ namespace Moonwalk.Classes.Boss
         {
             
         }
-        internal class PhaseOne : Phase
-        {
-            //possible implementation of phases
-        }
     }
 }

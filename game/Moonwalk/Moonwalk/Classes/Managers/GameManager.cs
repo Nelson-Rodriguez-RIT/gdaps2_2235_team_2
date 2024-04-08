@@ -174,21 +174,7 @@ namespace Moonwalk.Classes.Managers {
                 foreach (Entity entity in entities) {
                     entity.Update(gt, storedInput);
 
-                    if (entity is IDamageable) {
-                        IDamageable damageable = (IDamageable)entity;
-
-                        if (damageable.Health <= 0) {
-                            DespawnEntity(entity);
-                        }
-                    }
-
-                    if (entity is Projectile) {
-                        Projectile projectile = (Projectile)entity;
-
-                        if (projectile.Collisions <= 0) {
-                            DespawnEntity(entity);
-                        }
-                    }
+                    
                 }
 
                 for (int i = 0; i < Hitbox.activeHitboxes.Count; i++) {
@@ -341,6 +327,7 @@ namespace Moonwalk.Classes.Managers {
                         Player player = SpawnEntity<Player>();
                         Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
                         SpawnEntity<Box>(new Vector2(200, -100));
+                        SpawnEntity<Turret>(new Vector2(250, 100));
 
                         // Set player as the Camera's target
                         Camera.SetTarget(player);

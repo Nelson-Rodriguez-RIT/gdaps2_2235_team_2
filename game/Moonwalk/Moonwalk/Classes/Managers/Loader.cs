@@ -169,6 +169,19 @@ namespace Moonwalk.Classes.Managers
                                     )
                                 );
                             break;
+                        case "CHECKPOINT":
+                            buffer = dataBlocks[1].Split(',');
+                            bufferedGeometry.Add(
+                                new Checkpoint(
+                                    new Rectangle(
+                                        int.Parse(buffer[1]),   // X
+                                        int.Parse(buffer[2]),   // Y
+                                        int.Parse(buffer[3]),   // Width
+                                        int.Parse(buffer[4])    // Height
+                                        )                 // Map to load
+                                    )
+                                );
+                            break;
                     }
                 }
             }

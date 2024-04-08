@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
 namespace Moonwalk.Classes.Entities
@@ -38,7 +39,7 @@ namespace Moonwalk.Classes.Entities
             Jump
         }
 
-        protected enum Abilities
+        public enum Abilities
         {
             Tether,
             Gravity
@@ -94,6 +95,11 @@ namespace Moonwalk.Classes.Entities
             set { health = value; }
         }
 
+        public AbilityCooldowns<Abilities> Cooldowns
+        {
+            get { return cooldowns; }
+        }
+
         //Make private later
         public Player() : base(MostRecentCheckpoint.Hitbox.Location.ToVector2(), "../../../Content/Entities/Player")
         {
@@ -117,6 +123,7 @@ namespace Moonwalk.Classes.Entities
             //Decrease Iframes if the timer is running
             iFrames = iFrames > 0 ? iFrames - gameTime.ElapsedGameTime.TotalSeconds : 0;
 
+            if (physicsState == PhysicsState.Linear)
             cooldowns.Update(gameTime);
 
             base.Update(gameTime, input);
@@ -797,6 +804,9 @@ namespace Moonwalk.Classes.Entities
 
         protected Texture2D healthBar;
         protected Texture2D healthTick;
+        protected Texture2D gravIcon;
+        protected Texture2D tetherIcon;
+        protected Texture2D cooldownTick;
 
         public GUIPlayerStatusElement(Vector2 position, Player player) {
             this.position = position;
@@ -804,18 +814,27 @@ namespace Moonwalk.Classes.Entities
 
             healthBar = GUI.GetTexture("HealthBar");
             healthTick = GUI.GetTexture("HealthTick");
+            gravIcon = GUI.GetTexture("GravIcon");
+            tetherIcon = GUI.GetTexture("SwingIcon");
+            cooldownTick = Loader.LoadTexture("../../../Content/Entities/hitbox");
+
         }
 
         public override void Draw(SpriteBatch batch) {
-            // Draw health guage
-            batch.Draw(
-                healthBar, 
-                new Rectangle(
+
+            const int Spacing = 15;
+
+            Rectangle healthRect = new Rectangle(
                     (int)position.X,
                     (int)position.Y,
                     48 * Size,
                     12 * Size
-                    ), 
+                    );
+
+            // Draw health guage
+            batch.Draw(
+                healthBar, 
+                healthRect, 
                 Color.White);
 
             // Draw health ticks
@@ -830,6 +849,59 @@ namespace Moonwalk.Classes.Entities
                         ),
                     Color.White
                     );
+
+            Rectangle gravRect = new Rectangle(
+                    healthRect.X + healthRect.Width + Spacing,
+                    (int)position.Y - 2,
+                    16 * Size,
+                    16 * Size);
+
+            //Draw ability cooldowns
+            batch.Draw(
+                gravIcon,
+                gravRect,
+                Color.White);
+
+            batch.Draw(
+                cooldownTick,
+                new Rectangle(
+                    gravRect.X,
+                    (int)
+                    (gravRect.Y + gravRect.Height - 
+                    gravRect.Height *
+                        player.Cooldowns[Player.Abilities.Gravity] / player.Cooldowns[Player.Abilities.Gravity, true]),
+                    gravRect.Width,
+                    (int)(gravRect.Height *
+                        player.Cooldowns[Player.Abilities.Gravity] / player.Cooldowns[Player.Abilities.Gravity, true])),
+                Color.White);
+
+            batch.Draw(
+                tetherIcon,
+                new Rectangle(
+                    healthRect.X + healthRect.Width + Spacing * 2 + 16 * Size,
+                    (int)position.Y - 2,
+                    16 * Size,
+                    16 * Size),
+                Color.White);
+
+            Rectangle tetherRect = new Rectangle(
+                    healthRect.X + healthRect.Width + Spacing * 2 + 16 * Size,
+                    (int)position.Y - 2,
+                    16 * Size,
+                    16 * Size);
+
+            batch.Draw(
+                cooldownTick,
+                new Rectangle(
+                    tetherRect.X,
+                    (int)
+                    (tetherRect.Y + tetherRect.Height -
+                    tetherRect.Height *
+                        player.Cooldowns[Player.Abilities.Tether] / player.Cooldowns[Player.Abilities.Tether, true]),
+                    tetherRect.Width,
+                    (int)(tetherRect.Height *
+                        player.Cooldowns[Player.Abilities.Tether] / player.Cooldowns[Player.Abilities.Tether, true])),
+                Color.White);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
     /// A data structure to hold ability cooldowns
     /// </summary>
     /// <typeparam name="TEnum"></typeparam>
-    internal class AbilityCooldowns<TEnum> where TEnum : Enum
+    public class AbilityCooldowns<TEnum> where TEnum : Enum
     {
         /// <summary>
         /// Stores the name of the ability and its cooldown as the key, value is the time until it can be used again
@@ -19,13 +19,18 @@ namespace Moonwalk.Classes.Helpful_Stuff
         private Dictionary<TEnum, double> cooldowns;
         private Dictionary<TEnum, double> maxCooldowns;
 
-        public double this[TEnum ability]
+        public double this[TEnum ability, bool max = false]
         {
             get
             {
-                return cooldowns[ability];
+                if (!max)
+                    return cooldowns[ability];
+                else
+                    return maxCooldowns[ability];
             }
         }
+
+
 
         public AbilityCooldowns(Dictionary<string, string> properties) 
         { 

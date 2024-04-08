@@ -14,7 +14,7 @@ namespace Moonwalk.Classes
     /// are automatically sorted into the correct list.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    internal class Assortment<T> : IEnumerable<T> where T : class
+    public class Assortment<T> : IEnumerable<T> where T : class
     {
         private Dictionary<Type, IList> lists;
         private List<Type> listTypes;

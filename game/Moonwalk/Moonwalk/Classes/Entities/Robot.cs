@@ -104,11 +104,11 @@ namespace Moonwalk.Classes.Entities
 
 
             if (!locked)
-            velocity = (pos + Camera.GlobalOffset / 2) - vectorPosition;
+            velocity = (pos + Camera.GlobalOffset / 2) - vectorPosition - (hurtbox.Center - hurtbox.Location).ToVector2();
 
             if (VectorMath.VectorMagnitude(velocity) < 5)
             {
-                vectorPosition = (pos + Camera.GlobalOffset / 2);
+                vectorPosition = (pos + Camera.GlobalOffset / 2) - (hurtbox.Center - hurtbox.Location).ToVector2();
             }
 
 

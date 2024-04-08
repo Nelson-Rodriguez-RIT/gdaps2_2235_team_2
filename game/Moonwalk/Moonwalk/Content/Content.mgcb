@@ -183,6 +183,18 @@
 /processorParam:TextureFormat=Color
 /build:GUI/ButtonStart.png
 
+#begin GUI/GravIcon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:GUI/GravIcon.png
+
 #begin GUI/HealthBar.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -218,6 +230,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:GUI/MenuBorder.png
+
+#begin GUI/SwingIcon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:GUI/SwingIcon.png
 
 #begin Maps/Demo/spritesheet.png
 /importer:TextureImporter

@@ -63,7 +63,6 @@ namespace Moonwalk.Classes.Managers {
             types.Add(typeof(Player));
             types.Add(typeof(Robot));
             types.Add(typeof(Enemy));
-            types.Add(typeof(KeyObject));
             types.Add(typeof(Projectile));
             types.Add(typeof(Entity));
 

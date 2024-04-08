@@ -70,21 +70,121 @@ namespace Moonwalk.Classes.Entities.Base
             base.Update(gameTime, input);
         }
 
-        public virtual void Movement(GameTime time)
+        #region Movement       
+
+        protected override void LinearMotion(GameTime gt)
         {
-            switch (physicsState)
+            float time = (float)gt.ElapsedGameTime.TotalSeconds;
+
+            int iterationCounter = 1;       // Number of collision checks we've done
+
+            Point lastSafePosition = new Point(Position.X, Position.Y);        //Last point before a collision
+
+            velocity += acceleration * time;                                   //Update velocity
+
+            //Vertical
+            while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
             {
-                case PhysicsState.Linear:
-                    LinearMotion(time);
+                if (!CheckCollision())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.Y) > maxYVelocity)
+                {
+                    velocity.Y = maxYVelocity * Math.Sign(velocity.Y);
+                }
+
+                vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
+
+
+                hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);                      // Update hitbox location
+
+
+                if (CheckCollision())                                                   // Check if there was a collision
+                {
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
+                    vectorPosition = lastSafePosition.ToVector2();                      // Revert position
+                    velocity.Y = 0;
                     break;
-                case PhysicsState.Rotational:
-                    RotationalMotion(time); 
-                    break;
+                }
+
+                iterationCounter++;
             }
-            
+
+
+            //Do the same thing but in the X direction
+            iterationCounter = 1;
+
+            while (!CheckCollision() && iterationCounter <= CollisionAccuracy)
+            {
+                if (!CheckCollision())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.X) > maxXVelocity)
+                {
+                    velocity.X = maxXVelocity * Math.Sign(velocity.X);
+                }
+
+                vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
+
+                hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);
+
+                if (CheckCollision())
+                {
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
+                    vectorPosition = lastSafePosition.ToVector2();
+                    velocity.X = 0;
+                    break;
+                }
+                iterationCounter++;
+
+            }
+
+
         }
 
+        protected override void RotationalMotion(GameTime gt)
+        {
+            Vector2 oldPosition = new Vector2(vectorPosition.X, vectorPosition.Y);
+            base.RotationalMotion(gt);
+
+            if (CheckCollision())           // If there is a collision, switch back to linear motion
+            {
+                vectorPosition = oldPosition;
+                physicsState = PhysicsState.Linear;
+
+                //This determines the velocity the entity will have after 
+                //it stops swinging by converting the angular velocity
+                //back to linear velocity.
+                velocity = new Vector2(                                       // 3000: random number for downscaling (it was too big)
+                    (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 3000),
+                    (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 3000);
+                acceleration = new Vector2(
+                    acceleration.X, gravity);
+
+                angVelocity = 0;
+            }
+        }
+
+
+        #endregion
+
         public abstract void Input(StoredInput input);
+
+        #region Collision
 
         /// <summary>
         /// Determines if the entity collided with terrain
@@ -119,125 +219,7 @@ namespace Moonwalk.Classes.Entities.Base
             return isColliding;
         }
 
-        //public virtual bool CheckCollision<T>(List<T> list) where T : Entity
-        //{
-        //    bool temp = list.Exists(item => item.Hitbox.Intersects(hurtbox));
+        #endregion
 
-        //    if (temp)
-        //    {
-        //        T intersected = list.Find(item => item.Hitbox.Intersects(hurtbox));
-        //    }
-
-        //    return temp;
-        //}
-
-        protected override void LinearMotion(GameTime gt) 
-        {
-            float time = (float)gt.ElapsedGameTime.TotalSeconds;
-
-            int iterationCounter = 1;       // Number of collision checks we've done
-
-            Point lastSafePosition = new Point(Position.X, Position.Y);        //Last point before a collision
-
-            velocity += acceleration * time;                                   //Update velocity
-
-            //Vertical
-            while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
-            {
-                if (!CheckCollision())
-                {
-                    lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
-                }
-
-                //Cap velocity
-                if (Math.Abs(velocity.Y) > maxYVelocity)
-                {
-                    velocity.Y = maxYVelocity * Math.Sign(velocity.Y);
-                }
-
-                vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
-
-                
-                hurtbox = new Rectangle(
-                    (int)Math.Round(vectorPosition.X), 
-                    (int)Math.Round(vectorPosition.Y), 
-                    hurtbox.Width,
-                    hurtbox.Height);                      // Update hitbox location
-                
-
-                if (CheckCollision())                                                   // Check if there was a collision
-                {
-                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
-                    vectorPosition = lastSafePosition.ToVector2();                      // Revert position
-                    velocity.Y = 0;                                                                 
-                    break;
-                }
-
-                iterationCounter++;              
-            }
-
-            
-            //Do the same thing but in the X direction
-            iterationCounter = 1;
-
-            while (!CheckCollision() && iterationCounter <= CollisionAccuracy)
-            {
-                if (!CheckCollision())
-                {
-                    lastSafePosition = new Point(Position.X, Position.Y);
-                }                        
-
-                //Cap velocity
-                if (Math.Abs(velocity.X) > maxXVelocity)
-                {
-                    velocity.X = maxXVelocity * Math.Sign(velocity.X);
-                }
-
-                vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
-
-                hurtbox = new Rectangle(
-                    (int)Math.Round(vectorPosition.X),
-                    (int)Math.Round(vectorPosition.Y),
-                    hurtbox.Width,
-                    hurtbox.Height);
-
-                if (CheckCollision())
-                {
-                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
-                    vectorPosition = lastSafePosition.ToVector2();
-                    velocity.X = 0;
-                    break;
-                }
-                iterationCounter++;
-                
-            }
-            
-
-        }
-
-        protected override void RotationalMotion(GameTime gt)
-        {
-            Vector2 oldPosition = new Vector2(vectorPosition.X, vectorPosition.Y);
-            base.RotationalMotion(gt);
-
-            if (CheckCollision())           // If there is a collision, switch back to linear motion
-            {
-                vectorPosition = oldPosition;
-                physicsState = PhysicsState.Linear;
-
-                //This determines the velocity the entity will have after 
-                //it stops swinging by converting the angular velocity
-                //back to linear velocity.
-                velocity = new Vector2(                                       // 3000: random number for downscaling (it was too big)
-                    (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 3000),
-                    (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 3000);
-                acceleration = new Vector2(
-                    acceleration.X, gravity);
-
-                angVelocity = 0;
-            }
-        }
-
-        
     }
 }

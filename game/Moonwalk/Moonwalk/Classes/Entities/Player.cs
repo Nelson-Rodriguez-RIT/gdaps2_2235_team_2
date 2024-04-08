@@ -350,7 +350,8 @@ namespace Moonwalk.Classes.Entities
                 if (VectorMath.VectorMagnitude(
                         VectorMath.VectorDifference(vectorPosition, robotPos)
                         )
-                    < 125)
+                    < 125
+                    && !Grounded)
                 {
                     Robot.Tether = this;
                     cooldowns.UseAbility(Abilities.Tether);
@@ -360,7 +361,7 @@ namespace Moonwalk.Classes.Entities
                 else
                 {
                     List<IMovable> list = GameManager.entities.GetAllOfType<IMovable>();
-                    list.Remove(list.Find(item => item is Robot));
+                    list.Remove(list.Find(item => item is Robot || item is Player));
 
                     if (list.Count > 0)
                     {
@@ -373,6 +374,7 @@ namespace Moonwalk.Classes.Entities
                             );
 
                         Robot.Tether.SetRotationalVariables(robotPos);
+                        cooldowns.UseAbility(Abilities.Tether);
                         ToggleBotLock();
                     }
 

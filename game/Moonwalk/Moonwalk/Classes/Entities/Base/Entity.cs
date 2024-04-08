@@ -305,7 +305,7 @@ namespace Moonwalk.Classes.Entities.Base
                 angleBetween);
 
             //Set the initial angular velocity
-            angVelocity = (newVMag * 550 * Math.Sign(pivot.Y - vectorPosition.Y)) / swingRadius;
+            angVelocity = (newVMag * 550 * Math.Sign(pivot.Y - vectorPosition.Y)) * Math.Sign(velocity.X) / swingRadius;
                                 // 550: upscaling number
         }
 
@@ -316,8 +316,8 @@ namespace Moonwalk.Classes.Entities.Base
             //they stop swinging by converting the angular velocity
             //back to linear velocity.
             velocity = new Vector2(                                       // 400: random number for downscaling (it was too big)
-                (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 400),
-                (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 400);
+                (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 3000),
+                (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 3000);
             acceleration = new Vector2(
                 acceleration.X, gravity);
         }

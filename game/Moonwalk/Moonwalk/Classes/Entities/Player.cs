@@ -631,7 +631,7 @@ namespace Moonwalk.Classes.Entities
                         -4),
                     new object[]
                     {
-                        faceDirection == FaceDirection.Left ? new Vector2(-1, 0) : new Vector2(1, 0)
+                        faceDirection == FaceDirection.Left ? new Vector2(-1, -0.25f) : new Vector2(1, -0.25f)
                     });
 
                 animationTimer = activeAnimation.AnimationLength;

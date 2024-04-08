@@ -241,6 +241,44 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
+        protected override void RotationalMotion(GameTime gt)
+        {
+            Vector2 oldPosition = new Vector2(vectorPosition.X, vectorPosition.Y);
+            double oldTheta = theta;
+
+            //Determine the angular acceleration using the perpendicular component of gravity
+            angAccel = gravity * 10 * Math.Cos((Math.PI / 180) * theta);
+
+            //Update velocity with acceleration and position with velocity
+            angVelocity += angAccel * gt.ElapsedGameTime.TotalSeconds;
+
+            theta += angVelocity * gt.ElapsedGameTime.TotalSeconds;
+
+            //Determine new position using the new angle
+            Vector2 temp = new Vector2(
+                    (float)(pivot.X + swingRadius * Math.Cos((Math.PI / 180) * (theta))),
+                    (float)(pivot.Y + swingRadius * Math.Sin((Math.PI / 180) * (theta))
+                    ));
+
+
+            vectorPosition = temp;
+
+            //Update position
+            hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);
+
+            if (CheckCollision())           // If there is a collision, switch back to linear motion
+            {
+                collisions--;
+                vectorPosition = oldPosition;
+                SetLinearVariables();
+
+            }
+        }
+
         public abstract void AI();
 
         public override void Draw(SpriteBatch batch)

@@ -13,7 +13,7 @@ namespace Moonwalk.Classes.Managers {
         private static Dictionary<string, SpriteFont> fonts = new();
         private static Dictionary<string, Texture2D> textures = new();
 
-        private static Assortment<GUIElement> elements = new(new List<System.Type>() { typeof(GUIButtonElement)});
+        private static Assortment<GUIElement> elements = new(new List<System.Type>() {typeof(GUIElement), typeof(GUIButtonElement)});
 
         public static List<GUIElement> GUIElementList { get { return elements.ToList(); } }
 

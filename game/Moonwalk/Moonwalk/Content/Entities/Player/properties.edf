@@ -2,3 +2,4 @@ HitboxX=8
 HitboxY=22
 HitboxXOrigin=0
 HitboxYOrigin=0
+MaxHealth=8

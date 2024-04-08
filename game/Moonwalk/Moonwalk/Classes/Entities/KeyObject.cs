@@ -16,12 +16,21 @@ namespace Moonwalk.Classes.Entities
     {
         
         //fields
-        private bool isColliding;
-        private bool isInteracted;
+        private bool isColliding = false;
+        private bool isInteracted = false;
+
+        private Player player;
+
+        public bool IsColliding { get { return isColliding; } }
+
+        public bool IsInteracted { get { return isInteracted; } }   
+
 
         public KeyObject(Vector2 position) :
             base (position, "../../../Content/Entities/Key", false, false)
         {
+            player = GameManager.entities.GetAllOfType<Player>()[0];
+
             //this.hurtbox = new Rectangle((int)position.X, (int)position.Y, 16, 16); //position/hitbox
             this.isColliding = false; //should not start by colliding with anything
 
@@ -33,13 +42,11 @@ namespace Moonwalk.Classes.Entities
 
         //methods
 
-        public bool IsInteracted(Entity entity) 
+        public bool CheckInteraction(Entity entity) 
         {
-            if ((Player)entity != null && CheckCollision((Player)entity))
+            if (player != null && CheckCollision(player))
             {
                 isInteracted = true;
-
-
             }
             return isInteracted;
         }
@@ -61,6 +68,12 @@ namespace Moonwalk.Classes.Entities
                 (int)vectorPosition.Y,
                 hurtbox.Width, 
                 hurtbox.Height);
+
+            if (CheckInteraction(player)) 
+            {
+                this.hurtbox.X = player.Position.X - hurtbox.Height/4;
+                this.hurtbox.Y = player.Position.Y - player.hurtbox.Height - hurtbox.Height/4;
+            }
         }
 
         public override void Draw(SpriteBatch batch)

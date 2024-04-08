@@ -260,6 +260,12 @@ namespace Moonwalk.Classes.Entities.Base
             //Magnitude of the entity's velocity
             double velocityMag = VectorMath.VectorMagnitude(velocity);
 
+            if (velocityMag <= 0)
+            {
+                angVelocity = 0;
+                return;
+            }
+
             //The length of the side opposite the angle we want
             double c = Math.Sqrt(
                 Math.Pow(

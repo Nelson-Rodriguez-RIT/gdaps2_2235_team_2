@@ -316,8 +316,8 @@ namespace Moonwalk.Classes.Entities.Base
             //they stop swinging by converting the angular velocity
             //back to linear velocity.
             velocity = new Vector2(                                       // 400: random number for downscaling (it was too big)
-                (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 3000),
-                (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 3000);
+                (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 400),
+                (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 400);
             acceleration = new Vector2(
                 acceleration.X, gravity);
         }

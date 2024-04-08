@@ -209,32 +209,6 @@ namespace Moonwalk.Classes.Entities
                     -35));
 
             }
-
-            if (physicsState == PhysicsState.Rotational)
-            {
-                //number of links to make
-                const int Links = 10;
-
-                //Distance between each link
-                int slice = (int)(swingRadius / Links);
-
-                for (int i = 1; i < Links; i++)
-                {
-                    Vector2 thing = Vector2.Normalize(VectorMath.VectorDifference(hurtbox.Center.ToVector2(), pivot)) 
-                        * slice * i; //increment every iteration
-
-                    Particle.Effects.Add(new Particle
-                        (1, 
-                        Color.SkyBlue, 
-                        ParticleEffects.None,
-                        (hurtbox.Center.ToVector2() + thing)
-                            .ToPoint(),
-                        0, 
-                        3, 
-                        4)
-                        );
-                }
-            }
             
         }
 
@@ -380,13 +354,18 @@ namespace Moonwalk.Classes.Entities
                 }
                 else
                 {
-                    List<IMovable> list = GameManager.entities.GetAllOfType<IMovable>();
+                    List<ICollidable> list = GameManager.entities.GetAllOfType<ICollidable>();
                     list.Remove(list.Find(item => item is Robot));
                     list.Remove(list.Find(item => item is Player));
 
                     if (list.Count > 0)
                     {
-                        Robot.Tether = list.MinBy(item =>
+                        if(list.Exists(item => (VectorMath.VectorMagnitude(
+                                VectorMath.VectorDifference(
+                                    item.Position.ToVector2(),
+                                    robotPos)) < 125)))
+                        {
+                            Robot.Tether = list.MinBy(item =>
                             VectorMath.VectorMagnitude(
                                 VectorMath.VectorDifference(
                                     item.Position.ToVector2(),
@@ -394,9 +373,10 @@ namespace Moonwalk.Classes.Entities
                                 )
                             );
 
-                        Robot.Tether.SetRotationalVariables(robotPos);
-                        cooldowns.UseAbility(Abilities.Tether);
-                        ToggleBotLock();
+                            Robot.Tether.SetRotationalVariables(robotPos);
+                            cooldowns.UseAbility(Abilities.Tether);
+                            ToggleBotLock();
+                        }                      
                     }
 
 
@@ -631,7 +611,7 @@ namespace Moonwalk.Classes.Entities
                         -4),
                     new object[]
                     {
-                        faceDirection == FaceDirection.Left ? new Vector2(-1, -0.25f) : new Vector2(1, -0.25f)
+                        faceDirection == FaceDirection.Left ? new Vector2(-1, 0) : new Vector2(1, 0)
                     });
 
                 animationTimer = activeAnimation.AnimationLength;

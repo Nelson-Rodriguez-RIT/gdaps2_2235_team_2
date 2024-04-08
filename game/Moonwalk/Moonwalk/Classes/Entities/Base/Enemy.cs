@@ -110,7 +110,15 @@ namespace Moonwalk.Classes.Entities.Base
                     hurtbox.Width,
                     hurtbox.Height
                     )));
-            }           
+            }
+
+            foreach (ISolid solid in GameManager.entities.GetAllOfType<ISolid>())
+            {
+                if (solid.Hitbox.Intersects(hurtbox))
+                {
+                    collision = true;
+                }
+            }
 
             return collision;
         }

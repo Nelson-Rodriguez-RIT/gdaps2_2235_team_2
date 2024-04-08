@@ -30,7 +30,7 @@ namespace Moonwalk.Classes.Entities
         private static bool locked;
         const float MoveSpeed = 40f;
         protected internal Point mousepos; // Internal used for GUIRobotDebugElement
-        public static IMovable Tether;
+        public static ICollidable Tether;
 
         public static bool Locked
         {
@@ -92,6 +92,32 @@ namespace Moonwalk.Classes.Entities
                 SwitchAnimation(Animations.Idle, false);
             }
 
+            if (Tether != null)
+            {
+                //number of links to make
+                const int Links = 10;
+                double radius = VectorMath.VectorMagnitude(VectorMath.VectorDifference(Tether.Hitbox.Center.ToVector2(), hurtbox.Center.ToVector2()));
+
+                //Distance between each link
+                int slice = (int)(radius / Links);
+
+                for (int i = 1; i <= Links; i++)
+                {
+                    Vector2 thing = Vector2.Normalize(VectorMath.VectorDifference(Tether.Hitbox.Center.ToVector2(), hurtbox.Center.ToVector2()))
+                        * slice * i; //increment every iteration
+
+                    Particle.Effects.Add(new Particle
+                        (1,
+                        Color.SkyBlue,
+                        ParticleEffects.None,
+                        (Tether.Hitbox.Center.ToVector2() + thing)
+                            .ToPoint(),
+                        0,
+                        3,
+                        4)
+                        );
+                }
+            }
             
         }
 
@@ -116,7 +142,7 @@ namespace Moonwalk.Classes.Entities
 
         public Vector2 GetPosition()
         {
-            return this.vectorPosition;
+            return this.hurtbox.Center.ToVector2();
         }
 
         public void ToggleLock()

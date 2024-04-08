@@ -29,8 +29,6 @@ namespace Moonwalk.Classes.Managers {
 
         // Gameplay related states
         private GameState state;
-        private KeyboardState kbState;
-        private MouseState msState;
 
         // Currently loaded entities
         public static Assortment<Entity> entities;

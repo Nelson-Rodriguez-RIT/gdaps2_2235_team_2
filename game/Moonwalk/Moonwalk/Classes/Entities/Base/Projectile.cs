@@ -70,7 +70,7 @@ namespace Moonwalk.Classes.Entities.Base
             get { return damage; }
         }
 
-        public Projectile(Vector2 position, string directory, Vector2 direction, float speed, int damage, int collisions = 1, double timer = 10) 
+        public Projectile(Vector2 position, string directory, Vector2 direction, float speed, int damage, int collisions = 1, double timer = 5) 
             : base(position, directory, false, false) 
         { 
             velocity = Vector2.Normalize(direction) * speed;
@@ -143,20 +143,6 @@ namespace Moonwalk.Classes.Entities.Base
             }
 
             return temp;
-        }
-
-        public virtual void Movement(GameTime time)
-        {
-            switch (physicsState)
-            {
-                case PhysicsState.Linear:
-                    LinearMotion(time);
-                    break;
-                case PhysicsState.Rotational:
-                    RotationalMotion(time);
-                    break;
-            }
-
         }
 
         protected override void LinearMotion(GameTime gt)

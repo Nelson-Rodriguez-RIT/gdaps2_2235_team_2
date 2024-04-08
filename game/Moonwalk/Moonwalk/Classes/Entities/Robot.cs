@@ -38,7 +38,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         //Change this to private later
-        public Robot(Vector2 position) : base(position, "../../../Content/Entities/Robot")
+        public Robot() : base(Player.MostRecentCheckpoint.Hitbox.Location.ToVector2(), "../../../Content/Entities/Robot")
         {
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);
@@ -161,6 +161,12 @@ namespace Moonwalk.Classes.Entities
             Vector2 temp = Camera.RelativePosition(vectorPosition);
 
             activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
+        }
+
+        public static void Respawn()
+        {
+            GameManager.entities[typeof(Robot)].Clear();
+            Robot robot = GameManager.SpawnEntity<Robot>();
         }
     }
 

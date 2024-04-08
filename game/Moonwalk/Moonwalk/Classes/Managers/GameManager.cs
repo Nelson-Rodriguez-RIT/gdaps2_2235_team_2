@@ -338,7 +338,7 @@ namespace Moonwalk.Classes.Managers {
                         Map.LoadMap("MoonwalkMap");
 
                         Player player = SpawnEntity<Player>();
-                        Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
+                        Robot robot = SpawnEntity<Robot>();
 
                         SpawnEntity<TestEnemy>(new Vector2(200, 250));
                         SpawnEntity<KeyObject>(new Vector2(1060, 442));

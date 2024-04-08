@@ -170,7 +170,7 @@ namespace Moonwalk.Classes.Entities
             if (input.IsPressed(Keys.R)
                 && !input.WasPressed(Keys.R)) 
             {
-                vectorPosition = MostRecentCheckpoint.Hitbox.Location.ToVector2();
+                Respawn();
             }
 
             //Change publically available position
@@ -774,6 +774,8 @@ namespace Moonwalk.Classes.Entities
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnEntity<Player>();
             Camera.SetTarget(player);
+
+            Robot.Respawn();
         }
     }
 

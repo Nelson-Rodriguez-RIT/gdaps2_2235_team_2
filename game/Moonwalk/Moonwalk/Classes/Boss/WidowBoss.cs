@@ -113,6 +113,7 @@ namespace Moonwalk.Classes.Boss
             switch (currentBehavior)
             {
                 case Behavior.Idle:
+                    break;
 
             }
         }

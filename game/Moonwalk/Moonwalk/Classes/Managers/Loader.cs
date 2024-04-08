@@ -131,7 +131,7 @@ namespace Moonwalk.Classes.Managers
                 else {
                     dataBlocks = data.Split("=");
 
-                    switch(dataBlocks[0].ToUpper()) {
+                    switch (dataBlocks[0].ToUpper()) {
                         // Information about the width and height of an individual tile
                         case "SIZE":
                             buffer = dataBlocks[1].Split(',');
@@ -179,6 +179,19 @@ namespace Moonwalk.Classes.Managers
                                         int.Parse(buffer[3]),   // Width
                                         int.Parse(buffer[4])    // Height
                                         )                 // Map to load
+                                    )
+                                );
+                            break;
+                        case "OUTOFBOUNDS":
+                            buffer = dataBlocks[1].Split(",");
+                            bufferedGeometry.Add(
+                                new OutOfBounds(
+                                    new Rectangle(
+                                        int.Parse(buffer[0]),
+                                        int.Parse(buffer[1]),
+                                        int.Parse(buffer[2]),
+                                        int.Parse(buffer[3])
+                                        )
                                     )
                                 );
                             break;

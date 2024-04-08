@@ -156,10 +156,11 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = 0;
             }
 
+            //Check if the player passed a checkpoint 
             Checkpoint temp = null;
 
-            if (CheckTerrainCollision<Checkpoint>(out temp) )
-                //&& MostRecentCheckpoint != temp)
+            if (CheckTerrainCollision<Checkpoint>(out temp) 
+                && MostRecentCheckpoint != temp)
             {
                 MostRecentCheckpoint = temp;
             }

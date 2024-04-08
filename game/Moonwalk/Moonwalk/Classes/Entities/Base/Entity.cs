@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Boss;
 using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
 using System;
@@ -347,5 +348,7 @@ namespace Moonwalk.Classes.Entities.Base
             entity.animations = animations;
             entity.spritesheet = spritesheet;
         }
+
+        
     }
 }

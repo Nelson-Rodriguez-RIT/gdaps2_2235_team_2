@@ -1,0 +1,7 @@
+HitboxX=8
+HitboxY=22
+HitboxXOrigin=0
+HitboxYOrigin=0
+MaxHealth=100
+AI=5
+Attack=7.5

@@ -65,6 +65,7 @@ namespace Moonwalk.Classes.Managers {
             types.Add(typeof(Enemy));
             types.Add(typeof(KeyObject));
             types.Add(typeof(Projectile));
+            types.Add(typeof(Entity));
 
             entities = new Assortment<Entity>(types);
             //guiButtonElements = new Dictionary<string, GUIButtonElement>();
@@ -339,6 +340,7 @@ namespace Moonwalk.Classes.Managers {
 
                         Player player = SpawnEntity<Player>();
                         Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
+                        SpawnEntity<Box>(new Vector2(200, -100));
 
                         // Set player as the Camera's target
                         Camera.SetTarget(player);

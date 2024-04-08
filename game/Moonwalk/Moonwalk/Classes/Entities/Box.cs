@@ -1,29 +1,24 @@
-﻿using Moonwalk.Interfaces;
+﻿using Microsoft.Xna.Framework;
+using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Managers;
+using Moonwalk.Classes.Maps;
+using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Moonwalk.Classes.Managers;
-using Moonwalk.Classes.Helpful_Stuff;
-using System.IO;
-using Moonwalk.Classes.Maps;
 
-namespace Moonwalk.Classes.Entities.Base
+namespace Moonwalk.Classes.Entities
 {
-
-    internal abstract class Enemy : Entity, IHostile
+    internal class Box : Entity, ICollidable
     {
-        //For Enemies specifically
-        protected int health;                         // enemy health       
-        protected int damage;
+        enum Animations
+        {
+            Idle
+        }
 
-
-        /// <summary>
-        /// Property to determine how many checks to do when checking for collision
-        /// </summary>
         public int CollisionAccuracy
         {
             get
@@ -39,8 +34,15 @@ namespace Moonwalk.Classes.Entities.Base
                             return 1;
                         }
 
-                        return (int)(VectorMath.VectorMagnitude(velocity) / 4f);  //Use the magnitude of the velocity to get the accuracy
-
+                        return      //Use the magnitude of the velocity to get the accuracy
+                    (int)(
+                        Math.Ceiling(
+                            Math.Sqrt(
+                                Math.Pow(velocity.X, 2) +
+                                Math.Pow(Velocity.Y, 2))
+                            / 4.0
+                            )
+                    );
                     case PhysicsState.Rotational:
                         if (angVelocity == 0)
                         {
@@ -54,92 +56,35 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-        public int Damage
+        public Box(Vector2 position) : base(position, "../../../Content/Entities/Box")
         {
-            get { return damage; }
+            gravity = 70f;
+            SwitchAnimation(Animations.Idle);
+
+            hurtbox = new Rectangle(hurtbox.X, hurtbox.Y, hurtbox.Width, hurtbox.Height);
         }
 
-        /// <summary>
-        /// Parameterized Constructor of moving enemy
-        /// </summary>
-        /// <param name="asset"></param>
-        /// <param name="position"></param>
-        /// <param name="color"></param>
-        public Enemy(Vector2 position, string directory)
-            : base(position, directory)
+        public override void Update(Microsoft.Xna.Framework.GameTime gameTime, StoredInput input)
         {
-
-        }
-
-        /// <summary>
-        /// Returns the health of the enemy
-        /// </summary>
-        public int Health 
-        {
-            get 
-            { 
-                return health; 
-            } 
-            set 
-            { 
-                health = value; 
-            } 
-        }
-
-        /// <summary>
-        /// Determines if the entity collided with terrain
-        /// </summary>
-        /// <returns>True if a collision occurred</returns>
-        public virtual bool CheckCollision()
-        {
-            // checks if there is a terrain that collides with this
-            bool collision = Map.Geometry.ToList().Exists(terrain => terrain.Hitbox.Intersects(new Rectangle(
-                    hurtbox.X,
-                    hurtbox.Y,
-                    hurtbox.Width,
-                    hurtbox.Height
-                    )));
-
-            if (collision)
+            //slow down if moving
+            if (velocity.X != 0)
             {
-                // for testing purposes
-                Terrain intersectedTerrain = Map.Geometry.ToList().Find(terrain => terrain.Hitbox.Intersects(new Rectangle(
-                    hurtbox.X,
-                    hurtbox.Y,
-                    hurtbox.Width,
-                    hurtbox.Height
-                    )));
-            }           
-
-            return collision;
-        }
-
-        /// <summary>
-        /// Determines if the entity collided with terrain
-        /// </summary>
-        /// <returns>True if a collision occurred</returns>
-        public virtual bool CheckCollision(Rectangle rectangle)
-        {
-            bool temp = Map.Geometry.ToList().Exists(terrain => terrain.Hitbox.Intersects(rectangle));
-
-            if (temp)
-            {
-                //for debugging
+                acceleration.X = -Math.Sign(velocity.X) * 40;
             }
 
-            return temp;
-        }
+            if (velocity.X != 0
+                && Math.Abs(velocity.X) < 1f)
+            {
+                velocity.X = 0;
+                acceleration.X = 0;
+            }
 
-        /// <summary>
-        /// Updates movement of enemy
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime, StoredInput input)
-        {
-            AI();
             Movement(gameTime);
+
             base.Update(gameTime, input);
         }
+
+        #region Movement
 
         public virtual void Movement(GameTime time)
         {
@@ -181,11 +126,13 @@ namespace Moonwalk.Classes.Entities.Base
 
                 vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
 
+
                 hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
                     hurtbox.Width,
                     hurtbox.Height);                      // Update hitbox location
+
 
                 if (CheckCollision())                                                   // Check if there was a collision
                 {
@@ -233,8 +180,53 @@ namespace Moonwalk.Classes.Entities.Base
                 iterationCounter++;
 
             }
+
+
         }
 
-        public abstract void AI();
-    }        
+        protected override void RotationalMotion(GameTime gt)
+        {
+            Vector2 oldPosition = new Vector2(vectorPosition.X, vectorPosition.Y);
+            base.RotationalMotion(gt);
+
+            if (CheckCollision())           // If there is a collision, switch back to linear motion
+            {
+                vectorPosition = oldPosition;
+                physicsState = PhysicsState.Linear;
+
+                //This determines the velocity the entity will have after 
+                //it stops swinging by converting the angular velocity
+                //back to linear velocity.
+                velocity = new Vector2(                                       // 3000: random number for downscaling (it was too big)
+                    (float)(angVelocity * swingRadius * -Math.Sin((Math.PI / 180) * (theta)) / 3000),
+                    (float)(angVelocity * swingRadius * Math.Cos((Math.PI / 180) * (theta))) / 3000);
+                acceleration = new Vector2(
+                    acceleration.X, gravity);
+
+                angVelocity = 0;
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Determines if the entity collided with terrain
+        /// </summary>
+        /// <returns>True if a collision occurred</returns>
+        public virtual bool CheckCollision()
+        {
+            bool isColliding = false;
+
+            foreach (Terrain element in Map.Geometry.ToList())
+                if (element.Hitbox.Intersects(hurtbox))
+                {
+                    if (element.Collidable)
+                        isColliding = true;
+                }
+
+            return isColliding;
+        }
+
+        
+    }
 }

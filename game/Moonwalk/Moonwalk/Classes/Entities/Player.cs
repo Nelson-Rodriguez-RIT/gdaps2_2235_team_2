@@ -362,7 +362,8 @@ namespace Moonwalk.Classes.Entities
                 else
                 {
                     List<IMovable> list = GameManager.entities.GetAllOfType<IMovable>();
-                    list.Remove(list.Find(item => item is Robot || item is Player));
+                    list.Remove(list.Find(item => item is Robot));
+                    list.Remove(list.Find(item => item is Player));
 
                     if (list.Count > 0)
                     {
@@ -555,12 +556,12 @@ namespace Moonwalk.Classes.Entities
             }         
 
             // Change facing direciton of the player
-            if (velocity.X < 0
+            if (acceleration.X < 0
                 && faceDirection != FaceDirection.Left)
             {
                 faceDirection = FaceDirection.Left;
             }
-            else if (velocity.X > 0
+            else if (acceleration.X > 0
                 && faceDirection != FaceDirection.Right)
             {
                 faceDirection = FaceDirection.Right;
@@ -597,7 +598,7 @@ namespace Moonwalk.Classes.Entities
             }
 
             // if F is pressed, play ranged attack animation
-            if (input.IsPressed(Keys.F) &&
+            if (input.IsPressed(Keys.LeftShift) &&
                 activeAnimation.AnimationValue != (int)(Animations.Shoot))
             {
                 SwitchAnimation(Animations.Shoot, 

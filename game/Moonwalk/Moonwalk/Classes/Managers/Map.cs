@@ -59,11 +59,13 @@ namespace Moonwalk.Classes.Managers
                 hitboxSprite = Loader.LoadTexture("../../../Content/Maps/hitbox");
 
             //testing, clear later
-            Checkpoint first = new Checkpoint(new Rectangle(200, -30, 20, 20));
+            
+            //Checkpoint first = new Checkpoint(new Rectangle(200, -30, 20, 20)); 
+            //for testing in demoMap, uncomment ^^, and comment next line 
+            Checkpoint first = new Checkpoint(new Rectangle(200, 410, 20, 20));
             Player.MostRecentCheckpoint = first;
             geometry.Add(first);
-            geometry.Add(new Checkpoint(new Rectangle(100, 100, 20, 20)));
-            geometry.Add(new OutOfBounds(new Rectangle(-100, 400, 300, 100)));
+            geometry.Add(new Checkpoint(new Rectangle(280, 100, 20, 20)));
 
             GUI.AddElement(new GUITextElement(new Vector2(50, 50),
                 "Remember to remove tests from Map.LoadMap",

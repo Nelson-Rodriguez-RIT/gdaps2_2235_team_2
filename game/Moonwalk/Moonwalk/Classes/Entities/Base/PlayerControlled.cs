@@ -200,6 +200,14 @@ namespace Moonwalk.Classes.Entities.Base
                         isColliding = true;
                 }
 
+            foreach (ISolid solid in GameManager.entities.GetAllOfType<ISolid>())
+            {
+                if (solid.Hitbox.Intersects(hurtbox))
+                {
+                    isColliding = true;
+                }
+            }
+
             return isColliding;
         }
 
@@ -215,6 +223,14 @@ namespace Moonwalk.Classes.Entities.Base
                 if (element.Hitbox.Intersects(rectangle))
                     if (element.Collidable)
                         isColliding = true;
+
+            foreach (ISolid solid in GameManager.entities.GetAllOfType<ISolid>())
+            {
+                if (solid.Hitbox.Intersects(rectangle))
+                {
+                    isColliding = true;
+                }
+            }
 
             return isColliding;
         }

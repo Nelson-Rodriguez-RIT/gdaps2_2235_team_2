@@ -13,7 +13,6 @@ using System.Runtime.CompilerServices;
 namespace Moonwalk.Classes.Entities
 {
     //TO DO:
-    //- Add SpriteSheet
     //- Add adf
     //- Add edf
     //- Update any more code within class

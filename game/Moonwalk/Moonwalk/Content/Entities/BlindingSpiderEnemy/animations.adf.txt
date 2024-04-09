@@ -1,0 +1,21 @@
+&Vertical
+
+@16x16,1:16,1,1
+
+// StaticIdle
+#,#,1,1
+
+// BlindAttack
+#,#,4,3
+
+// Damaged
+#,#,2,2
+
+// Death
+#,#,6,4
+
+// PrepBlindAttack
+#,#,3,2
+
+// Walk
+#,#,6,4

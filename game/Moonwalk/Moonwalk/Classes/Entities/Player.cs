@@ -23,7 +23,7 @@ namespace Moonwalk.Classes.Entities
     /// <summary>
     /// The player controlled character
     /// </summary>
-    internal class Player : PlayerControlled, IJump, IDamageable, ISoft
+    internal class Player : PlayerControlled, IDamageable, ISoft
     {
         public static Point Location;
         public static Checkpoint MostRecentCheckpoint;
@@ -66,28 +66,6 @@ namespace Moonwalk.Classes.Entities
 
         private float swingChange;
         private float maxAngVelocity;
-
-
-        /// <summary>
-        /// Determines if the entity is grounded or not
-        /// </summary>
-        public bool Grounded
-        {
-            get
-            {
-                if (CheckCollision<ISolid>(new Rectangle(
-                        hurtbox.X,
-                        hurtbox.Y + 5,
-                        hurtbox.Width,
-                        hurtbox.Height
-                        )))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-        }
 
         public int Health
         {

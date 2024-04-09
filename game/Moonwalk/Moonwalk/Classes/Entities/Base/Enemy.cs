@@ -20,12 +20,6 @@ namespace Moonwalk.Classes.Entities.Base
         protected int health;                         // enemy health       
         protected int damage;
 
-
-        /// <summary>
-        /// Property to determine how many checks to do when checking for collision
-        /// </summary>
-        
-
         public int Damage
         {
             get { return damage; }

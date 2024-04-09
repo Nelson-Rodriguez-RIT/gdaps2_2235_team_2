@@ -21,6 +21,12 @@ namespace Moonwalk.Interfaces
         Rectangle Hitbox {  get; }
 
         /// <summary>
+        /// Whether the entity is on the ground or not
+        /// </summary>
+        bool Grounded
+        { get; }
+
+        /// <summary>
         /// Checks if the object has collided with another
         /// </summary>
         bool CheckCollision<T>();

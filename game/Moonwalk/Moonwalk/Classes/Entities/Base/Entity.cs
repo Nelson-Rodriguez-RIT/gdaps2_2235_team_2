@@ -211,6 +211,24 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
+        public bool Grounded
+        {
+            get
+            {
+                if (CheckCollision<ISolid>(new Rectangle(
+                        hurtbox.X,
+                        hurtbox.Y + 5,
+                        hurtbox.Width,
+                        hurtbox.Height
+                        )))
+                {
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
         public virtual bool CheckCollision<T>(out T thing)
         {
             bool isColliding = false;

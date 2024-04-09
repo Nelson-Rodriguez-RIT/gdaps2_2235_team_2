@@ -41,23 +41,7 @@ namespace Moonwalk.Classes.Entities
 
         private AbilityCooldowns<Abilities> cooldowns;
 
-        public bool Grounded
-        {
-            get
-            {
-                if (CheckCollision(new Rectangle(
-                        hurtbox.X,
-                        hurtbox.Y + 5,
-                        hurtbox.Width,
-                        hurtbox.Height
-                        )))
-                {
-                    return true;
-                }
-
-                return false;
-            }
-        }
+        
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
@@ -138,7 +122,7 @@ namespace Moonwalk.Classes.Entities
             //Vertical
             while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
             {
-                if (!CheckCollision())
+                if (!CheckCollision<ISolid>())
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
                 }
@@ -157,7 +141,7 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);                      // Update hitbox location
 
-                if (CheckCollision())                                                   // Check if there was a collision
+                if (CheckCollision<ISolid>())                                                   // Check if there was a collision
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
@@ -172,9 +156,9 @@ namespace Moonwalk.Classes.Entities
             //Do the same thing but in the X direction
             iterationCounter = 1;
 
-            while (!CheckCollision() && iterationCounter <= CollisionAccuracy)
+            while (!CheckCollision<ISolid>() && iterationCounter <= CollisionAccuracy)
             {
-                if (!CheckCollision())
+                if (!CheckCollision<ISolid>())
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);
                 }

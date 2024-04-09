@@ -21,39 +21,6 @@ namespace Moonwalk.Classes.Entities.Base
         protected Color color = Color.White;
 
         /// <summary>
-        /// Property to determine how many checks to do when checking for collision
-        /// </summary>
-        public int CollisionAccuracy
-        {
-            get
-            {
-                switch (physicsState)
-                {
-                    case PhysicsState.Linear:
-                        
-                        // Min accuracy is 1
-                        if (velocity.X == 0 &&
-                            velocity.Y == 0)
-                        {
-                            return 1;
-                        }
-
-                        return (int)(VectorMath.VectorMagnitude(velocity) / 4f);  //Use the magnitude of the velocity to get the accuracy
-
-                    case PhysicsState.Rotational:
-                        if (angVelocity == 0)
-                        {
-                            return 1;
-                        }
-                        return (int)(
-                            Math.Abs(angVelocity / 10));
-                    default:
-                        return 0;
-                }
-            }
-        }
-
-        /// <summary>
         /// Number of collisions before despawn
         /// </summary>
         public int Collisions

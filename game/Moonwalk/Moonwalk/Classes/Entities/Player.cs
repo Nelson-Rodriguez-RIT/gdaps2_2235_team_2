@@ -201,7 +201,9 @@ namespace Moonwalk.Classes.Entities
                 //Stop tether if swinging
                 if (physicsState == PhysicsState.Rotational)
                 {
-                    physicsState = PhysicsState.Linear;
+                    SetLinearVariables();
+                    Robot.Tether = null;
+                    ToggleBotLock();
                 }
 
                 //Knock the player back

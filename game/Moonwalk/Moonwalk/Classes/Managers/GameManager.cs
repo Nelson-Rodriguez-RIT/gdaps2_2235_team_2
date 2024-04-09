@@ -343,6 +343,7 @@ namespace Moonwalk.Classes.Managers {
                         SpawnEntity<TestEnemy>(new Vector2(200, 250));
                         SpawnEntity<KeyObject>(new Vector2(1060, 442));
 
+                        SpawnEntity<Turret>(new Vector2(1150, 300));
 
                         // Set player as the Camera's target
                         Camera.SetTarget(player);

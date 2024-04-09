@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,8 +16,11 @@ namespace Moonwalk.Interfaces
     /// <summary>
     /// Solids collide with softs but softs don't collide with each other
     /// </summary>
-    public interface ISoft : ICollidable
+    public interface ISoft
     {
-
+        /// <summary>
+        /// Hitbox of the entity
+        /// </summary>
+        Rectangle Hitbox { get; }
     }
 }

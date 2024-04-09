@@ -85,7 +85,7 @@ namespace Moonwalk.Classes.Entities.Base
             //Vertical
             while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
             {
-                if (!CheckCollision())
+                if (!CheckCollision<Terrain>())
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
                 }
@@ -106,7 +106,7 @@ namespace Moonwalk.Classes.Entities.Base
                     hurtbox.Height);                      // Update hitbox location
 
 
-                if (CheckCollision())                                                   // Check if there was a collision
+                if (CheckCollision<Terrain>())                                                   // Check if there was a collision
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
@@ -121,9 +121,9 @@ namespace Moonwalk.Classes.Entities.Base
             //Do the same thing but in the X direction
             iterationCounter = 1;
 
-            while (!CheckCollision() && iterationCounter <= CollisionAccuracy)
+            while (!CheckCollision<Terrain>() && iterationCounter <= CollisionAccuracy)
             {
-                if (!CheckCollision())
+                if (!CheckCollision<Terrain>())
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);
                 }
@@ -142,7 +142,7 @@ namespace Moonwalk.Classes.Entities.Base
                     hurtbox.Width,
                     hurtbox.Height);
 
-                if (CheckCollision())
+                if (CheckCollision<Terrain>())
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
                     vectorPosition = lastSafePosition.ToVector2();
@@ -161,7 +161,7 @@ namespace Moonwalk.Classes.Entities.Base
             Vector2 oldPosition = new Vector2(vectorPosition.X, vectorPosition.Y);
             base.RotationalMotion(gt);
 
-            if (CheckCollision())           // If there is a collision, switch back to linear motion
+            if (CheckCollision<Terrain>())           // If there is a collision, switch back to linear motion
             {
                 vectorPosition = oldPosition;
                 physicsState = PhysicsState.Linear;
@@ -187,30 +187,7 @@ namespace Moonwalk.Classes.Entities.Base
 
         #region Collision
 
-        /// <summary>
-        /// Determines if the entity collided with terrain
-        /// </summary>
-        /// <returns>True if a collision occurred</returns>
-        public virtual bool CheckCollision()
-        {
-            bool isColliding = false;
-
-            foreach (Terrain element in Map.Geometry.ToList())
-                if (element.Hitbox.Intersects(hurtbox)) {
-                    if (element.Collidable)
-                        isColliding = true;
-                }
-
-            foreach (ISolid solid in GameManager.entities.GetAllOfType<ISolid>())
-            {
-                if (solid.Hitbox.Intersects(hurtbox))
-                {
-                    isColliding = true;
-                }
-            }
-
-            return isColliding;
-        }
+       
 
         /// <summary>
         /// Determines if the entity collided with terrain

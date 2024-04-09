@@ -103,6 +103,18 @@ namespace Moonwalk.Classes.Entities
         //Make private later
         public Player() : base(MostRecentCheckpoint.Hitbox.Location.ToVector2(), "../../../Content/Entities/Player")
         {
+            if (MostRecentCheckpoint == null)
+            {
+                MostRecentCheckpoint = (Checkpoint)Map.Geometry.First();
+                Respawn();
+            }
+
+            hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);
+
             gravity = 70f;
             acceleration = new Vector2(0, gravity);
             maxXVelocity = 40;
@@ -156,16 +168,18 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = 0;
             }
 
+            /*
             //Check if the player passed a checkpoint 
             Checkpoint temp = null;
 
-            if (CheckTerrainCollision<Checkpoint>(out temp) 
+            if (CheckCollision<Checkpoint>(out temp) 
                 && MostRecentCheckpoint != temp)
             {
                 MostRecentCheckpoint = temp;
             }
+            */
 
-            CheckTerrainCollision<OutOfBounds>(out OutOfBounds thing);
+            //CheckCollision<OutOfBounds>(out OutOfBounds thing);
 
             if (input.IsPressed(Keys.R)
                 && !input.WasPressed(Keys.R)) 
@@ -189,7 +203,7 @@ namespace Moonwalk.Classes.Entities
             //Check if player hits an enemy or projectile
             IHostile collision = null;
 
-            if ((collision = HostileCollision()) != null
+            if ((CheckCollision<IHostile>(out collision))
                 && iFrames <= 0
                 && collision is not PlayerProjectile)
             {
@@ -202,7 +216,6 @@ namespace Moonwalk.Classes.Entities
                 if (physicsState == PhysicsState.Rotational)
                 {
                     SetLinearVariables();
-                    Robot.Tether = null;
                     ToggleBotLock();
                 }
 
@@ -252,7 +265,7 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
-            if (CheckCollision())           // If there is a collision, switch back to linear motion
+            if (CheckCollision<Terrain>())           // If there is a collision, switch back to linear motion
             {
                 vectorPosition = oldPosition;
                 //physicsState = PhysicsState.Linear;
@@ -391,7 +404,6 @@ namespace Moonwalk.Classes.Entities
             {
 
                     Robot.Tether.SetLinearVariables();
-                    Robot.Tether = null;
                     ToggleBotLock();
             }
 
@@ -475,7 +487,9 @@ namespace Moonwalk.Classes.Entities
             //Vertical
             while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
             {
-                if (!CheckCollision())
+                ISolid thing = null;
+
+                if (!CheckCollision<ISolid>(out thing))
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
                 }
@@ -494,7 +508,7 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);                      // Update hitbox location
 
-                if (CheckCollision())                                                   // Check if there was a collision
+                if (CheckCollision<ISolid>(out thing))                                                   // Check if there was a collision
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
@@ -509,9 +523,11 @@ namespace Moonwalk.Classes.Entities
             //Do the same thing but in the X direction
             iterationCounter = 1;
 
-            while (!CheckCollision() && iterationCounter <= CollisionAccuracy)
+            while (!CheckCollision<Terrain>() && iterationCounter <= CollisionAccuracy)
             {
-                if (!CheckCollision())
+                ISolid thing = null;
+
+                if (!CheckCollision<ISolid>(out thing))
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);
                 }
@@ -535,7 +551,7 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
-                if (CheckCollision())
+                if (CheckCollision<ISolid>(out thing))
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
                     vectorPosition = lastSafePosition.ToVector2();
@@ -724,6 +740,7 @@ namespace Moonwalk.Classes.Entities
             Health -= damage;
         }
 
+        /*
         public override bool CheckCollision() {
             bool isColliding = false;
 
@@ -746,6 +763,7 @@ namespace Moonwalk.Classes.Entities
 
             return isColliding;
         }
+        */
 
         public bool CheckTerrainCollision<T>(out T thing) where T : Terrain
         {
@@ -756,8 +774,9 @@ namespace Moonwalk.Classes.Entities
             foreach (T element in list)
                 if (element.Hitbox.Intersects(hurtbox)) 
                 {
-                    
+                    if (element.Collidable)
                     isColliding = true;
+
                     thing = element;
 
                     if (element is MapTrigger || element is OutOfBounds)
@@ -773,7 +792,11 @@ namespace Moonwalk.Classes.Entities
             Player player = GameManager.SpawnEntity<Player>();
             Camera.SetTarget(player);
 
-            Robot.Respawn();
+            GameManager.entities[typeof(Robot)].Clear();
+            Robot robot = GameManager.SpawnEntity<Robot>();
+
+            player.GetRobotPosition += robot.GetPosition;
+            player.ToggleBotLock += robot.ToggleLock;
         }
     }
 

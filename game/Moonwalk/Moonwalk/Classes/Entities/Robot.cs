@@ -162,12 +162,6 @@ namespace Moonwalk.Classes.Entities
 
             activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
         }
-
-        public static void Respawn()
-        {
-            GameManager.entities[typeof(Robot)].Clear();
-            Robot robot = GameManager.SpawnEntity<Robot>();
-        }
     }
 
 

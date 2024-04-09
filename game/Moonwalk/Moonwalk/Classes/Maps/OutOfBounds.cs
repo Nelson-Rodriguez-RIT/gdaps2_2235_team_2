@@ -19,7 +19,12 @@ namespace Moonwalk.Classes.Maps
         public OutOfBounds(Rectangle hitbox) : base(hitbox) 
         {
             collidable = false;
-            OnCollision += Player.Respawn;
+            OnCollision += Collide;
+        }
+
+        public override void Collide()
+        {
+            Player.Respawn();
         }
 
     }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Boss;
 using Moonwalk.Classes.Entities;
 using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Classes.Helpful_Stuff;
@@ -169,6 +170,8 @@ namespace Moonwalk.Classes.Managers {
                 }
 
                 foreach (Entity entity in entities) {
+                    if (VectorMath.VectorMagnitude(VectorMath.VectorDifference(Player.Location.ToVector2(), entity.Hitbox.Center.ToVector2()))
+                        < 400)
                     entity.Update(gt, storedInput);
 
                     
@@ -337,22 +340,13 @@ namespace Moonwalk.Classes.Managers {
                     {
                         Map.LoadMap("MoonwalkMap");
 
-                        Player player = SpawnEntity<Player>();
-                        Robot robot = SpawnEntity<Robot>();
+                        Player.Respawn();
 
                         SpawnEntity<TestEnemy>(new Object[] { new Vector2(200, 250) });
                         SpawnEntity<KeyObject>(new Object[] { new Vector2(1060, 442) });
 
-                        SpawnEntity<Turret>(new Object[] { new Vector2(1150, 300) });
-                        SpawnEntity<BlindingSpider>(new Object[] { new Vector2(1050, 300) });
-                        SpawnEntity<Flower>(new Object[] { new Vector2(1250, 300) });
+                        //WidowBoss.Start();
 
-                        // Set player as the Camera's target
-                        Camera.SetTarget(player);
-
-                        //Add subscribers to player events
-                        player.GetRobotPosition += robot.GetPosition;
-                        player.ToggleBotLock += robot.ToggleLock;
                     }
 
                     else

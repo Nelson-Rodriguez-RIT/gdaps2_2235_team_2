@@ -361,7 +361,7 @@ namespace Moonwalk.Classes.Managers
         }
 
         /// <summary>
-        /// Loads an entity's data from both their EDF and ADF files
+        /// Loads an boss's data from both their files
         /// </summary>
         /// <param name="path">Path to related file contents</param>
         /// <param name="loadAnimations">Whether or not this entity has animations to be loaded</param>
@@ -370,6 +370,7 @@ namespace Moonwalk.Classes.Managers
             Dictionary<string, string> bufferedProperties = new();
             List<Animation> bufferedAnimations = new();
             Texture2D bufferedSpritesheet = null;
+            Dictionary<string, List<Rectangle>> hitboxes = new Dictionary<string, List<Rectangle>>();
 
             Queue<string> fileData;
             string data;
@@ -392,6 +393,32 @@ namespace Moonwalk.Classes.Managers
                 // Break data into its header and body components
                 dataBlocks = data.Split('=');
 
+                
+                if (dataBlocks[0].Substring(0,2) == "[]")
+                {
+                    List<Rectangle> hitboxData = new();
+                    string[] split = dataBlocks[1].Split(",");
+
+                    for (int i = 0; i < split.Length; i += 4)
+                    {
+                        int[] dimensions = new int[4];
+
+                        for (int j = 0; j < 4; j++)
+                        {
+                            dimensions[j] = int.Parse(split[4 * i + j]);
+                        }
+
+                        hitboxData.Add(new Rectangle(
+                            dimensions[0],
+                            dimensions[1],
+                            dimensions[2],
+                            dimensions[3]));
+                    }
+
+                    hitboxes.Add(dataBlocks[0].Substring(2), hitboxData);
+                }
+                
+
                 // Format and store data
                 bufferedProperties.Add(dataBlocks[0], dataBlocks[1]);
             }
@@ -399,9 +426,6 @@ namespace Moonwalk.Classes.Managers
 
         // Animation Data File Reading //
         animations:
-            if (!loadAnimations) // Used for entities not meant to have visible sprites
-                return new Moonwalk.Classes.Boss.BossFight.BossData(bufferedProperties, bufferedAnimations, bufferedSpritesheet);
-
             // Defaults
             AnimationStyle style = AnimationStyle.Horizontal;
             Vector2 defaultSpriteSize = Vector2.One;
@@ -489,7 +513,7 @@ namespace Moonwalk.Classes.Managers
             // Get sprite sheet
             bufferedSpritesheet = LoadTexture($"{path}/spritesheet");
 
-            return new Moonwalk.Classes.Boss.BossFight.BossData(bufferedProperties, bufferedAnimations, bufferedSpritesheet);
+            return new Moonwalk.Classes.Boss.BossFight.BossData(bufferedProperties, bufferedAnimations, bufferedSpritesheet, hitboxes);
         }
 
         /// <summary>

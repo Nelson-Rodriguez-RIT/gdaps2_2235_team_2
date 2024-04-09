@@ -146,18 +146,7 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = 0;
             }
 
-            /*
-            //Check if the player passed a checkpoint 
-            Checkpoint temp = null;
-
-            if (CheckCollision<Checkpoint>(out temp) 
-                && MostRecentCheckpoint != temp)
-            {
-                MostRecentCheckpoint = temp;
-            }
-            */
-
-            //CheckCollision<OutOfBounds>(out OutOfBounds thing);
+          
 
             if (input.IsPressed(Keys.R)
                 && !input.WasPressed(Keys.R)) 
@@ -172,7 +161,7 @@ namespace Moonwalk.Classes.Entities
             }
 
             //Change publically available position
-            Location = this.Position;
+            Location = this.Hitbox.Center;
 
             if (health <= 0)
             {
@@ -735,12 +724,21 @@ namespace Moonwalk.Classes.Entities
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnEntity<Player>();
             Camera.SetTarget(player);
+            Location = player.Hitbox.Center;
 
             GameManager.entities[typeof(Robot)].Clear();
             Robot robot = GameManager.SpawnEntity<Robot>();
 
             player.GetRobotPosition += robot.GetPosition;
             player.ToggleBotLock += robot.ToggleLock;
+
+            /*
+            while (GUI.GUIElementList.Exists(item => item is GUIPlayerStatusElement))
+            {
+                GUIElement remove = GUI.GUIElementList.Find(item => item is GUIPlayerStatusElement);
+                GUI.GUIElementList.Remove(remove);
+            }
+            */
         }
     }
 

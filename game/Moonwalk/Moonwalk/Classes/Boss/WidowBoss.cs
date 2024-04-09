@@ -67,10 +67,16 @@ namespace Moonwalk.Classes.Boss
         Behavior currentBehavior;
         FaceDirection faceDirection;
 
-        public WidowBoss() : base("../../Content/WidowBoss")
+        private WidowBoss(Vector2 center) : base("../../../Content/WidowBoss", center)
         {
             cooldowns = new AbilityCooldowns<Behavior>(properties);
+            SwitchAnimation(Behavior.Idle);
+            
+        }
 
+        public static void Start()
+        {
+            new WidowBoss(new Vector2(0, 0));
         }
 
         public override void Update(GameTime gt)
@@ -87,15 +93,17 @@ namespace Moonwalk.Classes.Boss
                 faceDirection = FaceDirection.Left;
             }
 
-            switch (health)
+            if (health > maxHealth / 2)
             {
-                case > 50:
-                    PhaseOne(gt);
-                    break;
-                case > 0:
-                    break;
-                default:
-                    break;
+
+            }
+            else if (health > 0)
+            {
+
+            }
+            else
+            {
+                //SwitchAnimation
             }
 
             base.Update(gt);

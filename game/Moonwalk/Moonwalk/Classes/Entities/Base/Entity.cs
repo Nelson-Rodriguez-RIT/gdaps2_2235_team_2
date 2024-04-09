@@ -119,6 +119,13 @@ namespace Moonwalk.Classes.Entities.Base
                     int.Parse(properties["HitboxY"])
                     );
             }
+
+            hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);
+
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
         }
@@ -258,7 +265,8 @@ namespace Moonwalk.Classes.Entities.Base
                             isColliding = true;
 
                         thing = (T)solid;
-                        solid.Collide();
+                        if (this is Player)
+                            solid.Collide();
                         break;
                     }
                 }
@@ -299,18 +307,7 @@ namespace Moonwalk.Classes.Entities.Base
                     }
                 }
             }
-            else
-            {
-                foreach (T item in list)
-                {
-                    if (((ICollidable)item).Hitbox.Intersects(hurtbox))
-                    {
-                        isColliding = true;
-                        thing = item;
-                        break;
-                    }
-                }
-            }
+            
 
             return isColliding;
         }
@@ -343,7 +340,7 @@ namespace Moonwalk.Classes.Entities.Base
                         if (solid.Collidable)
                             isColliding = true;
 
-
+                        if (this is Player)
                         solid.Collide();
                         break;
                     }
@@ -385,17 +382,6 @@ namespace Moonwalk.Classes.Entities.Base
                     }
                 }
             }
-            else
-            {
-                foreach (T item in list)
-                {
-                    if (((ICollidable)item).Hitbox.Intersects(hurtbox))
-                    {
-                        isColliding = true;
-                        break;
-                    }
-                }
-            }
 
             return isColliding;
         }
@@ -428,13 +414,14 @@ namespace Moonwalk.Classes.Entities.Base
                         if (solid.Collidable)
                             isColliding = true;
 
-
+                        if (this is Player)
                         solid.Collide();
+
                         break;
                     }
                 }
             }
-            if (type == typeof(ISoft))
+            else if (type == typeof(ISoft))
             {
                 foreach (ISoft soft in list)
                 {
@@ -446,7 +433,7 @@ namespace Moonwalk.Classes.Entities.Base
                     }
                 }
             }
-            if (type == typeof(IDamageable))
+            else if (type == typeof(IDamageable))
             {
                 foreach (IDamageable damageable in list)
                 {
@@ -458,7 +445,7 @@ namespace Moonwalk.Classes.Entities.Base
                     }
                 }
             }
-            if (type == typeof(IHostile))
+            else if (type == typeof(IHostile))
             {
                 foreach (IHostile hostile in list)
                 {
@@ -466,17 +453,6 @@ namespace Moonwalk.Classes.Entities.Base
                     {
                         isColliding = true;
 
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                foreach (T item in list)
-                {
-                    if (((ICollidable)item).Hitbox.Intersects(rect))
-                    {
-                        isColliding = true;
                         break;
                     }
                 }

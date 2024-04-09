@@ -342,6 +342,81 @@ namespace Moonwalk.Classes.Entities.Base
             return isColliding;
         }
 
+        public virtual bool CheckCollision<T>(Rectangle rect)
+        {
+            bool isColliding = false;
+
+
+            Type type = typeof(T);
+
+            List<T> list = null;
+
+            try
+            {
+                list = GameManager.entities.GetAllOfType<T>();
+                list.AddRange(Map.Geometry.GetAllOfType<T>());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+            if (type == typeof(ISolid))
+            {
+                foreach (ISolid solid in list)
+                {
+                    if (solid.Hitbox.Intersects(rect))
+                    {
+                        if (solid.Collidable)
+                            isColliding = true;
+
+
+                        solid.Collide();
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(ISoft))
+            {
+                foreach (ISoft soft in list)
+                {
+                    if (soft.Hitbox.Intersects(rect))
+                    {
+                        isColliding = true;
+
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(IDamageable))
+            {
+                foreach (IDamageable damageable in list)
+                {
+                    if (damageable.Hitbox.Intersects(rect))
+                    {
+                        isColliding = true;
+
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(IHostile))
+            {
+                foreach (IHostile hostile in list)
+                {
+                    if (hostile.Hitbox.Intersects(rect))
+                    {
+                        isColliding = true;
+
+                        break;
+                    }
+                }
+            }
+
+
+            return isColliding;
+        }
+
 
         /// <summary>
         /// Move an entity linearly

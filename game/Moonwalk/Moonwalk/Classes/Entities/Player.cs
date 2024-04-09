@@ -75,7 +75,7 @@ namespace Moonwalk.Classes.Entities
         {
             get
             {
-                if (CheckCollision(new Rectangle(
+                if (CheckCollision<Terrain>(new Rectangle(
                         hurtbox.X,
                         hurtbox.Y + 5,
                         hurtbox.Width,

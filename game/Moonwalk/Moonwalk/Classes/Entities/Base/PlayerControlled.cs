@@ -185,35 +185,6 @@ namespace Moonwalk.Classes.Entities.Base
 
         public abstract void Input(StoredInput input);
 
-        #region Collision
-
-       
-
-        /// <summary>
-        /// Determines if the entity collided with terrain
-        /// </summary>
-        /// <returns>True if a collision occurred</returns>
-        public virtual bool CheckCollision(Rectangle rectangle)
-        {
-            bool isColliding = false;
-
-            foreach (Terrain element in Map.Geometry.ToList())
-                if (element.Hitbox.Intersects(rectangle))
-                    if (element.Collidable)
-                        isColliding = true;
-
-            foreach (ISolid solid in GameManager.entities.GetAllOfType<ISolid>())
-            {
-                if (solid.Hitbox.Intersects(rectangle))
-                {
-                    isColliding = true;
-                }
-            }
-
-            return isColliding;
-        }
-
-        #endregion
 
     }
 }

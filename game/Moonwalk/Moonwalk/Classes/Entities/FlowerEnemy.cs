@@ -13,8 +13,7 @@ using System.Runtime.CompilerServices;
 namespace Moonwalk.Classes.Entities
 {
     //TO DO:
-    //- Add adf
-    //- Add edf
+    //- figure out how to fix the formatting of the adf & edf
     //- Update any more code within class
     //- Update location of spritesheet
     //- Maybe change so it only walks back and forth?

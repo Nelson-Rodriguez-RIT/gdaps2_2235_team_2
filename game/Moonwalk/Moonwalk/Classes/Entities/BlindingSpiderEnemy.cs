@@ -13,8 +13,7 @@ using System.Runtime.CompilerServices;
 namespace Moonwalk.Classes.Entities
 {
     //TO DO:
-    //- Add adf - edit it in case the origin points don't work with the hitbox
-    //- Add edf
+    //- edit adf in case the origin points don't work with the hitbox
     //- Update any more code within class
     //- Update location of spritesheet
     //- Maybe change so it only walks back and forth?

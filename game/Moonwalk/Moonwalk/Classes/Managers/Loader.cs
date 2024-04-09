@@ -174,10 +174,10 @@ namespace Moonwalk.Classes.Managers
                             bufferedGeometry.Add(
                                 new Checkpoint(
                                     new Rectangle(
-                                        int.Parse(buffer[1]),   // X
-                                        int.Parse(buffer[2]),   // Y
-                                        int.Parse(buffer[3]),   // Width
-                                        int.Parse(buffer[4])    // Height
+                                        int.Parse(buffer[0]),   // X
+                                        int.Parse(buffer[1]),   // Y
+                                        int.Parse(buffer[2]),   // Width
+                                        int.Parse(buffer[3])    // Height
                                         )
                                     )
                                 );

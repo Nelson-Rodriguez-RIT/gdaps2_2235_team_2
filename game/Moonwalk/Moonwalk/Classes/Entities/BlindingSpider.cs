@@ -49,7 +49,7 @@ namespace Moonwalk.Classes.Entities
             cooldowns.Update(gameTime);
         }
 
-        public BlindingSpider(Vector2 position) : base(position, "../../../Content/Entities/BlindingSpider") //to be changed once sprites are inside
+        public BlindingSpider(Vector2 position) : base(position, "../../../Content/Entities/BlindingSpider")
         {
             health = int.Parse(properties["Health"]);
             damage = int.Parse(properties["Damage"]);

@@ -12,11 +12,16 @@ using System.Threading.Tasks;
 
 namespace Moonwalk.Classes.Entities
 {
-    internal class Box : Entity, ISolid
+    internal class Box : Entity, ICollidable, ISolid
     {
         enum Animations
         {
             Idle
+        }
+
+        public bool Collidable
+        {
+            get { return true; }
         }
 
         public int CollisionAccuracy
@@ -229,6 +234,11 @@ namespace Moonwalk.Classes.Entities
 
 
             return isColliding;
+        }
+
+        public void Collide()
+        {
+            
         }
 
         

@@ -18,6 +18,7 @@ namespace Moonwalk.Classes.Maps
         public Checkpoint(Rectangle hitbox, bool starting = false) : base(hitbox)
         {
             collidable = false;
+            OnCollision += SetRespawn;
 
             if (starting)
             {
@@ -25,6 +26,9 @@ namespace Moonwalk.Classes.Maps
             }
         }
 
-        
+        private void SetRespawn()
+        {
+            Player.MostRecentCheckpoint = this;
+        }
     }
 }

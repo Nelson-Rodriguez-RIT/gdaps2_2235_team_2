@@ -5,8 +5,11 @@ using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Boss;
 using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
+using Moonwalk.Classes.Maps;
+using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Moonwalk.Classes.Entities.Base
 {
@@ -189,6 +192,232 @@ namespace Moonwalk.Classes.Entities.Base
 
         }
 
+        public virtual bool CheckCollision<T>(out T thing) 
+        {
+            bool isColliding = false;
+            thing = default(T);
+
+            Type type = typeof(T);
+
+            List<T> list = null;
+
+            try
+            {
+                list = GameManager.entities.GetAllOfType<T>();
+                list.AddRange(Map.Geometry.GetAllOfType<T>());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+            if (type == typeof(ISolid))
+            {
+                foreach (ISolid solid in list)
+                {
+                    if (solid.Hitbox.Intersects(hurtbox))
+                    {
+                        if (solid.Collidable)
+                            isColliding = true;
+
+                        thing = (T)solid;
+                        solid.Collide();
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(ISoft))
+            {
+                foreach (ISoft soft in list)
+                {
+                    if (soft.Hitbox.Intersects(hurtbox))
+                    {
+                        isColliding = true;
+                        thing = (T)soft;
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(IDamageable))
+            {
+                foreach (IDamageable damageable in list)
+                {
+                    if (damageable.Hitbox.Intersects(hurtbox))
+                    {
+                        isColliding = true;
+                        thing = (T)damageable;
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(IHostile))
+            {
+                foreach (IHostile hostile in list)
+                {
+                    if (hostile.Hitbox.Intersects(hurtbox))
+                    {
+                        isColliding = true;
+                        thing = (T)hostile;
+                        break;
+                    }
+                }
+            }            
+
+
+            return isColliding;
+        }
+
+        public virtual bool CheckCollision<T>()
+        {
+            bool isColliding = false;
+            
+
+            Type type = typeof(T);
+
+            List<T> list = null;
+
+            try
+            {
+                list = GameManager.entities.GetAllOfType<T>();
+                list.AddRange(Map.Geometry.GetAllOfType<T>());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+            if (type == typeof(ISolid))
+            {
+                foreach (ISolid solid in list)
+                {
+                    if (solid.Hitbox.Intersects(hurtbox))
+                    {
+                        if (solid.Collidable)
+                            isColliding = true;
+
+
+                        solid.Collide();
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(ISoft))
+            {
+                foreach (ISoft soft in list)
+                {
+                    if (soft.Hitbox.Intersects(hurtbox))
+                    {
+                        isColliding = true;
+                        
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(IDamageable))
+            {
+                foreach (IDamageable damageable in list)
+                {
+                    if (damageable.Hitbox.Intersects(hurtbox))
+                    {
+                        isColliding = true;
+                        
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(IHostile))
+            {
+                foreach (IHostile hostile in list)
+                {
+                    if (hostile.Hitbox.Intersects(hurtbox))
+                    {
+                        isColliding = true;
+                        
+                        break;
+                    }
+                }
+            }
+
+
+            return isColliding;
+        }
+
+        public virtual bool CheckCollision<T>(Rectangle rect)
+        {
+            bool isColliding = false;
+
+
+            Type type = typeof(T);
+
+            List<T> list = null;
+
+            try
+            {
+                list = GameManager.entities.GetAllOfType<T>();
+                list.AddRange(Map.Geometry.GetAllOfType<T>());
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+
+            if (type == typeof(ISolid))
+            {
+                foreach (ISolid solid in list)
+                {
+                    if (solid.Hitbox.Intersects(rect))
+                    {
+                        if (solid.Collidable)
+                            isColliding = true;
+
+
+                        solid.Collide();
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(ISoft))
+            {
+                foreach (ISoft soft in list)
+                {
+                    if (soft.Hitbox.Intersects(rect))
+                    {
+                        isColliding = true;
+
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(IDamageable))
+            {
+                foreach (IDamageable damageable in list)
+                {
+                    if (damageable.Hitbox.Intersects(rect))
+                    {
+                        isColliding = true;
+
+                        break;
+                    }
+                }
+            }
+            if (type == typeof(IHostile))
+            {
+                foreach (IHostile hostile in list)
+                {
+                    if (hostile.Hitbox.Intersects(rect))
+                    {
+                        isColliding = true;
+
+                        break;
+                    }
+                }
+            }
+
+
+            return isColliding;
+        }
+
+
         /// <summary>
         /// Move an entity linearly
         /// </summary>
@@ -312,6 +541,11 @@ namespace Moonwalk.Classes.Entities.Base
 
         public void SetLinearVariables()
         {
+            if (Robot.Tether == this)
+            {
+                Robot.Tether = null;
+            }
+
             physicsState = PhysicsState.Linear;
             //This determines the velocity the player will have after 
             //they stop swinging by converting the angular velocity

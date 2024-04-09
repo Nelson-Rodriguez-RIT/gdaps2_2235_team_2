@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Moonwalk.Classes.Maps;
 using Moonwalk.Classes;
+using System.Reflection;
 using Moonwalk.Classes.Entities;
 
 namespace Moonwalk.Classes.Managers
@@ -132,11 +133,11 @@ namespace Moonwalk.Classes.Managers
                 // via object layers, do it here.
                 else {
                     dataBlocks = data.Split("=");
+                    buffer = dataBlocks[1].Split(",");
 
                     switch (dataBlocks[0].ToUpper()) {
                         // Information about the width and height of an individual tile
                         case "SIZE":
-                            buffer = dataBlocks[1].Split(',');
                             bufferdTileSize = new Vector2(
                                 int.Parse(buffer[0]),    // Width
                                 int.Parse(buffer[1])     // Height
@@ -147,7 +148,6 @@ namespace Moonwalk.Classes.Managers
                         // TMX to MDF converter looks at the name of the object layer
                         // when rewriting relevant information to file
                         case "TERRAIN":
-                            buffer = dataBlocks[1].Split(',');
                             bufferedGeometry.Add(new Terrain(new Rectangle(
                                 int.Parse(buffer[0]),    // X
                                 int.Parse(buffer[1]),    // Y
@@ -158,7 +158,6 @@ namespace Moonwalk.Classes.Managers
 
                         // Loads a map upon collision
                         case "MAPTRIGGER":
-                            buffer = dataBlocks[1].Split(',');
                             bufferedGeometry.Add(
                                 new MapTrigger(
                                     new Rectangle(
@@ -172,7 +171,6 @@ namespace Moonwalk.Classes.Managers
                                 );
                             break;
                         case "CHECKPOINT":
-                            buffer = dataBlocks[1].Split(',');
                             bufferedGeometry.Add(
                                 new Checkpoint(
                                     new Rectangle(
@@ -185,7 +183,6 @@ namespace Moonwalk.Classes.Managers
                                 );
                             break;
                         case "OUTOFBOUNDS":
-                            buffer = dataBlocks[1].Split(",");
                             bufferedGeometry.Add(
                                 new OutOfBounds(
                                     new Rectangle(
@@ -197,17 +194,23 @@ namespace Moonwalk.Classes.Managers
                                     )
                                 );
                             break;
-                        case "FLOWERENEMY":
-                            buffer = dataBlocks[1].Split(",");
-                            EnemySpawners.SpawnFlowerEnemy(
-                                GameManager.entities.GetAllOfType<FlowerEnemy>(),
-                                new Rectangle(
-                                    int.Parse(buffer[0]),
-                                    int.Parse(buffer[1]),
-                                    int.Parse(buffer[2]),
-                                    int.Parse(buffer[3])
-                                    )
-                                );
+                        default: //for enemies
+                            //Get the type of the entity
+                            string typeString = dataBlocks[0][0].ToString().ToUpper() + dataBlocks[0].Substring(1);
+                            Type type = Type.GetType( "Moonwalk.Classes.Entities." + typeString );
+                            if (type == null ||
+                                !type.IsAssignableTo(typeof(Entity)))
+                            {
+                                break;
+                            }
+
+                            //Get the spawnentity method and invoke it with the type we just defined
+                            MethodInfo spawn = typeof(GameManager).GetMethod("SpawnEntity");
+                            MethodInfo spawnGeneric = spawn.MakeGenericMethod(type);
+                            spawnGeneric.Invoke(null, new Object[] 
+                                { int.Parse(buffer[0]), int.Parse(buffer[1]) });
+
+
                             break;
                     }
                 }

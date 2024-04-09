@@ -13,33 +13,23 @@ using System.Runtime.CompilerServices;
 namespace Moonwalk.Classes.Entities
 {
     //TO DO:
-    //- edit adf in case the origin points don't work with the hitbox
+    //- figure out how to fix the formatting of the adf & edf
     //- Update any more code within class
     //- Update location of spritesheet
     //- Maybe change so it only walks back and forth?
     //- figure out where the edit for the pixel size for each animation is
 
-    internal class BlindingSpiderEnemy : Enemy, IDamageable
+    internal class Flower : Enemy
     {
         private enum Animations
         {
-            StaticIdle,
-            BlindAttack,
-            Damaged,
-            Death,
-            PrepBlindAttack,
-            Walk
-        }
-
-        private enum Abilities
-        {
-            Blind, //this is something that can be implimented later, part of shoot
-            Shoot
+            Move,
+            Attack,
+            Hit,
+            Death
         }
 
         FaceDirection faceDirection;
-
-        private AbilityCooldowns<Abilities> cooldowns;
 
         public bool Grounded
         {
@@ -61,20 +51,18 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            base.Update(gameTime, input);
-            cooldowns.Update(gameTime);
+            base.Update(gameTime, input);            
         }
 
-        public BlindingSpiderEnemy(Vector2 position) : base(position, "../../../Content/Entities/TestEnemy") //to be changed once sprites are inside
+        public Flower(Vector2 position) : base(position, "../../../Content/Entities/FlowerEnemy") //to be changed once sprites are inside
         {
             health = int.Parse(properties["Health"]);
             damage = int.Parse(properties["Damage"]);
-            SwitchAnimation(Animations.Walk);
+            SwitchAnimation(Animations.Move);
             gravity = 70f;
             acceleration = new Vector2(0, gravity);
             spriteScale = 1;
             maxXVelocity = 50;
-            cooldowns = new(properties);
         }
 
         /// <summary>
@@ -86,7 +74,7 @@ namespace Moonwalk.Classes.Entities
 
             if (distance < 200) // range of aggro
             {
-                SwitchAnimation(Animations.Walk, false);
+                SwitchAnimation(Animations.Move, false);
                 float xDifference = VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
@@ -99,23 +87,16 @@ namespace Moonwalk.Classes.Entities
                     faceDirection = FaceDirection.Left;
                 }
 
-                //activeAnimation.FaceDirection = (int)faceDirection;               
-
-                if (cooldowns[Abilities.Shoot] == 0)
-                {
-                    //Shoot
-                    GameManager.SpawnEntity<StandardProjectile>(vectorPosition, new Object[] {
-                    VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()) });
-                    cooldowns.UseAbility(Abilities.Shoot);
-                }
+                activeAnimation.FaceDirection = (int)faceDirection;               
+               
             }
-            else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
+            /*else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
             {
                 //Deactivate the enemy if out of range
                 velocity.X = 0;
                 acceleration.X = 0;
                 SwitchAnimation(Animations.StaticIdle);
-            }
+            }*/
         }
 
         public override void Movement(GameTime gameTime)

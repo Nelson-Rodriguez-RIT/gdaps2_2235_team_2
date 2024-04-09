@@ -25,6 +25,18 @@
 /processorParam:TextureFormat=Color
 /build:../../../../resources/sprites/Box/spritesheet.png;Entities/Box/spritesheet.png
 
+#begin ../../../../resources/sprites/DARK Edition Starter/Sprites/Flower Enemy/spritesheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../resources/sprites/DARK Edition Starter/Sprites/Flower Enemy/spritesheet.png;Entities/FlowerEnemy/spritesheet.png
+
 #begin ../../../../resources/sprites/Turret/spritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -36,6 +48,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:../../../../resources/sprites/Turret/spritesheet.png;Entities/Turret/spritesheet.png
+
+#begin Entities/BlindingSpider/spritesheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Entities/BlindingSpider/spritesheet.png
 
 #begin Entities/hitbox.png
 /importer:TextureImporter

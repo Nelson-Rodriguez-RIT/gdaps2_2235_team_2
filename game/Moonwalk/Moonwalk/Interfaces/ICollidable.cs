@@ -23,6 +23,6 @@ namespace Moonwalk.Interfaces
         /// <summary>
         /// Checks if the object has collided with another
         /// </summary>
-        bool CheckCollision();
+        bool CheckCollision<T>();
     }
 }

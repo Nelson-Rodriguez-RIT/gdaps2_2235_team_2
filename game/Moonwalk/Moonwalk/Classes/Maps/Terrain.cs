@@ -1,9 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
+using Moonwalk.Interfaces;
 
 namespace Moonwalk.Classes.Maps {
 
 
-    internal class Terrain {
+    internal class Terrain : ISolid {
         public delegate void OnCollisionHandler();
         public event OnCollisionHandler OnCollision;
 
@@ -22,7 +23,10 @@ namespace Moonwalk.Classes.Maps {
         }
 
         public virtual void Collide() {
-            OnCollision();
+            if (OnCollision != null)
+            {
+                OnCollision();
+            }
         }
 
 

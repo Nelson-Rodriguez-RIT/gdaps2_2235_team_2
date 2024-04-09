@@ -196,7 +196,12 @@ namespace Moonwalk.Classes.Managers
                         default: //for enemies
                             //Get the type of the enemy
                             string typeString = dataBlocks[0][0].ToString().ToUpper() + dataBlocks[0].Substring(1);
-                            Type type = Type.GetType( typeString );
+                            Type type = Type.GetType( "Moonwalk.Classes.Entities." + typeString );
+                            if (type == null ||
+                                !type.IsAssignableTo(typeof(Enemy)))
+                            {
+                                break;
+                            }
 
                             //Get the spawnentity method and invoke it with the type we just defined
                             MethodInfo spawn = typeof(GameManager).GetMethod("SpawnEntity");

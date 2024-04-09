@@ -1,7 +1,8 @@
-HitboxX=5
-HitboxY=3
+HitboxX=16
+HitboxY=16
 HitboxXOrigin=0
 HitboxYOrigin=0
 Health=3
 Damage=2
 Shoot=5
+Blind=5

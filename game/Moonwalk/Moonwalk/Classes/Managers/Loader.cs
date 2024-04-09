@@ -196,7 +196,7 @@ namespace Moonwalk.Classes.Managers
                             break;
                         default: //for enemies
                             //Get the type of the entity
-                            string typeString = dataBlocks[0][0].ToString().ToUpper() + dataBlocks[0].Substring(1);
+                            string typeString = dataBlocks[0];
                             Type type = Type.GetType( "Moonwalk.Classes.Entities." + typeString );
                             if (type == null ||
                                 !type.IsAssignableTo(typeof(Entity)))

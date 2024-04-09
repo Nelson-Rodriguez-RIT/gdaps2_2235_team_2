@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Moonwalk.Classes.Maps;
 using Moonwalk.Classes;
+using Moonwalk.Classes.Entities;
 
 namespace Moonwalk.Classes.Managers
 {
@@ -193,6 +194,18 @@ namespace Moonwalk.Classes.Managers
                                         int.Parse(buffer[2]),
                                         int.Parse(buffer[3])
                                         )
+                                    )
+                                );
+                            break;
+                        case "FLOWERENEMY":
+                            buffer = dataBlocks[1].Split(",");
+                            EnemySpawners.SpawnFlowerEnemy(
+                                GameManager.entities.GetAllOfType<FlowerEnemy>(),
+                                new Rectangle(
+                                    int.Parse(buffer[0]),
+                                    int.Parse(buffer[1]),
+                                    int.Parse(buffer[2]),
+                                    int.Parse(buffer[3])
                                     )
                                 );
                             break;

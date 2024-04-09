@@ -340,6 +340,10 @@ namespace Moonwalk.Classes.Managers {
                         Player player = SpawnEntity<Player>();
                         Robot robot = SpawnEntity<Robot>();
 
+                        EnemySpawners.SpawnFlowerEnemy(
+                            entities.GetAllOfType<FlowerEnemy>(),
+                            new Rectangle(992, 475, 9, 5));
+
                         SpawnEntity<TestEnemy>(new Vector2(200, 250));
                         SpawnEntity<KeyObject>(new Vector2(1060, 442));
 

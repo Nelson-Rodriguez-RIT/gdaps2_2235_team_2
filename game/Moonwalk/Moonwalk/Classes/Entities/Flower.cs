@@ -36,7 +36,7 @@ namespace Moonwalk.Classes.Entities
             base.Update(gameTime, input);            
         }
 
-        public Flower(Vector2 position) : base(position, "../../../Content/Entities/FlowerEnemy") //to be changed once sprites are inside
+        public Flower(Vector2 position) : base(position, "../../../Content/Entities/FlowerEnemy")
         {
             health = int.Parse(properties["Health"]);
             damage = int.Parse(properties["Damage"]);

@@ -49,6 +49,16 @@
 /processorParam:TextureFormat=Color
 /build:../../../../resources/sprites/Turret/spritesheet.png;Entities/Turret/spritesheet.png
 
+#begin Entities/BlindingSpider/animations.adf
+/importer:
+/processor:
+/build:Entities/BlindingSpider/animations.adf
+
+#begin Entities/BlindingSpider/properties.edf
+/importer:
+/processor:
+/build:Entities/BlindingSpider/properties.edf
+
 #begin Entities/BlindingSpider/spritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -60,6 +70,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Entities/BlindingSpider/spritesheet.png
+
+#begin Entities/FlowerEnemy/animations.adf.txt
+/importer:
+/processor:
+/build:Entities/FlowerEnemy/animations.adf.txt;Entities/FlowerEnemy/animations.adf
+
+#begin Entities/FlowerEnemy/properties.edf.txt
+/importer:
+/processor:
+/build:Entities/FlowerEnemy/properties.edf.txt;Entities/FlowerEnemy/properties.edf
 
 #begin Entities/hitbox.png
 /importer:TextureImporter

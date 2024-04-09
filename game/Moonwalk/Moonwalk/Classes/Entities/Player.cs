@@ -557,22 +557,20 @@ namespace Moonwalk.Classes.Entities
                 return;
             }         
 
-            /*
-            // Change facing direciton of the player
-            if (acceleration.X < 0
-                && faceDirection != FaceDirection.Left)
-            {
-                faceDirection = FaceDirection.Left;
-            }
-            else if (acceleration.X > 0
-                && faceDirection != FaceDirection.Right)
-            {
-                faceDirection = FaceDirection.Right;
-            }
-            */
+            
+            //// Change facing direciton of the player
+            //if (acceleration.X < 0
+            //    && faceDirection != FaceDirection.Left)
+            //{
+            //    faceDirection = FaceDirection.Left;
+            //}
+            //else if (acceleration.X > 0
+            //    && faceDirection != FaceDirection.Right)
+            //{
+            //    faceDirection = FaceDirection.Right;
+            //}
 
             // Update the face direction in the animation class
-            activeAnimation.FaceDirection = (int)faceDirection;
 
             // If not moving, play idle
             if (velocity.X == 0 && velocity.Y == 0)
@@ -593,9 +591,8 @@ namespace Moonwalk.Classes.Entities
             }
 
             // if E is pressed, play melee attack animation
-            if (input.IsPressed(Keys.E) && 
-                !input.WasPressed(Keys.E))
-            {
+            if (input.IsPressed(Keys.E) &&
+                !input.WasPressed(Keys.E)) {
                 SwitchAnimation(Animations.Attack);
                 Attack();
                 animationTimer = activeAnimation.AnimationLength;
@@ -603,14 +600,11 @@ namespace Moonwalk.Classes.Entities
 
             // if F is pressed, play ranged attack animation
             if (input.IsPressed(Keys.LeftShift) &&
-                activeAnimation.AnimationValue != (int)(Animations.Shoot))
-            {
-                SwitchAnimation(Animations.Shoot, 
-                    true
-                    );
+                activeAnimation.AnimationValue != (int)(Animations.Shoot)) {
+                SwitchAnimation(Animations.Shoot);
                 GameManager.SpawnEntity<PlayerProjectile>(
                     hurtbox.Center.ToVector2() + new Vector2(
-                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width, 
+                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width,
                         -4),
                     new object[]
                     {
@@ -619,6 +613,8 @@ namespace Moonwalk.Classes.Entities
 
                 animationTimer = activeAnimation.AnimationLength;
             }
+
+            activeAnimation.FaceDirection = (int)faceDirection;
         }
 
         private void Attack()

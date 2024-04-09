@@ -179,7 +179,7 @@ namespace Moonwalk.Classes.Managers
                                         int.Parse(buffer[2]),   // Y
                                         int.Parse(buffer[3]),   // Width
                                         int.Parse(buffer[4])    // Height
-                                        )                 // Map to load
+                                        )
                                     )
                                 );
                             break;

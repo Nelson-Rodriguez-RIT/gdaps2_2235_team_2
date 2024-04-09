@@ -132,7 +132,7 @@ namespace Moonwalk.Classes.Entities.Base
         /// Switches the animation currently playing to another
         /// </summary>
         /// <param name="animation">The animation to switch to</param>
-        protected void SwitchAnimation(Enum animationEnum, bool resetAnimation = true) {
+        protected virtual void SwitchAnimation(Enum animationEnum, bool resetAnimation = true) {
             activeAnimation = animations[Convert.ToInt32(animationEnum)];
             if (resetAnimation)
                 activeAnimation.Reset();

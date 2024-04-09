@@ -132,27 +132,27 @@ namespace Moonwalk.Classes.Managers {
 
                 isGamePaused = !isGamePaused;
             }
-                
-
-            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw entity hitboxes
-                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F1))
-                displayEntityHitboxes = !displayEntityHitboxes;
-
-            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F2) && // Toggle F2 to draw terrain hitboxes
-                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F2))
-                displayTerrainHitboxes = !displayTerrainHitboxes;
-
-            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F3) && // Toggle F3 to draw hitbox hitboxes
-                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F3))
-                Hitbox.drawHitbox = !Hitbox.drawHitbox;
-
-            if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F4) && // Press F4 to reset the current map/gamestate
-                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F4)) {
-                Map.UnloadMap();
-                Transition(state);
-            }
+            
 
             if (!isGamePaused) {
+                if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw entity hitboxes
+                    storedInput.CurrentKeyboard.IsKeyUp(Keys.F1))
+                    displayEntityHitboxes = !displayEntityHitboxes;
+
+                if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F2) && // Toggle F2 to draw terrain hitboxes
+                        storedInput.CurrentKeyboard.IsKeyUp(Keys.F2))
+                    displayTerrainHitboxes = !displayTerrainHitboxes;
+
+                if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F3) && // Toggle F3 to draw hitbox hitboxes
+                        storedInput.CurrentKeyboard.IsKeyUp(Keys.F3))
+                    Hitbox.drawHitbox = !Hitbox.drawHitbox;
+
+                if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F4) && // Press F4 to reset the current map/gamestate
+                        storedInput.CurrentKeyboard.IsKeyUp(Keys.F4)) {
+                    Map.UnloadMap();
+                    Transition(state);
+                }
+
                 switch (state) {
                     case GameState.MainMenu:
                         //Start button pressed

@@ -182,6 +182,7 @@ namespace Moonwalk.Classes.Entities.Base
 
         #endregion
 
+
         public abstract void Input(StoredInput input);
 
         #region Collision

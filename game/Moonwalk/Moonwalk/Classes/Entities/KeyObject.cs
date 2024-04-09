@@ -29,7 +29,7 @@ namespace Moonwalk.Classes.Entities
         public KeyObject(Vector2 position) :
             base (position, "../../../Content/Entities/Key", false, false)
         {
-            player = GameManager.entities.GetAllOfType<Player>()[0];
+            //player = GameManager.entities.GetAllOfType<Player>()[0];
 
             //this.hurtbox = new Rectangle((int)position.X, (int)position.Y, 16, 16); //position/hitbox
             this.isColliding = false; //should not start by colliding with anything

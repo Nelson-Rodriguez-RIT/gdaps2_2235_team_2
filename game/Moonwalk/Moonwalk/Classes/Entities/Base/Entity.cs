@@ -80,6 +80,36 @@ namespace Moonwalk.Classes.Entities.Base
             get { return acceleration; }
         }
 
+        public int CollisionAccuracy
+        {
+            get
+            {
+                switch (physicsState)
+                {
+                    case PhysicsState.Linear:
+
+                        // Min accuracy is 1
+                        if (velocity.X == 0 &&
+                            velocity.Y == 0)
+                        {
+                            return 1;
+                        }
+
+                        return (int)(VectorMath.VectorMagnitude(velocity) / 4f);  //Use the magnitude of the velocity to get the accuracy
+
+                    case PhysicsState.Rotational:
+                        if (angVelocity == 0)
+                        {
+                            return 1;
+                        }
+                        return (int)(
+                            Math.Abs(angVelocity / 10));
+                    default:
+                        return 0;
+                }
+            }
+        }
+
         // These rely on file data and only need to be loaded once
         internal protected Dictionary<string, string> properties = null;
         internal protected List<Animation> animations = null;

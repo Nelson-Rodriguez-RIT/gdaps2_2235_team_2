@@ -197,7 +197,7 @@ namespace Moonwalk.Classes.Managers
                         default: //for enemies
                             //Get the type of the entity
                             string typeString = dataBlocks[0];
-                            Type type = Type.GetType( "Moonwalk.Classes.Entities." + "Box" );
+                            Type type = Type.GetType( "Moonwalk.Classes.Entities." + typeString );
                             if (type == null ||
                                 !type.IsAssignableTo(typeof(Entity)))
                             {

@@ -24,43 +24,6 @@ namespace Moonwalk.Classes.Entities
             get { return true; }
         }
 
-        public int CollisionAccuracy
-        {
-            get
-            {
-                switch (physicsState)
-                {
-                    case PhysicsState.Linear:
-
-                        // Min accuracy is 1
-                        if (velocity.X == 0 &&
-                            velocity.Y == 0)
-                        {
-                            return 1;
-                        }
-
-                        return      //Use the magnitude of the velocity to get the accuracy
-                    (int)(
-                        Math.Ceiling(
-                            Math.Sqrt(
-                                Math.Pow(velocity.X, 2) +
-                                Math.Pow(Velocity.Y, 2))
-                            / 4.0
-                            )
-                    );
-                    case PhysicsState.Rotational:
-                        if (angVelocity == 0)
-                        {
-                            return 1;
-                        }
-                        return (int)(
-                            Math.Abs(angVelocity / 10));
-                    default:
-                        return 0;
-                }
-            }
-        }
-
         public Box(Vector2 position) : base(position, "../../../Content/Entities/Box")
         {
             gravity = 70f;

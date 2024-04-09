@@ -27,7 +27,7 @@ namespace Moonwalk.Classes.Entities
     {
         public static Point Location;
         public static Checkpoint MostRecentCheckpoint;
-
+        private bool godMode = false;
         protected enum Animations
         {
             Idle,
@@ -75,7 +75,7 @@ namespace Moonwalk.Classes.Entities
         {
             get
             {
-                if (CheckCollision<Terrain>(new Rectangle(
+                if (CheckCollision<ISolid>(new Rectangle(
                         hurtbox.X,
                         hurtbox.Y + 5,
                         hurtbox.Width,
@@ -187,6 +187,12 @@ namespace Moonwalk.Classes.Entities
                 Respawn();
             }
 
+            if(input.IsPressed(Keys.F5)
+                && !input.WasPressed(Keys.F5))
+            {
+                godMode = !godMode;
+            }
+
             //Change publically available position
             Location = this.Position;
 
@@ -265,7 +271,7 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
-            if (CheckCollision<Terrain>())           // If there is a collision, switch back to linear motion
+            if (CheckCollision<ISolid>())           // If there is a collision, switch back to linear motion
             {
                 vectorPosition = oldPosition;
                 //physicsState = PhysicsState.Linear;
@@ -476,6 +482,11 @@ namespace Moonwalk.Classes.Entities
             {
                 acceleration.Y = gravity * (1 + (100 - Math.Abs(velocity.Y)) / 50);
             }
+
+            if( godMode)
+            {
+                acceleration.Y = gravity * 0.5f;
+            }
             
 
 
@@ -523,7 +534,7 @@ namespace Moonwalk.Classes.Entities
             //Do the same thing but in the X direction
             iterationCounter = 1;
 
-            while (!CheckCollision<Terrain>() && iterationCounter <= CollisionAccuracy)
+            while (!CheckCollision<ISolid>() && iterationCounter <= CollisionAccuracy)
             {
                 ISolid thing = null;
 
@@ -619,11 +630,11 @@ namespace Moonwalk.Classes.Entities
                 activeAnimation.AnimationValue != (int)(Animations.Shoot)) {
                 SwitchAnimation(Animations.Shoot);
                 GameManager.SpawnEntity<PlayerProjectile>(
-                    hurtbox.Center.ToVector2() + new Vector2(
-                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width,
-                        -4),
                     new object[]
                     {
+                        hurtbox.Center.ToVector2() + new Vector2(
+                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width,
+                        -4),
                         faceDirection == FaceDirection.Left ? new Vector2(-1, 0) : new Vector2(1, 0)
                     });
 
@@ -737,53 +748,8 @@ namespace Moonwalk.Classes.Entities
         
         public void TakeDamage(int damage)
         {
+            if (!godMode)
             Health -= damage;
-        }
-
-        /*
-        public override bool CheckCollision() {
-            bool isColliding = false;
-
-            foreach (Terrain element in Map.Geometry)
-                if (element.Hitbox.Intersects(hurtbox)) {
-                    if (element.Collidable)
-                        isColliding = true;
-
-                    if (element is MapTrigger)
-                        element.Collide();
-                }
-
-            foreach (ISolid solid in GameManager.entities.GetAllOfType<ISolid>())
-            {
-                if (solid.Hitbox.Intersects(hurtbox))
-                {
-                    isColliding = true;
-                }
-            }
-
-            return isColliding;
-        }
-        */
-
-        public bool CheckTerrainCollision<T>(out T thing) where T : Terrain
-        {
-            bool isColliding = false;
-            thing = null;
-
-            List<T> list = Map.Geometry.GetAllOfType<T>();
-            foreach (T element in list)
-                if (element.Hitbox.Intersects(hurtbox)) 
-                {
-                    if (element.Collidable)
-                    isColliding = true;
-
-                    thing = element;
-
-                    if (element is MapTrigger || element is OutOfBounds)
-                        element.Collide();
-                }
-
-            return isColliding;
         }
 
         public static void Respawn()

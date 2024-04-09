@@ -197,7 +197,7 @@ namespace Moonwalk.Classes.Managers
                         default: //for enemies
                             //Get the type of the entity
                             string typeString = dataBlocks[0];
-                            Type type = Type.GetType( "Moonwalk.Classes.Entities." + typeString );
+                            Type type = Type.GetType( "Moonwalk.Classes.Entities." + "Box" );
                             if (type == null ||
                                 !type.IsAssignableTo(typeof(Entity)))
                             {
@@ -207,9 +207,17 @@ namespace Moonwalk.Classes.Managers
                             //Get the spawnentity method and invoke it with the type we just defined
                             MethodInfo spawn = typeof(GameManager).GetMethod("SpawnEntity");
                             MethodInfo spawnGeneric = spawn.MakeGenericMethod(type);
-                            spawnGeneric.Invoke(null, new Object[] 
-                                { int.Parse(buffer[0]), int.Parse(buffer[1]) });
 
+                            Vector2 position = new Vector2(
+                                        int.Parse(buffer[0]),
+                                        int.Parse(buffer[1]));
+
+                            object[] args = new object[] {(object)position};
+
+                            // This is a bit convoluted but if you ask me I can explain why we need an array 
+                            // which contains an array which contains the paramaters for this - Dante
+                            spawnGeneric.Invoke(null, new object[] { args });
+                            
 
                             break;
                     }

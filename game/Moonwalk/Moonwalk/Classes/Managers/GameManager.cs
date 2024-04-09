@@ -340,12 +340,12 @@ namespace Moonwalk.Classes.Managers {
                         Player player = SpawnEntity<Player>();
                         Robot robot = SpawnEntity<Robot>();
 
-                        SpawnEntity<TestEnemy>(new Vector2(200, 250));
-                        SpawnEntity<KeyObject>(new Vector2(1060, 442));
+                        SpawnEntity<TestEnemy>(new Object[] { new Vector2(200, 250) });
+                        SpawnEntity<KeyObject>(new Object[] { new Vector2(1060, 442) });
 
-                        SpawnEntity<Turret>(new Vector2(1150, 300));
-                        SpawnEntity<BlindingSpider>(new Vector2(1050, 300));
-                        SpawnEntity<Flower>(new Vector2(1250, 300));
+                        SpawnEntity<Turret>(new Object[] { new Vector2(1150, 300) });
+                        SpawnEntity<BlindingSpider>(new Object[] { new Vector2(1050, 300) });
+                        SpawnEntity<Flower>(new Object[] { new Vector2(1250, 300) });
 
                         // Set player as the Camera's target
                         Camera.SetTarget(player);
@@ -359,9 +359,9 @@ namespace Moonwalk.Classes.Managers {
                     {
                         // Loads player + companion
                         Player player = SpawnEntity<Player>();
-                        Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
-                        SpawnEntity<TestEnemy>(new Vector2(200, 250));
-                        SpawnEntity<KeyObject>(new Vector2(900, 262));
+                        Robot robot = SpawnEntity<Robot>(new Object[] { new Vector2(128, 48) });
+                        SpawnEntity<TestEnemy>(new Object[] { new Vector2(200, 250) });
+                        SpawnEntity<KeyObject>(new Object[] { new Vector2(900, 262) });
 
 
                         // Set player as the Camera's target
@@ -384,27 +384,7 @@ namespace Moonwalk.Classes.Managers {
             state = nextState;
         }
 
-        /// <summary>
-        /// Handles any neccassray logic when spawning an entity
-        /// </summary>
-        public static T SpawnEntity<T>(Vector2 position, Object[] args = null) where T : Entity {
-            //Copy everything into args
-            object[] newArgs = new object[
-                args != null ? args.Length + 1 : 1
-                ];
-            newArgs[0] = position;
-
-            if (args != null) {
-                for (int i = 0; i < args.Length; i++) {
-                    newArgs[i + 1] = args[i];
-                }
-            }
-
-            Entity entity = (Entity)Activator.CreateInstance(typeof(T), newArgs);
-            entities.Add(entity);
-
-            return (T)entity;
-        }
+        
 
         /// <summary>
         /// Handles any neccassray logic when spawning an entity

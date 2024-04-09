@@ -12,9 +12,6 @@ namespace Moonwalk.Classes.Maps
 {
     internal class EnemySpawners
     {
-        public static void SpawnFlowerEnemy(List<FlowerEnemy> type, Rectangle hitbox)
-        {
-            GameManager.SpawnEntity<FlowerEnemy>(new Vector2(hitbox.X, hitbox.Y));
-        }
+        
     }
 }

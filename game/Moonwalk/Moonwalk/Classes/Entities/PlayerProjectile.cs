@@ -32,9 +32,7 @@ namespace Moonwalk.Classes.Entities
         {
             base.Update(gameTime, input);
 
-            IDamageable collision = null;
-
-            if ((collision = DamageableCollision()) != null)
+            if (CheckCollision<IDamageable>(out IDamageable collision))
             {
                 const int Knockback = 50;
 
@@ -57,30 +55,7 @@ namespace Moonwalk.Classes.Entities
         public override void AI()
         {
             //No AI
-        }
-
-        protected IDamageable DamageableCollision()
-        {
-            List<IDamageable> list = GameManager.entities.GetAllOfType<IDamageable>();
-
-            IDamageable collision = list.Find(enemy =>
-            enemy is not Player && 
-            new Rectangle(
-                enemy.Position.X,
-                enemy.Position.Y,
-                enemy.Hitbox.Width,
-                enemy.Hitbox.Height)
-            .Intersects(
-                new Rectangle(
-                    Position.X,
-                    Position.Y,
-                    Hitbox.Width,
-                    Hitbox.Height)
-                )
-            );
-
-            return collision;
-        }
+        }        
 
         public override void Draw(SpriteBatch batch)
         {

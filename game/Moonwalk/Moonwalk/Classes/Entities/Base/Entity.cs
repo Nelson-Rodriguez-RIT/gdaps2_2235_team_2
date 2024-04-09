@@ -10,6 +10,7 @@ using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 
 namespace Moonwalk.Classes.Entities.Base
 {
@@ -80,35 +81,7 @@ namespace Moonwalk.Classes.Entities.Base
             get { return acceleration; }
         }
 
-        public int CollisionAccuracy
-        {
-            get
-            {
-                switch (physicsState)
-                {
-                    case PhysicsState.Linear:
-
-                        // Min accuracy is 1
-                        if (velocity.X == 0 &&
-                            velocity.Y == 0)
-                        {
-                            return 1;
-                        }
-
-                        return (int)(VectorMath.VectorMagnitude(velocity) / 4f);  //Use the magnitude of the velocity to get the accuracy
-
-                    case PhysicsState.Rotational:
-                        if (angVelocity == 0)
-                        {
-                            return 1;
-                        }
-                        return (int)(
-                            Math.Abs(angVelocity / 10));
-                    default:
-                        return 0;
-                }
-            }
-        }
+        
 
         // These rely on file data and only need to be loaded once
         internal protected Dictionary<string, string> properties = null;
@@ -206,23 +179,39 @@ namespace Moonwalk.Classes.Entities.Base
             
         }
 
-        #region Movement
+        #region Collision
 
-        public virtual void Movement(GameTime time)
+        public int CollisionAccuracy
         {
-            switch (physicsState)
+            get
             {
-                case PhysicsState.Linear:
-                    LinearMotion(time);
-                    break;
-                case PhysicsState.Rotational:
-                    RotationalMotion(time);
-                    break;
-            }
+                switch (physicsState)
+                {
+                    case PhysicsState.Linear:
 
+                        // Min accuracy is 1
+                        if (velocity.X == 0 &&
+                            velocity.Y == 0)
+                        {
+                            return 1;
+                        }
+
+                        return (int)(VectorMath.VectorMagnitude(velocity) / 4f);  //Use the magnitude of the velocity to get the accuracy
+
+                    case PhysicsState.Rotational:
+                        if (angVelocity == 0)
+                        {
+                            return 1;
+                        }
+                        return (int)(
+                            Math.Abs(angVelocity / 10));
+                    default:
+                        return 0;
+                }
+            }
         }
 
-        public virtual bool CheckCollision<T>(out T thing) 
+        public virtual bool CheckCollision<T>(out T thing)
         {
             bool isColliding = false;
             thing = default(T);
@@ -256,7 +245,7 @@ namespace Moonwalk.Classes.Entities.Base
                     }
                 }
             }
-            if (type == typeof(ISoft))
+            else if (type == typeof(ISoft))
             {
                 foreach (ISoft soft in list)
                 {
@@ -268,7 +257,7 @@ namespace Moonwalk.Classes.Entities.Base
                     }
                 }
             }
-            if (type == typeof(IDamageable))
+            else if (type == typeof(IDamageable))
             {
                 foreach (IDamageable damageable in list)
                 {
@@ -280,7 +269,7 @@ namespace Moonwalk.Classes.Entities.Base
                     }
                 }
             }
-            if (type == typeof(IHostile))
+            else if (type == typeof(IHostile))
             {
                 foreach (IHostile hostile in list)
                 {
@@ -291,8 +280,19 @@ namespace Moonwalk.Classes.Entities.Base
                         break;
                     }
                 }
-            }            
-
+            }
+            else
+            {
+                foreach (T item in list)
+                {
+                    if (((ICollidable)item).Hitbox.Intersects(hurtbox))
+                    {
+                        isColliding = true;
+                        thing = item;
+                        break;
+                    }
+                }
+            }
 
             return isColliding;
         }
@@ -300,7 +300,7 @@ namespace Moonwalk.Classes.Entities.Base
         public virtual bool CheckCollision<T>()
         {
             bool isColliding = false;
-            
+
 
             Type type = typeof(T);
 
@@ -331,43 +331,53 @@ namespace Moonwalk.Classes.Entities.Base
                     }
                 }
             }
-            if (type == typeof(ISoft))
+            else if (type == typeof(ISoft))
             {
                 foreach (ISoft soft in list)
                 {
                     if (soft.Hitbox.Intersects(hurtbox))
                     {
                         isColliding = true;
-                        
+
                         break;
                     }
                 }
             }
-            if (type == typeof(IDamageable))
+            else if (type == typeof(IDamageable))
             {
                 foreach (IDamageable damageable in list)
                 {
                     if (damageable.Hitbox.Intersects(hurtbox))
                     {
                         isColliding = true;
-                        
+
                         break;
                     }
                 }
             }
-            if (type == typeof(IHostile))
+            else if (type == typeof(IHostile))
             {
                 foreach (IHostile hostile in list)
                 {
                     if (hostile.Hitbox.Intersects(hurtbox))
                     {
                         isColliding = true;
-                        
+
                         break;
                     }
                 }
             }
-
+            else
+            {
+                foreach (T item in list)
+                {
+                    if (((ICollidable)item).Hitbox.Intersects(hurtbox))
+                    {
+                        isColliding = true;
+                        break;
+                    }
+                }
+            }
 
             return isColliding;
         }
@@ -442,11 +452,40 @@ namespace Moonwalk.Classes.Entities.Base
                     }
                 }
             }
-
+            else
+            {
+                foreach (T item in list)
+                {
+                    if (((ICollidable)item).Hitbox.Intersects(rect))
+                    {
+                        isColliding = true;
+                        break;
+                    }
+                }
+            }
 
             return isColliding;
         }
 
+        #endregion
+
+        #region Movement
+
+        public virtual void Movement(GameTime time)
+        {
+            switch (physicsState)
+            {
+                case PhysicsState.Linear:
+                    LinearMotion(time);
+                    break;
+                case PhysicsState.Rotational:
+                    RotationalMotion(time);
+                    break;
+            }
+
+        }
+
+        
 
         /// <summary>
         /// Move an entity linearly

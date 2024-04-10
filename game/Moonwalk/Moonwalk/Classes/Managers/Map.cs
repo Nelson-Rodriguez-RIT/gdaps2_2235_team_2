@@ -62,7 +62,7 @@ namespace Moonwalk.Classes.Managers
             
             //Checkpoint first = new Checkpoint(new Rectangle(200, -30, 20, 20)); 
             //for testing in demoMap, uncomment ^^, and comment next line 
-            Checkpoint first = new Checkpoint(new Rectangle(200, 410, 20, 20));
+            Checkpoint first = new Checkpoint(new Rectangle(288, 400, 20, 20));
             Player.MostRecentCheckpoint = first;
             geometry.Add(first);
 

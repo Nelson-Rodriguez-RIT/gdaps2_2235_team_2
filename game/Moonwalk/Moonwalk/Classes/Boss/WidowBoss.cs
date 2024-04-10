@@ -29,7 +29,6 @@ namespace Moonwalk.Classes.Boss
         {
             Idle,
             Forward,
-            Backward,
             Attack,
             Shoot,
             Jump,
@@ -44,8 +43,8 @@ namespace Moonwalk.Classes.Boss
 
         private enum FaceDirection
         {
-            Left,
-            Right
+            Right,
+            Left
         }
 
         /// <summary>
@@ -62,27 +61,42 @@ namespace Moonwalk.Classes.Boss
         private List<Behavior> currentPhase;
 
         private const double AIFrequency = 10;
-        private double AITimer;
+        private int frameTimer;
+        private const float MoveSpeed = 12;
 
-        Behavior currentBehavior;
         FaceDirection faceDirection;
 
         private WidowBoss(Vector2 center) : base("../../../Content/WidowBoss", center)
         {
+            
+
+            foreach (Behavior behavior in Enum.GetValues(typeof(Behavior))) 
+            {
+                SwitchBehavior(behavior);
+                properties[behavior.ToString()] = activeAnimation.AnimationLengthSeconds.ToString();
+
+            }
+
             cooldowns = new AbilityCooldowns<Behavior>(properties);
-            SwitchAnimation(Behavior.Idle);
+
+            SwitchBehavior(Behavior.Idle);
             
         }
 
         public static void Start()
         {
-            new WidowBoss(new Vector2(0, 0));
+            new WidowBoss(new Vector2(500, 400));
         }
 
         public override void Update(GameTime gt)
         {
+            if (frameTimer > 0)
+            {
+                frameTimer--;
+            }
             float xDifference = VectorMath.VectorDifference(center, Player.Location.ToVector2()).X;
 
+            
             //Change the facing direction
             if (xDifference > 0)
             {
@@ -93,13 +107,16 @@ namespace Moonwalk.Classes.Boss
                 faceDirection = FaceDirection.Left;
             }
 
+            activeAnimation.FaceDirection = (int)faceDirection;
+            
+
             if (health > maxHealth / 2)
             {
-
+                PhaseOne(gt);
             }
             else if (health > 0)
             {
-
+                
             }
             else
             {
@@ -113,14 +130,34 @@ namespace Moonwalk.Classes.Boss
         {
             cooldowns.Update(gt); 
 
-            if (cooldowns[currentBehavior] == 0)
+            if (cooldowns[(Behavior)currentBehavior] == 0)
             {
                 SelectBehavior();
             }
 
             switch (currentBehavior)
             {
-                case Behavior.Idle:
+                case Behavior.Forward:
+                    center.X += MoveSpeed * (float)gt.ElapsedGameTime.TotalSeconds
+                        * (faceDirection == FaceDirection.Right ? 1 : -1);
+                    break;
+                case Behavior.Attack:
+                    if (frameTimer == activeAnimation.AnimationLength - 30)
+                    {
+                        Hitbox.activeHitboxes.Add(new Hitbox(
+                            9 * 6, 
+                            center, 
+                            new Point(17, 29), 
+                            GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(), 
+                            new Point(34, -5)));
+
+                        Hitbox.activeHitboxes.Add(new Hitbox(
+                            9 * 6,
+                            center,
+                            new Point(51, 13),
+                            GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(),
+                            new Point(37, 11)));
+                    }
                     break;
 
             }
@@ -130,25 +167,22 @@ namespace Moonwalk.Classes.Boss
         {
             bool chosen = false;
 
-            if (currentBehavior == Behavior.Jump)
+            if ((Behavior)currentBehavior == Behavior.Jump)
             {
                 currentBehavior = Behavior.Land;
             }
 
             while (!chosen)
             {
-                int random = rng.Next(0, 10);
+                int random = rng.Next(0, 8);
 
                 switch (random)
                 {
-                    case < 1:
+                    case < 2:
                         currentBehavior = Behavior.Idle;
                         break;
-                    case < 3:
+                    case < 4:
                         currentBehavior = Behavior.Forward;
-                        break;
-                    case < 5:
-                        currentBehavior = Behavior.Backward;
                         break;
                     case < 8:
                         if (VectorMath.VectorMagnitude(
@@ -158,6 +192,7 @@ namespace Moonwalk.Classes.Boss
                             < 100)
                         {
                             currentBehavior = Behavior.Attack;
+                            
                         }
                         else
                         {
@@ -171,7 +206,24 @@ namespace Moonwalk.Classes.Boss
 
                 chosen = true;
             }
+
+            SwitchBehavior(currentBehavior);
+
+            if ((Behavior)currentBehavior == Behavior.Attack)
+            {
+                frameTimer = activeAnimation.AnimationLength;
+            }
             
+        }
+
+        protected override void SwitchBehavior(Enum animationEnum, bool resetAnimation = true)
+        {
+            currentBehavior = animationEnum;
+
+            base.SwitchBehavior(animationEnum, resetAnimation);
+
+            if (cooldowns != null)
+            cooldowns.UseAbility((Behavior)animationEnum);
         }
     }
 }

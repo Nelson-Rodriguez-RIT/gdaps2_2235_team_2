@@ -74,7 +74,7 @@ namespace Moonwalk.Classes.Entities
                     faceDirection = FaceDirection.Left;
                 }
 
-                //activeAnimation.FaceDirection = (int)faceDirection;
+                activeAnimation.FaceDirection = (int)faceDirection;
 
                 if (physicsState == PhysicsState.Linear)
                 //Enemy accelerates towards the player's x direction

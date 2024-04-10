@@ -31,9 +31,21 @@ namespace Moonwalk.Classes.Entities
 
         FaceDirection faceDirection;
 
+        private bool inactive = true;
+        private double timer;
+
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            base.Update(gameTime, input);            
+            base.Update(gameTime, input);
+            cooldowns.Update(gameTime);
+            if (timer > 0)
+            {
+                timer -= gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if (timer < 0)
+            {
+                timer = 0;
+            }
         }
 
         public Flower(Vector2 position) : base(position, "../../../Content/Entities/FlowerEnemy")
@@ -48,16 +60,30 @@ namespace Moonwalk.Classes.Entities
         }
 
         /// <summary>
-        /// AI for Blinding Spider Enemy
+        /// AI for Flower Enemy
         /// </summary>
         public override void AI()
         {
             double distance = VectorMath.Magnitude(VectorMath.Difference(vectorPosition, Player.Location.ToVector2()));
 
-            if (distance < 200) // range of aggro
+            if (distance <= 200) // range of aggro
             {
-                SwitchAnimation(Animations.Move, false);
+                SwitchAnimation(Animations.Move, true);
                 float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
+
+                if (inactive)
+                {
+                    SwitchAnimation(Animations.Move, true);
+                    timer = activeAnimation.AnimationLengthSeconds;
+                    inactive = false;
+                }
+
+                if (timer > 0)
+                {
+                    if (activeAnimation.AnimationValue == (int)Animations.Move)
+                        return;
+                }
+
 
                 //Change the facing direction
                 if (xDifference > 0)
@@ -69,16 +95,30 @@ namespace Moonwalk.Classes.Entities
                     faceDirection = FaceDirection.Left;
                 }
 
-                activeAnimation.FaceDirection = (int)faceDirection;               
+
+                if (physicsState == PhysicsState.Linear)
+                    //Enemy accelerates towards the player's x direction
+                    acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
+
+                if (distance <=20)
+                {
+                    velocity.X = 0;
+                    acceleration.X = 0;
+
+                    //Attack
+                    SwitchAnimation(Animations.Attack);
+                }                              
                
             }
-            /*else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
+            else if (activeAnimation.AnimationValue != (int)Animations.Move)
             {
                 //Deactivate the enemy if out of range
                 velocity.X = 0;
                 acceleration.X = 0;
                 SwitchAnimation(Animations.StaticIdle);
-            }*/
+            }
+
+            activeAnimation.FaceDirection = (int)faceDirection;
         }
 
         public override void Movement(GameTime gameTime)

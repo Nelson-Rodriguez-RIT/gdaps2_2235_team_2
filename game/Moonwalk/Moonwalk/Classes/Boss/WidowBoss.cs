@@ -96,6 +96,8 @@ namespace Moonwalk.Classes.Boss
 
         public override void Update(GameTime gt)
         {
+            CheckCollision();
+
             if (timer > 0)
             {
                 timer -= gt.ElapsedGameTime.TotalSeconds;
@@ -159,11 +161,11 @@ namespace Moonwalk.Classes.Boss
                                 11));
 
                         arm.targetEntered += this.DealDamage;
+                        shockwave.targetEntered += this.DealDamage;
 
-
-                        Hitbox.activeHitboxes.Add(arm);
-
-                        Hitbox.activeHitboxes.Add(shockwave);
+                        //if one hitbox is hit, the others can't be
+                        arm.targetEntered += shockwave.AddToAlreadyHit;
+                        shockwave.targetEntered += arm.AddToAlreadyHit;
                     }
                     break;
 
@@ -213,7 +215,7 @@ namespace Moonwalk.Classes.Boss
                             < 100)
                         {
                             currentBehavior = Behavior.Attack;
-                            currentAttack = Attacks.Slam;
+                            currentAttack = Attacks.Claw;
                         }
                         else
                         {

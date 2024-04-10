@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Moonwalk.Classes.Entities;
 using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
@@ -154,6 +155,35 @@ namespace Moonwalk.Classes.Boss
                     new Rectangle(Camera.RelativePosition(center).ToPoint() - new Point(2, 2), new Point(5, 5)),
                     Color.White);
             }
+        }
+
+        public void CheckCollision()
+        {
+            List<PlayerProjectile> hits;
+            if ((hits = GameManager.entities
+                    .GetAllOfType<PlayerProjectile>()
+                        .FindAll(bullet =>
+                            hitboxes.Exists(rect => rect.Intersects(bullet.Hitbox))
+                            ))
+                != null)
+            {
+                foreach (PlayerProjectile hit in hits)
+                {
+                    health -= hit.Damage;
+                    hit.Collisions--;
+                    
+                }
+            }
+
+            Player player = GameManager.entities.GetAllOfType<Player>()[0];
+
+            /*
+            if (hitboxes.Exists(rect => rect.Intersects(player.Hitbox)))
+            {
+                Type type = typeof(this.currentAttack);
+                player.TakeDamage(attackDamage[Enum.Parse<"Collide"]);
+            }
+            */
         }
 
         internal class BossData

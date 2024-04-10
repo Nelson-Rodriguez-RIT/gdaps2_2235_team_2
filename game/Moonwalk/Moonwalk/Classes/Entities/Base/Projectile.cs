@@ -26,6 +26,7 @@ namespace Moonwalk.Classes.Entities.Base
         public int Collisions
         {
             get { return collisions; }
+            set { collisions--; }
         }
 
         public double Timer

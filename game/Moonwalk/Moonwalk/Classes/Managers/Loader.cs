@@ -528,5 +528,5 @@ namespace Moonwalk.Classes.Managers
         public static SpriteFont LoadFont(string fontName) {
             return content.Load<SpriteFont>(fontName);
         }
-    }if jilsnnnu 
+    } 
 }

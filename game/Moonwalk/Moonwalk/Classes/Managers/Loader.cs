@@ -28,6 +28,7 @@ namespace Moonwalk.Classes.Managers
             }
         }
 
+        private static Dictionary<string, EntityData> entityDataCache = new();
 
         /// <summary>
         /// Reads file content
@@ -242,6 +243,9 @@ namespace Moonwalk.Classes.Managers
             List<Animation> bufferedAnimations = new();
             Texture2D bufferedSpritesheet = null;
 
+            if (entityDataCache.ContainsKey(path))
+                return entityDataCache[path];
+
             Queue<string> fileData;
             string data;
             string[] dataBlocks;
@@ -357,7 +361,8 @@ namespace Moonwalk.Classes.Managers
             // Get sprite sheet
             bufferedSpritesheet = LoadTexture($"{path}/spritesheet");
 
-            return new EntityData(bufferedProperties, bufferedAnimations, bufferedSpritesheet);
+            entityDataCache.Add(path, new EntityData(bufferedProperties, bufferedAnimations, bufferedSpritesheet));
+            return entityDataCache[path];
         }
 
         /// <summary>
@@ -523,5 +528,5 @@ namespace Moonwalk.Classes.Managers
         public static SpriteFont LoadFont(string fontName) {
             return content.Load<SpriteFont>(fontName);
         }
-    }
+    }if jilsnnnu 
 }

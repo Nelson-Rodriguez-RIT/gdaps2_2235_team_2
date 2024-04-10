@@ -562,7 +562,7 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);                      // Update hitbox location
 
-                if (CheckCollision<ISolid>(out thing))          // Check if there was a collision
+                if (CheckCollision<ISolid>(out thing, true))          // Check if there was a collision
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);    // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
@@ -605,7 +605,7 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
-                if (CheckCollision<ISolid>(out thing))
+                if (CheckCollision<ISolid>(out thing, true))
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
                     vectorPosition = lastSafePosition.ToVector2();
@@ -615,8 +615,6 @@ namespace Moonwalk.Classes.Entities
                 iterationCounter++;
 
             }
-
-            CheckCollision<ISolid>(true);
         }
 
         private void ChangeAnimation(StoredInput input, GameTime gameTime)

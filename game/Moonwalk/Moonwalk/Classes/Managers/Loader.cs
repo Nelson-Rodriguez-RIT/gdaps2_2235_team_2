@@ -195,6 +195,18 @@ namespace Moonwalk.Classes.Managers
                                     )
                                 );
                             break;
+                        case "DOOR":
+                            bufferedGeometry.Add(
+                                new Door(
+                                    new Rectangle(
+                                        int.Parse(buffer[0]),
+                                        int.Parse(buffer[1]),
+                                        int.Parse(buffer[2]),
+                                        int.Parse(buffer[3])
+                                        )
+                                    )
+                                );
+                            break;
                         default: //for enemies
                             //Get the type of the entity
                             string typeString = dataBlocks[0];

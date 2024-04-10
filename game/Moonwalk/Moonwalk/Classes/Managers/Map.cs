@@ -66,10 +66,10 @@ namespace Moonwalk.Classes.Managers
             Player.MostRecentCheckpoint = first;
             geometry.Add(first);
 
-            GUI.AddElement(new GUITextElement(new Vector2(50, 50),
-                "Remember to remove tests from Map.LoadMap",
-                "File",
-                Color.White));
+            //GUI.AddElement(new GUITextElement(new Vector2(50, 50),
+            //    "Remember to remove tests from Map.LoadMap",
+            //    "File",
+            //    Color.White));
         }
 
         /// <summary>

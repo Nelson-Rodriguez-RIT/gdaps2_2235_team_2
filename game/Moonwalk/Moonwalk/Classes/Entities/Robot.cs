@@ -45,7 +45,7 @@ namespace Moonwalk.Classes.Entities
             spriteScale = 1;
 
             
-            GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
+            // GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
         }
 
         public override void Update(GameTime gameTime, StoredInput input)

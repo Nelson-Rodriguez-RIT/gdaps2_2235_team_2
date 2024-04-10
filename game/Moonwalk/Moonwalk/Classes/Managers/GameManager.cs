@@ -329,6 +329,17 @@ namespace Moonwalk.Classes.Managers {
                         "MenuBorder",
                         Color.White));
 
+                    GUI.AddElement(new GUITextElement(
+                        new Vector2 (10, 10),
+                        "Instructions:\n" +
+                        "WASD - Movement\n" +
+                        "E - Melee Attack\n" +
+                        "SHIFT (HOLD) - Ranged attack\n" +
+                        "M1 - Impulse\n" +
+                        "M2 - Tether",
+                        "MonogramRegular",
+                        Color.White
+                        ));
                     break;
 
                 case GameState.Demo:

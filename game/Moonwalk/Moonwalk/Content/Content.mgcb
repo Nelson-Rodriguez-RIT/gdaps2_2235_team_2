@@ -152,6 +152,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/File.spritefont
 
+#begin Fonts/MonogramRegular.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/MonogramRegular.spritefont
+
 #begin Fonts/MonogramTitle.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

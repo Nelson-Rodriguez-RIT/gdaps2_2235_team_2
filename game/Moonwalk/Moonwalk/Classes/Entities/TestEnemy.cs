@@ -67,9 +67,9 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
-            double distance = VectorMath.Magnitude(VectorMath.Difference(vectorPosition, Player.Location.ToVector2()));
+            double distance = VectorMath.Magnitude(VectorMath.Difference(hurtbox.Center.ToVector2(), Player.Location.ToVector2()));
 
-            if (distance < 200) // range of aggro
+            if (distance <= 200) // range of aggro
             {
                 if (inactive)
                 {
@@ -80,10 +80,17 @@ namespace Moonwalk.Classes.Entities
 
                 if (timer > 0)
                 {
-                    return;
+                    if (activeAnimation.AnimationValue == (int)Animations.Wake)
+                        return;
+                }
+                else if (activeAnimation.AnimationValue == (int)Animations.Shoot)
+                {
+                    SwitchAnimation(Animations.Move, true);
                 }
 
-                SwitchAnimation(Animations.Move, false);
+                
+
+
                 float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
@@ -96,7 +103,7 @@ namespace Moonwalk.Classes.Entities
                     faceDirection = FaceDirection.Left;
                 }
 
-                activeAnimation.FaceDirection = (int)faceDirection;
+                
 
                 if (physicsState == PhysicsState.Linear)
                 //Enemy accelerates towards the player's x direction
@@ -105,10 +112,14 @@ namespace Moonwalk.Classes.Entities
                 if (cooldowns[Abilities.Shoot] == 0)
                 {
                     //Shoot
+                    SwitchAnimation(Animations.Shoot);
                     GameManager.SpawnEntity<StandardProjectile>( new Object[] {vectorPosition,
                     VectorMath.Difference(vectorPosition, Player.Location.ToVector2()) });
                     cooldowns.UseAbility(Abilities.Shoot);
+                    timer = activeAnimation.AnimationLengthSeconds;
                 }
+                
+                    
             }
             else 
             {
@@ -116,11 +127,11 @@ namespace Moonwalk.Classes.Entities
                 inactive = true;
                 velocity.X = 0;
                 acceleration.X = 0;
-                SwitchAnimation(Animations.StaticIdle);
+                SwitchAnimation(Animations.StaticIdle, true);
 
             }
 
-            
+            activeAnimation.FaceDirection = (int)faceDirection;
         }
 
         

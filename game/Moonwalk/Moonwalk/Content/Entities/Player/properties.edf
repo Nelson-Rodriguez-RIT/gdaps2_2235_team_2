@@ -10,8 +10,8 @@ Tether=5
 RangeChargeToMax=1
 
 // How long until the player can shoot again (seconds)
-Shoot=1
+Shoot=2
 
 // How strong is the fully charge attack (multiple)
 // i.e. a value of 2 means 2x damage of base attack
-RangeRampupMax=2
+RangeRampupMax=3

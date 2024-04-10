@@ -754,6 +754,12 @@ namespace Moonwalk.Classes.Entities
             Health -= damage;
         }
 
+        public override void SetLinearVariables()
+        {
+            base.SetLinearVariables();
+            velocity *= 1.5f;
+        }
+
         public static void Respawn()
         {
             var temp = Map.geometry;

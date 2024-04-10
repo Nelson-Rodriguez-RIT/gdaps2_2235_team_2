@@ -601,7 +601,7 @@ namespace Moonwalk.Classes.Entities.Base
                                 // 550: upscaling number
         }
 
-        public void SetLinearVariables()
+        public virtual void SetLinearVariables()
         {
             if (Robot.Tether == this)
             {

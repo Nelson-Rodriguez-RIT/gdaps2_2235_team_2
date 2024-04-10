@@ -33,9 +33,9 @@ namespace Moonwalk.Classes.Managers {
 
         // Currently loaded entities
         public static Assortment<Entity> entities;
+        // private static Dictionary<string, GUIButtonElement> guiButtonElements;
         private static Dictionary<string, List<GUIElement>> guiBuffers;
         
-
         List<Type> types;
 
         //Input handling
@@ -183,7 +183,8 @@ namespace Moonwalk.Classes.Managers {
 
                     Hitbox.activeHitboxes[i].Update(gt);
 
-                    if (Hitbox.activeHitboxes.Count < length) {
+                    if (Hitbox.activeHitboxes.Count < length) 
+                    {
                         i--;
                     }
                 }

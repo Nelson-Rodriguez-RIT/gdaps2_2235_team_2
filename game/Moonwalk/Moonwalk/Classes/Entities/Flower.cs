@@ -13,11 +13,8 @@ using System.Runtime.CompilerServices;
 namespace Moonwalk.Classes.Entities
 {
     //TO DO:
-    //- figure out how to fix the formatting of the adf & edf
     //- Update any more code within class
-    //- Update location of spritesheet
     //- Maybe change so it only walks back and forth?
-    //- figure out where the edit for the pixel size for each animation is
 
     internal class Flower : Enemy
     {
@@ -198,21 +195,6 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
-                /*if (CheckCollision())
-                {
-                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
-                    vectorPosition = lastSafePosition.ToVector2();
-                    velocity.X = 0;
-
-                    if (Grounded && cooldowns[Abilities.Jump] == 0)
-                    {
-                        //Jump!
-                        velocity.Y = -42;
-                        cooldowns.UseAbility(Abilities.Jump);
-                    }
-
-                    break;
-                }*/
                 iterationCounter++;
 
             }

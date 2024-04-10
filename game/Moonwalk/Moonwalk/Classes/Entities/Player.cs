@@ -170,7 +170,7 @@ namespace Moonwalk.Classes.Entities
                 godMode = !godMode;
             }
 
-           
+            
 
             if (health <= 0)
             {
@@ -410,8 +410,24 @@ namespace Moonwalk.Classes.Entities
                 rangedAttackCharge = (rangedAttackCharge < float.Parse(properties["RangeChargeToMax"]) ?
                     rangedAttackCharge + (float)gameTime.ElapsedGameTime.TotalSeconds :
                     float.Parse(properties["RangeChargeToMax"])) ;
-
                 
+                if (rangedAttackCharge == float.Parse(properties["RangeChargeToMax"]))
+                {
+                    Particle.Effects.Add(new Particle(
+                        3, 
+                        Color.White,
+                        ParticleEffects.Random,
+                        (hurtbox.Center.ToVector2() + new Vector2(
+                            faceDirection == FaceDirection.Left ? -hurtbox.Width - 4: hurtbox.Width + 4,
+                            -1)).ToPoint(),
+                        new Vector2(
+                            faceDirection == FaceDirection.Left ? -2 : 2,
+                            new Random().Next(-1, 2)),
+                        4,
+                        3));;
+                }
+                
+
             }
             else if (input.WasPressed(Keys.LeftShift) &&
                     activeAnimation.AnimationValue != (int)(Animations.Shoot) &&

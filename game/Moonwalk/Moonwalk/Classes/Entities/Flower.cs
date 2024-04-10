@@ -37,7 +37,7 @@ namespace Moonwalk.Classes.Entities
         public override void Update(GameTime gameTime, StoredInput input)
         {
             base.Update(gameTime, input);
-            cooldowns.Update(gameTime);
+            //cooldowns.Update(gameTime);
             if (timer > 0)
             {
                 timer -= gameTime.ElapsedGameTime.TotalSeconds;
@@ -115,7 +115,7 @@ namespace Moonwalk.Classes.Entities
                 //Deactivate the enemy if out of range
                 velocity.X = 0;
                 acceleration.X = 0;
-                SwitchAnimation(Animations.StaticIdle);
+                SwitchAnimation(Animations.Move);
             }
 
             activeAnimation.FaceDirection = (int)faceDirection;

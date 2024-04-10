@@ -33,6 +33,7 @@ namespace Moonwalk.Classes.Entities
 
         private bool inactive = true;
         private double timer;
+        private AbilityCooldowns<Animations> cooldowns;
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
@@ -57,6 +58,8 @@ namespace Moonwalk.Classes.Entities
             acceleration = new Vector2(0, gravity);
             spriteScale = 1;
             maxXVelocity = 50;
+
+            cooldowns = new AbilityCooldowns<Animations>(properties);
         }
 
         /// <summary>

@@ -65,7 +65,6 @@ namespace Moonwalk.Classes.Managers
             Checkpoint first = new Checkpoint(new Rectangle(200, 410, 20, 20));
             Player.MostRecentCheckpoint = first;
             geometry.Add(first);
-            geometry.Add(new Checkpoint(new Rectangle(280, 100, 20, 20)));
 
             GUI.AddElement(new GUITextElement(new Vector2(50, 50),
                 "Remember to remove tests from Map.LoadMap",

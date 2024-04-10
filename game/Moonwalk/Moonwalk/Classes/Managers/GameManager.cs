@@ -346,44 +346,12 @@ namespace Moonwalk.Classes.Managers {
                     GUI.Clear();
                     guiBuffers.Clear();
                     isPauseEnabled = true;
-                    /*
-                    if (!Map.Loaded) {
-                        Map.LoadMap("Demo");
 
-                        Player player = SpawnEntity<Player>();
-                        Robot robot = SpawnEntity<Robot>(new Vector2(128, 48));
-                        SpawnEntity<Box>(new Vector2(200, -100));
-                        SpawnEntity<Turret>(new Vector2(250, 100));
+                    Map.LoadMap("MoonwalkMap");
 
-                        // Set player as the Camera's target
-                        Camera.SetTarget(player);
+                    Player.Respawn();
 
-                        //Add subscribers to player events
-                        player.GetRobotPosition += robot.GetPosition;
-                        player.ToggleBotLock += robot.ToggleLock;
-                    }*/
-                    if (!Map.Loaded)
-                    {
-                        Map.LoadMap("MoonwalkMap");
-
-                        Player.Respawn();                        
-
-                        //WidowBoss.Start();
-                    }
-
-                    else
-                    {
-                        // Loads player + companion
-                        Player player = SpawnEntity<Player>();
-                        Robot robot = SpawnEntity<Robot>(new Object[] { new Vector2(128, 48) });
-
-                        // Set player as the Camera's target
-                        Camera.SetTarget(player);
-
-                        //Add subscribers to player events
-                        player.GetRobotPosition += robot.GetPosition;
-                    }
-
+                    WidowBoss.Start();
 
                     break;
             }

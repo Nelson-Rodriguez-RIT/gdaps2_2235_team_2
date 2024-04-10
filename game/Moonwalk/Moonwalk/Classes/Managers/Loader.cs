@@ -260,7 +260,7 @@ namespace Moonwalk.Classes.Managers
                 data = fileData.Dequeue();
 
                 // Ignore comments and empty lines
-                if (data == null || data[0] == '/')
+                if (data == "" || data[0] == '/')
                     continue;
 
                 // Break data into its header and body components

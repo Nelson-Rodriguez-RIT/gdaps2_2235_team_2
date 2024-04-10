@@ -26,7 +26,7 @@ namespace Moonwalk.Classes.Entities.Base
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            Input(input);
+            Input(input, gameTime);
             Movement(gameTime);
             base.Update(gameTime, input);
         }
@@ -46,7 +46,7 @@ namespace Moonwalk.Classes.Entities.Base
             //Vertical
             while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
             {
-                if (!CheckCollision<Terrain>())
+                if (!CheckCollision<ISolid>())
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
                 }
@@ -67,7 +67,7 @@ namespace Moonwalk.Classes.Entities.Base
                     hurtbox.Height);                      // Update hitbox location
 
 
-                if (CheckCollision<Terrain>())                                                   // Check if there was a collision
+                if (CheckCollision<ISolid>())                                                   // Check if there was a collision
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
@@ -82,9 +82,9 @@ namespace Moonwalk.Classes.Entities.Base
             //Do the same thing but in the X direction
             iterationCounter = 1;
 
-            while (!CheckCollision<Terrain>() && iterationCounter <= CollisionAccuracy)
+            while (!CheckCollision<ISolid>() && iterationCounter <= CollisionAccuracy)
             {
-                if (!CheckCollision<Terrain>())
+                if (!CheckCollision<ISolid>())
                 {
                     lastSafePosition = new Point(Position.X, Position.Y);
                 }
@@ -103,7 +103,7 @@ namespace Moonwalk.Classes.Entities.Base
                     hurtbox.Width,
                     hurtbox.Height);
 
-                if (CheckCollision<Terrain>())
+                if (CheckCollision<ISolid>())
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
                     vectorPosition = lastSafePosition.ToVector2();
@@ -144,7 +144,7 @@ namespace Moonwalk.Classes.Entities.Base
         #endregion
 
 
-        public abstract void Input(StoredInput input);
+        public abstract void Input(StoredInput input, GameTime gameTime);
 
 
     }

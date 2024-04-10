@@ -17,10 +17,10 @@ namespace Moonwalk.Classes.Entities
     /// </summary>
     internal class PlayerProjectile : Projectile
     {
-        public PlayerProjectile(Vector2 position, Vector2 direction)
-            : base(position, "", direction, 60f, 1)
+        public PlayerProjectile(Vector2 position, Vector2 direction, int damage = 1, float speedModifier = 1)
+            : base(position, "", direction, 60f * speedModifier, 1)
         {
-            damage = 1;
+            this.damage = damage;
 
             //Projectile will despawn after hitting something
             collisions = 1;

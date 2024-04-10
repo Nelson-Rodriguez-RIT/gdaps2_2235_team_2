@@ -50,7 +50,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            Input(input);
+            Input(input, gameTime);
 
             if (!locked)
             Movement(gameTime);
@@ -121,7 +121,7 @@ namespace Moonwalk.Classes.Entities
             
         }
 
-        public override void Input(StoredInput input)
+        public override void Input(StoredInput input, GameTime gameTime)
         {
             mousepos = input.CurrentMouse.Position;
 

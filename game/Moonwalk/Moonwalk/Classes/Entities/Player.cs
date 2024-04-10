@@ -44,7 +44,8 @@ namespace Moonwalk.Classes.Entities
         public enum Abilities
         {
             Tether,
-            Gravity
+            Gravity,
+            Shoot
         }
 
         /// <summary>
@@ -68,6 +69,9 @@ namespace Moonwalk.Classes.Entities
 
         private float swingChange;
         private float maxAngVelocity;
+
+        protected internal float rangedAttackCooldownTimer;
+        protected internal float rangedAttackCharge;
 
         public int Health
         {
@@ -174,6 +178,9 @@ namespace Moonwalk.Classes.Entities
                 Respawn();
                 GUI.RemoveElement(playerStatusElement);
             }
+
+            rangedAttackCooldownTimer = (float)(rangedAttackCooldownTimer < 0 ? 
+                0 : rangedAttackCooldownTimer - gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         public override void Movement(GameTime gt)
@@ -265,7 +272,7 @@ namespace Moonwalk.Classes.Entities
             }
         }
 
-        public override void Input(StoredInput input)
+        public override void Input(StoredInput input, GameTime gameTime)
         {
             
             //Horizontal movement
@@ -387,6 +394,49 @@ namespace Moonwalk.Classes.Entities
                     ToggleBotLock();
             }
 
+            // if E is pressed, play melee attack animation
+            if (input.IsPressed(Keys.E) &&
+                    !input.WasPressed(Keys.E) &&
+                    activeAnimation.AnimationValue != (int)(Animations.Attack)) {
+                SwitchAnimation(Animations.Attack);
+                Attack();
+                animationTimer = activeAnimation.AnimationLength;
+            }
+
+            // if F is pressed, play ranged attack animation
+            if (input.IsPressed(Keys.LeftShift) && 
+                    activeAnimation.AnimationValue != (int)(Animations.Shoot) &&
+                    cooldowns[Abilities.Shoot] == 0) {
+                // Player can hold shift to charge up an attack
+                rangedAttackCharge = (rangedAttackCharge < float.Parse(properties["RangeChargeToMax"]) ?
+                    rangedAttackCharge + (float)gameTime.ElapsedGameTime.TotalSeconds :
+                    float.Parse(properties["RangeChargeToMax"])) ;
+
+                
+            }
+            else if (input.WasPressed(Keys.LeftShift) &&
+                    activeAnimation.AnimationValue != (int)(Animations.Shoot) &&
+                    cooldowns[Abilities.Shoot] == 0) {
+                SwitchAnimation(Animations.Shoot);
+
+                float projectileSpeed = 1.5f * (rangedAttackCharge / float.Parse(properties["RangeChargeToMax"]));
+                GameManager.SpawnEntity<PlayerProjectile>(
+                    new object[]
+                    {
+                        hurtbox.Center.ToVector2() + new Vector2(
+                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width,
+                        -4),
+                        faceDirection == FaceDirection.Left ? new Vector2(-1, 0) : new Vector2(1, 0),
+                        (int)Math.Ceiling(float.Parse(properties["RangeRampupMax"]) * (rangedAttackCharge / float.Parse(properties["RangeChargeToMax"]))),
+                        projectileSpeed < 1 ? 1: projectileSpeed
+                    });
+
+                animationTimer = activeAnimation.AnimationLength;
+                rangedAttackCharge = 0;
+                cooldowns.UseAbility(Abilities.Shoot);
+            }
+
+            activeAnimation.FaceDirection = (int)faceDirection;
         }
 
         public override void Draw(SpriteBatch batch)
@@ -593,30 +643,6 @@ namespace Moonwalk.Classes.Entities
                 SwitchAnimation(Animations.Jump);
             }
 
-            // if E is pressed, play melee attack animation
-            if (input.IsPressed(Keys.E) &&
-                !input.WasPressed(Keys.E)) {
-                SwitchAnimation(Animations.Attack);
-                Attack();
-                animationTimer = activeAnimation.AnimationLength;
-            }
-
-            // if F is pressed, play ranged attack animation
-            if (input.IsPressed(Keys.LeftShift) &&
-                activeAnimation.AnimationValue != (int)(Animations.Shoot)) {
-                SwitchAnimation(Animations.Shoot);
-                GameManager.SpawnEntity<PlayerProjectile>(
-                    new object[]
-                    {
-                        hurtbox.Center.ToVector2() + new Vector2(
-                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width,
-                        -4),
-                        faceDirection == FaceDirection.Left ? new Vector2(-1, 0) : new Vector2(1, 0)
-                    });
-
-                animationTimer = activeAnimation.AnimationLength;
-            }
-
             activeAnimation.FaceDirection = (int)faceDirection;
         }
 
@@ -758,11 +784,19 @@ namespace Moonwalk.Classes.Entities
         protected Vector2 position;
         protected Player player;
 
+        // Health Bar
         protected Texture2D healthBar;
         protected Texture2D healthTick;
+
+        // Abilities
         protected Texture2D gravIcon;
         protected Texture2D tetherIcon;
         protected Texture2D cooldownTick;
+
+        // Ranged Weapon Charge
+        protected Texture2D chargeBar;
+        protected Texture2D chargeTick;
+        protected Texture2D chargeCooldownTick;
 
         public GUIPlayerStatusElement(Vector2 position, Player player) {
             this.position = position;
@@ -770,10 +804,14 @@ namespace Moonwalk.Classes.Entities
 
             healthBar = GUI.GetTexture("HealthBar");
             healthTick = GUI.GetTexture("HealthTick");
+
             gravIcon = GUI.GetTexture("GravIcon");
             tetherIcon = GUI.GetTexture("SwingIcon");
             cooldownTick = Loader.LoadTexture("../../../Content/Entities/hitbox");
 
+            chargeBar = GUI.GetTexture("ChargeBar");
+            chargeTick = GUI.GetTexture("ChargeTick");
+            chargeCooldownTick = GUI.GetTexture("ChargeCooldownTick");
         }
 
         public override void Draw(SpriteBatch batch) {
@@ -811,6 +849,7 @@ namespace Moonwalk.Classes.Entities
                     (int)position.Y - 2,
                     16 * Size,
                     16 * Size);
+
 
             //Draw ability cooldowns
             batch.Draw(
@@ -858,6 +897,41 @@ namespace Moonwalk.Classes.Entities
                     (int)(tetherRect.Height *
                         player.Cooldowns[Player.Abilities.Tether] / player.Cooldowns[Player.Abilities.Tether, true])),
                 Color.White);
+
+
+            // Draw ranged weapon charge //
+            batch.Draw( // Charge Var
+                chargeBar,
+                new Rectangle(
+                    (int)position.X * Size,
+                    (int)(position.Y + 20) * Size,
+                    42 * Size,
+                    8 * Size
+                    ),
+                Color.White
+                );
+
+            batch.Draw( // Charge Cooldown Tick
+                chargeCooldownTick,
+                 new Rectangle(
+                    (int)(position.X + 1) * Size,
+                    (int)(position.Y + 21) * Size,
+                    (int)(40 * (player.Cooldowns[Player.Abilities.Shoot] / player.Cooldowns[Player.Abilities.Shoot, true])) * Size,
+                    6 * Size
+                    ),
+                Color.White
+                );
+
+            batch.Draw( // Charge Tick
+                chargeTick,
+                new Rectangle(
+                    (int)(position.X + 1) * Size,
+                    (int)(position.Y + 21) * Size,
+                    (int)(40 * (player.rangedAttackCharge / float.Parse(player.properties["RangeChargeToMax"]))) * Size,
+                    6 * Size
+                    ),
+                Color.White
+                );
         }
     }
 }

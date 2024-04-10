@@ -33,7 +33,7 @@ namespace Moonwalk.Classes.Entities
 
         private enum Abilities
         {
-            Blind, //this is something that can be implimented later, part of shoot
+            Blind,
             Shoot
         }
 
@@ -87,6 +87,14 @@ namespace Moonwalk.Classes.Entities
 
                 if (cooldowns[Abilities.Shoot] == 0)
                 {
+                    //Stop moving to shoot
+                    velocity.X = 0;
+                    acceleration.X = 0;
+
+                    //Change animations for shooting
+                    SwitchAnimation(Animation.PrepBlindAttack, false);
+                    SwitchAnimation(Animation.BlindAttacl, false);
+
                     //Shoot
                     GameManager.SpawnEntity<StandardProjectile>(new Object[] {
                         vectorPosition,
@@ -176,22 +184,7 @@ namespace Moonwalk.Classes.Entities
                     (int)Math.Round(vectorPosition.Y),
                     hurtbox.Width,
                     hurtbox.Height);
-
-                /*if (CheckCollision())
-                {
-                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
-                    vectorPosition = lastSafePosition.ToVector2();
-                    velocity.X = 0;
-
-                    if (Grounded && cooldowns[Abilities.Jump] == 0)
-                    {
-                        //Jump!
-                        velocity.Y = -42;
-                        cooldowns.UseAbility(Abilities.Jump);
-                    }
-
-                    break;
-                }*/
+               
                 iterationCounter++;
 
             }

@@ -56,7 +56,6 @@ namespace Moonwalk.Classes.Entities
             spriteScale = 1;
             maxXVelocity = 50;
 
-            cooldowns = new AbilityCooldowns<Animations>(properties);
         }
 
         /// <summary>
@@ -68,9 +67,6 @@ namespace Moonwalk.Classes.Entities
 
             if (distance <= 200) // range of aggro
             {
-                SwitchAnimation(Animations.Move, true);
-                float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
-
                 if (inactive)
                 {
                     SwitchAnimation(Animations.Move, true);
@@ -83,7 +79,15 @@ namespace Moonwalk.Classes.Entities
                     if (activeAnimation.AnimationValue == (int)Animations.Move)
                         return;
                 }
+                else if (activeAnimation.AnimationValue == (int)Animations.Move)
+                {
+                    SwitchAnimation(Animations.Move, true);
+                }
 
+
+
+
+                float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
                 if (xDifference > 0)
@@ -107,15 +111,16 @@ namespace Moonwalk.Classes.Entities
 
                     //Attack
                     SwitchAnimation(Animations.Attack);
-                }                              
+                }                             
                
             }
-            else if (activeAnimation.AnimationValue != (int)Animations.Move)
+            else
             {
                 //Deactivate the enemy if out of range
+                inactive = true;
                 velocity.X = 0;
                 acceleration.X = 0;
-                SwitchAnimation(Animations.Move);
+                SwitchAnimation(Animations.Move, true);
             }
 
             activeAnimation.FaceDirection = (int)faceDirection;
@@ -195,6 +200,13 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
+                if (CheckCollision<ISolid>())
+                {
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
+                    vectorPosition = lastSafePosition.ToVector2();
+                    velocity.X = 0;
+                    break;
+                }
                 iterationCounter++;
 
             }

@@ -13,11 +13,8 @@ using System.Runtime.CompilerServices;
 namespace Moonwalk.Classes.Entities
 {
     //TO DO:
-    //- figure out how to fix the formatting of the adf & edf
     //- Update any more code within class
-    //- Update location of spritesheet
     //- Maybe change so it only walks back and forth?
-    //- figure out where the edit for the pixel size for each animation is
 
     internal class Flower : Enemy
     {
@@ -58,9 +55,7 @@ namespace Moonwalk.Classes.Entities
             acceleration = new Vector2(0, gravity);
             spriteScale = 1;
             maxXVelocity = 50;
-            /*
-            cooldowns = new AbilityCooldowns<Animations>(properties);
-            */
+
         }
 
         /// <summary>
@@ -72,9 +67,6 @@ namespace Moonwalk.Classes.Entities
 
             if (distance <= 200) // range of aggro
             {
-                SwitchAnimation(Animations.Move, true);
-                float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
-
                 if (inactive)
                 {
                     SwitchAnimation(Animations.Move, true);
@@ -87,7 +79,15 @@ namespace Moonwalk.Classes.Entities
                     if (activeAnimation.AnimationValue == (int)Animations.Move)
                         return;
                 }
+                else if (activeAnimation.AnimationValue == (int)Animations.Move)
+                {
+                    SwitchAnimation(Animations.Move, true);
+                }
 
+
+
+
+                float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
                 if (xDifference > 0)
@@ -111,15 +111,16 @@ namespace Moonwalk.Classes.Entities
 
                     //Attack
                     SwitchAnimation(Animations.Attack);
-                }                              
+                }                             
                
             }
-            else if (activeAnimation.AnimationValue != (int)Animations.Move)
+            else
             {
                 //Deactivate the enemy if out of range
+                inactive = true;
                 velocity.X = 0;
                 acceleration.X = 0;
-                SwitchAnimation(Animations.Move);
+                SwitchAnimation(Animations.Move, true);
             }
 
             activeAnimation.FaceDirection = (int)faceDirection;
@@ -199,21 +200,13 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
-                /*if (CheckCollision())
+                if (CheckCollision<ISolid>())
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
                     vectorPosition = lastSafePosition.ToVector2();
                     velocity.X = 0;
-
-                    if (Grounded && cooldowns[Abilities.Jump] == 0)
-                    {
-                        //Jump!
-                        velocity.Y = -42;
-                        cooldowns.UseAbility(Abilities.Jump);
-                    }
-
                     break;
-                }*/
+                }
                 iterationCounter++;
 
             }

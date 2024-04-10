@@ -17,7 +17,6 @@ namespace Moonwalk.Classes.Entities
     //- Update any more code within class
     //- Update location of spritesheet
     //- Maybe change so it only walks back and forth?
-    //- figure out where the edit for the pixel size for each animation is
 
     internal class BlindingSpider : Enemy, IDamageable
     {

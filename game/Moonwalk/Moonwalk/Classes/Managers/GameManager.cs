@@ -344,11 +344,7 @@ namespace Moonwalk.Classes.Managers {
 
                         Player.Respawn();
 
-                        SpawnEntity<TestEnemy>(new Object[] { new Vector2(200, 250) });
-                        SpawnEntity<KeyObject>(new Object[] { new Vector2(1060, 442) });
-
                         //WidowBoss.Start();
-
                     }
 
                     else
@@ -356,9 +352,6 @@ namespace Moonwalk.Classes.Managers {
                         // Loads player + companion
                         Player player = SpawnEntity<Player>();
                         Robot robot = SpawnEntity<Robot>(new Object[] { new Vector2(128, 48) });
-                        SpawnEntity<TestEnemy>(new Object[] { new Vector2(200, 250) });
-                        SpawnEntity<KeyObject>(new Object[] { new Vector2(900, 262) });
-
 
                         // Set player as the Camera's target
                         Camera.SetTarget(player);

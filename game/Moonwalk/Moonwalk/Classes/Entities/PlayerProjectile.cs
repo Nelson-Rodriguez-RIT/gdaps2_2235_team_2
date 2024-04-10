@@ -38,7 +38,7 @@ namespace Moonwalk.Classes.Entities
 
                 collision.TakeDamage(this.damage);
                 collision.Impulse(new Vector2(
-                    Knockback * Math.Sign(VectorMath.VectorDifference(vectorPosition, collision.Position.ToVector2()).X),
+                    Knockback * Math.Sign(VectorMath.Difference(vectorPosition, collision.Position.ToVector2()).X),
                     Knockback));
                 collisions--;
             }

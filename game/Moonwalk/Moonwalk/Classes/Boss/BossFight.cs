@@ -13,6 +13,14 @@ namespace Moonwalk.Classes.Boss
 {
     internal abstract class BossFight
     {
+        protected enum FaceDirection
+        {
+            Right,
+            Left
+        }
+
+        protected FaceDirection faceDirection;
+
         public static BossFight Boss = null;
         public static bool DrawHitboxes = false;
         private static Texture2D hitboxSprite = null;
@@ -65,7 +73,7 @@ namespace Moonwalk.Classes.Boss
             foreach (Rectangle rect in list)
             {
                 hitboxes.Add(new Rectangle(
-                    rect.X + (int)center.X,
+                    faceDirection == FaceDirection.Right ? rect.X + (int)center.X : -rect.X - rect.Width + (int)center.X,
                     rect.Y + (int)center.Y,
                     rect.Width,
                     rect.Height));

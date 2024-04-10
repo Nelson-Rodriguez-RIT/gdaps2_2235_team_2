@@ -174,8 +174,8 @@ namespace Moonwalk.Classes.Managers {
                 }
 
                 foreach (Entity entity in entities) {
-                    if (VectorMath.VectorMagnitude
-                            (VectorMath.VectorDifference
+                    if (VectorMath.Magnitude
+                            (VectorMath.Difference
                                 (Player.Location.ToVector2(), entity.Hitbox.Center.ToVector2()))
                         < 400)
                     entity.Update(gt, storedInput);
@@ -358,7 +358,7 @@ namespace Moonwalk.Classes.Managers {
                         Player.Respawn();
 
 
-                        WidowBoss.Start();
+                        //WidowBoss.Start();
 
                     }
 

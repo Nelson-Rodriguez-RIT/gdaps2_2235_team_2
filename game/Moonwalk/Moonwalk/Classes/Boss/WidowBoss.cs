@@ -41,11 +41,7 @@ namespace Moonwalk.Classes.Boss
             Two
         }
 
-        private enum FaceDirection
-        {
-            Right,
-            Left
-        }
+        
 
         /// <summary>
         /// How long an ability lasts
@@ -64,7 +60,7 @@ namespace Moonwalk.Classes.Boss
         private int frameTimer;
         private const float MoveSpeed = 12;
 
-        FaceDirection faceDirection;
+        
 
         private WidowBoss(Vector2 center) : base("../../../Content/WidowBoss", center)
         {
@@ -94,21 +90,6 @@ namespace Moonwalk.Classes.Boss
             {
                 frameTimer--;
             }
-            float xDifference = VectorMath.VectorDifference(center, Player.Location.ToVector2()).X;
-
-            
-            //Change the facing direction
-            if (xDifference > 0)
-            {
-                faceDirection = FaceDirection.Right;
-            }
-            else if (xDifference < 0)
-            {
-                faceDirection = FaceDirection.Left;
-            }
-
-            activeAnimation.FaceDirection = (int)faceDirection;
-            
 
             if (health > maxHealth / 2)
             {
@@ -128,12 +109,14 @@ namespace Moonwalk.Classes.Boss
 
         private void PhaseOne(GameTime gt)
         {
-            cooldowns.Update(gt); 
-
+            
             if (cooldowns[(Behavior)currentBehavior] == 0)
             {
                 SelectBehavior();
             }
+
+            cooldowns.Update(gt);
+
 
             switch (currentBehavior)
             {
@@ -147,24 +130,44 @@ namespace Moonwalk.Classes.Boss
                         Hitbox.activeHitboxes.Add(new Hitbox(
                             9 * 6, 
                             center, 
-                            new Point(17, 29), 
+                            new Point(
+                                17, 
+                                29), 
                             GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(), 
-                            new Point(34, -5)));
+                            new Point(
+                                faceDirection == FaceDirection.Right ? 34 : -34 - 17, 
+                                -5)));
 
                         Hitbox.activeHitboxes.Add(new Hitbox(
                             9 * 6,
                             center,
                             new Point(51, 13),
                             GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(),
-                            new Point(37, 11)));
+                            new Point(
+                                faceDirection == FaceDirection.Right ? 37 : -37 - 51, 
+                                11)));
                     }
                     break;
 
             }
         }
-
+        
         private void SelectBehavior()
         {
+            float xDifference = VectorMath.Difference(center, Player.Location.ToVector2()).X;
+
+            //Change the facing direction
+            if (xDifference > 0)
+            {
+                faceDirection = FaceDirection.Right;
+            }
+            else if (xDifference < 0)
+            {
+                faceDirection = FaceDirection.Left;
+            }
+
+            
+
             bool chosen = false;
 
             if ((Behavior)currentBehavior == Behavior.Jump)
@@ -185,8 +188,8 @@ namespace Moonwalk.Classes.Boss
                         currentBehavior = Behavior.Forward;
                         break;
                     case < 8:
-                        if (VectorMath.VectorMagnitude(
-                                VectorMath.VectorDifference(
+                        if (VectorMath.Magnitude(
+                                VectorMath.Difference(
                                     center, Player.Location.ToVector2())
                                 ) 
                             < 100)
@@ -213,7 +216,9 @@ namespace Moonwalk.Classes.Boss
             {
                 frameTimer = activeAnimation.AnimationLength;
             }
-            
+
+            activeAnimation.FaceDirection = (int)faceDirection;
+
         }
 
         protected override void SwitchBehavior(Enum animationEnum, bool resetAnimation = true)

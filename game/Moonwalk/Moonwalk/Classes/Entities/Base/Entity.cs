@@ -203,7 +203,7 @@ namespace Moonwalk.Classes.Entities.Base
                             return 1;
                         }
 
-                        return (int)(VectorMath.VectorMagnitude(velocity) / 4f);  //Use the magnitude of the velocity to get the accuracy
+                        return (int)(VectorMath.Magnitude(velocity) / 4f);  //Use the magnitude of the velocity to get the accuracy
 
                     case PhysicsState.Rotational:
                         if (angVelocity == 0)
@@ -538,12 +538,12 @@ namespace Moonwalk.Classes.Entities.Base
             this.pivot = centerOfCircle;
 
             //Define the vector between the entity and the pivot
-            Vector2 hypotenuse = VectorMath.VectorDifference(vectorPosition, pivot);
+            Vector2 hypotenuse = VectorMath.Difference(vectorPosition, pivot);
 
             //The magnitude of the previous vector,
             //or the radius of the circle on which the player will rotate
             swingRadius =
-                (float)VectorMath.VectorMagnitude(hypotenuse);
+                (float)VectorMath.Magnitude(hypotenuse);
                     
 
             //Get the angle between the player and 0 degrees (right)
@@ -565,7 +565,7 @@ namespace Moonwalk.Classes.Entities.Base
             //perpendicular to the radius. A diagram is very helpful for understanding.
 
             //Magnitude of the entity's velocity
-            double velocityMag = VectorMath.VectorMagnitude(velocity);
+            double velocityMag = VectorMath.Magnitude(velocity);
 
             if (velocityMag <= 0)
             {

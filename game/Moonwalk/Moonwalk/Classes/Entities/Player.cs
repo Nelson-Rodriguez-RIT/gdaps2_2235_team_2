@@ -207,7 +207,7 @@ namespace Moonwalk.Classes.Entities
 
                 //Knock the player back
                 Impulse(new Vector2(
-                    -45 * Math.Sign(VectorMath.VectorDifference(vectorPosition, collision.Position.ToVector2()).X),
+                    -45 * Math.Sign(VectorMath.Difference(vectorPosition, collision.Position.ToVector2()).X),
                     -35));
 
             }
@@ -343,8 +343,8 @@ namespace Moonwalk.Classes.Entities
             {
                 Vector2 robotPos = GetRobotPosition();
 
-                if (VectorMath.VectorMagnitude(
-                        VectorMath.VectorDifference(vectorPosition, robotPos)
+                if (VectorMath.Magnitude(
+                        VectorMath.Difference(vectorPosition, robotPos)
                         )
                     < 125
                     && !Grounded)
@@ -362,14 +362,14 @@ namespace Moonwalk.Classes.Entities
 
                     if (list.Count > 0)
                     {
-                        if(list.Exists(item => (VectorMath.VectorMagnitude(
-                                VectorMath.VectorDifference(
+                        if(list.Exists(item => (VectorMath.Magnitude(
+                                VectorMath.Difference(
                                     item.Position.ToVector2(),
                                     robotPos)) < 125)))
                         {
                             Robot.Tether = list.MinBy(item =>
-                            VectorMath.VectorMagnitude(
-                                VectorMath.VectorDifference(
+                            VectorMath.Magnitude(
+                                VectorMath.Difference(
                                     item.Position.ToVector2(),
                                     robotPos)
                                 )
@@ -670,7 +670,7 @@ namespace Moonwalk.Classes.Entities
             {
                 item.TakeDamage(meleeDmg);
                 item.Impulse(new Vector2(
-                    Knockback * Math.Sign(VectorMath.VectorDifference(vectorPosition, item.Position.ToVector2()).X),
+                    Knockback * Math.Sign(VectorMath.Difference(vectorPosition, item.Position.ToVector2()).X),
                     Knockback));
             }
         }
@@ -696,7 +696,7 @@ namespace Moonwalk.Classes.Entities
                     const int GravityStrength = 100;
 
                     // Apply the impulse towards the robot
-                    Vector2 difference = VectorMath.VectorDifference(movable.Position.ToVector2(), robotPos);
+                    Vector2 difference = VectorMath.Difference(movable.Position.ToVector2(), robotPos);
                     difference.Normalize();
                     movable.Impulse(difference * 
                         (movable is Player ? GravityStrength : 60)

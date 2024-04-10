@@ -349,7 +349,8 @@ namespace Moonwalk.Classes.Managers
                         // Create animation
                         bufferedAnimations.Add(new Animation(
                             size, origin, totalSprites, framesPerSprite,
-                            style, spaceTakenOnSpritesheet));
+                            style, spaceTakenOnSpritesheet,
+                            int.Parse(bufferedProperties["HitboxX"])));
 
 
                         spaceTakenOnSpritesheet +=
@@ -410,7 +411,7 @@ namespace Moonwalk.Classes.Managers
 
                         for (int j = 0; j < 4; j++)
                         {
-                            dimensions[j] = int.Parse(split[4 * i + j]);
+                            dimensions[j] = int.Parse(split[i + j]);
                         }
 
                         hitboxData.Add(new Rectangle(
@@ -506,7 +507,8 @@ namespace Moonwalk.Classes.Managers
                         // Create animation
                         bufferedAnimations.Add(new Animation(
                             size, origin, totalSprites, framesPerSprite,
-                            style, spaceTakenOnSpritesheet));
+                            style, spaceTakenOnSpritesheet,
+                            0));
 
 
                         spaceTakenOnSpritesheet +=

@@ -38,6 +38,8 @@ namespace Moonwalk.Classes.Managers {
         // Whether the animation sprites layed out horizontally or vertically on the spritesheet
         private AnimationStyle style;
 
+        private int hitboxWidth;
+
         public int FaceDirection = 0; // 0 for right, 1 for left
 
         public int AnimationLength
@@ -45,6 +47,14 @@ namespace Moonwalk.Classes.Managers {
             get
             {
                 return (totalSprites - 1) * framesPerSprite;
+            }
+        }
+
+        public double AnimationLengthSeconds
+        {
+            get
+            {
+                return AnimationLength / (double)AnimationFramerate;
             }
         }
 
@@ -78,13 +88,14 @@ namespace Moonwalk.Classes.Managers {
                 int totalSprites,
                 int framesPerSprite,
                 AnimationStyle style,
-                int spaceTakenOnSpritesheet  // Used for defaultSpritesheetPosition
-                )    {
+                int spaceTakenOnSpritesheet,  // Used for defaultSpritesheetPosition
+                int hitboxWidth)    {
             this.spriteSize = spriteSize;
             this.origin = origin;
             this.totalSprites = totalSprites;
             this.framesPerSprite = framesPerSprite;
             this.style = style;
+            this.hitboxWidth = hitboxWidth;
 
             defaultSpritesheetPosition = style == AnimationStyle.Horizontal ?
                 new Vector2(0, spaceTakenOnSpritesheet) : new Vector2(spaceTakenOnSpritesheet, 0);
@@ -165,18 +176,18 @@ namespace Moonwalk.Classes.Managers {
                 case 1:
 
                     batch.Draw(
-                       spritesheet,
-                       new Rectangle(
-                           (int)(position.X - (int)((spriteSize.X) * scale.X)),
-                           (int)(position.Y),
-                           (int)(spriteSize.X * scale.X),  // Width
-                           (int)(spriteSize.Y * scale.Y)), // Height
-                       spritesheetBox,
-                       Color.White,
-                       0f,
-                       new Vector2(-24, 13),
-                       SpriteEffects.FlipHorizontally,
-                       0);
+               spritesheet,
+               new Rectangle(
+                   (int)(position.X),
+                   (int)(position.Y),
+                   (int)(spriteSize.X * scale.X),  // Width
+                   (int)(spriteSize.Y * scale.Y)), // Height
+               spritesheetBox,
+               Color.White,
+               0f,
+               new Vector2(spriteSize.X - origin.X - hitboxWidth, origin.Y),
+               SpriteEffects.FlipHorizontally,
+               0);
                     break;
             }             
         }

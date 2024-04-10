@@ -52,12 +52,12 @@ namespace Moonwalk.Classes.Entities
         /// </summary>
         public override void AI()
         {
-            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()));
+            double distance = VectorMath.Magnitude(VectorMath.Difference(vectorPosition, Player.Location.ToVector2()));
 
             if (distance < 200) // range of aggro
             {
                 SwitchAnimation(Animations.Move, false);
-                float xDifference = VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()).X;
+                float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
                 if (xDifference > 0)

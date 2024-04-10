@@ -57,12 +57,12 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
-            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()));
+            double distance = VectorMath.Magnitude(VectorMath.Difference(vectorPosition, Player.Location.ToVector2()));
 
             if (distance < 200) // range of aggro
             {
                 SwitchAnimation(Animations.Move, false);
-                float xDifference = VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()).X;
+                float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
                 if (xDifference > 0)
@@ -74,7 +74,7 @@ namespace Moonwalk.Classes.Entities
                     faceDirection = FaceDirection.Left;
                 }
 
-                //activeAnimation.FaceDirection = (int)faceDirection;
+                activeAnimation.FaceDirection = (int)faceDirection;
 
                 if (physicsState == PhysicsState.Linear)
                 //Enemy accelerates towards the player's x direction
@@ -84,7 +84,7 @@ namespace Moonwalk.Classes.Entities
                 {
                     //Shoot
                     GameManager.SpawnEntity<StandardProjectile>( new Object[] {vectorPosition,
-                    VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()) });
+                    VectorMath.Difference(vectorPosition, Player.Location.ToVector2()) });
                     cooldowns.UseAbility(Abilities.Shoot);
                 }
             }

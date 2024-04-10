@@ -750,6 +750,8 @@ namespace Moonwalk.Classes.Entities
         {
             if (!godMode)
             Health -= damage;
+            Impulse(new Vector2(0, 20));
+            iFrames = 1;
         }
 
         public override void SetLinearVariables()

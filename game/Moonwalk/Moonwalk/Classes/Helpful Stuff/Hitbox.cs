@@ -103,6 +103,14 @@ namespace Moonwalk.Classes.Helpful_Stuff
             return temp;
         }
 
+        public virtual void AddToAlreadyHit(List<IDamageable> collisions)
+        {
+            foreach (IDamageable target in collisions)
+            {
+                alreadyHit.Add(target);
+            }
+        }
+
         public void DrawHitbox(SpriteBatch batch)
         {
             Vector2 position = Camera.RelativePosition(

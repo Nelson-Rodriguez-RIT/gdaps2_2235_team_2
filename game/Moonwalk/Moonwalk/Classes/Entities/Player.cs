@@ -28,7 +28,7 @@ namespace Moonwalk.Classes.Entities
         public static Point Location;
         public static Checkpoint MostRecentCheckpoint;
         private bool godMode = false;
-        private GUIElement playerStatusElement;
+        private static GUIElement playerStatusElement = null;
 
         protected enum Animations
         {
@@ -109,7 +109,11 @@ namespace Moonwalk.Classes.Entities
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
 
+
             cooldowns = new AbilityCooldowns<Abilities>(properties);
+
+            if (playerStatusElement != null)
+                GUI.RemoveElement(playerStatusElement);
 
             playerStatusElement = new GUIPlayerStatusElement(new Vector2(10, 10), this);
             GUI.AddElement(playerStatusElement);

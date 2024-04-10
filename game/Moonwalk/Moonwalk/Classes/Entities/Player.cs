@@ -113,6 +113,10 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
+
+            //Change publically available position
+            Location = this.Hitbox.Center;
+
             //Decrease Iframes if the timer is running
             iFrames = iFrames > 0 ? iFrames - gameTime.ElapsedGameTime.TotalSeconds : 0;
 
@@ -163,8 +167,7 @@ namespace Moonwalk.Classes.Entities
                 godMode = !godMode;
             }
 
-            //Change publically available position
-            Location = this.Hitbox.Center;
+           
 
             if (health <= 0)
             {
@@ -242,7 +245,7 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
-            if (CheckCollision<ISolid>())           // If there is a collision, switch back to linear motion
+            if (CheckCollision<ISolid>(true))        
             {
                 vectorPosition = oldPosition;
                 //physicsState = PhysicsState.Linear;
@@ -490,9 +493,9 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);                      // Update hitbox location
 
-                if (CheckCollision<ISolid>(out thing))                                                   // Check if there was a collision
+                if (CheckCollision<ISolid>(out thing))          // Check if there was a collision
                 {
-                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);    // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
                     velocity.Y = 0;
                     break;
@@ -543,6 +546,8 @@ namespace Moonwalk.Classes.Entities
                 iterationCounter++;
 
             }
+
+            CheckCollision<ISolid>(true);
         }
 
         private void ChangeAnimation(StoredInput input)
@@ -725,10 +730,11 @@ namespace Moonwalk.Classes.Entities
 
         public static void Respawn()
         {
+            var temp = Map.geometry;
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnEntity<Player>();
             Camera.SetTarget(player);
-            Location = player.Hitbox.Center;
+            Player.Location = player.Hitbox.Center;
 
             GameManager.entities[typeof(Robot)].Clear();
             Robot robot = GameManager.SpawnEntity<Robot>();

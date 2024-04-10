@@ -236,7 +236,7 @@ namespace Moonwalk.Classes.Entities.Base
             }
         }
 
-        public virtual bool CheckCollision<T>(out T thing)
+        public virtual bool CheckCollision<T>(out T thing, bool trigger = false)
         {
             bool isColliding = false;
             thing = default(T);
@@ -265,7 +265,7 @@ namespace Moonwalk.Classes.Entities.Base
                             isColliding = true;
 
                         thing = (T)solid;
-                        if (this is Player)
+                        if (this is Player && trigger)
                             solid.Collide();
                         break;
                     }
@@ -312,7 +312,7 @@ namespace Moonwalk.Classes.Entities.Base
             return isColliding;
         }
 
-        public virtual bool CheckCollision<T>()
+        public virtual bool CheckCollision<T>(bool trigger = false)
         {
             bool isColliding = false;
 
@@ -340,7 +340,7 @@ namespace Moonwalk.Classes.Entities.Base
                         if (solid.Collidable)
                             isColliding = true;
 
-                        if (this is Player)
+                        if (this is Player && trigger)
                         solid.Collide();
                         break;
                     }
@@ -386,7 +386,7 @@ namespace Moonwalk.Classes.Entities.Base
             return isColliding;
         }
 
-        public virtual bool CheckCollision<T>(Rectangle rect)
+        public virtual bool CheckCollision<T>(Rectangle rect, bool trigger = false)
         {
             bool isColliding = false;
 
@@ -414,9 +414,8 @@ namespace Moonwalk.Classes.Entities.Base
                         if (solid.Collidable)
                             isColliding = true;
 
-                        if (this is Player)
-                        solid.Collide();
-
+                        if (this is Player && trigger)
+                            solid.Collide();
                         break;
                     }
                 }

@@ -18,7 +18,6 @@ using System.Xml.Linq;
 namespace Moonwalk.Classes.Entities
 {
     public delegate Vector2 GetRobotPosition();
-    public delegate void ToggleBotLock();
 
     /// <summary>
     /// The player controlled character
@@ -58,7 +57,6 @@ namespace Moonwalk.Classes.Entities
 
         //Events
         public event GetRobotPosition GetRobotPosition;
-        public event ToggleBotLock ToggleBotLock;
 
         private Animations animation;
         private FaceDirection faceDirection;
@@ -206,7 +204,6 @@ namespace Moonwalk.Classes.Entities
                 if (physicsState == PhysicsState.Rotational)
                 {
                     SetLinearVariables();
-                    ToggleBotLock();
                 }
 
                 //Knock the player back
@@ -272,6 +269,12 @@ namespace Moonwalk.Classes.Entities
                 //ToggleBotLock();
                 theta = oldTheta;
                 angVelocity = 0;
+
+                if (Grounded)
+                {
+                    SetLinearVariables();
+                    Robot.Tether = null;
+                }
             }
         }
 
@@ -356,7 +359,6 @@ namespace Moonwalk.Classes.Entities
                     Robot.Tether = this;
                     cooldowns.UseAbility(Abilities.Tether);
                     SetRotationalVariables(robotPos);
-                    ToggleBotLock();
                 }
                 else
                 {
@@ -381,7 +383,6 @@ namespace Moonwalk.Classes.Entities
 
                             Robot.Tether.SetRotationalVariables(robotPos);
                             cooldowns.UseAbility(Abilities.Tether);
-                            ToggleBotLock();
                         }                      
                     }
 
@@ -394,7 +395,6 @@ namespace Moonwalk.Classes.Entities
             {
 
                     Robot.Tether.SetLinearVariables();
-                    ToggleBotLock();
             }
 
             // if E is pressed, play melee attack animation
@@ -772,7 +772,6 @@ namespace Moonwalk.Classes.Entities
             Robot robot = GameManager.SpawnEntity<Robot>();
 
             player.GetRobotPosition += robot.GetPosition;
-            player.ToggleBotLock += robot.ToggleLock;
 
             /*
             while (GUI.GUIElementList.Exists(item => item is GUIPlayerStatusElement))

@@ -94,6 +94,7 @@ namespace Moonwalk.Classes.Entities
 
             if (Tether != null)
             {
+                locked = true;
                 //number of links to make
                 const int Links = 10;
                 double radius = VectorMath.Magnitude(VectorMath.Difference(Tether.Hitbox.Center.ToVector2(), hurtbox.Center.ToVector2()));
@@ -117,6 +118,10 @@ namespace Moonwalk.Classes.Entities
                         4)
                         );
                 }
+            }
+            else
+            {
+                locked = false;
             }
             
         }

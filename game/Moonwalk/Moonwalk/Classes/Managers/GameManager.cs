@@ -371,7 +371,6 @@ namespace Moonwalk.Classes.Managers {
 
                         //Add subscribers to player events
                         player.GetRobotPosition += robot.GetPosition;
-                        player.ToggleBotLock += robot.ToggleLock;
                     }
 
 

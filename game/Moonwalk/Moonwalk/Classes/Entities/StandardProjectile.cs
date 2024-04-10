@@ -15,8 +15,8 @@ namespace Moonwalk.Classes.Entities
 {
     internal class StandardProjectile : Projectile
     {
-        public StandardProjectile(Vector2 position, Vector2 direction)
-            : base(position, "", direction, 50f, 1)
+        public StandardProjectile(Vector2 position, Vector2 direction, Color color)
+            : base(position, "", direction, 50f, 1, color)
         {
             //Projectile will despawn after hitting something
             spriteSheet = Loader.LoadTexture("particle");
@@ -27,11 +27,13 @@ namespace Moonwalk.Classes.Entities
         {
             base.Update(gameTime, input);
 
+            Vector2 direction = Vector2.Normalize(velocity);
+
             //Trail effect
-            Particle.Effects.Add(new Particle(5, Color.SkyBlue, ParticleEffects.Random, hurtbox.Center,
+            Particle.Effects.Add(new Particle(5, this.color, ParticleEffects.Random, hurtbox.Center,
                 new Vector2(
-                    -Math.Sign(velocity.X),
-                    -Math.Sign(velocity.Y)
+                    -(direction.X),
+                    -(direction.Y)
                     ),
                 1, 3)); 
         }

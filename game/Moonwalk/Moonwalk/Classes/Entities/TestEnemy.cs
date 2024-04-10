@@ -114,7 +114,8 @@ namespace Moonwalk.Classes.Entities
                     //Shoot
                     SwitchAnimation(Animations.Shoot);
                     GameManager.SpawnEntity<StandardProjectile>( new Object[] {vectorPosition,
-                    VectorMath.Difference(vectorPosition, Player.Location.ToVector2()) });
+                    VectorMath.Difference(vectorPosition, Player.Location.ToVector2()),
+                    Color.SkyBlue});
                     cooldowns.UseAbility(Abilities.Shoot);
                     timer = activeAnimation.AnimationLengthSeconds;
                 }

@@ -39,13 +39,14 @@ namespace Moonwalk.Classes.Entities.Base
         }
 
         public Projectile(Vector2 position, string directory, Vector2 direction, 
-            float speed, int damage, int collisions = 1, double timer = 5) 
+            float speed, int damage, Color color, int collisions = 1, double timer = 5) 
             : base(position, directory, false, false) 
         { 
             velocity = Vector2.Normalize(direction) * speed;
             this.damage = damage;
             this.collisions = collisions;
             this.timer = timer;
+            this.color = color;
         }
 
         public override void Update(GameTime gameTime, StoredInput input)

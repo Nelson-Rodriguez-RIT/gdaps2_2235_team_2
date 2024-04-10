@@ -98,7 +98,8 @@ namespace Moonwalk.Classes.Entities
                     //Shoot
                     GameManager.SpawnEntity<StandardProjectile>(new Object[] {
                         vectorPosition,
-                    VectorMath.Difference(vectorPosition, Player.Location.ToVector2()) });
+                    VectorMath.Difference(vectorPosition, Player.Location.ToVector2()),
+                    Color.SlateGray});
                     cooldowns.UseAbility(Abilities.Shoot);
                 }
             }

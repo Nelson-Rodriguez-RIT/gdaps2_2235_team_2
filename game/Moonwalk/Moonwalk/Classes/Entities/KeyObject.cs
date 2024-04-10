@@ -18,6 +18,7 @@ namespace Moonwalk.Classes.Entities
         //fields
         private bool isColliding = false;
         private bool isInteracted = false;
+        private Vector2 originalPos;
 
         private Player player;
 
@@ -29,12 +30,10 @@ namespace Moonwalk.Classes.Entities
         public KeyObject(Vector2 position) :
             base (position, "../../../Content/Entities/Key", false, false)
         {
-            //player = GameManager.entities.GetAllOfType<Player>()[0];
+            
 
-            //this.hurtbox = new Rectangle((int)position.X, (int)position.Y, 16, 16); //position/hitbox
+            this.hurtbox = new Rectangle((int)position.X, (int)position.Y, 16, 16); //position/hitbox
             this.isColliding = false; //should not start by colliding with anything
-
-            hurtbox = new Rectangle(0, 0, 20, 20);
 
             spriteSheet = Loader.LoadTexture("Entities/Key/keycard");
             spriteScale = 1;
@@ -63,6 +62,11 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
+            if (player == null )
+            {
+                player = GameManager.entities.GetAllOfType<Player>()[0];
+            }
+
             hurtbox = new Rectangle(
                 (int)vectorPosition.X,
                 (int)vectorPosition.Y,
@@ -91,5 +95,11 @@ namespace Moonwalk.Classes.Entities
                 );
         }
 
+        public void Reset()
+        {
+            vectorPosition = originalPos;
+            isInteracted = false;
+            isColliding = false;
+        }
     }
 }

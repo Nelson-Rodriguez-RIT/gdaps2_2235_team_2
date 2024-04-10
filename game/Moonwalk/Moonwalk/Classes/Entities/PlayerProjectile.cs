@@ -18,7 +18,7 @@ namespace Moonwalk.Classes.Entities
     internal class PlayerProjectile : Projectile
     {
         public PlayerProjectile(Vector2 position, Vector2 direction, int damage = 1, float speedModifier = 1)
-            : base(position, "", direction, 60f * speedModifier, 1)
+            : base(position, "", direction, 60f * speedModifier, 1, Color.White)
         {
             this.damage = damage;
 

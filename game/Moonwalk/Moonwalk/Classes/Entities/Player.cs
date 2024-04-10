@@ -26,7 +26,7 @@ namespace Moonwalk.Classes.Entities
     {
         public static Point Location;
         public static Checkpoint MostRecentCheckpoint;
-        private bool godMode = false;
+        private bool GodMode = false;
         private static GUIElement playerStatusElement = null;
 
         protected enum Animations
@@ -119,9 +119,54 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-
             //Change publically available position
             Location = this.Hitbox.Center;
+
+            #region Godmode
+
+            if (input.IsPressed(Keys.F5)
+                && !input.WasPressed(Keys.F5))
+            {
+                GodMode = !GodMode;
+
+                Robot robot = Robot.Respawn();
+
+                GetRobotPosition += robot.GetPosition;
+            }
+
+            const int GodModeSpeed = 5;
+
+            if (GodMode)
+            {
+                if (input.IsPressed(Keys.A))
+                {
+                    vectorPosition.X -= GodModeSpeed;
+                }
+                if (input.IsPressed(Keys.D))
+                {
+                    vectorPosition.X += GodModeSpeed;
+                }
+                if (input.IsPressed(Keys.W))
+                {
+                    vectorPosition.Y -= GodModeSpeed;
+                }
+                if (input.IsPressed(Keys.S))
+                {
+                    vectorPosition.Y += GodModeSpeed;
+                }
+
+                hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);
+
+                //Add spawning entities
+
+                return;
+            }
+
+            #endregion
 
             //Decrease Iframes if the timer is running
             iFrames = iFrames > 0 ? iFrames - gameTime.ElapsedGameTime.TotalSeconds : 0;
@@ -134,6 +179,8 @@ namespace Moonwalk.Classes.Entities
             base.Update(gameTime, input);
 
             int sign = 0;
+
+            
 
             //Slow down if not pressing anything
             if (!input.IsPressed(Keys.D) &&
@@ -166,11 +213,7 @@ namespace Moonwalk.Classes.Entities
                 Respawn();
             }
 
-            if(input.IsPressed(Keys.F5)
-                && !input.WasPressed(Keys.F5))
-            {
-                godMode = !godMode;
-            }
+            
 
             
 
@@ -186,32 +229,36 @@ namespace Moonwalk.Classes.Entities
 
         public override void Movement(GameTime gt)
         {
-            base.Movement(gt);
-            
-            //Check if player hits an enemy or projectile
-            IHostile collision = null;
-
-            if ((CheckCollision<IHostile>(out collision))
-                && iFrames <= 0
-                && collision is not PlayerProjectile)
+            if (!GodMode)
             {
-                TakeDamage(collision.Damage);
+                base.Movement(gt);
 
-                //Make the player invincible for a short time
-                iFrames = 1;
+                //Check if player hits an enemy or projectile
+                IHostile collision = null;
 
-                //Stop tether if swinging
-                if (physicsState == PhysicsState.Rotational)
+                if ((CheckCollision<IHostile>(out collision))
+                    && iFrames <= 0
+                    && collision is not PlayerProjectile)
                 {
-                    SetLinearVariables();
+                    TakeDamage(collision.Damage);
+
+                    //Make the player invincible for a short time
+                    iFrames = 1;
+
+                    //Stop tether if swinging
+                    if (physicsState == PhysicsState.Rotational)
+                    {
+                        SetLinearVariables();
+                    }
+
+                    //Knock the player back
+                    Impulse(new Vector2(
+                        -45 * Math.Sign(VectorMath.Difference(vectorPosition, collision.Position.ToVector2()).X),
+                        -35));
+
                 }
-
-                //Knock the player back
-                Impulse(new Vector2(
-                    -45 * Math.Sign(VectorMath.Difference(vectorPosition, collision.Position.ToVector2()).X),
-                    -35));
-
             }
+            
             
         }
 
@@ -526,7 +573,7 @@ namespace Moonwalk.Classes.Entities
                 acceleration.Y = gravity * (1 + (100 - Math.Abs(velocity.Y)) / 50);
             }
 
-            if( godMode)
+            if( GodMode)
             {
                 acceleration.Y = gravity * 0.5f;
             }
@@ -748,7 +795,7 @@ namespace Moonwalk.Classes.Entities
         
         public void TakeDamage(int damage)
         {
-            if (!godMode)
+            if (!GodMode)
             Health -= damage;
             Impulse(new Vector2(0, 20));
             iFrames = 1;
@@ -762,14 +809,12 @@ namespace Moonwalk.Classes.Entities
 
         public static void Respawn()
         {
-            var temp = Map.geometry;
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnEntity<Player>();
             Camera.SetTarget(player);
             Player.Location = player.Hitbox.Center;
 
-            GameManager.entities[typeof(Robot)].Clear();
-            Robot robot = GameManager.SpawnEntity<Robot>();
+            Robot robot = Robot.Respawn();
 
             player.GetRobotPosition += robot.GetPosition;
 

@@ -38,12 +38,12 @@ namespace Moonwalk.Classes.Entities
         }
 
         //Change this to private later
-        public Robot() : base(Player.MostRecentCheckpoint.Hitbox.Location.ToVector2(), "../../../Content/Entities/Robot")
+        public Robot() : base(Player.Location.ToVector2(), "../../../Content/Entities/Robot")
         {
             physicsState = PhysicsState.Linear;
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
-
+            Tether = null;
             
             // GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
         }
@@ -166,6 +166,12 @@ namespace Moonwalk.Classes.Entities
             Vector2 temp = Camera.RelativePosition(vectorPosition);
 
             activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
+        }
+
+        public static Robot Respawn()
+        {
+            GameManager.entities[typeof(Robot)].Clear();
+            return GameManager.SpawnEntity<Robot>();
         }
     }
 

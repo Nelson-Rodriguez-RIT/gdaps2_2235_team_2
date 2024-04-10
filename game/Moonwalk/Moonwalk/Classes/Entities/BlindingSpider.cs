@@ -92,8 +92,8 @@ namespace Moonwalk.Classes.Entities
                     acceleration.X = 0;
 
                     //Change animations for shooting
-                    SwitchAnimation(Animation.PrepBlindAttack, false);
-                    SwitchAnimation(Animation.BlindAttacl, false);
+                    SwitchAnimation(Animations.PrepBlindAttack, false);
+                    SwitchAnimation(Animations.BlindAttack, false);
 
                     //Shoot
                     GameManager.SpawnEntity<StandardProjectile>(new Object[] {

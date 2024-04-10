@@ -36,7 +36,6 @@ namespace Moonwalk.Classes.Managers {
         // private static Dictionary<string, GUIButtonElement> guiButtonElements;
         private static Dictionary<string, List<GUIElement>> guiBuffers;
         
-
         List<Type> types;
 
         //Input handling

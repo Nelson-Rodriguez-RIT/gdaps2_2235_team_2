@@ -13,11 +13,10 @@ using Moonwalk.Classes;
 using Moonwalk.Classes.Boss;
 
 namespace Moonwalk.Classes.Maps
-{
-    public delegate void StartBoss(Vector2 pos);
+{ 
     internal class BossTrigger<T> : Terrain where T : BossFight
     {
-        public event StartBoss StartBoss;
+        
         public BossTrigger(Rectangle hitbox) : base(hitbox) 
         {
             collidable = false;

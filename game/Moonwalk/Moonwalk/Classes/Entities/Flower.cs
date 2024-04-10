@@ -110,7 +110,7 @@ namespace Moonwalk.Classes.Entities
                 }                              
                
             }
-            else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
+            else if (activeAnimation.AnimationValue != (int)Animations.Move)
             {
                 //Deactivate the enemy if out of range
                 velocity.X = 0;

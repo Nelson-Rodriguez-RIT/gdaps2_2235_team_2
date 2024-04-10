@@ -48,7 +48,7 @@ namespace Moonwalk.Classes.Entities
         }
 
         /// <summary>
-        /// AI for Blinding Spider Enemy
+        /// AI for Flower Enemy
         /// </summary>
         public override void AI()
         {

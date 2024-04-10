@@ -355,7 +355,7 @@ namespace Moonwalk.Classes.Managers {
                     {
                         Map.LoadMap("MoonwalkMap");
 
-                        Player.Respawn();
+                        Player.Respawn();                        
 
                         //WidowBoss.Start();
                     }

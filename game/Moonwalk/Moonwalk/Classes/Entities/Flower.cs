@@ -58,8 +58,9 @@ namespace Moonwalk.Classes.Entities
             acceleration = new Vector2(0, gravity);
             spriteScale = 1;
             maxXVelocity = 50;
-
+            /*
             cooldowns = new AbilityCooldowns<Animations>(properties);
+            */
         }
 
         /// <summary>

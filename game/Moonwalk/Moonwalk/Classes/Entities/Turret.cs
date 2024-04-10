@@ -16,6 +16,7 @@ namespace Moonwalk.Classes.Entities
     {
         enum Animations
         {
+            Idle,
             Charge,
             Shoot
         }
@@ -26,16 +27,27 @@ namespace Moonwalk.Classes.Entities
         }
 
         private AbilityCooldowns<Abilities> cooldowns;
+        private double timer;
 
         public Turret(Vector2 position) : base(position, "../../../Content/Entities/Turret")
         {
             gravity = 70f;
+            double shootCooldown = 0;
             SwitchAnimation(Animations.Charge);
+            shootCooldown += activeAnimation.AnimationLengthSeconds;
+            
+            properties["Shoot"] = shootCooldown.ToString();
+            //timer = activeAnimation.AnimationLengthSeconds;
+            SwitchAnimation(Animations.Charge, true);
+
             cooldowns = new AbilityCooldowns<Abilities>(properties);
+            
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
+            timer -= gameTime.ElapsedGameTime.TotalSeconds;
+
             //slow down if moving
             if (velocity.X != 0)
             {
@@ -55,8 +67,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
-            if (activeAnimation.AnimationValue != 2
-                && cooldowns[Abilities.Shoot] == 0)
+            if (cooldowns[Abilities.Shoot] == 0)
             {
                 GameManager.SpawnEntity<StandardProjectile>(
                     new object[] { hurtbox.Center.ToVector2() + new Vector2(0, -15),
@@ -64,7 +75,10 @@ namespace Moonwalk.Classes.Entities
                     Color.Red});
 
                 cooldowns.UseAbility(Abilities.Shoot);
+                
+                timer = activeAnimation.AnimationLengthSeconds;
             }
+
             
         }
 

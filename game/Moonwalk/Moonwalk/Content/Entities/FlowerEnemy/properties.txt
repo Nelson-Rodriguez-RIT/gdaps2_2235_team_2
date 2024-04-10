@@ -1,6 +1,0 @@
-HitboxX=16
-HitboxY=13
-HitboxXOrigin=11
-HitboxYOrigin=0
-Health=7
-Damage=1

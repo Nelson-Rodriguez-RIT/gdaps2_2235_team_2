@@ -76,7 +76,6 @@ namespace Moonwalk.Classes.Helpful_Stuff
             this.effect = effect;
             this.position = position;
             this.direction = direction;
-            this.direction.Normalize();
 
             //Timer is how often things happen
             maxTimer = frequency;

@@ -23,7 +23,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
         /// <param name="a"></param>
         /// <param name="b"></param>
         /// <returns></returns>
-        public static Vector2 VectorDifference(Vector2 a, Vector2 b)
+        public static Vector2 Difference(Vector2 a, Vector2 b)
         {
             return new Vector2(b.X - a.X, b.Y - a.Y);
         }
@@ -33,7 +33,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public static double VectorMagnitude(Vector2 vector)
+        public static double Magnitude(Vector2 vector)
         {
             return Math.Sqrt(
                 Math.Pow(vector.X, 2) +

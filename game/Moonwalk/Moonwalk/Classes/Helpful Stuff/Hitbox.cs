@@ -22,6 +22,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         private Rectangle box;
         private Entity source;
+        private Vector2 sourcePos;
         private int frameDuration;  //set to -1 for infinitely present hitbox
         private Point offset;
         private List<IDamageable> targets;
@@ -29,18 +30,12 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         public event TargetEntered targetEntered;
 
-        /// <summary>
-        /// Things that the hitbox can hit, e.g. players, enemies
-        /// </summary>
-        Type target;
-
         public Hitbox(int duration, Entity source, Point size, Type target, List<IDamageable> targets, Point offset) 
         {
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
 
             frameDuration = duration;
-            this.target = target;
             this.source = source;
             this.offset = offset;
             box = new Rectangle(source.Position + offset, size);
@@ -50,10 +45,30 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         }
 
+        public Hitbox(int duration, Vector2 sourceVector, Point size, List<IDamageable> targets, Point offset)
+        {
+            if (hitboxSprite == null)
+                hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
+
+            frameDuration = duration;
+            this.source = null;
+            sourcePos = sourceVector;
+            this.offset = offset;
+            box = new Rectangle(sourcePos.ToPoint() + offset, size);
+            activeHitboxes.Add(this);
+            this.targets = targets;
+            alreadyHit = new List<IDamageable>();
+
+        }
+
         public void Update(GameTime gameTime)
         {
-            
-            box = new Rectangle(source.Position + offset, box.Size);
+            if (source != null)
+            {
+                sourcePos = source.Position.ToVector2();
+            }
+
+            box = new Rectangle(sourcePos.ToPoint() + offset, box.Size);
 
             List<IDamageable> collisions = CheckCollision();
 
@@ -65,7 +80,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
                     i--;
                 }
             }
-
+            if (collisions.Count > 0)
             targetEntered(collisions);
 
             foreach (IDamageable target in collisions)
@@ -75,7 +90,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
             frameDuration--;
 
-            if (frameDuration == 0)
+            if (frameDuration <= 0)
             {
                 activeHitboxes.Remove(this);
             }

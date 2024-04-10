@@ -60,7 +60,7 @@ namespace Moonwalk.Classes.Entities
             {
                 GameManager.SpawnEntity<StandardProjectile>(
                     new object[] { hurtbox.Center.ToVector2() + new Vector2(0, -15),
-                VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2())});
+                VectorMath.Difference(vectorPosition, Player.Location.ToVector2())});
 
                 cooldowns.UseAbility(Abilities.Shoot);
             }

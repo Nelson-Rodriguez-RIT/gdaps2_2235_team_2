@@ -1,4 +1,5 @@
-﻿using Moonwalk.Classes;
+﻿using Microsoft.Xna.Framework;
+using Moonwalk.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Moonwalk.Interfaces
 {
     internal interface IControllable : IMovable
     {
-        void Input(StoredInput input);
+        void Input(StoredInput input, GameTime gameTime);
     }
 }

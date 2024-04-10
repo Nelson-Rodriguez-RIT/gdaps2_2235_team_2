@@ -30,8 +30,8 @@ namespace Moonwalk.Classes.Entities
             //Trail effect
             Particle.Effects.Add(new Particle(5, Color.SkyBlue, ParticleEffects.Random, hurtbox.Center,
                 new Vector2(
-                    -velocity.X,
-                    -velocity.Y
+                    -Math.Sign(velocity.X),
+                    -Math.Sign(velocity.Y)
                     ),
                 1, 3)); 
         }

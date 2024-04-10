@@ -50,7 +50,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            Input(input);
+            Input(input, gameTime);
 
             if (!locked)
             Movement(gameTime);
@@ -94,16 +94,17 @@ namespace Moonwalk.Classes.Entities
 
             if (Tether != null)
             {
+                locked = true;
                 //number of links to make
                 const int Links = 10;
-                double radius = VectorMath.VectorMagnitude(VectorMath.VectorDifference(Tether.Hitbox.Center.ToVector2(), hurtbox.Center.ToVector2()));
+                double radius = VectorMath.Magnitude(VectorMath.Difference(Tether.Hitbox.Center.ToVector2(), hurtbox.Center.ToVector2()));
 
                 //Distance between each link
                 int slice = (int)(radius / Links);
 
                 for (int i = 1; i <= Links; i++)
                 {
-                    Vector2 thing = Vector2.Normalize(VectorMath.VectorDifference(Tether.Hitbox.Center.ToVector2(), hurtbox.Center.ToVector2()))
+                    Vector2 thing = Vector2.Normalize(VectorMath.Difference(Tether.Hitbox.Center.ToVector2(), hurtbox.Center.ToVector2()))
                         * slice * i; //increment every iteration
 
                     Particle.Effects.Add(new Particle
@@ -118,10 +119,14 @@ namespace Moonwalk.Classes.Entities
                         );
                 }
             }
+            else
+            {
+                locked = false;
+            }
             
         }
 
-        public override void Input(StoredInput input)
+        public override void Input(StoredInput input, GameTime gameTime)
         {
             mousepos = input.CurrentMouse.Position;
 
@@ -132,7 +137,7 @@ namespace Moonwalk.Classes.Entities
             if (!locked)
             velocity = (pos + Camera.GlobalOffset / 2) - vectorPosition - (hurtbox.Center - hurtbox.Location).ToVector2();
 
-            if (VectorMath.VectorMagnitude(velocity) < 5)
+            if (VectorMath.Magnitude(velocity) < 5)
             {
                 vectorPosition = (pos + Camera.GlobalOffset / 2) - (hurtbox.Center - hurtbox.Location).ToVector2();
             }

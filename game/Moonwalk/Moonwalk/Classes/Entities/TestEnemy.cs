@@ -35,11 +35,21 @@ namespace Moonwalk.Classes.Entities
         FaceDirection faceDirection;
 
         private AbilityCooldowns<Abilities> cooldowns;
+        private bool inactive = true;
+        private double timer;
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
             base.Update(gameTime, input);
             cooldowns.Update(gameTime);
+            if (timer > 0)
+            {
+                timer -= gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if (timer < 0)
+            {
+                timer = 0;
+            }
         }
 
         public TestEnemy(Vector2 position) : base(position, "../../../Content/Entities/TestEnemy")
@@ -57,12 +67,31 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
-            double distance = VectorMath.VectorMagnitude(VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()));
+            double distance = VectorMath.Magnitude(VectorMath.Difference(hurtbox.Center.ToVector2(), Player.Location.ToVector2()));
 
-            if (distance < 200) // range of aggro
+            if (distance <= 200) // range of aggro
             {
-                SwitchAnimation(Animations.Move, false);
-                float xDifference = VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()).X;
+                if (inactive)
+                {
+                    SwitchAnimation(Animations.Wake, true);
+                    timer = activeAnimation.AnimationLengthSeconds;
+                    inactive = false;
+                }
+
+                if (timer > 0)
+                {
+                    if (activeAnimation.AnimationValue == (int)Animations.Wake)
+                        return;
+                }
+                else if (activeAnimation.AnimationValue == (int)Animations.Shoot)
+                {
+                    SwitchAnimation(Animations.Move, true);
+                }
+
+                
+
+
+                float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
                 if (xDifference > 0)
@@ -74,7 +103,7 @@ namespace Moonwalk.Classes.Entities
                     faceDirection = FaceDirection.Left;
                 }
 
-                //activeAnimation.FaceDirection = (int)faceDirection;
+                
 
                 if (physicsState == PhysicsState.Linear)
                 //Enemy accelerates towards the player's x direction
@@ -83,20 +112,26 @@ namespace Moonwalk.Classes.Entities
                 if (cooldowns[Abilities.Shoot] == 0)
                 {
                     //Shoot
+                    SwitchAnimation(Animations.Shoot);
                     GameManager.SpawnEntity<StandardProjectile>( new Object[] {vectorPosition,
-                    VectorMath.VectorDifference(vectorPosition, Player.Location.ToVector2()) });
+                    VectorMath.Difference(vectorPosition, Player.Location.ToVector2()) });
                     cooldowns.UseAbility(Abilities.Shoot);
+                    timer = activeAnimation.AnimationLengthSeconds;
                 }
+                
+                    
             }
-            else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
+            else 
             {
                 //Deactivate the enemy if out of range
+                inactive = true;
                 velocity.X = 0;
                 acceleration.X = 0;
-                SwitchAnimation(Animations.StaticIdle);
+                SwitchAnimation(Animations.StaticIdle, true);
+
             }
 
-            
+            activeAnimation.FaceDirection = (int)faceDirection;
         }
 
         

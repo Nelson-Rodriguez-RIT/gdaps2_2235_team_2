@@ -18,7 +18,6 @@ using System.Xml.Linq;
 namespace Moonwalk.Classes.Entities
 {
     public delegate Vector2 GetRobotPosition();
-    public delegate void ToggleBotLock();
 
     /// <summary>
     /// The player controlled character
@@ -28,6 +27,8 @@ namespace Moonwalk.Classes.Entities
         public static Point Location;
         public static Checkpoint MostRecentCheckpoint;
         private bool godMode = false;
+        private static GUIElement playerStatusElement = null;
+
         protected enum Animations
         {
             Idle,
@@ -42,7 +43,8 @@ namespace Moonwalk.Classes.Entities
         public enum Abilities
         {
             Tether,
-            Gravity
+            Gravity,
+            Shoot
         }
 
         /// <summary>
@@ -55,17 +57,19 @@ namespace Moonwalk.Classes.Entities
 
         //Events
         public event GetRobotPosition GetRobotPosition;
-        public event ToggleBotLock ToggleBotLock;
 
         private Animations animation;
         private FaceDirection faceDirection;
 
         //Timers
-        private int animationTimer;
+        private float animationTimer;
         private double iFrames;
 
         private float swingChange;
         private float maxAngVelocity;
+
+        protected internal float rangedAttackCooldownTimer;
+        protected internal float rangedAttackCharge;
 
         public int Health
         {
@@ -103,23 +107,31 @@ namespace Moonwalk.Classes.Entities
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
 
+
             cooldowns = new AbilityCooldowns<Abilities>(properties);
 
-            GUI.AddElement(new GUIPlayerStatusElement(new Vector2(10, 10), this));
+            if (playerStatusElement != null)
+                GUI.RemoveElement(playerStatusElement);
+
+            playerStatusElement = new GUIPlayerStatusElement(this);
+            GUI.AddElement(playerStatusElement);
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
+
+            //Change publically available position
+            Location = this.Hitbox.Center;
+
             //Decrease Iframes if the timer is running
             iFrames = iFrames > 0 ? iFrames - gameTime.ElapsedGameTime.TotalSeconds : 0;
 
             if (physicsState == PhysicsState.Linear)
             cooldowns.Update(gameTime);
 
+            ChangeAnimation(input, gameTime);
+
             base.Update(gameTime, input);
-
-            ChangeAnimation(input);
-
 
             int sign = 0;
 
@@ -160,13 +172,16 @@ namespace Moonwalk.Classes.Entities
                 godMode = !godMode;
             }
 
-            //Change publically available position
-            Location = this.Hitbox.Center;
+            
 
             if (health <= 0)
             {
                 Respawn();
+                GUI.RemoveElement(playerStatusElement);
             }
+
+            rangedAttackCooldownTimer = (float)(rangedAttackCooldownTimer < 0 ? 
+                0 : rangedAttackCooldownTimer - gameTime.ElapsedGameTime.TotalSeconds);
         }
 
         public override void Movement(GameTime gt)
@@ -189,12 +204,11 @@ namespace Moonwalk.Classes.Entities
                 if (physicsState == PhysicsState.Rotational)
                 {
                     SetLinearVariables();
-                    ToggleBotLock();
                 }
 
                 //Knock the player back
                 Impulse(new Vector2(
-                    -45 * Math.Sign(VectorMath.VectorDifference(vectorPosition, collision.Position.ToVector2()).X),
+                    -45 * Math.Sign(VectorMath.Difference(vectorPosition, collision.Position.ToVector2()).X),
                     -35));
 
             }
@@ -238,7 +252,7 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
-            if (CheckCollision<ISolid>())           // If there is a collision, switch back to linear motion
+            if (CheckCollision<ISolid>(true))        
             {
                 vectorPosition = oldPosition;
                 //physicsState = PhysicsState.Linear;
@@ -255,10 +269,16 @@ namespace Moonwalk.Classes.Entities
                 //ToggleBotLock();
                 theta = oldTheta;
                 angVelocity = 0;
+
+                if (Grounded)
+                {
+                    SetLinearVariables();
+                    Robot.Tether = null;
+                }
             }
         }
 
-        public override void Input(StoredInput input)
+        public override void Input(StoredInput input, GameTime gameTime)
         {
             
             //Horizontal movement
@@ -330,8 +350,8 @@ namespace Moonwalk.Classes.Entities
             {
                 Vector2 robotPos = GetRobotPosition();
 
-                if (VectorMath.VectorMagnitude(
-                        VectorMath.VectorDifference(vectorPosition, robotPos)
+                if (VectorMath.Magnitude(
+                        VectorMath.Difference(vectorPosition, robotPos)
                         )
                     < 125
                     && !Grounded)
@@ -339,7 +359,6 @@ namespace Moonwalk.Classes.Entities
                     Robot.Tether = this;
                     cooldowns.UseAbility(Abilities.Tether);
                     SetRotationalVariables(robotPos);
-                    ToggleBotLock();
                 }
                 else
                 {
@@ -349,14 +368,14 @@ namespace Moonwalk.Classes.Entities
 
                     if (list.Count > 0)
                     {
-                        if(list.Exists(item => (VectorMath.VectorMagnitude(
-                                VectorMath.VectorDifference(
+                        if(list.Exists(item => (VectorMath.Magnitude(
+                                VectorMath.Difference(
                                     item.Position.ToVector2(),
                                     robotPos)) < 125)))
                         {
                             Robot.Tether = list.MinBy(item =>
-                            VectorMath.VectorMagnitude(
-                                VectorMath.VectorDifference(
+                            VectorMath.Magnitude(
+                                VectorMath.Difference(
                                     item.Position.ToVector2(),
                                     robotPos)
                                 )
@@ -364,7 +383,6 @@ namespace Moonwalk.Classes.Entities
 
                             Robot.Tether.SetRotationalVariables(robotPos);
                             cooldowns.UseAbility(Abilities.Tether);
-                            ToggleBotLock();
                         }                      
                     }
 
@@ -377,9 +395,67 @@ namespace Moonwalk.Classes.Entities
             {
 
                     Robot.Tether.SetLinearVariables();
-                    ToggleBotLock();
             }
 
+            // if E is pressed, play melee attack animation
+            if (input.IsPressed(Keys.E) &&
+                    !input.WasPressed(Keys.E) &&
+                    activeAnimation.AnimationValue != (int)(Animations.Attack)) {
+                SwitchAnimation(Animations.Attack);
+                Attack();
+                animationTimer = activeAnimation.AnimationLength;
+            }
+
+            // if F is pressed, play ranged attack animation
+            if (input.IsPressed(Keys.LeftShift) && 
+                    activeAnimation.AnimationValue != (int)(Animations.Shoot) &&
+                    cooldowns[Abilities.Shoot] == 0) {
+                // Player can hold shift to charge up an attack
+                rangedAttackCharge = (rangedAttackCharge < float.Parse(properties["RangeChargeToMax"]) ?
+                    rangedAttackCharge + (float)gameTime.ElapsedGameTime.TotalSeconds :
+                    float.Parse(properties["RangeChargeToMax"])) ;
+                
+                if (rangedAttackCharge == float.Parse(properties["RangeChargeToMax"]))
+                {
+                    Particle.Effects.Add(new Particle(
+                        3, 
+                        Color.White,
+                        ParticleEffects.Random,
+                        (hurtbox.Center.ToVector2() + new Vector2(
+                            faceDirection == FaceDirection.Left ? -hurtbox.Width - 4: hurtbox.Width + 4,
+                            -1)).ToPoint(),
+                        new Vector2(
+                            faceDirection == FaceDirection.Left ? -2 : 2,
+                            new Random().Next(-1, 2)),
+                        4,
+                        3));;
+                }
+                
+
+            }
+            else if (input.WasPressed(Keys.LeftShift) &&
+                    activeAnimation.AnimationValue != (int)(Animations.Shoot) &&
+                    cooldowns[Abilities.Shoot] == 0) {
+                SwitchAnimation(Animations.Shoot);
+
+                float projectileSpeed = 1.5f * (rangedAttackCharge / float.Parse(properties["RangeChargeToMax"]));
+                GameManager.SpawnEntity<PlayerProjectile>(
+                    new object[]
+                    {
+                        hurtbox.Center.ToVector2() + new Vector2(
+                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width,
+                        -4),
+                        faceDirection == FaceDirection.Left ? new Vector2(-1, 0) : new Vector2(1, 0),
+                        (int)Math.Ceiling(float.Parse(properties["RangeRampupMax"]) * (rangedAttackCharge / float.Parse(properties["RangeChargeToMax"]))),
+                        projectileSpeed < 1 ? 1: projectileSpeed
+                    });
+
+                animationTimer = activeAnimation.AnimationLength;
+                rangedAttackCharge = 0;
+                cooldowns.UseAbility(Abilities.Shoot);
+            }
+
+            activeAnimation.FaceDirection = (int)faceDirection;
         }
 
         public override void Draw(SpriteBatch batch)
@@ -486,9 +562,9 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);                      // Update hitbox location
 
-                if (CheckCollision<ISolid>(out thing))                                                   // Check if there was a collision
+                if (CheckCollision<ISolid>(out thing))          // Check if there was a collision
                 {
-                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);    // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
                     velocity.Y = 0;
                     break;
@@ -539,75 +615,34 @@ namespace Moonwalk.Classes.Entities
                 iterationCounter++;
 
             }
+
+            CheckCollision<ISolid>(true);
         }
 
-        private void ChangeAnimation(StoredInput input)
+        private void ChangeAnimation(StoredInput input, GameTime gameTime)
         {
             
             // For animations that play until they are done, don't change the animation until then
             if (animationTimer > 0)
             {
-                animationTimer--;
+                animationTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds * 60;
                 return;
-            }         
-
-            
-            //// Change facing direciton of the player
-            //if (acceleration.X < 0
-            //    && faceDirection != FaceDirection.Left)
-            //{
-            //    faceDirection = FaceDirection.Left;
-            //}
-            //else if (acceleration.X > 0
-            //    && faceDirection != FaceDirection.Right)
-            //{
-            //    faceDirection = FaceDirection.Right;
-            //}
-
-            // Update the face direction in the animation class
-
-            // If not moving, play idle
-            if (velocity.X == 0 && velocity.Y == 0)
-            {
-                SwitchAnimation(Animations.Idle, false);
             }
 
+            // If not moving, play idle
+            SwitchAnimation(Animations.Idle, false);
+
             // If moving horizontally, play run
-            if (velocity.X != 0)
-            {                
+            if (velocity.X != 0) {
                 SwitchAnimation(Animations.Run, false);
             }
 
             // If in the air, play airborne animation
-            if (!Grounded)
-            {
+            if (!Grounded) {
                 SwitchAnimation(Animations.Jump);
             }
 
-            // if E is pressed, play melee attack animation
-            if (input.IsPressed(Keys.E) &&
-                !input.WasPressed(Keys.E)) {
-                SwitchAnimation(Animations.Attack);
-                Attack();
-                animationTimer = activeAnimation.AnimationLength;
-            }
-
-            // if F is pressed, play ranged attack animation
-            if (input.IsPressed(Keys.LeftShift) &&
-                activeAnimation.AnimationValue != (int)(Animations.Shoot)) {
-                SwitchAnimation(Animations.Shoot);
-                GameManager.SpawnEntity<PlayerProjectile>(
-                    new object[]
-                    {
-                        hurtbox.Center.ToVector2() + new Vector2(
-                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width,
-                        -4),
-                        faceDirection == FaceDirection.Left ? new Vector2(-1, 0) : new Vector2(1, 0)
-                    });
-
-                animationTimer = activeAnimation.AnimationLength;
-            }
-
+            // Update the face direction in the animation class
             activeAnimation.FaceDirection = (int)faceDirection;
         }
 
@@ -655,7 +690,7 @@ namespace Moonwalk.Classes.Entities
             {
                 item.TakeDamage(meleeDmg);
                 item.Impulse(new Vector2(
-                    Knockback * Math.Sign(VectorMath.VectorDifference(vectorPosition, item.Position.ToVector2()).X),
+                    Knockback * Math.Sign(VectorMath.Difference(vectorPosition, item.Position.ToVector2()).X),
                     Knockback));
             }
         }
@@ -681,7 +716,7 @@ namespace Moonwalk.Classes.Entities
                     const int GravityStrength = 100;
 
                     // Apply the impulse towards the robot
-                    Vector2 difference = VectorMath.VectorDifference(movable.Position.ToVector2(), robotPos);
+                    Vector2 difference = VectorMath.Difference(movable.Position.ToVector2(), robotPos);
                     difference.Normalize();
                     movable.Impulse(difference * 
                         (movable is Player ? GravityStrength : 60)
@@ -719,18 +754,24 @@ namespace Moonwalk.Classes.Entities
             Health -= damage;
         }
 
+        public override void SetLinearVariables()
+        {
+            base.SetLinearVariables();
+            velocity *= 1.5f;
+        }
+
         public static void Respawn()
         {
+            var temp = Map.geometry;
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnEntity<Player>();
             Camera.SetTarget(player);
-            Location = player.Hitbox.Center;
+            Player.Location = player.Hitbox.Center;
 
             GameManager.entities[typeof(Robot)].Clear();
             Robot robot = GameManager.SpawnEntity<Robot>();
 
             player.GetRobotPosition += robot.GetPosition;
-            player.ToggleBotLock += robot.ToggleLock;
 
             /*
             while (GUI.GUIElementList.Exists(item => item is GUIPlayerStatusElement))
@@ -745,42 +786,50 @@ namespace Moonwalk.Classes.Entities
     internal class GUIPlayerStatusElement : GUIElement {
         const int Size = 2;
 
-        protected Vector2 position;
         protected Player player;
 
+        // Health Bar
         protected Texture2D healthBar;
         protected Texture2D healthTick;
+
+        // Abilities
         protected Texture2D gravIcon;
         protected Texture2D tetherIcon;
         protected Texture2D cooldownTick;
 
-        public GUIPlayerStatusElement(Vector2 position, Player player) {
-            this.position = position;
+        // Ranged Weapon Charge
+        protected Texture2D chargeBar;
+        protected Texture2D chargeTick;
+        protected Texture2D chargeCooldownTick;
+
+        public GUIPlayerStatusElement(Player player) {
             this.player = player;
 
             healthBar = GUI.GetTexture("HealthBar");
             healthTick = GUI.GetTexture("HealthTick");
+
             gravIcon = GUI.GetTexture("GravIcon");
             tetherIcon = GUI.GetTexture("SwingIcon");
             cooldownTick = Loader.LoadTexture("../../../Content/Entities/hitbox");
 
+            chargeBar = GUI.GetTexture("ChargeBar");
+            chargeTick = GUI.GetTexture("ChargeTick");
+            chargeCooldownTick = GUI.GetTexture("ChargeCooldownTick");
         }
 
         public override void Draw(SpriteBatch batch) {
 
             const int Spacing = 15;
 
-            Rectangle healthRect = new Rectangle(
-                    (int)position.X,
-                    (int)position.Y,
-                    48 * Size,
-                    12 * Size
-                    );
-
             // Draw health guage
             batch.Draw(
-                healthBar, 
-                healthRect, 
+                healthBar,
+                new Rectangle(
+                    (10) * Size,
+                    (10) * Size,
+                    (healthBar.Width) * Size,
+                    (healthBar.Height) * Size
+                    ), 
                 Color.White);
 
             // Draw health ticks
@@ -788,66 +837,110 @@ namespace Moonwalk.Classes.Entities
                 batch.Draw(
                     healthTick,
                     new Rectangle(
-                        (int)(position.X + (8 * Size) + ((tick * Size) + (Size) - 1) + (tick * (3 * Size))),
-                        (int)(position.Y + (3 * Size)),
-                        3 * Size,
-                        6 * Size
+                        (10 * Size + (8 * Size) + ((tick * Size) + (Size) - 1) + (tick * (3 * Size))),
+                        (10 * Size + (3 * Size)),
+                        (healthTick.Width) * Size,
+                        (healthTick.Height) * Size
                         ),
                     Color.White
                     );
 
-            Rectangle gravRect = new Rectangle(
-                    healthRect.X + healthRect.Width + Spacing,
-                    (int)position.Y - 2,
-                    16 * Size,
-                    16 * Size);
+            // Draw ranged weapon charge //
+            batch.Draw( // Charge Bar
+                chargeBar,
+                new Rectangle(
+                    (10 + healthBar.Width + 2) * Size,
+                    (10 + 2) * Size,
+                    (chargeBar.Width) * Size,
+                    (chargeBar.Height) * Size
+                    ),
+                Color.White
+                );
+
+            batch.Draw( // Charge Cooldown Tick
+                chargeCooldownTick,
+                 new Rectangle(
+                    (10 + healthBar.Width + 2 + 1) * Size,
+                    (10 + 2 + 1) * Size,
+                    (int)(40 * (player.Cooldowns[Player.Abilities.Shoot] / player.Cooldowns[Player.Abilities.Shoot, true])) * Size,
+                    (chargeCooldownTick.Height) * Size
+                    ),
+                Color.White
+                );
+
+            batch.Draw( // Charge Tick
+                chargeTick,
+                new Rectangle(
+                    (10 + healthBar.Width + 2 + 1) * Size,
+                    (10 + 2 + 1) * Size,
+                    (int)(40 * (player.rangedAttackCharge / float.Parse(player.properties["RangeChargeToMax"]))) * Size,
+                    (chargeTick.Height) * Size
+                    ),
+                Color.White
+                );
+
+            // Abilities will only be displayed if they are on cooldowns
+            int abilitiesOnCooldown = 0;
+            foreach (Player.Abilities ability in Enum.GetValues(typeof(Player.Abilities)))
+                if (player.Cooldowns[ability] != 0)
+                    abilitiesOnCooldown++;
+
+            if (abilitiesOnCooldown == 0) return;
+
+            int offset = 3 * Size; // An odd amount of abilities on cooldown requires different positioning
+            if (abilitiesOnCooldown % 2 == 0)
+                offset += (gravIcon.Width / 2) * Size;
+
+            for (int index = 0; index < abilitiesOnCooldown; index++)
+                offset -= (gravIcon.Width - 3) * Size;
 
             //Draw ability cooldowns
-            batch.Draw(
+            if (player.Cooldowns[Player.Abilities.Gravity] != 0) {
+                batch.Draw(
                 gravIcon,
-                gravRect,
-                Color.White);
-
-            batch.Draw(
-                cooldownTick,
                 new Rectangle(
-                    gravRect.X,
-                    (int)
-                    (gravRect.Y + gravRect.Height - 
-                    gravRect.Height *
-                        player.Cooldowns[Player.Abilities.Gravity] / player.Cooldowns[Player.Abilities.Gravity, true]),
-                    gravRect.Width,
-                    (int)(gravRect.Height *
-                        player.Cooldowns[Player.Abilities.Gravity] / player.Cooldowns[Player.Abilities.Gravity, true])),
+                    (int)(WindowManager.Instance.Center.X / 2 + 25 - gravIcon.Width / 2 + offset) * Size,
+                    (int)(WindowManager.Instance.Center.Y / 2 + 30) * Size,
+                    gravIcon.Width * Size,
+                    gravIcon.Height * Size
+                    ),
                 Color.White);
 
-            batch.Draw(
+                batch.Draw(
+                    cooldownTick,
+                    new Rectangle(
+                        (int)(WindowManager.Instance.Center.X / 2 + 25 - gravIcon.Width / 2 + offset) * Size,
+                        (int)(WindowManager.Instance.Center.Y / 2 + 30 + gravIcon.Height -
+                            gravIcon.Height * (player.Cooldowns[Player.Abilities.Gravity] / player.Cooldowns[Player.Abilities.Gravity, true])) * Size,
+                        gravIcon.Width * Size,
+                        (int)(gravIcon.Height * (player.Cooldowns[Player.Abilities.Gravity] / player.Cooldowns[Player.Abilities.Gravity, true])) * Size),
+                    Color.White);
+                offset += gravIcon.Width + 3;
+            }
+            
+            if (player.Cooldowns[Player.Abilities.Tether] != 0) {
+                batch.Draw(
                 tetherIcon,
                 new Rectangle(
-                    healthRect.X + healthRect.Width + Spacing * 2 + 16 * Size,
-                    (int)position.Y - 2,
-                    16 * Size,
-                    16 * Size),
+                    (int)(WindowManager.Instance.Center.X / 2 + 25 - gravIcon.Width / 2 + offset) * Size,
+                    (int)(WindowManager.Instance.Center.Y / 2 + 30) * Size,
+                    gravIcon.Width * Size,
+                    gravIcon.Height * Size
+                    ),
                 Color.White);
 
-            Rectangle tetherRect = new Rectangle(
-                    healthRect.X + healthRect.Width + Spacing * 2 + 16 * Size,
-                    (int)position.Y - 2,
-                    16 * Size,
-                    16 * Size);
 
-            batch.Draw(
-                cooldownTick,
-                new Rectangle(
-                    tetherRect.X,
-                    (int)
-                    (tetherRect.Y + tetherRect.Height -
-                    tetherRect.Height *
-                        player.Cooldowns[Player.Abilities.Tether] / player.Cooldowns[Player.Abilities.Tether, true]),
-                    tetherRect.Width,
-                    (int)(tetherRect.Height *
-                        player.Cooldowns[Player.Abilities.Tether] / player.Cooldowns[Player.Abilities.Tether, true])),
-                Color.White);
+                batch.Draw(
+                    cooldownTick,
+                    new Rectangle(
+                        (int)(WindowManager.Instance.Center.X / 2 + 25 - gravIcon.Width / 2 + offset) * Size,
+                        (int)(WindowManager.Instance.Center.Y / 2 + 30 + gravIcon.Height -
+                            gravIcon.Height * (player.Cooldowns[Player.Abilities.Tether] / player.Cooldowns[Player.Abilities.Tether, true])) * Size,
+                        gravIcon.Width * Size,
+                        (int)(gravIcon.Height * (player.Cooldowns[Player.Abilities.Tether] / player.Cooldowns[Player.Abilities.Tether, true])) * Size),
+                    Color.White);
+                offset += gravIcon.Width + 3;
+            }
         }
     }
 }

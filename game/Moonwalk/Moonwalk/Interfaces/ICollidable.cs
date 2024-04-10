@@ -29,6 +29,16 @@ namespace Moonwalk.Interfaces
         /// <summary>
         /// Checks if the object has collided with another
         /// </summary>
-        bool CheckCollision<T>();
+        bool CheckCollision<T>(bool trigger = false);
+
+        /// <summary>
+        /// Checks if the object has collided with another
+        /// </summary>
+        bool CheckCollision<T>(out T thing, bool trigger = false);
+
+        /// <summary>
+        /// Checks if the object has collided with another
+        /// </summary>
+        bool CheckCollision<T>(Rectangle rect, bool trigger = false);
     }
 }

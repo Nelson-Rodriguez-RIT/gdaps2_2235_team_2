@@ -17,10 +17,10 @@ namespace Moonwalk.Classes.Entities
     /// </summary>
     internal class PlayerProjectile : Projectile
     {
-        public PlayerProjectile(Vector2 position, Vector2 direction)
-            : base(position, "", direction, 60f, 1)
+        public PlayerProjectile(Vector2 position, Vector2 direction, int damage = 1, float speedModifier = 1)
+            : base(position, "", direction, 60f * speedModifier, 1)
         {
-            damage = 1;
+            this.damage = damage;
 
             //Projectile will despawn after hitting something
             collisions = 1;
@@ -38,7 +38,7 @@ namespace Moonwalk.Classes.Entities
 
                 collision.TakeDamage(this.damage);
                 collision.Impulse(new Vector2(
-                    Knockback * Math.Sign(VectorMath.VectorDifference(vectorPosition, collision.Position.ToVector2()).X),
+                    Knockback * Math.Sign(VectorMath.Difference(vectorPosition, collision.Position.ToVector2()).X),
                     Knockback));
                 collisions--;
             }
@@ -46,8 +46,8 @@ namespace Moonwalk.Classes.Entities
             //Trail  
             Particle.Effects.Add(new Particle(6, Color.White, ParticleEffects.Random, hurtbox.Center,
                 new Vector2(
-                    -velocity.X,
-                    -velocity.Y
+                    -Math.Sign(velocity.X) ,
+                    -Math.Sign(velocity.Y)
                     ),
                 1, 20, 5));
         }

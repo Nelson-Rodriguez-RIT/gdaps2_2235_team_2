@@ -5,3 +5,13 @@ HitboxYOrigin=0
 MaxHealth=8
 Gravity=3.5
 Tether=5
+
+// How long it takes to charge (seconds)
+RangeChargeToMax=1
+
+// How long until the player can shoot again (seconds)
+Shoot=1
+
+// How strong is the fully charge attack (multiple)
+// i.e. a value of 2 means 2x damage of base attack
+RangeRampupMax=2

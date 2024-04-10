@@ -65,6 +65,8 @@ namespace Moonwalk.Classes.Entities.Base
 
             if (health <= 0)
             {
+                if (Robot.Tether == this)
+                    Robot.Tether = null;
                 GameManager.DespawnEntity(this);
             }
         }

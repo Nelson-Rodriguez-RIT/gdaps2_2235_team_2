@@ -28,6 +28,7 @@ namespace Moonwalk.Classes.Managers
             }
         }
 
+        private static Dictionary<string, EntityData> entityDataCache = new();
 
         /// <summary>
         /// Reads file content
@@ -242,6 +243,9 @@ namespace Moonwalk.Classes.Managers
             List<Animation> bufferedAnimations = new();
             Texture2D bufferedSpritesheet = null;
 
+            if (entityDataCache.ContainsKey(path))
+                return entityDataCache[path];
+
             Queue<string> fileData;
             string data;
             string[] dataBlocks;
@@ -256,7 +260,7 @@ namespace Moonwalk.Classes.Managers
                 data = fileData.Dequeue();
 
                 // Ignore comments and empty lines
-                if (data == null || data[0] == '/')
+                if (data == "" || data[0] == '/')
                     continue;
 
                 // Break data into its header and body components
@@ -345,7 +349,8 @@ namespace Moonwalk.Classes.Managers
                         // Create animation
                         bufferedAnimations.Add(new Animation(
                             size, origin, totalSprites, framesPerSprite,
-                            style, spaceTakenOnSpritesheet));
+                            style, spaceTakenOnSpritesheet,
+                            int.Parse(bufferedProperties["HitboxX"])));
 
 
                         spaceTakenOnSpritesheet +=
@@ -357,7 +362,8 @@ namespace Moonwalk.Classes.Managers
             // Get sprite sheet
             bufferedSpritesheet = LoadTexture($"{path}/spritesheet");
 
-            return new EntityData(bufferedProperties, bufferedAnimations, bufferedSpritesheet);
+            entityDataCache.Add(path, new EntityData(bufferedProperties, bufferedAnimations, bufferedSpritesheet));
+            return entityDataCache[path];
         }
 
         /// <summary>
@@ -405,7 +411,7 @@ namespace Moonwalk.Classes.Managers
 
                         for (int j = 0; j < 4; j++)
                         {
-                            dimensions[j] = int.Parse(split[4 * i + j]);
+                            dimensions[j] = int.Parse(split[i + j]);
                         }
 
                         hitboxData.Add(new Rectangle(
@@ -501,7 +507,8 @@ namespace Moonwalk.Classes.Managers
                         // Create animation
                         bufferedAnimations.Add(new Animation(
                             size, origin, totalSprites, framesPerSprite,
-                            style, spaceTakenOnSpritesheet));
+                            style, spaceTakenOnSpritesheet,
+                            0));
 
 
                         spaceTakenOnSpritesheet +=
@@ -523,5 +530,5 @@ namespace Moonwalk.Classes.Managers
         public static SpriteFont LoadFont(string fontName) {
             return content.Load<SpriteFont>(fontName);
         }
-    }
+    } 
 }

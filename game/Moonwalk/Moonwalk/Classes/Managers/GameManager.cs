@@ -36,7 +36,6 @@ namespace Moonwalk.Classes.Managers {
         // private static Dictionary<string, GUIButtonElement> guiButtonElements;
         private static Dictionary<string, List<GUIElement>> guiBuffers;
         
-
         List<Type> types;
 
         //Input handling
@@ -138,7 +137,12 @@ namespace Moonwalk.Classes.Managers {
             if (!isGamePaused) {
                 if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F1) && // Toggle F1 to draw entity hitboxes
                     storedInput.CurrentKeyboard.IsKeyUp(Keys.F1))
+                {
                     displayEntityHitboxes = !displayEntityHitboxes;
+                    BossFight.DrawHitboxes = !BossFight.DrawHitboxes;
+                }
+                    
+                    
 
                 if (storedInput.PreviousKeyboard.IsKeyDown(Keys.F2) && // Toggle F2 to draw terrain hitboxes
                         storedInput.CurrentKeyboard.IsKeyUp(Keys.F2))
@@ -170,7 +174,9 @@ namespace Moonwalk.Classes.Managers {
                 }
 
                 foreach (Entity entity in entities) {
-                    if (VectorMath.VectorMagnitude(VectorMath.VectorDifference(Player.Location.ToVector2(), entity.Hitbox.Center.ToVector2()))
+                    if (VectorMath.Magnitude
+                            (VectorMath.Difference
+                                (Player.Location.ToVector2(), entity.Hitbox.Center.ToVector2()))
                         < 400)
                     entity.Update(gt, storedInput);
 
@@ -182,7 +188,8 @@ namespace Moonwalk.Classes.Managers {
 
                     Hitbox.activeHitboxes[i].Update(gt);
 
-                    if (Hitbox.activeHitboxes.Count < length) {
+                    if (Hitbox.activeHitboxes.Count < length) 
+                    {
                         i--;
                     }
                 }
@@ -196,6 +203,9 @@ namespace Moonwalk.Classes.Managers {
                         i--;
                     }
                 }
+
+                if (BossFight.Boss != null)
+                BossFight.Boss.Update(gt);
             }
             else {
                 //Resume button pressed
@@ -224,6 +234,11 @@ namespace Moonwalk.Classes.Managers {
             // Elements draw based on game state (i.e. GUI or menu elements)
             if (Map.Loaded)
                 Map.Draw(batch, displayTerrainHitboxes);
+
+            if (BossFight.Boss != null)
+            {
+                BossFight.Boss.Draw(batch);
+            }
 
             if (!isGamePaused)
                 switch (state) {
@@ -342,11 +357,7 @@ namespace Moonwalk.Classes.Managers {
 
                         Player.Respawn();
 
-                        SpawnEntity<TestEnemy>(new Object[] { new Vector2(200, 250) });
-                        SpawnEntity<KeyObject>(new Object[] { new Vector2(1060, 442) });
-
                         //WidowBoss.Start();
-
                     }
 
                     else
@@ -354,16 +365,12 @@ namespace Moonwalk.Classes.Managers {
                         // Loads player + companion
                         Player player = SpawnEntity<Player>();
                         Robot robot = SpawnEntity<Robot>(new Object[] { new Vector2(128, 48) });
-                        SpawnEntity<TestEnemy>(new Object[] { new Vector2(200, 250) });
-                        SpawnEntity<KeyObject>(new Object[] { new Vector2(900, 262) });
-
 
                         // Set player as the Camera's target
                         Camera.SetTarget(player);
 
                         //Add subscribers to player events
                         player.GetRobotPosition += robot.GetPosition;
-                        player.ToggleBotLock += robot.ToggleLock;
                     }
 
 

@@ -57,7 +57,9 @@ namespace Moonwalk.Classes.Entities.Base
             timer -= gameTime.ElapsedGameTime.TotalSeconds;
 
             if (timer <= 0 || collisions <= 0) 
-            { 
+            {
+                if (Robot.Tether == this)
+                    Robot.Tether = null;
                 GameManager.DespawnEntity(this);
             }
         }

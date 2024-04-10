@@ -94,7 +94,7 @@ namespace Moonwalk.Classes.Managers {
 
 
         public void UpdateAnimation(GameTime gameTime) {
-            // This values progressivily increments the respective spritesheetBoxPosition so that each whole number
+            // This value progressivily increments the respective spritesheetBoxPosition so that each whole number
             // represent a sprite in an animation (i.e. 0 is the first sprite in the animation, 1 is the second, etc)
             float deltaTime = 
                 (float) gameTime.ElapsedGameTime.TotalSeconds * 
@@ -148,35 +148,35 @@ namespace Moonwalk.Classes.Managers {
             {
                 case 0:
                     batch.Draw(
-                spritesheet,
-                new Rectangle(
-                    (int)(position.X),    // X position
-                    (int)(position.Y),    // Y position
-                    (int)(spriteSize.X * scale.X),  // Width
-                    (int)(spriteSize.Y * scale.Y)), // Height
-                spritesheetBox, // Sprite from spritesheet
-                Color.White,
-                0f,
-                origin,
-                SpriteEffects.None,
-                0);
+                        spritesheet,
+                        new Rectangle(
+                            (int)(position.X),    // X position
+                            (int)(position.Y),    // Y position
+                            (int)(spriteSize.X * scale.X),  // Width
+                            (int)(spriteSize.Y * scale.Y)), // Height
+                        spritesheetBox, // Sprite from spritesheet
+                        Color.White,
+                        0f,
+                        origin,
+                        SpriteEffects.None,
+                        0);
 
                     break;
                 case 1:
 
                     batch.Draw(
-               spritesheet,
-               new Rectangle(
-                   (int)(position.X - (int)((spriteSize.X) * scale.X)),
-                   (int)(position.Y),
-                   (int)(spriteSize.X * scale.X),  // Width
-                   (int)(spriteSize.Y * scale.Y)), // Height
-               spritesheetBox,
-               Color.White,
-               0f,
-               new Vector2(-24, 13),
-               SpriteEffects.FlipHorizontally,
-               0);
+                       spritesheet,
+                       new Rectangle(
+                           (int)(position.X - (int)((spriteSize.X) * scale.X)),
+                           (int)(position.Y),
+                           (int)(spriteSize.X * scale.X),  // Width
+                           (int)(spriteSize.Y * scale.Y)), // Height
+                       spritesheetBox,
+                       Color.White,
+                       0f,
+                       new Vector2(-24, 13),
+                       SpriteEffects.FlipHorizontally,
+                       0);
                     break;
             }             
         }

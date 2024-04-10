@@ -64,7 +64,7 @@ namespace Moonwalk.Classes.Entities
         private FaceDirection faceDirection;
 
         //Timers
-        private int animationTimer;
+        private float animationTimer;
         private double iFrames;
 
         private float swingChange;
@@ -127,10 +127,9 @@ namespace Moonwalk.Classes.Entities
             if (physicsState == PhysicsState.Linear)
             cooldowns.Update(gameTime);
 
+            ChangeAnimation(input, gameTime);
+
             base.Update(gameTime, input);
-
-            ChangeAnimation(input);
-
 
             int sign = 0;
 
@@ -600,49 +599,30 @@ namespace Moonwalk.Classes.Entities
             CheckCollision<ISolid>(true);
         }
 
-        private void ChangeAnimation(StoredInput input)
+        private void ChangeAnimation(StoredInput input, GameTime gameTime)
         {
             
             // For animations that play until they are done, don't change the animation until then
             if (animationTimer > 0)
             {
-                animationTimer--;
+                animationTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds * 60;
                 return;
-            }         
-
-            
-            //// Change facing direciton of the player
-            //if (acceleration.X < 0
-            //    && faceDirection != FaceDirection.Left)
-            //{
-            //    faceDirection = FaceDirection.Left;
-            //}
-            //else if (acceleration.X > 0
-            //    && faceDirection != FaceDirection.Right)
-            //{
-            //    faceDirection = FaceDirection.Right;
-            //}
-
-            // Update the face direction in the animation class
-
-            // If not moving, play idle
-            if (velocity.X == 0 && velocity.Y == 0)
-            {
-                SwitchAnimation(Animations.Idle, false);
             }
 
+            // If not moving, play idle
+            SwitchAnimation(Animations.Idle, false);
+
             // If moving horizontally, play run
-            if (velocity.X != 0)
-            {                
+            if (velocity.X != 0) {
                 SwitchAnimation(Animations.Run, false);
             }
 
             // If in the air, play airborne animation
-            if (!Grounded)
-            {
+            if (!Grounded) {
                 SwitchAnimation(Animations.Jump);
             }
 
+            // Update the face direction in the animation class
             activeAnimation.FaceDirection = (int)faceDirection;
         }
 

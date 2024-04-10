@@ -336,7 +336,8 @@ namespace Moonwalk.Classes.Managers {
                         "E - Melee Attack\n" +
                         "SHIFT (HOLD) - Ranged attack\n" +
                         "M1 - Impulse\n" +
-                        "M2 - Tether",
+                        "M2 - Tether\n" + 
+                        "R - Respawn",
                         "MonogramRegular",
                         Color.White
                         ));

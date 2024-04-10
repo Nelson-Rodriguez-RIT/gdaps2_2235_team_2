@@ -104,7 +104,7 @@ namespace Moonwalk.Classes.Entities
                     //Enemy accelerates towards the player's x direction
                     acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
 
-                if (distance <=20)
+                if (distance <=10)
                 {
                     velocity.X = 0;
                     acceleration.X = 0;

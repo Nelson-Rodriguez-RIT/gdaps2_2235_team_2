@@ -773,6 +773,14 @@ namespace Moonwalk.Classes.Entities
 
             player.GetRobotPosition += robot.GetPosition;
 
+            foreach (Entity entity in GameManager.entities)
+            {
+                if (entity is KeyObject)
+                {
+                    ((KeyObject)entity).Reset();
+                }
+            }
+
             /*
             while (GUI.GUIElementList.Exists(item => item is GUIPlayerStatusElement))
             {

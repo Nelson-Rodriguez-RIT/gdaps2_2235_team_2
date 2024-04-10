@@ -30,7 +30,7 @@ namespace Moonwalk.Classes.Entities
         public KeyObject(Vector2 position) :
             base (position, "../../../Content/Entities/Key", false, false)
         {
-            
+            originalPos = position;
 
             this.hurtbox = new Rectangle((int)position.X, (int)position.Y, 16, 16); //position/hitbox
             this.isColliding = false; //should not start by colliding with anything
@@ -62,10 +62,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            if (player == null )
-            {
-                player = GameManager.entities.GetAllOfType<Player>()[0];
-            }
+            
 
             hurtbox = new Rectangle(
                 (int)vectorPosition.X,
@@ -97,9 +94,23 @@ namespace Moonwalk.Classes.Entities
 
         public void Reset()
         {
-            vectorPosition = originalPos;
+            if (player == null)
+            {
+                player = GameManager.entities.GetAllOfType<Player>()[0];
+            }
+
             isInteracted = false;
             isColliding = false;
+
+            vectorPosition = originalPos;
+
+            hurtbox = new Rectangle(
+                (int)vectorPosition.X,
+                (int)vectorPosition.Y,
+                hurtbox.Width,
+                hurtbox.Height);
+
+
         }
     }
 }

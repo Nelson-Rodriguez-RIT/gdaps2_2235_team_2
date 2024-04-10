@@ -28,6 +28,8 @@ namespace Moonwalk.Classes.Entities
         public static Point Location;
         public static Checkpoint MostRecentCheckpoint;
         private bool godMode = false;
+        private GUIElement playerStatusElement;
+
         protected enum Animations
         {
             Idle,
@@ -105,7 +107,8 @@ namespace Moonwalk.Classes.Entities
 
             cooldowns = new AbilityCooldowns<Abilities>(properties);
 
-            GUI.AddElement(new GUIPlayerStatusElement(new Vector2(10, 10), this));
+            playerStatusElement = new GUIPlayerStatusElement(new Vector2(10, 10), this);
+            GUI.AddElement(playerStatusElement);
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -166,6 +169,7 @@ namespace Moonwalk.Classes.Entities
             if (health <= 0)
             {
                 Respawn();
+                GUI.RemoveElement(playerStatusElement);
             }
         }
 

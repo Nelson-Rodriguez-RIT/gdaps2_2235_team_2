@@ -399,7 +399,7 @@ namespace Moonwalk.Classes.Managers
 
             // Entity Data File Reading //
             // Get and process properties file data
-            fileData = new Queue<string>(LoadFile($"{path}/", ".edf"));
+            fileData = new Queue<string>(LoadFile($"{path}/", ".bdf"));
             while (fileData.Count != 0)
             {
                 data = fileData.Dequeue();
@@ -412,7 +412,8 @@ namespace Moonwalk.Classes.Managers
                 dataBlocks = data.Split('=');
 
                 
-                if (dataBlocks[0].Substring(0,2) == "[]")
+                if (dataBlocks[0].Length > 1 
+                    && dataBlocks[0].Substring(0,2) == "[]")
                 {
                     List<Rectangle> hitboxData = new();
                     string[] split = dataBlocks[1].Split(",");

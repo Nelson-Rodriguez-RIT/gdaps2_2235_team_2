@@ -35,11 +35,15 @@ namespace Moonwalk.Classes.Boss
             Land
         }
 
-        private enum Phases
+        private enum Attacks
         {
-            One,
-            Two
+            Collide,
+            Claw,
+            Projectile,
+            Slam
         }
+
+
 
         
 
@@ -56,13 +60,12 @@ namespace Moonwalk.Classes.Boss
         /// </summary>
         private List<Behavior> currentPhase;
 
-        private const double AIFrequency = 10;
-        private int frameTimer;
-        private const float MoveSpeed = 12;
+        private double timer;
+        private float MoveSpeed;
 
         
 
-        private WidowBoss(Vector2 center) : base("../../../Content/WidowBoss", center)
+        private WidowBoss() : base("../../../Content/WidowBoss")
         {
             
 
@@ -73,7 +76,14 @@ namespace Moonwalk.Classes.Boss
 
             }
 
+            MoveSpeed = float.Parse(properties["MoveSpeed"]);
             cooldowns = new AbilityCooldowns<Behavior>(properties);
+            
+            //Add the damage of each different attack
+            foreach (string attack in Enum.GetNames(typeof(Attacks)))
+            {
+                attackDamage.Add(Enum.Parse<Attacks>(attack), int.Parse(properties[attack]));
+            }
 
             SwitchBehavior(Behavior.Idle);
             
@@ -81,14 +91,14 @@ namespace Moonwalk.Classes.Boss
 
         public static void Start()
         {
-            new WidowBoss(new Vector2(500, 400));
+            new WidowBoss();
         }
 
         public override void Update(GameTime gt)
         {
-            if (frameTimer > 0)
+            if (timer > 0)
             {
-                frameTimer--;
+                timer -= gt.ElapsedGameTime.TotalSeconds;
             }
 
             if (health > maxHealth / 2)
@@ -125,27 +135,35 @@ namespace Moonwalk.Classes.Boss
                         * (faceDirection == FaceDirection.Right ? 1 : -1);
                     break;
                 case Behavior.Attack:
-                    if (frameTimer == activeAnimation.AnimationLength - 30)
+                    if (timer <= activeAnimation.AnimationLengthSeconds -0.5
+                        && timer > activeAnimation.AnimationLengthSeconds - 0.515)
                     {
-                        Hitbox.activeHitboxes.Add(new Hitbox(
-                            9 * 6, 
-                            center, 
+                        Hitbox arm = new Hitbox(
+                            9 * 6,
+                            center,
                             new Point(
-                                17, 
-                                29), 
-                            GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(), 
+                                17,
+                                29),
+                            GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(),
                             new Point(
-                                faceDirection == FaceDirection.Right ? 34 : -34 - 17, 
-                                -5)));
+                                faceDirection == FaceDirection.Right ? 34 : -34 - 17,
+                                -5));
 
-                        Hitbox.activeHitboxes.Add(new Hitbox(
+                        Hitbox shockwave = new Hitbox(
                             9 * 6,
                             center,
                             new Point(51, 13),
                             GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(),
                             new Point(
-                                faceDirection == FaceDirection.Right ? 37 : -37 - 51, 
-                                11)));
+                                faceDirection == FaceDirection.Right ? 37 : -37 - 51,
+                                11));
+
+                        arm.targetEntered += this.DealDamage;
+
+
+                        Hitbox.activeHitboxes.Add(arm);
+
+                        Hitbox.activeHitboxes.Add(shockwave);
                     }
                     break;
 
@@ -195,7 +213,7 @@ namespace Moonwalk.Classes.Boss
                             < 100)
                         {
                             currentBehavior = Behavior.Attack;
-                            
+                            currentAttack = Attacks.Slam;
                         }
                         else
                         {
@@ -214,7 +232,7 @@ namespace Moonwalk.Classes.Boss
 
             if ((Behavior)currentBehavior == Behavior.Attack)
             {
-                frameTimer = activeAnimation.AnimationLength;
+                timer = activeAnimation.AnimationLengthSeconds;
             }
 
             activeAnimation.FaceDirection = (int)faceDirection;
@@ -230,5 +248,7 @@ namespace Moonwalk.Classes.Boss
             if (cooldowns != null)
             cooldowns.UseAbility((Behavior)animationEnum);
         }
+
+        
     }
 }

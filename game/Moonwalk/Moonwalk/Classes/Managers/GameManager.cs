@@ -368,7 +368,7 @@ namespace Moonwalk.Classes.Managers {
 
                         Player.Respawn();                        
 
-                        //WidowBoss.Start();
+                        WidowBoss.Start();
                     }
 
                     else

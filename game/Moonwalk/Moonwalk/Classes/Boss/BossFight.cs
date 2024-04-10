@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Moonwalk.Classes.Entities.Base;
 using Moonwalk.Classes.Helpful_Stuff;
 using Moonwalk.Classes.Managers;
+using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,10 +29,12 @@ namespace Moonwalk.Classes.Boss
         protected int maxHealth;
         protected int health;
         protected Random rng;
+        protected Vector2 cameraTarget;
         protected Vector2 center;
         protected Vector2 relativePosition;
         protected Animation activeAnimation;
         protected Enum currentBehavior;
+        protected Enum currentAttack;
 
         internal protected Dictionary<string, string> properties = null;
         internal protected List<Animation> animations = null;
@@ -39,12 +42,14 @@ namespace Moonwalk.Classes.Boss
         internal protected Dictionary<string, List<Rectangle>> hitboxData = null;
         protected List<Rectangle> hitboxes;
 
+        protected Dictionary<Enum, int> attackDamage;
+
         public List<Rectangle> Hitboxes
         {
             get { return hitboxes; }
         }
 
-        public BossFight(string directory, Vector2 center)
+        public BossFight(string directory)
         {
             BossData bufferedData = Loader.LoadBoss(directory);
             bufferedData.Load(this);
@@ -53,7 +58,16 @@ namespace Moonwalk.Classes.Boss
 
             maxHealth = int.Parse(properties["MaxHealth"]);
             health = int.Parse(properties["MaxHealth"]);
-            this.center = center;
+            this.center = new Vector2(
+                int.Parse(properties["X"]),
+                int.Parse(properties["Y"]));
+
+            this.cameraTarget = new Vector2(
+                int.Parse(properties["CameraX"]),
+                int.Parse(properties["CameraY"]));
+            attackDamage = new Dictionary<Enum, int>();
+
+            //Camera.SetTarget(this.cameraTarget);
 
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
@@ -91,6 +105,12 @@ namespace Moonwalk.Classes.Boss
                 activeAnimation.Reset();
 
             
+        }
+
+        protected void DealDamage(List<IDamageable> damageables)
+        {
+            foreach (IDamageable damageable in damageables)
+            damageable.TakeDamage(attackDamage[currentAttack]);
         }
 
         public virtual void Draw(SpriteBatch batch)

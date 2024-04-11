@@ -334,10 +334,14 @@ namespace Moonwalk.Classes.Managers {
                         "Instructions:\n" +
                         "WASD - Movement\n" +
                         "E - Melee Attack\n" +
-                        "SHIFT (HOLD) - Ranged attack\n" +
+                        "SHIFT (HOLD ) - Ranged attack\n" +
                         "M1 - Impulse\n" +
                         "M2 - Tether\n" + 
-                        "R - Respawn",
+                        "R - Respawn\n\n" +
+                        "F5 - Dev Mode\n" +
+                        "    M1 - Spawn Entity Menu\n" +
+                        "        (any ) - Type\n" +
+                        "        ENTER - Submit",
                         "MonogramRegular",
                         Color.White
                         ));

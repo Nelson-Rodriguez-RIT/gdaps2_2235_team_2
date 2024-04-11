@@ -1,8 +1,16 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Moonwalk.Classes.Boss;
+using Moonwalk.Classes.Entities;
+using Moonwalk.Classes.Entities.Base;
+using Moonwalk.Classes.Helpful_Stuff;
+using Moonwalk.Classes.Maps;
+using Moonwalk.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
 
 namespace Moonwalk.Classes.Managers {
 
@@ -45,7 +53,10 @@ namespace Moonwalk.Classes.Managers {
 
         public static void Draw(SpriteBatch batch) {
             foreach (GUIElement element in elements)
+            {
                 element.Draw(batch);
+            }
+                
         }
     }
 
@@ -53,6 +64,62 @@ namespace Moonwalk.Classes.Managers {
     #region GUIElements
     public abstract class GUIElement {
         public abstract void Draw(SpriteBatch batch);
+    }
+
+    /// <summary>
+    /// Text GUI whose text changes based on what the user types
+    /// </summary>
+    internal class GUITextField : GUIElement
+    {
+        private Vector2 position;
+        private string text = "";
+        private SpriteFont font;
+        private Color color;
+
+        public string Text
+        {
+            get { return text; }
+        }
+
+        public GUITextField(Vector2 position, string fontName, Color color)
+            : base()
+        {
+            this.position = position;
+            this.font = GUI.GetFont(fontName);
+            this.color = color;
+        }
+
+        public void Input(StoredInput input)
+        {
+            foreach (Keys key in Enum.GetValues(typeof(Keys)))
+            {
+                if (input.IsPressed(key)
+                    && !input.WasPressed(key))
+                {
+                    if (key != Keys.Delete && key != Keys.Enter && key != Keys.LeftShift && key != Keys.Back)
+                    {
+                        if (input.IsPressed(Keys.LeftShift))
+                        {
+                            text += key.ToString();
+                        }
+                        else
+                        {
+                            text += key.ToString().ToLower();
+                        }
+                        
+                    }
+                    else if (key == Keys.Delete || key == Keys.Back)
+                    {
+                        text = text.Substring(0, text.Length - 1);
+                    }
+                }
+            }
+        }
+
+        public override void Draw(SpriteBatch batch)
+        {
+            batch.DrawString(font, text, position, color);
+        }
     }
 
     /// <summary>
@@ -64,7 +131,16 @@ namespace Moonwalk.Classes.Managers {
         private SpriteFont font;
         private Color color;        
 
-        public GUITextElement(Vector2 position, string text, string fontName, Color color) {
+        public GUITextElement(Vector2 position, ref string text, string fontName, Color color) {
+            this.position = position;
+            this.text = text;
+            this.color = color;
+
+            font = GUI.GetFont(fontName);
+        }
+
+        public GUITextElement(Vector2 position, string text, string fontName, Color color)
+        {
             this.position = position;
             this.text = text;
             this.color = color;

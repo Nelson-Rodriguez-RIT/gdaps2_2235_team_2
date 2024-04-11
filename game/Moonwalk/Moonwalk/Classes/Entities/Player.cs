@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
@@ -26,7 +27,6 @@ namespace Moonwalk.Classes.Entities
     {
         public static Point Location;
         public static Checkpoint MostRecentCheckpoint;
-        private bool GodMode = false;
         private static GUIElement playerStatusElement = null;
 
         protected enum Animations
@@ -70,6 +70,12 @@ namespace Moonwalk.Classes.Entities
 
         protected internal float rangedAttackCooldownTimer;
         protected internal float rangedAttackCharge;
+
+        //Dev mode
+        private bool GodMode = false;
+        private bool Spawning = false;
+        private GUITextField textField;
+        private Vector2 SpawnLocation;
 
         public int Health
         {
@@ -138,32 +144,81 @@ namespace Moonwalk.Classes.Entities
 
             if (GodMode)
             {
-                if (input.IsPressed(Keys.A))
+                if (input.CurrentMouse.LeftButton == ButtonState.Pressed
+                    && input.PreviousMouse.LeftButton == ButtonState.Released)
                 {
-                    vectorPosition.X -= GodModeSpeed;
-                }
-                if (input.IsPressed(Keys.D))
-                {
-                    vectorPosition.X += GodModeSpeed;
-                }
-                if (input.IsPressed(Keys.W))
-                {
-                    vectorPosition.Y -= GodModeSpeed;
-                }
-                if (input.IsPressed(Keys.S))
-                {
-                    vectorPosition.Y += GodModeSpeed;
+                    Spawning = true;
+                    SpawnLocation = Camera.WorldToScreen(input.CurrentMouse.Position.ToVector2() / 2) + Camera.GlobalOffset / 2;
+
+                    textField = new GUITextField(new Vector2(200, 50), "MonogramRegular", Color.White);
+
+                    GUI.AddElement(textField);
+                    //GUI.AddElement(new GUITextureElement(m))
                 }
 
-                hurtbox = new Rectangle(
-                    (int)Math.Round(vectorPosition.X),
-                    (int)Math.Round(vectorPosition.Y),
-                    hurtbox.Width,
-                    hurtbox.Height);
+                if (Spawning)
+                {
+                    textField.Input(input);
 
-                //Add spawning entities
+                    if (input.IsPressed(Keys.Enter) && textField != null)
+                    {
+                        string typeName = textField.Text;
+                        GUI.RemoveElement(textField);
+                        this.textField = null;
 
-                return;
+                        Type type = Type.GetType("Moonwalk.Classes.Entities." + typeName);
+
+                        if (type != null &&
+                            type.IsAssignableTo(typeof(Entity))
+                            && type != typeof(Player)
+                            && type != typeof(Robot)
+                            && type != typeof(Projectile))
+                        {
+                            //Get the spawnentity method and invoke it with the type we just defined
+                            MethodInfo spawn = typeof(GameManager).GetMethod("SpawnEntity");
+                            MethodInfo spawnGeneric = spawn.MakeGenericMethod(type);
+
+
+                            object[] args = new object[] { SpawnLocation};
+
+                            // This is a bit convoluted but if you ask me I can explain why we need an array 
+                            // which contains an array which contains the paramaters for this - Dante
+                            spawnGeneric.Invoke(null, new object[] { args });
+                        }
+
+                        Spawning = false;
+                    }
+
+                    return;
+
+                }
+                else
+                {
+                    if (input.IsPressed(Keys.A))
+                    {
+                        vectorPosition.X -= GodModeSpeed;
+                    }
+                    if (input.IsPressed(Keys.D))
+                    {
+                        vectorPosition.X += GodModeSpeed;
+                    }
+                    if (input.IsPressed(Keys.W))
+                    {
+                        vectorPosition.Y -= GodModeSpeed;
+                    }
+                    if (input.IsPressed(Keys.S))
+                    {
+                        vectorPosition.Y += GodModeSpeed;
+                    }
+
+                    hurtbox = new Rectangle(
+                        (int)Math.Round(vectorPosition.X),
+                        (int)Math.Round(vectorPosition.Y),
+                        hurtbox.Width,
+                        hurtbox.Height);
+
+                    return;
+                }
             }
 
             #endregion
@@ -834,7 +889,11 @@ namespace Moonwalk.Classes.Entities
             }
             */
         }
+
+        
     }
+
+    
 
     internal class GUIPlayerStatusElement : GUIElement {
         const int Size = 2;

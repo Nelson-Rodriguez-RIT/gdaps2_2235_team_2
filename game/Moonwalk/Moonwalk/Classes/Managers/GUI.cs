@@ -11,6 +11,7 @@ using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Moonwalk.Classes.Managers {
 
@@ -96,7 +97,8 @@ namespace Moonwalk.Classes.Managers {
                 if (input.IsPressed(key)
                     && !input.WasPressed(key))
                 {
-                    if (key != Keys.Delete && key != Keys.Enter && key != Keys.LeftShift && key != Keys.Back)
+                    if (key != Keys.Delete && key != Keys.Enter && key != Keys.LeftShift && key != Keys.Back
+                        && key != Keys.D1 && key != Keys.D2 && key != Keys.D3)
                     {
                         if (input.IsPressed(Keys.LeftShift))
                         {
@@ -130,6 +132,11 @@ namespace Moonwalk.Classes.Managers {
         private string text;
         private SpriteFont font;
         private Color color;        
+
+        public string Text
+        {
+            get { return text; }
+        }
 
         public GUITextElement(Vector2 position, ref string text, string fontName, Color color) {
             this.position = position;
@@ -167,8 +174,11 @@ namespace Moonwalk.Classes.Managers {
             this.color = color;
         }
 
+
+        /*
         public GUITextureElement(Vector2 position, string textureName, Color color) :
             this(new Rectangle((int)position.X, (int)position.Y, 1, 1), textureName, color) { }
+        */
 
         public override void Draw(SpriteBatch batch) {
             batch.Draw(texture, plane, color);
@@ -189,6 +199,77 @@ namespace Moonwalk.Classes.Managers {
             if (plane.Contains(mouse))
                 clicked = true;
         } 
+    }
+
+    /// <summary>
+    /// Group of GUI elements. Everything in it has a relative position
+    /// </summary>
+    public class GUIGroup : GUIElement
+    {
+        Vector2 position;
+        List<GUIElement> elements;
+
+        public Vector2 Position
+        {
+            get { return position; }
+        }
+
+        public List<GUIElement> Elements 
+        { get { return elements; } }
+
+        public GUIGroup(Vector2 position) : base()
+        { 
+            this.position = position;
+            elements = new List<GUIElement>();
+        }
+
+        public override void Draw(SpriteBatch batch)
+        {
+            foreach (GUIElement element in elements)
+            {
+                element.Draw(batch);
+            }
+        }
+
+        public GUIElement Add(object[] args)
+        {
+            GUIElement element = null;
+
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i] is Vector2)
+                {
+                    //relative position
+                    args[i] = (Vector2)args[i] + position;
+                }
+            }
+
+            Type[] types = typeof(GUIElement).GetTypeInfo().Assembly.GetTypes();
+
+            foreach (Type type in types)
+            {
+                if (type.IsAssignableTo(typeof(GUIElement)))
+                {
+                    try
+                    {
+                        element = (GUIElement)Activator.CreateInstance(type, args);
+
+                        elements.Add(element);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+
+            return element;
+        }
+
+        public void Remove(GUIElement element)
+        {
+            elements.Remove(element);
+        }
     }
     #endregion
 }

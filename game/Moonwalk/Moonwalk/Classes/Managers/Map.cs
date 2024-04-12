@@ -111,7 +111,7 @@ namespace Moonwalk.Classes.Managers
             // Draw collision if toggled (via F2)
             if (drawhitboxes)
                 foreach (Terrain terrain in geometry) {
-                    Vector2 position = Camera.RelativePosition(terrain.Hitbox);
+                    Rectangle position = Camera.RelativePosition(terrain.Hitbox);
 
                     batch.Draw(
                         hitboxSprite,

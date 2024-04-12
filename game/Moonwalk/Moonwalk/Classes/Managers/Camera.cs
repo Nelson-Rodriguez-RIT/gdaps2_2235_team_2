@@ -31,7 +31,7 @@ namespace Moonwalk.Classes.Managers {
             if (targetEntity == null) // Ignore empty references
                 return;
 
-            targetPosition = new Vector2(targetEntity.Position.X, targetEntity.Position.Y);
+            targetPosition = new Vector2(targetEntity.hurtbox.Center.X, targetEntity.hurtbox.Center.Y);
         }
 
 
@@ -78,9 +78,10 @@ namespace Moonwalk.Classes.Managers {
         /// Takes a provided rectangle and makes it relative to the target's position.
         /// This will also take sprite scalings into account.
         /// </summary>
-        public static Vector2 RelativePosition(Rectangle position) {
+        public static Rectangle RelativePosition(Rectangle position) {
             UpdateTargetPosition();
-            return (new Vector2(position.X, position.Y) - targetPosition) * GameMain.ActiveScale + globalOffset;
+            Vector2 newPos = (new Vector2(position.X, position.Y) - targetPosition) * GameMain.ActiveScale + globalOffset;
+            return new Rectangle(newPos.ToPoint(), position.Size);
         }
 
         // (x - offset) / scale + targetPosition = position

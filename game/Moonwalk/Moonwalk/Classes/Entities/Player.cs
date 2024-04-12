@@ -26,9 +26,20 @@ namespace Moonwalk.Classes.Entities
     /// </summary>
     internal class Player : PlayerControlled, IDamageable, ISoft
     {
-        public static Point Location;
+        private static Point location;
         public static Checkpoint MostRecentCheckpoint;
         private static GUIElement playerStatusElement = null;
+        private static Rectangle loadRange;
+
+        public static Rectangle LoadRange
+        {
+            get { return loadRange; }
+        }
+
+        public static Point Location
+        {
+            get { return location; }
+        }
 
         protected enum Animations
         {
@@ -128,7 +139,18 @@ namespace Moonwalk.Classes.Entities
         public override void Update(GameTime gameTime, StoredInput input)
         {
             //Change publically available position
-            Location = this.Hitbox.Center;
+            location = this.Hitbox.Center;
+            loadRange = //new Rectangle(location - new Point(10, 10), new Point(20, 20));
+            
+            new Rectangle(
+            new Point(
+                location.X, 
+                location.Y) 
+            - (Camera.GlobalOffset / 2).ToPoint(), 
+            (Camera.GlobalOffset * 2).ToPoint());
+            
+
+            Rectangle temp = Camera.RelativePosition(loadRange);
 
             #region Godmode
 
@@ -690,6 +712,8 @@ namespace Moonwalk.Classes.Entities
         public override void Draw(SpriteBatch batch)
         {
             base.Draw(batch);
+
+            batch.Draw(hitboxSprite, Camera.RelativePosition(loadRange), Color.White);
             
         }
 
@@ -994,7 +1018,7 @@ namespace Moonwalk.Classes.Entities
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnEntity<Player>();
             Camera.SetTarget(player);
-            Player.Location = player.Hitbox.Center;
+            location = player.Hitbox.Center;
 
             Robot robot = Robot.Respawn();
 
@@ -1016,12 +1040,6 @@ namespace Moonwalk.Classes.Entities
             }
             */
         }
-
-        
-    }
-
-    internal class SpawnMenu
-    {
 
     }
 

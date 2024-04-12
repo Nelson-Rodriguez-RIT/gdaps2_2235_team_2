@@ -99,13 +99,6 @@ namespace Moonwalk.Classes.Entities
                 Respawn();
             }
 
-            Vector2 one = new Vector2(2, 2);
-            Vector2 two = new Vector2(2, 2);
-
-            var w = one / new Vector2(2, 2);
-            var a = two / 2f;
-
-
             hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),

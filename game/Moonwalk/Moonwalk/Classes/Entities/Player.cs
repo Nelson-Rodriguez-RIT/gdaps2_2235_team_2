@@ -99,6 +99,13 @@ namespace Moonwalk.Classes.Entities
                 Respawn();
             }
 
+            Vector2 one = new Vector2(2, 2);
+            Vector2 two = new Vector2(2, 2);
+
+            var w = one / new Vector2(2, 2);
+            var a = two / 2f;
+
+
             hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
@@ -180,203 +187,60 @@ namespace Moonwalk.Classes.Entities
                     
 
                     GUI.AddElement(spawnMenu);
-                    //GUI.AddElement(new GUITextureElement(m))
                 }
 
                 if (Spawning)
                 {
                     textField.Input(input);
 
-                    if (input.IsPressed(Keys.Enter) && spawnMenu != null)
+                    Keys key = Keys.Escape;
+
+                    if (input.IsPressed(Keys.Enter))
                     {
-                        string typeName = textField.Text;
-                        GUI.RemoveElement(spawnMenu);
-                        this.spawnMenu = null;
-
-                        Type type = Type.GetType("Moonwalk.Classes.Entities." + typeName);
-
-                        if (type != null &&
-                            type.IsAssignableTo(typeof(Entity))
-                            && type != typeof(Player)
-                            && type != typeof(Robot)
-                            && type != typeof(Projectile))
-                        {
-                            //Get the spawnentity method and invoke it with the type we just defined
-                            MethodInfo spawn = typeof(GameManager).GetMethod("SpawnEntity");
-                            MethodInfo spawnGeneric = spawn.MakeGenericMethod(type);
-
-
-                            object[] args = new object[] { SpawnLocation};
-
-                            // This is a bit convoluted but if you ask me I can explain why we need an array 
-                            // which contains an array which contains the paramaters for this - Dante
-                            spawnGeneric.Invoke(null, new object[] { args });
-                        }
-
-                        StreamWriter writer = null;
-
-                        try
-                        {
-                            string[] lines = File.ReadAllLines("../../../Content/GUI/History.txt");
-
-                            writer = new StreamWriter("../../../Content/GUI/History.txt");
-
-                            string[] lines2 = new string[3];
-
-
-                            try
-                            {
-                                if (!lines.Contains(typeName))
-                                {
-                                    lines2[0] = typeName;
-                                    lines2[1] = lines[0];
-                                    lines2[2] = lines[1];
-                                }
-                            }
-                            catch (IndexOutOfRangeException e)
-                            {
-
-                            }
-
-
-                            foreach (string line in lines2)
-                            {
-                                writer.WriteLine(line);
-                            }
-                        }
-                        catch
-                        {
-
-                        }
-                        finally
-                        {
-                            if (writer != null)
-                            writer.Close();
-                        }
-
+                        key = Keys.Enter;
                         Spawning = false;
                     }
                     else if (input.IsPressed(Keys.D1))
                     {
-                        string typeName = ((GUITextElement)spawnMenu.Elements[1]).Text;
-                        GUI.RemoveElement(spawnMenu);
-                        this.spawnMenu = null;
-
-                        Type type = Type.GetType("Moonwalk.Classes.Entities." + typeName);
-
-                        if (type != null &&
-                            type.IsAssignableTo(typeof(Entity))
-                            && type != typeof(Player)
-                            && type != typeof(Robot)
-                            && type != typeof(Projectile))
-                        {
-                            //Get the spawnentity method and invoke it with the type we just defined
-                            MethodInfo spawn = typeof(GameManager).GetMethod("SpawnEntity");
-                            MethodInfo spawnGeneric = spawn.MakeGenericMethod(type);
-
-
-                            object[] args = new object[] { SpawnLocation };
-
-                            // This is a bit convoluted but if you ask me I can explain why we need an array 
-                            // which contains an array which contains the paramaters for this - Dante
-                            spawnGeneric.Invoke(null, new object[] { args });
-                        }
-
-                        StreamWriter writer = null;
-
-                        try
-                        {
-                            string[] lines = File.ReadAllLines("../../../Content/GUI/History.txt");
-
-                            writer = new StreamWriter("../../../Content/GUI/History.txt");
-
-                            if (!lines.Contains(typeName))
-                            {
-                                lines[2] = lines[1];
-                                lines[1] = lines[0];
-                                lines[0] = typeName;
-                            }
-
-                            foreach (string line in lines)
-                            {
-                                writer.WriteLine(line);
-                            }
-                        }
-                        catch
-                        {
-
-                        }
-                        finally
-                        {
-                            if (writer != null)
-                                writer.Close();
-                        }
-
+                        key = Keys.D1;
                         Spawning = false;
                     }
-                    else if (input.IsPressed(Keys.D2))
+                    else if(input.IsPressed(Keys.D2))
                     {
-                        string typeName = ((GUITextElement)spawnMenu.Elements[2]).Text;
-                        GUI.RemoveElement(spawnMenu);
-                        this.spawnMenu = null;
-
-                        Type type = Type.GetType("Moonwalk.Classes.Entities." + typeName);
-
-                        if (type != null &&
-                            type.IsAssignableTo(typeof(Entity))
-                            && type != typeof(Player)
-                            && type != typeof(Robot)
-                            && type != typeof(Projectile))
-                        {
-                            //Get the spawnentity method and invoke it with the type we just defined
-                            MethodInfo spawn = typeof(GameManager).GetMethod("SpawnEntity");
-                            MethodInfo spawnGeneric = spawn.MakeGenericMethod(type);
-
-
-                            object[] args = new object[] { SpawnLocation };
-
-                            // This is a bit convoluted but if you ask me I can explain why we need an array 
-                            // which contains an array which contains the paramaters for this - Dante
-                            spawnGeneric.Invoke(null, new object[] { args });
-                        }
-
-                        StreamWriter writer = null;
-
-                        try
-                        {
-                            string[] lines = File.ReadAllLines("../../../Content/GUI/History.txt");
-
-                            writer = new StreamWriter("../../../Content/GUI/History.txt");
-
-                            if (!lines.Contains(typeName))
-                            {
-                                lines[2] = lines[1];
-                                lines[1] = lines[0];
-                                lines[0] = typeName;
-                            }
-
-                            foreach (string line in lines)
-                            {
-                                writer.WriteLine(line);
-                            }
-                        }
-                        catch
-                        {
-
-                        }
-                        finally
-                        {
-                            if (writer != null)
-                                writer.Close();
-                        }
-
+                        key = Keys.D2;
                         Spawning = false;
                     }
-                    else if (input.IsPressed(Keys.D3))
+                    else if(input.IsPressed(Keys.D3))
                     {
-                        string typeName = ((GUITextElement)spawnMenu.Elements[3]).Text;
+                        key = Keys.D3;
+                        Spawning = false;
+                    }
+                    
+
+                    string typeName = null;
+
+                    switch (key)
+                    {
+                        case Keys.Enter:
+                            typeName = textField.Text;
+                            break;
+                        case Keys.D1:
+                        case Keys.D2:
+                        case Keys.D3:
+                            typeName = ((GUITextElement)spawnMenu.Elements[
+                                int.Parse(key.ToString().Substring(1))]).Text.Substring(4);
+                            break;
+
+                        
+                    }
+
+                   
+
+                    if (!Spawning)
+                    {
                         GUI.RemoveElement(spawnMenu);
                         this.spawnMenu = null;
+                        
 
                         Type type = Type.GetType("Moonwalk.Classes.Entities." + typeName);
 
@@ -391,45 +255,73 @@ namespace Moonwalk.Classes.Entities
                             MethodInfo spawnGeneric = spawn.MakeGenericMethod(type);
 
 
-                            object[] args = new object[] { SpawnLocation };
+                            object[] args = new object[] {SpawnLocation};
 
                             // This is a bit convoluted but if you ask me I can explain why we need an array 
                             // which contains an array which contains the paramaters for this - Dante
                             spawnGeneric.Invoke(null, new object[] { args });
-                        }
 
-                        StreamWriter writer = null;
+                            StreamWriter writer = null;
 
-                        try
-                        {
-                            string[] lines = File.ReadAllLines("../../../Content/GUI/History.txt");
-
-                            writer = new StreamWriter("../../../Content/GUI/History.txt");
-
-                            if (!lines.Contains(typeName))
+                            try
                             {
-                                lines[2] = lines[1];
-                                lines[1] = lines[0];
-                                lines[0] = typeName;
+                                List<string> lines = File.ReadAllLines("../../../Content/GUI/History.txt").ToList();
+
+                                writer = new StreamWriter("../../../Content/GUI/History.txt");
+
+                                List<string> lines2 = new List<string>();
+
+
+                                try
+                                {
+                                    if (lines.Contains(typeName))
+                                    {
+                                        lines2.Add(typeName);
+
+                                        for (int i = 0; i < lines.Count; i++)
+                                        {
+                                            if (lines[i] != typeName)
+                                            {
+                                                lines2.Add(lines[i]);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        lines2.Add(typeName);
+
+                                        for (int i = 0; i < 2; i++)
+                                        {
+                                            lines2.Add(lines[i]);
+                                        }
+                                    }
+                                }
+                                catch (ArgumentOutOfRangeException e)
+                                {
+
+                                }
+
+
+                                foreach (string line in lines2)
+                                {
+                                    writer.WriteLine(line);
+                                }
+                            }
+                            catch (FileNotFoundException e)
+                            {
+
+                            }
+                            finally
+                            {
+                                if (writer != null)
+                                    writer.Close();
                             }
 
-                            foreach (string line in lines)
-                            {
-                                writer.WriteLine(line);
-                            }
-                        }
-                        catch
-                        {
 
                         }
-                        finally
-                        {
-                            if (writer != null)
-                                writer.Close();
-                        }
-
-                        Spawning = false;
                     }
+
+                        
 
                     return;
 
@@ -1135,7 +1027,10 @@ namespace Moonwalk.Classes.Entities
         
     }
 
-    
+    internal class SpawnMenu
+    {
+
+    }
 
     internal class GUIPlayerStatusElement : GUIElement {
         const int Size = 2;

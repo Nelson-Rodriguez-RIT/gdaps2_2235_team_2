@@ -110,7 +110,7 @@ namespace Moonwalk.Classes.Managers {
                         }
                         
                     }
-                    else if (key == Keys.Delete || key == Keys.Back)
+                    else if ((key == Keys.Delete || key == Keys.Back) && text.Length > 0)
                     {
                         text = text.Substring(0, text.Length - 1);
                     }

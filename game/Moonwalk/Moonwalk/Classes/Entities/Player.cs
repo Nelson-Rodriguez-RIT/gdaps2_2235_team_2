@@ -104,6 +104,7 @@ namespace Moonwalk.Classes.Entities
         //Make private later
         public Player() : base(MostRecentCheckpoint.Hitbox.Location.ToVector2(), "../../../Content/Entities/Player")
         {
+            //Set initial checkpoint
             if (MostRecentCheckpoint == null)
             {
                 MostRecentCheckpoint = (Checkpoint)Map.Geometry.First();
@@ -120,7 +121,7 @@ namespace Moonwalk.Classes.Entities
             acceleration = new Vector2(0, gravity);
             maxXVelocity = 40;
             maxYVelocity = 60;
-            maxAngVelocity = 350;
+            maxAngVelocity = 380;
             health = int.Parse(properties["MaxHealth"]);
 
             SwitchAnimation(Animations.Idle);
@@ -129,6 +130,7 @@ namespace Moonwalk.Classes.Entities
 
             cooldowns = new AbilityCooldowns<Abilities>(properties);
 
+            //Player UI
             if (playerStatusElement != null)
                 GUI.RemoveElement(playerStatusElement);
 
@@ -140,14 +142,16 @@ namespace Moonwalk.Classes.Entities
         {
             //Change publically available position
             location = this.Hitbox.Center;
-            loadRange = //new Rectangle(location - new Point(10, 10), new Point(20, 20));
+
+            //update loading range for entities ( a bit outside the view range)
+            loadRange = 
             
             new Rectangle(
             new Point(
-                location.X, 
-                location.Y) 
+                location.X - 50, 
+                location.Y - 50) 
             - (Camera.GlobalOffset / 2).ToPoint(), 
-            (Camera.GlobalOffset * 2).ToPoint());
+            (Camera.GlobalOffset * 2).ToPoint() + new Point(100, 100));
             
 
             Rectangle temp = Camera.RelativePosition(loadRange);
@@ -395,6 +399,7 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = -Math.Sign(velocity.X) * 80;
             }
 
+            // if velocity changes sign in this update, set it to 0
             if (sign != Math.Sign(velocity.X + acceleration.X * gameTime.ElapsedGameTime.TotalSeconds)
                 && sign != 0)
             {
@@ -402,6 +407,7 @@ namespace Moonwalk.Classes.Entities
                 velocity.X = 0;
             }
 
+            // if velocity is small enough, set it to 0
             if (velocity.X != 0
                 && Math.Abs(velocity.X) < 1f)
             {
@@ -410,23 +416,22 @@ namespace Moonwalk.Classes.Entities
             }
 
           
-
+            //respawn the player
             if (input.IsPressed(Keys.R)
                 && !input.WasPressed(Keys.R)) 
             {
                 Respawn();
             }
 
-            
 
-            
-
+            // player dies
             if (health <= 0)
             {
                 Respawn();
                 GUI.RemoveElement(playerStatusElement);
             }
 
+            // update ranged attack cooldown
             rangedAttackCooldownTimer = (float)(rangedAttackCooldownTimer < 0 ? 
                 0 : rangedAttackCooldownTimer - gameTime.ElapsedGameTime.TotalSeconds);
         }
@@ -462,8 +467,6 @@ namespace Moonwalk.Classes.Entities
 
                 }
             }
-            
-            
         }
 
    

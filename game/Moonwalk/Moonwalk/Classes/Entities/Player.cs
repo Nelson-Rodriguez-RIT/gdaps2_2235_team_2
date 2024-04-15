@@ -716,7 +716,8 @@ namespace Moonwalk.Classes.Entities
         {
             base.Draw(batch);
 
-            batch.Draw(hitboxSprite, Camera.RelativePosition(loadRange), Color.White);
+            // What? why does this exist
+            //batch.Draw(hitboxSprite, Camera.RelativePosition(loadRange), Color.White);
             
         }
 

@@ -12,7 +12,7 @@ namespace Moonwalk.Classes.Boss {
 
         // Flags
         private bool enabled = false;
-        private bool initialStage = true;
+        private bool initialStage = false;
         private bool charged = false;
         private bool action = false;
 
@@ -196,11 +196,11 @@ namespace Moonwalk.Classes.Boss {
 
                 case Behavior.Attacking:
                     // If too far from player begin approaching again
-                    if (distanceFromPlayer > 70)
+                    if (distanceFromPlayer > 60)
                         activeBehavior = Behavior.Approaching;
 
                     // If player is very close, have a chance at an insta kill
-                    else if (actionValue % 2 == 0 && distanceFromPlayer < 10)
+                    else if (actionValue % 2 == 0 && distanceFromPlayer < 8)
                         UseAttack(Attacks.Execution);
 
                     // During the second stage, have a chance at user either strong attack

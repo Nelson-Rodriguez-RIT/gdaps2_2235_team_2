@@ -1,0 +1,54 @@
+&Vertical
+
+@168x79,50:62,15,15
+
+// Idle
+#,#,12,#
+
+// To Charge
+#,#,2,#
+
+// Charge
+#,#,6,#
+
+// From Charge
+#,#,2,#
+
+// Run
+#,#,8,#
+
+// Jump
+#,#,4,#
+
+// Jump to Fall
+#,#,1,#
+
+// Fall
+#,#,4,#
+
+// Double slash
+#,#,14,#
+
+// Execution (Attack 3)
+#,#,13,#
+
+// ChargeSlash (Attack 1)
+#,#,19,#
+
+// ComboP1 (Attack)
+#,#,13,#
+
+// Combo P2 (Jump Slam)
+#,#,13,#
+
+// Hit
+#,#,2,#
+
+// Death
+#,#,8,#
+
+// Heart Slam
+#,#,15,#
+
+// Teleport
+#,#,12,8

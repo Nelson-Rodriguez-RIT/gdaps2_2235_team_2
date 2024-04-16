@@ -78,7 +78,7 @@ namespace Moonwalk {
         }
 
         protected override void Draw(GameTime gameTime) {
-            //GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin(
                 samplerState: SamplerState.PointClamp); // Prevents blurry sprites

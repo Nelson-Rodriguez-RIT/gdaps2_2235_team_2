@@ -47,6 +47,9 @@ namespace Moonwalk.Classes.Managers {
         private bool isPauseEnabled;
         private bool isGamePaused;
 
+        // Temp
+        private BloodKing bloodKing = null;
+
         private GameManager(ContentManager content) {
             // Get content for loading needs
             Loader.Content = content;
@@ -170,6 +173,8 @@ namespace Moonwalk.Classes.Managers {
                         break;
 
                     case GameState.Demo:
+                        if (bloodKing != null)
+                            bloodKing.Update(gt);
                         break;
                 }
 
@@ -243,11 +248,13 @@ namespace Moonwalk.Classes.Managers {
             if (!isGamePaused)
                 switch (state) {
                     case GameState.MainMenu:
-                        graphics.Clear(Color.Black);
+                        //graphics.Clear(Color.Black);
                         break;
 
                     case GameState.Demo:
-                        graphics.Clear(Color.Gray);
+                        //graphics.Clear(Color.Gray);
+                        if (bloodKing != null)
+                            bloodKing.Draw(batch);
                         break;
                 }
             else {
@@ -334,7 +341,7 @@ namespace Moonwalk.Classes.Managers {
                         "Instructions:\n" +
                         "WASD - Movement\n" +
                         "E - Melee Attack\n" +
-                        "SHIFT (HOLD ) - Ranged attack\n" +
+                        "SHIFT (HOLD) - Ranged attack\n" +
                         "M1 - Impulse\n" +
                         "M2 - Tether\n" + 
                         "R - Respawn\n\n" +
@@ -357,6 +364,8 @@ namespace Moonwalk.Classes.Managers {
                     Player.Respawn();
 
                     WidowBoss.Start();
+                    bloodKing = new BloodKing(new Vector2(231, 420), (Player)entities[typeof(Player)][0]);
+                    bloodKing.Begin();
 
                     break;
             }

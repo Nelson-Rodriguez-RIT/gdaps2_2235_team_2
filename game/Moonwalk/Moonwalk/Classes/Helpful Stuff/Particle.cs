@@ -71,7 +71,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             }
         }
 
-        public Particle(double duration, Color color, ParticleEffects effect, Point position, Vector2 direction, double frequency = 0.1, int number = 1, int radius = 0)
+        public Particle(double duration, Color color, ParticleEffects effect, Point position, Vector2 direction, double frequency = 0.01, int number = 1, int radius = 0)
         {
             this.duration = duration;
             this.color = color;

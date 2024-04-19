@@ -49,7 +49,7 @@ namespace Moonwalk.Classes.Entities
                     -Math.Sign(velocity.X) ,
                     -Math.Sign(velocity.Y)
                     ),
-                1, 20, 5));
+                0.01, 20, 5));
         }
 
         public override void AI()

@@ -109,7 +109,7 @@ namespace Moonwalk.Classes.Boss
             }
             else if (health > 0)
             {
-                
+                SwitchBehavior(Behavior.Jump);
             }
             else
             {

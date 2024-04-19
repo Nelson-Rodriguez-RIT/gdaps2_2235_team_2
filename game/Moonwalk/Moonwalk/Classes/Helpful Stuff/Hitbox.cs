@@ -23,19 +23,20 @@ namespace Moonwalk.Classes.Helpful_Stuff
         private Rectangle box;
         private Entity source;
         private Vector2 sourcePos;
-        private int frameDuration;  //set to -1 for infinitely present hitbox
+        private double duration;  
         private Point offset;
         private List<IDamageable> targets;
         private List<IDamageable> alreadyHit;
+        Type target;
 
         public event TargetEntered targetEntered;
 
-        public Hitbox(int duration, Entity source, Point size, Type target, List<IDamageable> targets, Point offset) 
+        public Hitbox(double duration, Entity source, Point size, Type target, List<IDamageable> targets, Point offset) 
         {
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
 
-            frameDuration = duration;
+            this.duration = duration;
             this.source = source;
             this.offset = offset;
             box = new Rectangle(source.Position + offset, size);
@@ -45,12 +46,12 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         }
 
-        public Hitbox(int duration, Vector2 sourceVector, Point size, List<IDamageable> targets, Point offset)
+        public Hitbox(double duration, Vector2 sourceVector, Point size, List<IDamageable> targets, Point offset)
         {
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
 
-            frameDuration = duration;
+            this.duration = duration;
             this.source = null;
             sourcePos = sourceVector;
             this.offset = offset;
@@ -63,23 +64,28 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         public void Update(GameTime gameTime)
         {
+            // update position based on the source
             if (source != null)
             {
                 sourcePos = source.Position.ToVector2();
             }
 
+            //update rectangle location
             box = new Rectangle(sourcePos.ToPoint() + offset, box.Size);
 
+            //Get a list of things colliding with this
             List<IDamageable> collisions = CheckCollision();
 
             for (int i = 0; i < collisions.Count; i++)
             {
-                if (alreadyHit.Contains(collisions[i]))
+                if (alreadyHit.Contains(collisions[i]) ||
+                    !collisions[i].GetType().IsAssignableTo(target))
                 {
                     collisions.RemoveAt(i);
                     i--;
                 }
             }
+
             if (collisions.Count > 0)
             targetEntered(collisions);
 

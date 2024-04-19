@@ -33,14 +33,14 @@ namespace Moonwalk.Classes.Helpful_Stuff
         private static Random random = new Random();
 
         private Color color;
-        private int duration;
+        private double duration;
         private ParticleEffects effect;
         private Point position;
-        private int maxTimer;
-        private int timer;
+        private double maxTimer;
+        private double timer;
         Vector2 direction;
 
-        public Particle(int duration, Color color, ParticleEffects effect, Point position, int frequency = 0, int number = 1, int radius = 0) 
+        public Particle(double duration, Color color, ParticleEffects effect, Point position, double frequency = 0.1, int number = 1, int radius = 0) 
         {
             this.duration = duration;
             this.color = color;
@@ -54,11 +54,13 @@ namespace Moonwalk.Classes.Helpful_Stuff
             //add more particles if needed
             for (int i = 0; i < number - 1; i++)
             {
+                //Get a random position in the radius
                 double angle = random.NextDouble() * 360;
                 int distance = random.Next(0, radius + 1);
 
+                //Create a particle there with the same variables
                 Effects.Add(new Particle(
-                    random.Next(1, duration + 1),
+                    random.Next(1, (int)duration + 1),
                     color,
                     effect,
                     position + new Point(
@@ -69,7 +71,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             }
         }
 
-        public Particle(int duration, Color color, ParticleEffects effect, Point position, Vector2 direction, int frequency = 0, int number = 1, int radius = 0)
+        public Particle(double duration, Color color, ParticleEffects effect, Point position, Vector2 direction, double frequency = 0.1, int number = 1, int radius = 0)
         {
             this.duration = duration;
             this.color = color;
@@ -87,7 +89,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
                 int distance = random.Next(0, radius + 1);
 
                 Effects.Add(new Particle(
-                    random.Next(1, duration + 1),
+                    random.Next(1, (int)duration + 1),
                     color,
                     effect,
                     position + new Point(
@@ -101,18 +103,22 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         public void Update(GameTime gt)
         {
-            if (duration == 0) 
+            //despawn if duration is up
+            if (duration <= 0) 
             {
                 Effects.Remove(this);
             }
+            
             if (timer > 0)
             {
-                timer--;
+                timer -= gt.ElapsedGameTime.TotalSeconds;
             }
             else
             {
+                //if timer is up, do the effect and reset timer
                 switch (effect)
                 {
+                    // randomly change the position
                     case ParticleEffects.Random:
                         position += new Point(
                             random.Next(-1, 2),
@@ -123,12 +129,13 @@ namespace Moonwalk.Classes.Helpful_Stuff
                 timer = maxTimer;
             }
 
+            //move towards the direction
             position += new Point(
                 (int)Math.Round(direction.X),
                 (int)Math.Round(direction.Y));
             
             
-            duration--;
+            duration-= gt.ElapsedGameTime.TotalSeconds;
         }
 
         public void Draw(SpriteBatch batch) 
@@ -140,7 +147,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         public override string ToString()
         {
-            return $"{position.ToString()}";
+            return $"Particle: {position.ToString()}";
         }
     }
 }

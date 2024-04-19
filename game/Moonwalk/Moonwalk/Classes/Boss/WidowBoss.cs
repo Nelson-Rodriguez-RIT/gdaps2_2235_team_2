@@ -30,9 +30,10 @@ namespace Moonwalk.Classes.Boss
             Idle,
             Forward,
             Attack,
-            Barrage,
+            Shoot,
             Jump,
-            Land
+            Land,
+            Barrage
         }
 
         private enum Attacks
@@ -169,7 +170,24 @@ namespace Moonwalk.Classes.Boss
                     }
                     break;
                 case Behavior.Barrage:
+                    if (timer <= activeAnimation.AnimationLengthSeconds - 1.1
+                        && timer > activeAnimation.AnimationLengthSeconds - 1.12)
+                    {
+                        for (int i = 1; i < 8; i+=2)
+                        {
+                            double angle = -i * 180 / 8f / 180 * Math.PI;
 
+                            Vector2 direction = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+
+                            GameManager.SpawnEntity<WidowProjectile>(
+                                new object[]
+                                {
+                                    center + direction * 30f,
+                                    direction,
+                                    attackDamage[Attacks.Projectile]
+                                });
+                        }
+                    }
                     break;
 
             }
@@ -200,7 +218,7 @@ namespace Moonwalk.Classes.Boss
 
             while (!chosen)
             {
-                int random = rng.Next(0, 8);
+                int random = rng.Next(0, 12);
 
                 switch (random)
                 {
@@ -227,7 +245,7 @@ namespace Moonwalk.Classes.Boss
                             continue;
                         }
                         break;
-                    case < 9:
+                    case < 12:
                         currentBehavior = Behavior.Barrage;
                         break;
                 }
@@ -237,10 +255,14 @@ namespace Moonwalk.Classes.Boss
 
             SwitchBehavior(currentBehavior);
 
+            timer = activeAnimation.AnimationLengthSeconds;
+
+            /*
             if ((Behavior)currentBehavior == Behavior.Attack)
             {
-                timer = activeAnimation.AnimationLengthSeconds;
+                
             }
+            */
 
             activeAnimation.FaceDirection = (int)faceDirection;
 

@@ -364,8 +364,8 @@ namespace Moonwalk.Classes.Managers {
                     Player.Respawn();
 
                     WidowBoss.Start();
-                    bloodKing = new BloodKing(new Vector2(231, 420), (Player)entities[typeof(Player)][0]);
-                    bloodKing.Begin();
+                    //bloodKing = new BloodKing(new Vector2(231, 420), (Player)entities[typeof(Player)][0]);
+                    //bloodKing.Begin();
 
                     break;
             }

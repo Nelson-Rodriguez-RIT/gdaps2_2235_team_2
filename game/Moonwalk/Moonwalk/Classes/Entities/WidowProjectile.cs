@@ -37,7 +37,7 @@ namespace Moonwalk.Classes.Entities
                     -(direction.X),
                     -(direction.Y)
                     ),
-                0.01, 6, 6));
+                0.05, 3, 4));
         }
 
         public override void AI()

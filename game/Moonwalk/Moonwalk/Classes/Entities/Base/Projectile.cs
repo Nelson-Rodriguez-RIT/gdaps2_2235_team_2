@@ -19,6 +19,7 @@ namespace Moonwalk.Classes.Entities.Base
         protected int collisions;
         protected double timer;
         protected Color color = Color.White;
+        protected float speed;
 
         /// <summary>
         /// Number of collisions before despawn
@@ -38,7 +39,8 @@ namespace Moonwalk.Classes.Entities.Base
             float speed, int damage, Color color, int collisions = 1, double timer = 5) 
             : base(position, directory, false, false) 
         { 
-            velocity = Vector2.Normalize(direction) * speed;
+            this.speed = speed;
+            velocity = Vector2.Normalize(direction) * this.speed;
             this.damage = damage;
             this.collisions = collisions;
             this.timer = timer;

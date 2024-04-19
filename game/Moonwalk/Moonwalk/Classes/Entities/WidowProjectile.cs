@@ -16,11 +16,13 @@ namespace Moonwalk.Classes.Entities
     internal class WidowProjectile : Projectile
     {
         private bool hasShot = false;
+        private bool shoot = false;
 
         public WidowProjectile(Vector2 position, Vector2 direction, int damage) 
-            : base(position, "../../../Content/particle", direction, 50f, damage, Color.Red)
+            : base(position, "", direction, 35f, damage, Color.Red)
         {
-            acceleration = -velocity / 1.5f;
+            acceleration = -velocity / 1f;
+            spriteSheet = Loader.LoadTexture("particle");
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -35,17 +37,23 @@ namespace Moonwalk.Classes.Entities
                     -(direction.X),
                     -(direction.Y)
                     ),
-                0.01, 6, 10));
+                0.01, 6, 6));
         }
 
         public override void AI()
         {
-            if (timer > 1.5)
+            if (timer < 4 && !hasShot)
             {
+                shoot = true;
                 hasShot = true;
                 acceleration = Vector2.Zero;
             }
 
+            if (timer < 3  && shoot) 
+            {
+                shoot = false;
+                velocity = speed * 2 * Vector2.Normalize(Player.Location.ToVector2() - this.hurtbox.Center.ToVector2());
+            }
         }
     }
 }

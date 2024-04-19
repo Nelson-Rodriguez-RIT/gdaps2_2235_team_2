@@ -707,6 +707,17 @@ namespace Moonwalk.Classes.Entities
                         projectileSpeed < 1 ? 1: projectileSpeed
                     });
 
+                //widow boss projectile testing
+                GameManager.SpawnEntity<WidowProjectile>(
+                    new object[]
+                    {
+                        hurtbox.Center.ToVector2() + new Vector2(
+                        faceDirection == FaceDirection.Left ? -hurtbox.Width : hurtbox.Width,
+                        -4),
+                        faceDirection == FaceDirection.Left ? new Vector2(-1, 0) : new Vector2(1, 0),
+                        (int)Math.Ceiling(float.Parse(properties["RangeRampupMax"]) * (rangedAttackCharge / float.Parse(properties["RangeChargeToMax"])))
+                    });
+
                 animationTimer = activeAnimation.AnimationLength;
                 rangedAttackCharge = 0;
                 cooldowns.UseAbility(Abilities.Shoot);

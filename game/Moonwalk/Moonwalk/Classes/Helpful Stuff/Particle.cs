@@ -60,7 +60,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
                 //Create a particle there with the same variables
                 Effects.Add(new Particle(
-                    duration,
+                    random.Next(0, (int)(duration * 100)) / 100f,
                     color,
                     effect,
                     position + new Point(
@@ -89,7 +89,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
                 int distance = random.Next(0, radius + 1);
 
                 Effects.Add(new Particle(
-                    duration,
+                    random.Next(0, (int)(duration * 100)) / 100f,
                     color,
                     effect,
                     position + new Point(

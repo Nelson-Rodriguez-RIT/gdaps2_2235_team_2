@@ -30,7 +30,7 @@ namespace Moonwalk.Classes.Boss
             Idle,
             Forward,
             Attack,
-            Shoot,
+            Barrage,
             Jump,
             Land
         }
@@ -168,6 +168,9 @@ namespace Moonwalk.Classes.Boss
                         shockwave.targetEntered += arm.AddToAlreadyHit;
                     }
                     break;
+                case Behavior.Barrage:
+
+                    break;
 
             }
         }
@@ -214,8 +217,10 @@ namespace Moonwalk.Classes.Boss
                                 ) 
                             < 100)
                         {
+                            
                             currentBehavior = Behavior.Attack;
                             currentAttack = Attacks.Claw;
+
                         }
                         else
                         {
@@ -223,7 +228,7 @@ namespace Moonwalk.Classes.Boss
                         }
                         break;
                     case < 9:
-                        currentBehavior = Behavior.Shoot;
+                        currentBehavior = Behavior.Barrage;
                         break;
                 }
 

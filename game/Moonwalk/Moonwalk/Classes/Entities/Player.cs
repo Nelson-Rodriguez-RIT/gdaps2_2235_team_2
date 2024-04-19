@@ -675,7 +675,7 @@ namespace Moonwalk.Classes.Entities
                 if (rangedAttackCharge == float.Parse(properties["RangeChargeToMax"]))
                 {
                     Particle.Effects.Add(new Particle(
-                        3, 
+                        0.05, 
                         Color.White,
                         ParticleEffects.Random,
                         (hurtbox.Center.ToVector2() + new Vector2(
@@ -911,7 +911,7 @@ namespace Moonwalk.Classes.Entities
             if (faceDirection == FaceDirection.Right) 
             {
                 attack = new Hitbox(
-                20,
+                0.333333,
                 this,
                 new Point(
                     14,
@@ -924,7 +924,7 @@ namespace Moonwalk.Classes.Entities
             else
             {
                 attack = new Hitbox(
-                20,
+                0.333333,
                 this,
                 new Point(
                     14,
@@ -999,7 +999,7 @@ namespace Moonwalk.Classes.Entities
 
                 Particle.Effects.Add(
                     new Particle(
-                        30,
+                        0.5,
                         Color.Lime,
                         ParticleEffects.Random,
                         location));

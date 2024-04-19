@@ -141,7 +141,7 @@ namespace Moonwalk.Classes.Boss
                         && timer > activeAnimation.AnimationLengthSeconds - 0.515)
                     {
                         Hitbox arm = new Hitbox(
-                            9 * 6,
+                            0.4,
                             center,
                             new Point(
                                 17,
@@ -152,7 +152,7 @@ namespace Moonwalk.Classes.Boss
                                 -5));
 
                         Hitbox shockwave = new Hitbox(
-                            9 * 6,
+                            0.4,
                             center,
                             new Point(51, 13),
                             GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(),

@@ -94,9 +94,9 @@ namespace Moonwalk.Classes.Helpful_Stuff
                 alreadyHit.Add(target);
             }
 
-            frameDuration--;
+            duration -= gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (frameDuration <= 0)
+            if (duration <= 0)
             {
                 activeHitboxes.Remove(this);
             }

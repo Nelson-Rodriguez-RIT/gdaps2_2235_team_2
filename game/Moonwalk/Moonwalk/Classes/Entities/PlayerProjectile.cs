@@ -44,7 +44,7 @@ namespace Moonwalk.Classes.Entities
             }
 
             //Trail  
-            Particle.Effects.Add(new Particle(6, Color.White, ParticleEffects.Random, hurtbox.Center,
+            Particle.Effects.Add(new Particle(0.1, Color.White, ParticleEffects.Random, hurtbox.Center,
                 new Vector2(
                     -Math.Sign(velocity.X) ,
                     -Math.Sign(velocity.Y)

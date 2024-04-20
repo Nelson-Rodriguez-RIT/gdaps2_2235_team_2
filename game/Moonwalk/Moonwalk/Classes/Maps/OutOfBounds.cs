@@ -24,7 +24,7 @@ namespace Moonwalk.Classes.Maps
 
         public override void Collide()
         {
-            Player.Respawn();
+            Player.HitBarrier();
         }
 
     }

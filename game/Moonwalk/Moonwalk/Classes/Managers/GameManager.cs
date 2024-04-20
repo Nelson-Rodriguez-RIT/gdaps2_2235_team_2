@@ -391,6 +391,16 @@ namespace Moonwalk.Classes.Managers {
             return (T)entity;
         }
 
+        public static Player SpawnPlayer(int health, Object[] args = null)
+        {
+            Player entity = (Player)Activator.CreateInstance(typeof(Player), args);
+            entity.Health = health;
+            entities.Add(entity);
+
+            return entity;
+        }
+
+
         /// <summary>
         /// Handles any neccessary logic when despawning an entity
         /// </summary>

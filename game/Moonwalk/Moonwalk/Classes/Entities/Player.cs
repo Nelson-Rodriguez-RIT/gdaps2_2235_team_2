@@ -65,7 +65,6 @@ namespace Moonwalk.Classes.Entities
         protected AbilityCooldowns<Abilities> cooldowns;
 
         protected internal int health;
-        protected internal int prevHealth;
         const int meleeDmg = 2;
 
         //Events
@@ -141,8 +140,6 @@ namespace Moonwalk.Classes.Entities
 
         public override void Update(GameTime gameTime, StoredInput input)
         {
-            prevHealth = health;
-
             //Change publically available position
             location = this.Hitbox.Center;
 
@@ -1048,6 +1045,30 @@ namespace Moonwalk.Classes.Entities
             }
             */
         }
+
+        public static void HitBarrier()
+        {
+            GameManager.entities[typeof(Player)].Clear();
+            Player player = GameManager.SpawnPlayer(7);
+            Camera.SetTarget(player);
+            location = player.Hitbox.Center;
+
+            Robot robot = Robot.Respawn();
+
+            player.GetRobotPosition += robot.GetPosition;
+
+            foreach (Entity entity in GameManager.entities)
+            {
+                if (entity is KeyObject)
+                {
+                    ((KeyObject)entity).Reset();
+                }
+            }
+
+            int hitBarrierDamage = player.hitBarrier + 2;
+            //player.TakeDamage(hitBarrierDamage);
+        }
+
     }
 
     internal class GUIPlayerStatusElement : GUIElement {

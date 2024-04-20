@@ -139,7 +139,10 @@ namespace Moonwalk.Classes.Entities.Base
             activeAnimation.UpdateAnimation(gameTime);
 
             //update acceleration
-            acceleration.Y = gravity;
+            if (gravity != 0)
+            {
+                acceleration.Y = gravity;
+            }
         }
 
         /// <summary>

@@ -32,7 +32,8 @@ namespace Moonwalk.Classes.Boss
             Attack,
             Shoot,
             Jump,
-            Land
+            Land,
+            Barrage
         }
 
         private enum Attacks
@@ -109,7 +110,7 @@ namespace Moonwalk.Classes.Boss
             }
             else if (health > 0)
             {
-                
+                SwitchBehavior(Behavior.Jump);
             }
             else
             {
@@ -141,7 +142,7 @@ namespace Moonwalk.Classes.Boss
                         && timer > activeAnimation.AnimationLengthSeconds - 0.515)
                     {
                         Hitbox arm = new Hitbox(
-                            9 * 6,
+                            0.4,
                             center,
                             new Point(
                                 17,
@@ -152,7 +153,7 @@ namespace Moonwalk.Classes.Boss
                                 -5));
 
                         Hitbox shockwave = new Hitbox(
-                            9 * 6,
+                            0.4,
                             center,
                             new Point(51, 13),
                             GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(),
@@ -166,6 +167,26 @@ namespace Moonwalk.Classes.Boss
                         //if one hitbox is hit, the others can't be
                         arm.targetEntered += shockwave.AddToAlreadyHit;
                         shockwave.targetEntered += arm.AddToAlreadyHit;
+                    }
+                    break;
+                case Behavior.Barrage:
+                    if (timer <= activeAnimation.AnimationLengthSeconds - 1.1
+                        && timer > activeAnimation.AnimationLengthSeconds - 1.12)
+                    {
+                        for (int i = 1; i < 8; i+=2)
+                        {
+                            double angle = -i * 180 / 8f / 180 * Math.PI;
+
+                            Vector2 direction = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
+
+                            GameManager.SpawnEntity<WidowProjectile>(
+                                new object[]
+                                {
+                                    center + direction * 30f,
+                                    direction,
+                                    attackDamage[Attacks.Projectile]
+                                });
+                        }
                     }
                     break;
 
@@ -197,7 +218,7 @@ namespace Moonwalk.Classes.Boss
 
             while (!chosen)
             {
-                int random = rng.Next(0, 8);
+                int random = rng.Next(0, 12);
 
                 switch (random)
                 {
@@ -214,16 +235,18 @@ namespace Moonwalk.Classes.Boss
                                 ) 
                             < 100)
                         {
+                            
                             currentBehavior = Behavior.Attack;
                             currentAttack = Attacks.Claw;
+
                         }
                         else
                         {
                             continue;
                         }
                         break;
-                    case < 9:
-                        currentBehavior = Behavior.Shoot;
+                    case < 12:
+                        currentBehavior = Behavior.Barrage;
                         break;
                 }
 
@@ -232,10 +255,14 @@ namespace Moonwalk.Classes.Boss
 
             SwitchBehavior(currentBehavior);
 
+            timer = activeAnimation.AnimationLengthSeconds;
+
+            /*
             if ((Behavior)currentBehavior == Behavior.Attack)
             {
-                timer = activeAnimation.AnimationLengthSeconds;
+                
             }
+            */
 
             activeAnimation.FaceDirection = (int)faceDirection;
 

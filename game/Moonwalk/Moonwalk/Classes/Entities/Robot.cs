@@ -108,7 +108,7 @@ namespace Moonwalk.Classes.Entities
                         * slice * i; //increment every iteration
 
                     Particle.Effects.Add(new Particle
-                        (1,
+                        (0.017,
                         Color.SkyBlue,
                         ParticleEffects.None,
                         (Tether.Hitbox.Center.ToVector2() + thing)

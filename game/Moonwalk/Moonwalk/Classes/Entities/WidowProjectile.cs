@@ -13,14 +13,16 @@ using Moonwalk.Classes.Entities.Base;
 
 namespace Moonwalk.Classes.Entities
 {
-    internal class StandardProjectile : Projectile
+    internal class WidowProjectile : Projectile
     {
-        public StandardProjectile(Vector2 position, Vector2 direction, Color color)
-            : base(position, "", direction, 50f, 1, color)
+        private bool hasShot = false;
+        private bool shoot = false;
+
+        public WidowProjectile(Vector2 position, Vector2 direction, int damage) 
+            : base(position, "", direction, 35f, damage, Color.Red)
         {
-            //Projectile will despawn after hitting something
+            acceleration = -velocity / 1f;
             spriteSheet = Loader.LoadTexture("particle");
-            hurtbox = new Rectangle(Position, new Point(5, 5));
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -35,14 +37,23 @@ namespace Moonwalk.Classes.Entities
                     -(direction.X),
                     -(direction.Y)
                     ),
-                1, 3)); 
+                0.05, 3, 4));
         }
 
         public override void AI()
         {
-            
-        }
+            if (timer < 4 && !hasShot)
+            {
+                shoot = true;
+                hasShot = true;
+                acceleration = Vector2.Zero;
+            }
 
-        
+            if (timer < 3  && shoot) 
+            {
+                shoot = false;
+                velocity = speed * 2 * Vector2.Normalize(Player.Location.ToVector2() - this.hurtbox.Center.ToVector2());
+            }
+        }
     }
 }

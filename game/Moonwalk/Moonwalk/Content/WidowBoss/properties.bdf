@@ -1,11 +1,12 @@
-[]Idle=-23,-20,49,20,-35,0,65,26
+[]Idle=-23,-20,49,20,-35,0,65,25
 []Forward=-23,-20,49,20,-35,0,75,26
 []Attack=-35,-12,65,38
+[]Barrage=-35,-19,63,42
 X=500
 Y=400
 CameraX=500
 CameraY=400
-MaxHealth=100
+MaxHealth=10
 MoveSpeed=12
 Idle=
 Forward=

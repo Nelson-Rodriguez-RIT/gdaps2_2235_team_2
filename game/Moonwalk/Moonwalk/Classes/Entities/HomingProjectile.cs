@@ -31,7 +31,7 @@ namespace Moonwalk.Classes.Entities
             Vector2 direction = Vector2.Normalize(velocity);
 
             //Trail effect
-            Particle.Effects.Add(new Particle(5, this.color, ParticleEffects.Random, hurtbox.Center,
+            Particle.Effects.Add(new Particle(0.1, this.color, ParticleEffects.Random, hurtbox.Center,
                 new Vector2(
                     -(direction.X),
                     -(direction.Y)

@@ -39,6 +39,7 @@ namespace Moonwalk.Classes.Entities
         public static Point Location
         {
             get { return location; }
+            set { location = value; }
         }
 
         protected enum Animations
@@ -1032,7 +1033,6 @@ namespace Moonwalk.Classes.Entities
         {
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnEntity<Player>();
-            //player.Health = player.prevHealth;
             Camera.SetTarget(player);
             location = player.Hitbox.Center;
 
@@ -1060,7 +1060,8 @@ namespace Moonwalk.Classes.Entities
         public static void HitBarrier()
         {
             GameManager.entities[typeof(Player)].Clear();
-            Player player = GameManager.SpawnPlayer(7);
+            Player player = GameManager.SpawnPlayer(8) ;
+
             Camera.SetTarget(player);
             location = player.Hitbox.Center;
 
@@ -1076,8 +1077,9 @@ namespace Moonwalk.Classes.Entities
                 }
             }
 
-            int hitBarrierDamage = player.hitBarrier + 2;
-            //player.TakeDamage(hitBarrierDamage);
+            int hitBarrierDamage = PlayerSpawner.OOB_Damage;
+            player.TakeDamage(hitBarrierDamage);
+            PlayerSpawner.RespawnCounter();
         }
 
     }

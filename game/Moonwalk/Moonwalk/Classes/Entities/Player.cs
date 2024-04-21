@@ -66,6 +66,7 @@ namespace Moonwalk.Classes.Entities
         protected AbilityCooldowns<Abilities> cooldowns;
 
         protected internal int health;
+        private static int oobDamage = 1;
         const int meleeDmg = 2;
 
         //Events
@@ -1076,10 +1077,13 @@ namespace Moonwalk.Classes.Entities
                     ((KeyObject)entity).Reset();
                 }
             }
+            
+            player.TakeDamage(oobDamage);
+            oobDamage++;
 
-            int hitBarrierDamage = PlayerSpawner.OOB_Damage;
-            player.TakeDamage(hitBarrierDamage);
-            PlayerSpawner.RespawnCounter();
+            //int hitBarrierDamage = PlayerSpawner.OOB_Damage;
+            //player.TakeDamage(hitBarrierDamage);
+            //PlayerSpawner.RespawnCounter();
         }
 
     }

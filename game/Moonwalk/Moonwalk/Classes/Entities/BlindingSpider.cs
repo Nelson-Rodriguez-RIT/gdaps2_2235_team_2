@@ -9,6 +9,7 @@ using Moonwalk.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks.Dataflow;
 
 namespace Moonwalk.Classes.Entities
 {
@@ -67,6 +68,7 @@ namespace Moonwalk.Classes.Entities
         {
             double distance = VectorMath.Magnitude(VectorMath.Difference(vectorPosition, Player.Location.ToVector2()));
 
+
             if (distance < 200) // range of aggro
             {
                 SwitchAnimation(Animations.Walk, false);
@@ -122,10 +124,88 @@ namespace Moonwalk.Classes.Entities
             // Increase gravity towards height of the jump
             if (!Grounded)
             {
-                acceleration.Y = gravity * (1 + (100 - Math.Abs(velocity.Y)) / 50);
+                //acceleration.Y = gravity * (1 + (100 - Math.Abs(velocity.Y)) / 50);
+                YWalk(); //seeing if i can get the walking to change direction
+
             }
 
-            velocity += acceleration * time;                                   //Update velocity
+            else
+            {
+                XWalk();
+            }
+
+            //velocity += acceleration /** time*/;                                   //Update velocity
+
+            /*//Vertical
+            while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
+            {
+                if (!CheckCollision<ISolid>())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.Y) > maxYVelocity)
+                {
+                    velocity.Y = maxYVelocity * Math.Sign(velocity.Y);
+                }
+
+                vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
+
+                hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);                      // Update hitbox location
+
+                if (CheckCollision<ISolid>())                                                   // Check if there was a collision
+                {
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
+                    vectorPosition = lastSafePosition.ToVector2();                      // Revert position
+                    velocity.Y = 0;
+                    break;
+                }
+
+                iterationCounter++;
+            }
+
+
+            //Do the same thing but in the X direction
+            iterationCounter = 1;
+
+            while (!CheckCollision<ISolid>() && iterationCounter <= CollisionAccuracy)
+            {
+                if (!CheckCollision<ISolid>())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.X) > maxXVelocity)
+                {
+                    velocity.X = maxXVelocity * Math.Sign(velocity.X);
+                }
+
+                vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
+
+                hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);
+               
+                iterationCounter++;
+
+            }*/
+        }
+
+        public void XWalk()
+        {
+            float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            int iterationCounter = 1;
+
+            velocity += acceleration /** time*/;                                   //Update velocity
 
             //Vertical
             while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
@@ -184,7 +264,78 @@ namespace Moonwalk.Classes.Entities
                     (int)Math.Round(vectorPosition.Y),
                     hurtbox.Width,
                     hurtbox.Height);
-               
+
+                iterationCounter++;
+
+            }
+        }
+
+        public void YWalk()
+        {
+            float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            int iterationCounter = 1;
+
+            velocity += acceleration /** time*/;                                   //Update velocity
+
+            //Vertical
+            while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
+            {
+                if (!CheckCollision<ISolid>())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.Y) > maxYVelocity)
+                {
+                    velocity.Y = maxYVelocity * Math.Sign(velocity.Y);
+                }
+
+                vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
+
+                hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.Y),
+                    (int)Math.Round(vectorPosition.X),
+                    hurtbox.Height,
+                    hurtbox.Width);                      // Update hitbox location
+
+                if (CheckCollision<ISolid>())                                                   // Check if there was a collision
+                {
+                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
+                    vectorPosition = lastSafePosition.ToVector2();                      // Revert position
+                    velocity.Y = 0;
+                    break;
+                } //can this be changed to be within the X velocity instead of the Y velocity to change to up and down movement?
+
+                iterationCounter++;
+            }
+
+
+            //Do the same thing but in the X direction
+            iterationCounter = 1;
+
+            while (!CheckCollision<ISolid>() && iterationCounter <= CollisionAccuracy)
+            {
+                if (!CheckCollision<ISolid>())
+                {
+                    lastSafePosition = new Point(Position.X, Position.Y);
+                }
+
+                //Cap velocity
+                if (Math.Abs(velocity.X) > maxXVelocity)
+                {
+                    velocity.X = maxXVelocity * Math.Sign(velocity.X);
+                }
+
+                vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
+
+                hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.Y),
+                    (int)Math.Round(vectorPosition.X),
+                    hurtbox.Height,
+                    hurtbox.Width);
+
                 iterationCounter++;
 
             }

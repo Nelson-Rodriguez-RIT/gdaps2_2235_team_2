@@ -177,13 +177,12 @@ namespace Moonwalk.Classes.Boss
 
             Player player = GameManager.entities.GetAllOfType<Player>()[0];
 
-            /*
+            
             if (hitboxes.Exists(rect => rect.Intersects(player.Hitbox)))
             {
-                Type type = typeof(this.currentAttack);
-                player.TakeDamage(attackDamage[Enum.Parse<"Collide"]);
+                player.TakeDamage(int.Parse(properties["Collide"]));
             }
-            */
+            
         }
 
         internal class BossData

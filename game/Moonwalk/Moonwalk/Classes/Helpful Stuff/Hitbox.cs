@@ -27,11 +27,10 @@ namespace Moonwalk.Classes.Helpful_Stuff
         private Point offset;
         private List<IDamageable> targets;
         private List<IDamageable> alreadyHit;
-        Type target;
 
         public event TargetEntered targetEntered;
 
-        public Hitbox(double duration, Entity source, Point size, Type target, List<IDamageable> targets, Point offset) 
+        public Hitbox(double duration, Entity source, Point size, List<IDamageable> targets, Point offset) 
         {
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
@@ -78,8 +77,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
             for (int i = 0; i < collisions.Count; i++)
             {
-                if (alreadyHit.Contains(collisions[i]) ||
-                    !collisions[i].GetType().IsAssignableTo(target))
+                if (alreadyHit.Contains(collisions[i]))
                 {
                     collisions.RemoveAt(i);
                     i--;

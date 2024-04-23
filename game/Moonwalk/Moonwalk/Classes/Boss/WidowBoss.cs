@@ -33,7 +33,9 @@ namespace Moonwalk.Classes.Boss
             Shoot,
             Jump,
             Land,
-            Barrage
+            Barrage,
+            Death,
+            InAir
         }
 
         private enum Attacks
@@ -195,6 +197,59 @@ namespace Moonwalk.Classes.Boss
                     }
                     break;
 
+                case Behavior.Jump:
+                    if (timer < 0.02 
+                        && !actionHasBeenDone)
+                    {
+                        SwitchBehavior(Behavior.InAir);
+
+                    }
+                    break;
+                case Behavior.InAir:
+                    if (timer < 1.5 && timer > 0.5)
+                    {
+                        for (int i = -80; i < 81; i+=4)
+                        {
+                            if (rng.Next(0, 7) == 0)
+                            Particle.Effects.Add(
+                                new Particle(rng.NextDouble(), Color.Red, ParticleEffects.Random,
+                                    new Point(
+                                        (int)center.X + i,
+                                        (int)center.Y + 23),
+                                    new Vector2(0, -0.5f),
+                                    0.15));
+                        }
+                        
+                    }
+
+                    if (timer < 0.02
+                        && !actionHasBeenDone)
+                    {
+                        SwitchBehavior(Behavior.Land);
+
+                    }
+                    break;
+                case Behavior.Land:
+                    if (timer < activeAnimation.AnimationLengthSeconds - 0.1
+                        && !actionHasBeenDone)
+                    {
+                        //Create hitbox for the slam 
+                        Hitbox slam = new Hitbox(
+                            0.2,
+                            center,
+                            new Point(
+                                133,
+                                12),
+                            GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList(),
+                            new Point(
+                                faceDirection == FaceDirection.Right ? -69 : 69 - 133,
+                                13));
+                        actionHasBeenDone = true;
+
+                        slam.targetEntered += this.DealDamage;
+                    }
+                    break;
+
             }
         }
         
@@ -223,7 +278,7 @@ namespace Moonwalk.Classes.Boss
 
             while (!chosen)
             {
-                int random = rng.Next(0, 12);
+                int random = rng.Next(10, 12);
 
                 switch (random)
                 {
@@ -232,6 +287,10 @@ namespace Moonwalk.Classes.Boss
                         break;
                     case < 4:
                         currentBehavior = Behavior.Forward;
+                        break;
+                    case < 6:
+                        currentBehavior = Behavior.Attack;
+                        currentAttack = Attacks.Claw;
                         break;
                     case < 8:
                         if (VectorMath.Magnitude(
@@ -250,8 +309,12 @@ namespace Moonwalk.Classes.Boss
                             continue;
                         }
                         break;
-                    case < 12:
+                    case < 10:
                         currentBehavior = Behavior.Barrage;
+                        break;
+                    case < 12:
+                        currentBehavior = Behavior.Jump;
+                        currentAttack = Attacks.Slam;
                         break;
                 }
 
@@ -260,24 +323,19 @@ namespace Moonwalk.Classes.Boss
 
             SwitchBehavior(currentBehavior);
 
-            timer = activeAnimation.AnimationLengthSeconds;
-
-            /*
-            if ((Behavior)currentBehavior == Behavior.Attack)
-            {
-                
-            }
-            */
-
-            activeAnimation.FaceDirection = (int)faceDirection;
-
+ 
         }
 
         protected override void SwitchBehavior(Enum animationEnum, bool resetAnimation = true)
         {
             currentBehavior = animationEnum;
+            actionHasBeenDone = false;
+           
 
             base.SwitchBehavior(animationEnum, resetAnimation);
+
+            timer = activeAnimation.AnimationLengthSeconds;
+            activeAnimation.FaceDirection = (int)faceDirection;
 
             if (cooldowns != null)
             cooldowns.UseAbility((Behavior)animationEnum);

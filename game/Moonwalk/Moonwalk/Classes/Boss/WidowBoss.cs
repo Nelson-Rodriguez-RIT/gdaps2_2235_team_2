@@ -63,7 +63,7 @@ namespace Moonwalk.Classes.Boss
 
         private double timer;
         private float MoveSpeed;
-
+        private bool actionHasBeenDone = false;
         
 
         private WidowBoss() : base("../../../Content/WidowBoss")
@@ -126,6 +126,7 @@ namespace Moonwalk.Classes.Boss
             if (cooldowns[(Behavior)currentBehavior] == 0)
             {
                 SelectBehavior();
+                actionHasBeenDone = false;
             }
 
             cooldowns.Update(gt);
@@ -139,7 +140,7 @@ namespace Moonwalk.Classes.Boss
                     break;
                 case Behavior.Attack:
                     if (timer <= activeAnimation.AnimationLengthSeconds -0.5
-                        && timer > activeAnimation.AnimationLengthSeconds - 0.515)
+                        && !actionHasBeenDone)
                     {
                         Hitbox arm = new Hitbox(
                             0.4,
@@ -167,11 +168,13 @@ namespace Moonwalk.Classes.Boss
                         //if one hitbox is hit, the others can't be
                         arm.targetEntered += shockwave.AddToAlreadyHit;
                         shockwave.targetEntered += arm.AddToAlreadyHit;
+
+                        actionHasBeenDone = true;
                     }
                     break;
                 case Behavior.Barrage:
-                    if (timer <= activeAnimation.AnimationLengthSeconds - 1.1
-                        && timer > activeAnimation.AnimationLengthSeconds - 1.12)
+                    if (timer <= activeAnimation.AnimationLengthSeconds - 0.5
+                        && !actionHasBeenDone)
                     {
                         for (int i = 1; i < 8; i+=2)
                         {
@@ -187,6 +190,8 @@ namespace Moonwalk.Classes.Boss
                                     attackDamage[Attacks.Projectile]
                                 });
                         }
+
+                        actionHasBeenDone = true;
                     }
                     break;
 

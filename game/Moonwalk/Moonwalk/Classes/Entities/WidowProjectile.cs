@@ -17,6 +17,7 @@ namespace Moonwalk.Classes.Entities
     {
         private bool hasShot = false;
         private bool shoot = false;
+        private int particleSpawnCounter = 0;
 
         public WidowProjectile(Vector2 position, Vector2 direction, int damage) 
             : base(position, "", direction, 35f, damage, Color.Red)
@@ -33,11 +34,13 @@ namespace Moonwalk.Classes.Entities
 
             //Trail effect
             Particle.Effects.Add(new Particle(0.1, this.color, ParticleEffects.Random, hurtbox.Center,
-                new Vector2(
-                    -(direction.X),
-                    -(direction.Y)
-                    ),
-                0.05, 3, 4));
+               new Vector2(
+                   -(direction.X),
+                   -(direction.Y)
+                   ),
+               0.05, 3, 4));
+
+
         }
 
         public override void AI()

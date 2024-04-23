@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -1057,7 +1058,6 @@ namespace Moonwalk.Classes.Entities
             }
             */
         }
-
         public static void HitBarrier()
         {
             GameManager.entities[typeof(Player)].Clear();
@@ -1078,9 +1078,10 @@ namespace Moonwalk.Classes.Entities
                 }
             }
             
-            player.TakeDamage(oobDamage);
-            oobDamage++;
-
+            Debug.WriteLine(PlayerSpawner.Times);
+            //player.TakeDamage(PlayerSpawner.OOB_Damage);
+            //PlayerSpawner.RespawnCounter();
+            
             //int hitBarrierDamage = PlayerSpawner.OOB_Damage;
             //player.TakeDamage(hitBarrierDamage);
             //PlayerSpawner.RespawnCounter();

@@ -201,7 +201,7 @@ namespace Moonwalk.Classes.Entities
 
         public void XWalk()
         {
-            float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             int iterationCounter = 1;
 
@@ -212,7 +212,7 @@ namespace Moonwalk.Classes.Entities
             {
                 if (!CheckCollision<ISolid>())
                 {
-                    lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
+                    //lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
                 }
 
                 //Cap velocity
@@ -221,7 +221,7 @@ namespace Moonwalk.Classes.Entities
                     velocity.Y = maxYVelocity * Math.Sign(velocity.Y);
                 }
 
-                vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
+                //vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
 
                 hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
@@ -231,8 +231,8 @@ namespace Moonwalk.Classes.Entities
 
                 if (CheckCollision<ISolid>())                                                   // Check if there was a collision
                 {
-                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
-                    vectorPosition = lastSafePosition.ToVector2();                      // Revert position
+                    //hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
+                    //vectorPosition = lastSafePosition.ToVector2();                      // Revert position
                     velocity.Y = 0;
                     break;
                 }
@@ -248,7 +248,7 @@ namespace Moonwalk.Classes.Entities
             {
                 if (!CheckCollision<ISolid>())
                 {
-                    lastSafePosition = new Point(Position.X, Position.Y);
+                    //lastSafePosition = new Point(Position.X, Position.Y);
                 }
 
                 //Cap velocity
@@ -257,7 +257,7 @@ namespace Moonwalk.Classes.Entities
                     velocity.X = maxXVelocity * Math.Sign(velocity.X);
                 }
 
-                vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
+                //vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
 
                 hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
@@ -272,7 +272,7 @@ namespace Moonwalk.Classes.Entities
 
         public void YWalk()
         {
-            float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+           // float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             int iterationCounter = 1;
 
@@ -283,7 +283,7 @@ namespace Moonwalk.Classes.Entities
             {
                 if (!CheckCollision<ISolid>())
                 {
-                    lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
+               //     lastSafePosition = new Point(Position.X, Position.Y);      //Store old position in case we collide
                 }
 
                 //Cap velocity
@@ -292,7 +292,7 @@ namespace Moonwalk.Classes.Entities
                     velocity.Y = maxYVelocity * Math.Sign(velocity.Y);
                 }
 
-                vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
+               // vectorPosition.Y += velocity.Y * (time * iterationCounter / CollisionAccuracy);     // Increment position
 
                 hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.Y),
@@ -302,8 +302,8 @@ namespace Moonwalk.Classes.Entities
 
                 if (CheckCollision<ISolid>())                                                   // Check if there was a collision
                 {
-                    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
-                    vectorPosition = lastSafePosition.ToVector2();                      // Revert position
+                //    hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);              // Revert hitbox position back to before collision
+                //    vectorPosition = lastSafePosition.ToVector2();                      // Revert position
                     velocity.Y = 0;
                     break;
                 } //can this be changed to be within the X velocity instead of the Y velocity to change to up and down movement?
@@ -319,7 +319,7 @@ namespace Moonwalk.Classes.Entities
             {
                 if (!CheckCollision<ISolid>())
                 {
-                    lastSafePosition = new Point(Position.X, Position.Y);
+               //     lastSafePosition = new Point(Position.X, Position.Y);
                 }
 
                 //Cap velocity
@@ -328,7 +328,7 @@ namespace Moonwalk.Classes.Entities
                     velocity.X = maxXVelocity * Math.Sign(velocity.X);
                 }
 
-                vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
+             //   vectorPosition.X += velocity.X * (time * iterationCounter / CollisionAccuracy);
 
                 hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.Y),

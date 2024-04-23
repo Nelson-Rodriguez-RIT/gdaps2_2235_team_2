@@ -112,6 +112,7 @@ namespace Moonwalk.Classes.Entities
             {
                 MostRecentCheckpoint = (Checkpoint)Map.Geometry.First();
                 Respawn();
+                PlayerSpawner.ResetOOB();
             }
 
             hurtbox = new Rectangle(
@@ -424,6 +425,7 @@ namespace Moonwalk.Classes.Entities
                 && !input.WasPressed(Keys.R)) 
             {
                 Respawn();
+                PlayerSpawner.ResetOOB();
             }
 
 
@@ -431,7 +433,8 @@ namespace Moonwalk.Classes.Entities
             if (health <= 0)
             {
                 Respawn();
-                GUI.RemoveElement(playerStatusElement);
+                PlayerSpawner.ResetOOB();
+                //GUI.RemoveElement(playerStatusElement);
             }
 
             // update ranged attack cooldown
@@ -1081,13 +1084,8 @@ namespace Moonwalk.Classes.Entities
                 }
             }
             
-            Debug.WriteLine(PlayerSpawner.Times);
-            //player.TakeDamage(PlayerSpawner.OOB_Damage);
-            //PlayerSpawner.RespawnCounter();
-            
-            //int hitBarrierDamage = PlayerSpawner.OOB_Damage;
-            //player.TakeDamage(hitBarrierDamage);
-            //PlayerSpawner.RespawnCounter();
+            player.TakeDamage(PlayerSpawner.OOB_Damage);
+            PlayerSpawner.RespawnCounter();
         }
 
     }

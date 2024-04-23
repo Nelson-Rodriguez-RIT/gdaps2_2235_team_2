@@ -13,22 +13,16 @@ namespace Moonwalk.Classes.Helpful_Stuff
     internal class PlayerSpawner
     {
         private static double oobDamage = 1;
-        private static int times;
 
         public static int OOB_Damage 
         {
             get { return (int)oobDamage; }
             set { oobDamage = value; }
         }
-
-        public static int Times
-        { get { return times; } }
-
         public static void RespawnCounter()
-        {
-            times++;
-            oobDamage ++;
-            Debug.WriteLine(oobDamage);
-        }
+        { oobDamage ++; }
+
+        public static void ResetOOB()
+        { oobDamage = 1; }
     }
 }

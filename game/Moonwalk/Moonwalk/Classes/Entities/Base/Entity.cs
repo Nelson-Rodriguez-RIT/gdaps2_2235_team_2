@@ -270,7 +270,10 @@ namespace Moonwalk.Classes.Entities.Base
 
                         thing = (T)solid;
                         if (this is Player && trigger)
+                        {
                             solid.Collide();
+                        }
+                            
                         break;
                     }
                 }

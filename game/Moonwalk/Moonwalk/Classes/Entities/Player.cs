@@ -833,7 +833,8 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);                      // Update hitbox location
 
-                if (CheckCollision<ISolid>(out thing, true))          // Check if there was a collision
+                if (CheckCollision<ISolid>(out thing, true)
+                    || (thing != null && thing is OutOfBounds))          // Check if there was a collision
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);    // Revert hitbox position back to before collision
                     vectorPosition = lastSafePosition.ToVector2();                      // Revert position
@@ -876,7 +877,8 @@ namespace Moonwalk.Classes.Entities
                     hurtbox.Width,
                     hurtbox.Height);
 
-                if (CheckCollision<ISolid>(out thing, true))
+                if (CheckCollision<ISolid>(out thing, true)
+                    || (thing != null && thing is OutOfBounds))
                 {
                     hurtbox = new Rectangle(lastSafePosition, hurtbox.Size);
                     vectorPosition = lastSafePosition.ToVector2();
@@ -1060,6 +1062,7 @@ namespace Moonwalk.Classes.Entities
         }
         public static void HitBarrier()
         {
+            List<Player> list = (List<Player>)GameManager.entities[typeof(Player)];
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnPlayer(8) ;
 

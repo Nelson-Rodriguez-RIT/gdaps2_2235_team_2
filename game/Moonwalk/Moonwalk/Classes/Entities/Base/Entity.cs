@@ -192,7 +192,7 @@ namespace Moonwalk.Classes.Entities.Base
 
         #region Collision
 
-        public int CollisionAccuracy
+        public virtual int CollisionAccuracy
         {
             get
             {

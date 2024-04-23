@@ -1014,7 +1014,7 @@ namespace Moonwalk.Classes.Entities
             if (!GodMode && iFrames <= 0)
             {
                 Health -= damage;
-                Impulse(new Vector2(0, 20));
+                Impulse(new Vector2(0, damage * -40));
                 iFrames = 1;
             }
             

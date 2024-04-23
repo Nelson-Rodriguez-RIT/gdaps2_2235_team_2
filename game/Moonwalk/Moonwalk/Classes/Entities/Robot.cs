@@ -45,7 +45,7 @@ namespace Moonwalk.Classes.Entities
             spriteScale = 1;
             Tether = null;
             
-            // GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
+             GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -191,9 +191,9 @@ namespace Moonwalk.Classes.Entities
         public override void Draw(SpriteBatch batch) {
             batch.DrawString(
                 font,
-                    $"Hitbox: {target.hurtbox.X} - {target.hurtbox.Y}\n" +
-                    $"Drawing: {Math.Round(target.vectorPosition.Y)} - {Math.Round(target.vectorPosition.X)}\n" +
-                    $"Position: {target.mousepos.Y} - {target.mousepos.X}",
+                    $"Hitbox: {target.hurtbox.X} - {target.hurtbox.Y}\n", //+
+                    //$"Drawing: {Math.Round(target.vectorPosition.Y)} - {Math.Round(target.vectorPosition.X)}\n" +
+                    //$"Position: {target.mousepos.Y} - {target.mousepos.X}",
                 position,
                 Color.White
                 );

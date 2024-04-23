@@ -201,6 +201,7 @@ namespace Moonwalk.Classes.Boss
                     if (timer < 0.02 
                         && !actionHasBeenDone)
                     {
+                        center.X = Player.Location.X;
                         SwitchBehavior(Behavior.InAir);
 
                     }
@@ -278,21 +279,21 @@ namespace Moonwalk.Classes.Boss
 
             while (!chosen)
             {
-                int random = rng.Next(10, 12);
+                int random = rng.Next(0, 14);
 
                 switch (random)
                 {
                     case < 2:
                         currentBehavior = Behavior.Idle;
                         break;
-                    case < 4:
+                    case < 8:
                         currentBehavior = Behavior.Forward;
                         break;
-                    case < 6:
+                    case < 10:
                         currentBehavior = Behavior.Attack;
                         currentAttack = Attacks.Claw;
                         break;
-                    case < 8:
+                    case < 11:
                         if (VectorMath.Magnitude(
                                 VectorMath.Difference(
                                     center, Player.Location.ToVector2())
@@ -309,10 +310,10 @@ namespace Moonwalk.Classes.Boss
                             continue;
                         }
                         break;
-                    case < 10:
+                    case < 13:
                         currentBehavior = Behavior.Barrage;
                         break;
-                    case < 12:
+                    case < 14:
                         currentBehavior = Behavior.Jump;
                         currentAttack = Attacks.Slam;
                         break;

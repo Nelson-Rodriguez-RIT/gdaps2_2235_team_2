@@ -19,10 +19,5 @@ namespace Moonwalk.Classes.Helpful_Stuff
             get { return (int)oobDamage; }
             set { oobDamage = value; }
         }
-        public static void RespawnCounter()
-        { oobDamage ++; }
-
-        public static void ResetOOB()
-        { oobDamage = 1; }
     }
 }

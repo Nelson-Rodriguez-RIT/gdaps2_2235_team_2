@@ -67,7 +67,7 @@ namespace Moonwalk.Classes.Entities
         protected AbilityCooldowns<Abilities> cooldowns;
 
         protected internal int health;
-        private static int oobDamage = 1;
+        protected internal static int prevHealth = 8;
         const int meleeDmg = 2;
 
         //Events
@@ -112,7 +112,6 @@ namespace Moonwalk.Classes.Entities
             {
                 MostRecentCheckpoint = (Checkpoint)Map.Geometry.First();
                 Respawn();
-                PlayerSpawner.ResetOOB();
             }
 
             hurtbox = new Rectangle(
@@ -425,7 +424,7 @@ namespace Moonwalk.Classes.Entities
                 && !input.WasPressed(Keys.R)) 
             {
                 Respawn();
-                PlayerSpawner.ResetOOB();
+                Player.prevHealth = health;
             }
 
 
@@ -433,7 +432,7 @@ namespace Moonwalk.Classes.Entities
             if (health <= 0)
             {
                 Respawn();
-                PlayerSpawner.ResetOOB();
+                Player.prevHealth = health;
                 //GUI.RemoveElement(playerStatusElement);
             }
 
@@ -1014,8 +1013,9 @@ namespace Moonwalk.Classes.Entities
             if (!GodMode && iFrames <= 0)
             {
                 Health -= damage;
-                Impulse(new Vector2(0, damage * -40));
+                Impulse(new Vector2(0, 20 /*damage * -40 */)); //for oob purposes
                 iFrames = 1;
+                prevHealth = Health;
             }
             
         }
@@ -1073,9 +1073,10 @@ namespace Moonwalk.Classes.Entities
                     ((KeyObject)entity).Reset();
                 }
             }
-            
-            player.TakeDamage(PlayerSpawner.OOB_Damage);
-            PlayerSpawner.RespawnCounter();
+
+            if (Player.prevHealth == 8) player.TakeDamage(PlayerSpawner.OOB_Damage);
+            else player.TakeDamage(PlayerSpawner.OOB_Damage + (player.health - Player.prevHealth));
+            //PlayerSpawner.RespawnCounter();
         }
 
     }

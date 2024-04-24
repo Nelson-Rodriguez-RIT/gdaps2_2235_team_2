@@ -12,6 +12,7 @@ using Moonwalk.Classes.Maps;
 using Moonwalk.Classes;
 using System.Reflection;
 using Moonwalk.Classes.Entities;
+using Moonwalk.Classes.Helpful_Stuff;
 
 namespace Moonwalk.Classes.Managers
 {
@@ -389,6 +390,7 @@ namespace Moonwalk.Classes.Managers
             List<Animation> bufferedAnimations = new();
             Texture2D bufferedSpritesheet = null;
             Dictionary<string, List<Rectangle>> hitboxes = new Dictionary<string, List<Rectangle>>();
+            Dictionary<string, (string enumName, int cooldown)> bufferedCooldowns = new();
 
             Queue<string> fileData;
             string data;
@@ -405,38 +407,36 @@ namespace Moonwalk.Classes.Managers
                 data = fileData.Dequeue();
 
                 // Ignore comments and empty lines
-                if (data == null || data[0] == '/')
+                if (data == "" || data[0] == ' '  || data[0] == '/')
                     continue;
 
                 // Break data into its header and body components
                 dataBlocks = data.Split('=');
 
-                
-                if (dataBlocks[0].Length > 1 
-                    && dataBlocks[0].Substring(0,2) == "[]")
-                {
-                    List<Rectangle> hitboxData = new();
-                    string[] split = dataBlocks[1].Split(",");
 
-                    for (int i = 0; i < split.Length; i += 4)
-                    {
-                        int[] dimensions = new int[4];
+                if (dataBlocks[0].Length > 1)
+                    switch(dataBlocks[0].Substring(0, 2)) {
+                        case "[]": // Hitboxes
+                            List<Rectangle> hitboxData = new();
+                            string[] split = dataBlocks[1].Split(",");
 
-                        for (int j = 0; j < 4; j++)
-                        {
-                            dimensions[j] = int.Parse(split[i + j]);
-                        }
+                            for (int i = 0; i < split.Length; i += 4) {
+                                int[] dimensions = new int[4];
 
-                        hitboxData.Add(new Rectangle(
-                            dimensions[0],
-                            dimensions[1],
-                            dimensions[2],
-                            dimensions[3]));
+                                for (int j = 0; j < 4; j++) {
+                                    dimensions[j] = int.Parse(split[i + j]);
+                                }
+
+                                hitboxData.Add(new Rectangle(
+                                    dimensions[0],
+                                    dimensions[1],
+                                    dimensions[2],
+                                    dimensions[3]));
+                            }
+
+                            hitboxes.Add(dataBlocks[0].Substring(2), hitboxData);
+                            break;
                     }
-
-                    hitboxes.Add(dataBlocks[0].Substring(2), hitboxData);
-                }
-                
 
                 // Format and store data
                 bufferedProperties.Add(dataBlocks[0], dataBlocks[1]);

@@ -42,6 +42,12 @@ namespace Moonwalk.Classes.Entities
             get { return location; }
             set { location = value; }
         }
+        public Vector2 Center {
+            get { return new Vector2(
+                location.X + int.Parse(properties["HitboxX"]) / 2, 
+                location.Y + int.Parse(properties["HitboxY"]) / 2); 
+            }
+        }
 
         protected enum Animations
         {

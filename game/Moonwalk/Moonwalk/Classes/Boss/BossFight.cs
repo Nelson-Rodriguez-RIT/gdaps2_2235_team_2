@@ -32,7 +32,6 @@ namespace Moonwalk.Classes.Boss
         protected Random rng;
         protected Vector2 cameraTarget;
         protected Vector2 center;
-        protected Vector2 relativePosition;
         protected Animation activeAnimation;
         protected Enum currentBehavior;
         protected Enum currentAttack;

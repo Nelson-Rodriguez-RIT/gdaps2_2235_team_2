@@ -173,8 +173,6 @@ namespace Moonwalk.Classes.Managers {
                         break;
 
                     case GameState.Demo:
-                        if (bloodKing != null)
-                            bloodKing.Update(gt);
                         break;
                 }
 
@@ -253,8 +251,6 @@ namespace Moonwalk.Classes.Managers {
 
                     case GameState.Demo:
                         //graphics.Clear(Color.Gray);
-                        if (bloodKing != null)
-                            bloodKing.Draw(batch);
                         break;
                 }
             else {
@@ -364,8 +360,7 @@ namespace Moonwalk.Classes.Managers {
                     Player.Respawn();
 
                     WidowBoss.Start();
-                    //bloodKing = new BloodKing(new Vector2(231, 420), (Player)entities[typeof(Player)][0]);
-                    //bloodKing.Begin();
+                    //new BloodKing(new Vector2(231, 420), (Player)entities[typeof(Player)][0]);
 
                     break;
             }

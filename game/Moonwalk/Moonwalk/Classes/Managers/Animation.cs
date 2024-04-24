@@ -80,6 +80,7 @@ namespace Moonwalk.Classes.Managers {
             }
         }
 
+        public Vector2 SpriteSize { get { return spriteSize; } }
 
         public Animation(
                 // This information should be gathered from a file (please don't manually type it)

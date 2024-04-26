@@ -124,19 +124,19 @@ namespace Moonwalk.Classes.Entities
             // Increase gravity towards height of the jump
             if (!Grounded)
             {
-                //acceleration.Y = gravity * (1 + (100 - Math.Abs(velocity.Y)) / 50);
-                YWalk(); //seeing if i can get the walking to change direction
+                acceleration.Y = gravity * (1 + (100 - Math.Abs(velocity.Y)) / 50);
+                //YWalk(); //seeing if i can get the walking to change direction
 
             }
 
-            else
+            /*else
             {
                 XWalk();
-            }
+            }*/
 
             //velocity += acceleration /** time*/;                                   //Update velocity
 
-            /*//Vertical
+            //Vertical
             while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
             {
                 if (!CheckCollision<ISolid>())
@@ -196,7 +196,7 @@ namespace Moonwalk.Classes.Entities
                
                 iterationCounter++;
 
-            }*/
+            }
         }
 
         public void XWalk()

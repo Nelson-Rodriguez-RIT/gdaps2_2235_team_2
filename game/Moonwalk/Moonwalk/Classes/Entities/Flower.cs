@@ -80,10 +80,6 @@ namespace Moonwalk.Classes.Entities
                     if (activeAnimation.AnimationValue == (int)Animations.Move)
                         return;
                 }
-                else if (activeAnimation.AnimationValue == (int)Animations.Move)
-                {
-                    SwitchAnimation(Animations.Move, true);
-                }
 
 
 
@@ -112,7 +108,7 @@ namespace Moonwalk.Classes.Entities
                 inactive = true;
                 velocity.X = 0;
                 acceleration.X = 0;
-                SwitchAnimation(Animations.Move, true);
+                SwitchAnimation(Animations.Attack, true);
             }
 
             activeAnimation.FaceDirection = (int)faceDirection;

@@ -21,6 +21,7 @@ namespace Moonwalk.Classes.Boss
             Left
         }
 
+        //lots and lots of fields
         protected FaceDirection faceDirection;
 
         public static BossFight Boss = null;
@@ -44,6 +45,9 @@ namespace Moonwalk.Classes.Boss
 
         protected Dictionary<Enum, int> attackDamage;
 
+        /// <summary>
+        /// Hitboxes currently active
+        /// </summary>
         public List<Rectangle> Hitboxes
         {
             get { return hitboxes; }
@@ -56,6 +60,7 @@ namespace Moonwalk.Classes.Boss
             hitboxes = new List<Rectangle>();
             rng = new Random();
 
+            //read properties from file
             maxHealth = int.Parse(properties["MaxHealth"]);
             health = int.Parse(properties["MaxHealth"]);
             this.center = new Vector2(
@@ -67,11 +72,13 @@ namespace Moonwalk.Classes.Boss
                 int.Parse(properties["CameraY"]));
             attackDamage = new Dictionary<Enum, int>();
 
+            //set camera target on a location
             //Camera.SetTarget(this.cameraTarget);
 
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
 
+            //make this the current boss
             if (Boss == null)
             Boss = this;
         }
@@ -81,6 +88,7 @@ namespace Moonwalk.Classes.Boss
             if (activeAnimation != null)
                 activeAnimation.UpdateAnimation(gt);
 
+            //clear hitboxes, then add updated ones
             hitboxes.Clear();
 
             List<Rectangle> list = hitboxData[currentBehavior.ToString()];
@@ -112,6 +120,7 @@ namespace Moonwalk.Classes.Boss
 
         protected virtual void DealDamage(List<IDamageable> damageables)
         {
+            //damage all entities hit
             foreach (IDamageable damageable in damageables)
             damageable.TakeDamage(attackDamage[currentAttack]);
         }
@@ -132,6 +141,7 @@ namespace Moonwalk.Classes.Boss
 
         public void DrawHitbox(SpriteBatch batch)
         {
+            //draw each hitbox
             foreach (Rectangle hurtbox in hitboxes)
             {
                 Vector2 position = Camera.RelativePosition(
@@ -161,6 +171,7 @@ namespace Moonwalk.Classes.Boss
 
         public void CheckCollision()
         {
+            //check if a player projectile hits this
             List<PlayerProjectile> hits;
             if ((hits = GameManager.entities
                     .GetAllOfType<PlayerProjectile>()
@@ -169,6 +180,7 @@ namespace Moonwalk.Classes.Boss
                             ))
                 != null)
             {
+                // if it does, take damage
                 foreach (PlayerProjectile hit in hits)
                 {
                     health -= hit.Damage;
@@ -177,6 +189,7 @@ namespace Moonwalk.Classes.Boss
                 }
             }
 
+            //damage player if it collides with this
             Player player = GameManager.entities.GetAllOfType<Player>()[0];
 
             

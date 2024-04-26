@@ -19,6 +19,12 @@ namespace Moonwalk.Classes.Helpful_Stuff
         private Dictionary<TEnum, double> cooldowns;
         private Dictionary<TEnum, double> maxCooldowns;
 
+        /// <summary>
+        /// Indexer to get cooldowns
+        /// </summary>
+        /// <param name="ability">the ability</param>
+        /// <param name="max">whether you want the max or current cooldown</param>
+        /// <returns></returns>
         public double this[TEnum ability, bool max = false]
         {
             get
@@ -34,8 +40,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         public AbilityCooldowns(Dictionary<string, string> properties) 
         { 
-            //get cooldowns from file
-            //string fileName = directory + "/cooldowns";
+            //read cooldowns from properties
 
             cooldowns = new Dictionary<TEnum, double>();
             maxCooldowns = new Dictionary<TEnum, double>();
@@ -72,6 +77,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         public bool UseAbility(TEnum ability)
         {
+            //set current cooldown to max cooldown
             if (cooldowns[ability] == 0)
             {
                 cooldowns[ability] = maxCooldowns[ability];

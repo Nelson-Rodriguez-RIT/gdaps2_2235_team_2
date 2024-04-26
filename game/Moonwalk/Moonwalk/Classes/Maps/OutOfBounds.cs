@@ -13,7 +13,9 @@ using Moonwalk.Classes.Entities;
 
 namespace Moonwalk.Classes.Maps
 {
-
+    /// <summary>
+    /// Terrain that respawns the player when entered
+    /// </summary>
     internal class OutOfBounds : Terrain
     {
         public OutOfBounds(Rectangle hitbox) : base(hitbox) 
@@ -24,6 +26,7 @@ namespace Moonwalk.Classes.Maps
 
         public override void Collide()
         {
+            //call player method to respawn and take damage
             Player.HitBarrier();
         }
 

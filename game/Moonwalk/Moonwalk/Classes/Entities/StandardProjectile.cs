@@ -40,7 +40,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
-            
+            // no AI
         }
 
         

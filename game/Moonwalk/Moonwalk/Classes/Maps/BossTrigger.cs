@@ -21,6 +21,8 @@ namespace Moonwalk.Classes.Maps
         public BossTrigger(Rectangle hitbox) : base(hitbox) 
         {
             collidable = false;
+
+            //add boss spawning subscribers to the event
             if (typeof(T).IsAssignableTo(typeof(WidowBoss)))
             {
                 OnCollision += WidowBoss.Start;

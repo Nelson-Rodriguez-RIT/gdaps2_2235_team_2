@@ -72,6 +72,7 @@ namespace Moonwalk.Classes.Boss
             if (hitboxSprite == null)
                 hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
 
+            if (Boss == null)
             Boss = this;
         }
 

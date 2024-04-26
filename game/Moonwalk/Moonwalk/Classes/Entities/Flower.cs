@@ -13,9 +13,7 @@ using System.Runtime.CompilerServices;
 namespace Moonwalk.Classes.Entities
 {
     //TO DO:
-    //- Update any more code within class
     //- Maybe change so it only walks back and forth?
-    //- figure out how to get the animations to loop
 
     internal class Flower : Enemy
     {
@@ -80,10 +78,6 @@ namespace Moonwalk.Classes.Entities
                     if (activeAnimation.AnimationValue == (int)Animations.Move)
                         return;
                 }
-                else if (activeAnimation.AnimationValue == (int)Animations.Move)
-                {
-                    SwitchAnimation(Animations.Move, true);
-                }
 
 
 
@@ -112,7 +106,7 @@ namespace Moonwalk.Classes.Entities
                 inactive = true;
                 velocity.X = 0;
                 acceleration.X = 0;
-                SwitchAnimation(Animations.Move, true);
+                SwitchAnimation(Animations.Attack, true);
             }
 
             activeAnimation.FaceDirection = (int)faceDirection;

@@ -18,7 +18,8 @@ namespace Moonwalk.Classes.Maps
         }
 
         private void LoadMap() {
-            Map.LoadMap(target);
+            if (Map.LoadedMapName != target)
+                Map.LoadMap(target, true);
         }
     }
 }

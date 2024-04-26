@@ -48,7 +48,7 @@ namespace Moonwalk.Classes.Boss
 
 
 
-        
+        private Queue<Behavior> behaviorQueue;
 
         /// <summary>
         /// How long an ability lasts
@@ -66,6 +66,7 @@ namespace Moonwalk.Classes.Boss
         private double timer;
         private float MoveSpeed;
         private bool actionHasBeenDone = false;
+        bool phaseChange = false;
         
 
         private WidowBoss() : base("../../../Content/WidowBoss")
@@ -87,6 +88,8 @@ namespace Moonwalk.Classes.Boss
             {
                 attackDamage.Add(Enum.Parse<Attacks>(attack), int.Parse(properties[attack]));
             }
+
+            behaviorQueue = new Queue<Behavior>();
 
             SwitchBehavior(Behavior.Idle);
             
@@ -112,7 +115,36 @@ namespace Moonwalk.Classes.Boss
             }
             else if (health > 0)
             {
-                SwitchBehavior(Behavior.Jump);
+                if (!phaseChange)
+                {
+                    //Particle effects
+                    Particle.Effects.Add(new Particle(
+                        1,
+                        Color.Red,
+                        ParticleEffects.Random,
+                        center.ToPoint(),
+                        0.1,
+                        60,
+                        40
+                        ));
+
+                    //phase change attacks
+                    behaviorQueue.Enqueue(Behavior.Jump);
+                    behaviorQueue.Enqueue(Behavior.InAir);
+                    behaviorQueue.Enqueue(Behavior.Land);
+                    behaviorQueue.Enqueue(Behavior.Barrage);
+                    behaviorQueue.Enqueue(Behavior.Jump);
+                    behaviorQueue.Enqueue(Behavior.InAir);
+                    behaviorQueue.Enqueue(Behavior.Land);
+                    behaviorQueue.Enqueue(Behavior.Barrage);
+                    behaviorQueue.Enqueue(Behavior.Jump);
+                    behaviorQueue.Enqueue(Behavior.InAir);
+                    behaviorQueue.Enqueue(Behavior.Land);
+                    behaviorQueue.Enqueue(Behavior.Barrage);
+                    phaseChange = true;
+                }
+                
+                PhaseOne(gt);
             }
             else
             {
@@ -198,15 +230,22 @@ namespace Moonwalk.Classes.Boss
                     break;
 
                 case Behavior.Jump:
-                    if (timer < 0.02 
-                        && !actionHasBeenDone)
+                    if (!actionHasBeenDone && behaviorQueue.Count == 0)
                     {
-                        center.X = Player.Location.X;
-                        SwitchBehavior(Behavior.InAir);
-
+                        behaviorQueue.Enqueue(Behavior.InAir);
+                        behaviorQueue.Enqueue(Behavior.Land);
+                        actionHasBeenDone = true;
                     }
+                   
                     break;
                 case Behavior.InAir:
+                    if (!actionHasBeenDone)
+                    {
+                        center.X = Player.Location.X;
+                        actionHasBeenDone = true;
+                    }
+                    
+
                     if (timer < 1.5 && timer > 0.5)
                     {
                         for (int i = -80; i < 81; i+=4)
@@ -223,12 +262,6 @@ namespace Moonwalk.Classes.Boss
                         
                     }
 
-                    if (timer < 0.02
-                        && !actionHasBeenDone)
-                    {
-                        SwitchBehavior(Behavior.Land);
-
-                    }
                     break;
                 case Behavior.Land:
                     if (timer < activeAnimation.AnimationLengthSeconds - 0.1
@@ -272,9 +305,10 @@ namespace Moonwalk.Classes.Boss
 
             bool chosen = false;
 
-            if ((Behavior)currentBehavior == Behavior.Jump)
+            if (behaviorQueue.Count > 0)
             {
-                currentBehavior = Behavior.Land;
+                currentBehavior = behaviorQueue.Dequeue();
+                chosen = true;
             }
 
             while (!chosen)
@@ -316,6 +350,8 @@ namespace Moonwalk.Classes.Boss
                     case < 14:
                         currentBehavior = Behavior.Jump;
                         currentAttack = Attacks.Slam;
+
+                        
                         break;
                 }
 

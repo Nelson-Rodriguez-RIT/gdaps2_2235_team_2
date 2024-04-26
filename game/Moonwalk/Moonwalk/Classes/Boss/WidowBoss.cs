@@ -46,8 +46,9 @@ namespace Moonwalk.Classes.Boss
             Slam
         }
 
-
-
+        /// <summary>
+        /// What behavior to do next
+        /// </summary>
         private Queue<Behavior> behaviorQueue;
 
         /// <summary>

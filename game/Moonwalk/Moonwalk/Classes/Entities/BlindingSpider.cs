@@ -71,7 +71,7 @@ namespace Moonwalk.Classes.Entities
 
             if (distance < 200) // range of aggro
             {
-                SwitchAnimation(Animations.Walk, false);
+                SwitchAnimation(Animations.Walk, true);
                 float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction

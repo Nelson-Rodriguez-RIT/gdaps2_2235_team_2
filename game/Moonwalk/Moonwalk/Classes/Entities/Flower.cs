@@ -13,9 +13,7 @@ using System.Runtime.CompilerServices;
 namespace Moonwalk.Classes.Entities
 {
     //TO DO:
-    //- Update any more code within class
     //- Maybe change so it only walks back and forth?
-    //- figure out how to get the animations to loop
 
     internal class Flower : Enemy
     {

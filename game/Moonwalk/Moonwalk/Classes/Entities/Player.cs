@@ -1131,14 +1131,14 @@ namespace Moonwalk.Classes.Entities {
 
         /// <summary>
         /// Method that runs when player hits out-of-bounds area.
-        /// Player takes damage according to their previous health, and respawns themselves.
         /// </summary>
         public static void HitBarrier()
         {
-            List<Player> list = (List<Player>)GameManager.entities[typeof(Player)];
+            //if there is a player, respawn it with full hp
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnPlayer(8) ;
 
+            //reset camera, player location, robot, and keyObjects
             Camera.SetTarget(player);
             location = player.Hitbox.Center;
 
@@ -1154,9 +1154,9 @@ namespace Moonwalk.Classes.Entities {
                 }
             }
 
-            if (Player.prevHealth == 8) player.TakeDamage(PlayerSpawner.OOB_Damage);
-            else player.TakeDamage(PlayerSpawner.OOB_Damage + (player.health - Player.prevHealth));
-            //PlayerSpawner.RespawnCounter();
+            //take damage according to Player.prevHealth value
+            if (Player.prevHealth == 8) player.TakeDamage(OOB_Properties.Damage);
+            else player.TakeDamage(OOB_Properties.Damage + (player.health - Player.prevHealth));
         }
 
     }

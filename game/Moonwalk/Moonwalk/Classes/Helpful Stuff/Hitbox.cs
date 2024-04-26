@@ -33,6 +33,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         private double delay;
 
+        #region Constructors
         public Hitbox(double duration, Entity source, Point size, List<IDamageable> targets, Point offset) 
         {
             if (hitboxSprite == null)
@@ -79,6 +80,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             alreadyHit = new List<IDamageable>();
 
         }
+        #endregion
 
         public void Update(GameTime gameTime)
         {
@@ -96,6 +98,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
             for (int i = 0; i < collisions.Count; i++)
             {
+                //remove items already collided with
                 if (alreadyHit.Contains(collisions[i]))
                 {
                     collisions.RemoveAt(i);
@@ -103,9 +106,11 @@ namespace Moonwalk.Classes.Helpful_Stuff
                 }
             }
 
+            //raise event for each collision
             if (collisions.Count > 0)
                 targetEntered(collisions);
 
+            //add those collisions to the things already collided with
             foreach (IDamageable target in collisions)
             {
                 alreadyHit.Add(target);

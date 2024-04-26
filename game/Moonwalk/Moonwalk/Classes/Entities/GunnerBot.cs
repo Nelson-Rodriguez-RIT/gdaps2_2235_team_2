@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 
 namespace Moonwalk.Classes.Entities
 {
-    internal class TestEnemy : Enemy, IDamageable
+    internal class GunnerBot : Enemy, IDamageable
     {
         private enum Animations
         {
@@ -52,7 +52,7 @@ namespace Moonwalk.Classes.Entities
             }
         }
 
-        public TestEnemy(Vector2 position) : base(position, "../../../Content/Entities/TestEnemy")
+        public GunnerBot(Vector2 position) : base(position, "../../../Content/Entities/TestEnemy")
         {
             health = int.Parse(properties["Health"]);
             damage = int.Parse(properties["Damage"]);
@@ -67,17 +67,20 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
+            //distance to player
             double distance = VectorMath.Magnitude(VectorMath.Difference(hurtbox.Center.ToVector2(), Player.Location.ToVector2()));
 
             if (distance <= 200) // range of aggro
             {
                 if (inactive)
                 {
+                    //play wake animation
                     SwitchAnimation(Animations.Wake, true);
                     timer = activeAnimation.AnimationLengthSeconds;
                     inactive = false;
                 }
 
+                //play wakeup animation
                 if (timer > 0)
                 {
                     if (activeAnimation.AnimationValue == (int)Animations.Wake)
@@ -90,7 +93,7 @@ namespace Moonwalk.Classes.Entities
 
                 
 
-
+                //x difference 
                 float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
@@ -109,6 +112,7 @@ namespace Moonwalk.Classes.Entities
                 //Enemy accelerates towards the player's x direction
                 acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
 
+                // if cooldown is 0, bot shoots at the player
                 if (cooldowns[Abilities.Shoot] == 0)
                 {
                     //Shoot
@@ -136,7 +140,8 @@ namespace Moonwalk.Classes.Entities
         }
 
         
-
+        //since this doesn't have the switch for rotational movement (idk why) it doesn't work with tether. This is easily fixed but
+        //not going to right now
         public override void Movement(GameTime gameTime)
         {
             float time = (float)gameTime.ElapsedGameTime.TotalSeconds;

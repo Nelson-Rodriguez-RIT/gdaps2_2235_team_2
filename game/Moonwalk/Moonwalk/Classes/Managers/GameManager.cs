@@ -355,15 +355,18 @@ namespace Moonwalk.Classes.Managers {
                     guiBuffers.Clear();
                     isPauseEnabled = true;
 
-                    Map.LoadMap("BloodKingArena");
+                    Map.LoadMap("MoonwalkMap");
 
-                    Player.Respawn(new Vector2(75, 10));
+                    Player.Respawn();
 
 
-                    //Map.Geometry.Add(new BossTrigger<WidowBoss>(
-                    //    new Rectangle(2000, 349, 100, 100)));
+                    Map.Geometry.Add(new BossTrigger<WidowBoss>(
+                        new Rectangle(2000, 349, 100, 100)));
 
-                    new BloodKing(new Vector2(528, 559), (Player)entities[typeof(Player)][0]);
+                    Map.Geometry.Add(new BossTrigger<BloodKing>(
+                        new Rectangle(508, 539, 100, 100)));
+
+                    //new BloodKing(new Vector2(528, 559), (Player)entities[typeof(Player)][0]);
 
                     break;
             }

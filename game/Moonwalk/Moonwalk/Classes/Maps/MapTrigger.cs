@@ -6,11 +6,15 @@ using Moonwalk.Classes.Managers;
 
 namespace Moonwalk.Classes.Maps
 {
+    /// <summary>
+    /// Terrain that once entered, loads a new map
+    /// </summary>
     internal class MapTrigger : Terrain
     {
         private string target;
 
-        public MapTrigger(Rectangle hitbox, string target)
+        public MapTrigger(Rectangle hitbox, string target //the name of the map
+            )
                 : base(hitbox) {
             this.collidable = false;
             this.target = target;
@@ -18,7 +22,8 @@ namespace Moonwalk.Classes.Maps
         }
 
         private void LoadMap() {
-            Map.LoadMap(target);
+            if (Map.LoadedMapName != target)
+                Map.LoadMap(target, true);
         }
     }
 }

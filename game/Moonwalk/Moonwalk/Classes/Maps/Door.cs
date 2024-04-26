@@ -33,6 +33,7 @@ namespace Moonwalk.Classes.Maps
 
             if (key != null)
             {
+                //if there is a key, make this terrain uncollidable
                 collidable = false;
                 GameManager.DespawnEntity(key);
             }

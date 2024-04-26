@@ -48,10 +48,14 @@ namespace Moonwalk.Classes.Managers
         /// </summary>
         /// <param name="mapRootFolderName">Name of the map</param>
         public static void LoadMap(string mapRootFolderName, bool resetState = false) {
+            if (activeMapName == "BloodKingArena")
+                return;
+
             // Get and load data from file
             MapData bufferedData = Loader.LoadMap($"{RootDirectory}{mapRootFolderName}/");
             bufferedData.Load();
 
+            
             activeMapName = mapRootFolderName;
 
             // Load hitbox sprite if it hasn't already

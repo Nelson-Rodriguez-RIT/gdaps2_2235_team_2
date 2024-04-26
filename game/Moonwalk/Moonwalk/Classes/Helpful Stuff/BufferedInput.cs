@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Moonwalk.Classes.Helpful_Stuff
 {
     /// <summary>
-    /// Stores a buffered input
+    /// Stores a buffered input with a key and an amount of time it is buffered for
     /// </summary>
     internal class BufferedInput
     {

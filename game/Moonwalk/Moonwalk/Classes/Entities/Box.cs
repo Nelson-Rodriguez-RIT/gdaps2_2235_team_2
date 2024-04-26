@@ -40,6 +40,7 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = -Math.Sign(velocity.X) * 40;
             }
 
+            //stop if velocity is low enough
             if (velocity.X != 0
                 && Math.Abs(velocity.X) < 1f)
             {
@@ -187,6 +188,7 @@ namespace Moonwalk.Classes.Entities
                 }
             }
 
+            //solids can't go through softs
             foreach (ISoft soft in GameManager.entities.GetAllOfType<ISoft>())
             {
                 if (soft.Hitbox.Intersects(hurtbox))

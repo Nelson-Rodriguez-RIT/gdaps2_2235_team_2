@@ -1121,6 +1121,11 @@ namespace Moonwalk.Classes.Entities {
             }
             */
         }
+
+        /// <summary>
+        /// Method that runs when player hits out-of-bounds area.
+        /// Player takes damage according to their previous health, and respawns themselves.
+        /// </summary>
         public static void HitBarrier()
         {
             List<Player> list = (List<Player>)GameManager.entities[typeof(Player)];

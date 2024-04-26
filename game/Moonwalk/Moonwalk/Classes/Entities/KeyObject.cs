@@ -12,25 +12,23 @@ using Moonwalk.Classes.Managers;
 
 namespace Moonwalk.Classes.Entities
 {
+    /// <summary>
+    /// Key Object that is able to be picked up and can unlock door terrain
+    /// </summary>
     internal class KeyObject : Entity
     {
-        
         //fields
-        private bool isColliding = false;
-        private bool isInteracted = false;
+        private bool isColliding;
         private Vector2 originalPos;
-
         private Player player;
 
-        public bool IsColliding { get { return isColliding; } }
-
-        public bool IsInteracted { get { return isInteracted; } }   
-
-
+        //constructor 
         public KeyObject(Vector2 position) :
             base (position, "../../../Content/Entities/Key", false)
         {
+            //initialize position, hitbox, texture, and properties
             originalPos = position;
+            isColliding = false;
 
             this.hurtbox = new Rectangle(
                 (int)position.X, 
@@ -45,18 +43,14 @@ namespace Moonwalk.Classes.Entities
 
         //methods
 
-        public bool CheckInteraction(Entity entity) 
-        {
-            if (player != null && CheckCollision(player))
-            {
-                isInteracted = true;
-            }
-            return isInteracted;
-        }
-
+        /// <summary>
+        /// Check if player has collided with key object
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns></returns>
         public bool CheckCollision(Entity entity) 
         {
-            if (this.hurtbox.Intersects(((Player)entity).Hitbox))
+            if (entity != null && this.hurtbox.Intersects(entity.Hitbox))
             {
                 isColliding = true; 
             }
@@ -77,7 +71,7 @@ namespace Moonwalk.Classes.Entities
                 hurtbox.Width, 
                 hurtbox.Height);
 
-            if (CheckInteraction(player)) 
+            if (CheckCollision(player)) 
             {
                 this.hurtbox.X = player.Position.X - hurtbox.Height/4;
                 this.hurtbox.Y = player.Position.Y - player.hurtbox.Height - hurtbox.Height/4;
@@ -101,8 +95,7 @@ namespace Moonwalk.Classes.Entities
 
         public void Reset()
         {
-
-            KeyObject newKey = GameManager.SpawnEntity<KeyObject>(new Object[] { originalPos });
+            GameManager.SpawnEntity<KeyObject>(new Object[] { originalPos });
 
             GameManager.DespawnEntity(this);
         }

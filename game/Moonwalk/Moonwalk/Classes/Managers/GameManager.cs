@@ -355,7 +355,7 @@ namespace Moonwalk.Classes.Managers {
                     guiBuffers.Clear();
                     isPauseEnabled = true;
 
-                    Map.LoadMap("BloodKingArena");
+                    Map.LoadMap("MoonwalkMap");
 
                     Player.Respawn(new Vector2(75, 10));
 

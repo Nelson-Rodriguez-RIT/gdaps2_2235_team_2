@@ -11,6 +11,7 @@ using Moonwalk.Classes.Helpful_Stuff;
 using System.IO;
 using Moonwalk.Classes;
 using Moonwalk.Classes.Boss;
+using Moonwalk.Classes.Entities;
 
 namespace Moonwalk.Classes.Maps
 { 
@@ -20,7 +21,19 @@ namespace Moonwalk.Classes.Maps
         public BossTrigger(Rectangle hitbox) : base(hitbox) 
         {
             collidable = false;
-            OnCollision += WidowBoss.Start;
+            if (typeof(T).IsAssignableTo(typeof(WidowBoss)))
+            {
+                OnCollision += WidowBoss.Start;
+            }
+            else
+            {
+                OnCollision += SpawnBloodKing;
+            }
+        }
+
+        public void SpawnBloodKing()
+        {
+            new BloodKing(new Vector2(528, 559), (Player)GameManager.entities[typeof(Player)][0]);
         }
 
     }

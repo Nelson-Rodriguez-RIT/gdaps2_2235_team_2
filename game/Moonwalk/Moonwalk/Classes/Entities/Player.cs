@@ -174,6 +174,40 @@ namespace Moonwalk.Classes.Entities {
             GUI.AddElement(playerStatusElement);
 
         }
+        public Player() : base(MostRecentCheckpoint.Hitbox.Location.ToVector2(), "../../../Content/Entities/Player") {
+            //Set initial checkpoint
+            if (MostRecentCheckpoint == null) {
+                MostRecentCheckpoint = (Checkpoint)Map.Geometry.First();
+                Respawn();
+            }
+
+            hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);
+
+            gravity = 70f;
+            acceleration = new Vector2(0, gravity);
+            maxXVelocity = 40;
+            maxYVelocity = 60;
+            maxAngVelocity = 380;
+            health = int.Parse(properties["MaxHealth"]);
+
+            SwitchAnimation(Animations.Idle);
+            spriteScale = 1;
+
+
+            cooldowns = new AbilityCooldowns<Abilities>(properties);
+
+            //Player UI
+            if (playerStatusElement != null)
+                GUI.RemoveElement(playerStatusElement);
+
+            playerStatusElement = new GUIPlayerStatusElement(this);
+            GUI.AddElement(playerStatusElement);
+
+        }
 
         public override void Update(GameTime gameTime, StoredInput input)
         {

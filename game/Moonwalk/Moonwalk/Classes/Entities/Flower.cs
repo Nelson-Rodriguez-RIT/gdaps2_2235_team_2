@@ -117,6 +117,7 @@ namespace Moonwalk.Classes.Entities
                 else
                 {
                     SwitchAnimation(Animations.Move);
+                    acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
                 }
                
             }

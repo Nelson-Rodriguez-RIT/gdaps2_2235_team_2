@@ -47,7 +47,7 @@ namespace Moonwalk.Classes.Entities
         /// Check if player has collided with key object
         /// </summary>
         /// <param name="entity"></param>
-        /// <returns></returns>
+        /// <returns>isColliding</returns>
         public bool CheckCollision(Entity entity) 
         {
             if (entity != null && this.hurtbox.Intersects(entity.Hitbox))
@@ -58,6 +58,11 @@ namespace Moonwalk.Classes.Entities
             return isColliding;
         }
 
+        /// <summary>
+        /// Updates Key's logic, including checking if player DNE, updating hitbox pos, and collision
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="input"></param>
         public override void Update(GameTime gameTime, StoredInput input)
         {
             if (player == null)
@@ -78,6 +83,10 @@ namespace Moonwalk.Classes.Entities
             }
         }
 
+        /// <summary>
+        /// Draws the key
+        /// </summary>
+        /// <param name="batch"></param>
         public override void Draw(SpriteBatch batch)
         {
             batch.Draw(
@@ -93,6 +102,9 @@ namespace Moonwalk.Classes.Entities
                 );
         }
 
+        /// <summary>
+        /// Reset Key
+        /// </summary>
         public void Reset()
         {
             GameManager.SpawnEntity<KeyObject>(new Object[] { originalPos });

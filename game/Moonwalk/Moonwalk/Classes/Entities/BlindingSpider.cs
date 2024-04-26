@@ -97,7 +97,7 @@ namespace Moonwalk.Classes.Entities
                     SwitchAnimation(Animations.BlindAttack, false);
 
                     //Shoot
-                    GameManager.SpawnEntity<StandardProjectile>(new Object[] {
+                    GameManager.SpawnEntity<HomingProjectile>(new Object[] {
                         vectorPosition,
                     VectorMath.Difference(vectorPosition, Player.Location.ToVector2()),
                     Color.SlateGray});

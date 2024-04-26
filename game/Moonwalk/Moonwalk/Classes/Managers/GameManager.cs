@@ -358,9 +358,11 @@ namespace Moonwalk.Classes.Managers {
                     Map.LoadMap("BloodKingArena");
 
                     Player.Respawn(new Vector2(75, 10));
-                    
 
-                    //WidowBoss.Start();
+
+                    //Map.Geometry.Add(new BossTrigger<WidowBoss>(
+                    //    new Rectangle(2000, 349, 100, 100)));
+
                     new BloodKing(new Vector2(528, 559), (Player)entities[typeof(Player)][0]);
 
                     break;

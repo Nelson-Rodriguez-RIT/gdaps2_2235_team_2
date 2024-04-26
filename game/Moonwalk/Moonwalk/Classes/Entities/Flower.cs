@@ -15,7 +15,6 @@ namespace Moonwalk.Classes.Entities
     //TO DO:
     //- Update any more code within class
     //- Maybe change so it only walks back and forth?
-    //- figure out how to get the flower to switch between attack and move animations
     //- figure out how to get the animations to loop
 
     internal class Flower : Enemy
@@ -105,20 +104,6 @@ namespace Moonwalk.Classes.Entities
                 if (physicsState == PhysicsState.Linear)
                     //Enemy accelerates towards the player's x direction
                     acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
-
-                if (distance <=10 && activeAnimation.AnimationValue != (int)Animations.Attack) //figure out how to get this to work
-                {
-                    velocity.X = 0;
-                    acceleration.X = 0;
-
-                    //Attack
-                    SwitchAnimation(Animations.Attack);
-                }
-                else
-                {
-                    SwitchAnimation(Animations.Move);
-                    acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
-                }
                
             }
             else

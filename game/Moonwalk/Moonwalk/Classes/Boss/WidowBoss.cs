@@ -148,7 +148,7 @@ namespace Moonwalk.Classes.Boss
             }
             else
             {
-                //SwitchAnimation
+                Boss = null;
             }
 
             base.Update(gt);

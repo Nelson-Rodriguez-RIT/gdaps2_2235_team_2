@@ -42,6 +42,14 @@ namespace Moonwalk.Classes.Managers {
 
         public int FaceDirection = 0; // 0 for right, 1 for left
 
+        private bool animationEnd;
+        public bool AnimationEndSet {
+            set { animationEnd = true; }
+        }
+        public int TrueAnimationValue {
+            get { return animationEnd ? -1 * AnimationValue : AnimationValue; }
+        }
+
         public int AnimationLength
         {
             get

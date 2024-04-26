@@ -8,12 +8,25 @@ HitboxY=17
 MoveSpeed=25
 MaxHealth=15
 
-Charge=2
+Execution=1.1
+[]Execution=-10,0,19,17
+ExecutionDamage=99
 
 DoubleSlash=1.166
-Execution=1.1
+[]DoubleSlash=19,-8,14,25
+DoubleSlashDamage=1
+
+Charge=2
+
+
 ChargedSlash=1.5
 
 ComboP1=0
 ComboP2=0
 Teleport=0
+
+
+
+
+[]ChargeSlashInital=-29,0,83,17
+[]ChargeSlashFinal=0,82,17,17

@@ -100,14 +100,16 @@ namespace Moonwalk.Classes.Boss
         /// <param name="animation">The animation to switch to</param>
         protected virtual void SwitchBehavior(Enum animationEnum, bool resetAnimation = true)
         {
-            activeAnimation = animations[Convert.ToInt32(animationEnum)];
-            if (resetAnimation)
-                activeAnimation.Reset();
+            activeAnimation = animations[Math.Abs(Convert.ToInt32(animationEnum))];
+            if (Convert.ToInt32(animationEnum) < 0)
+                activeAnimation.AnimationEndSet = true;
 
             
+            if (resetAnimation)
+                activeAnimation.Reset();
         }
 
-        protected void DealDamage(List<IDamageable> damageables)
+        protected virtual void DealDamage(List<IDamageable> damageables)
         {
             foreach (IDamageable damageable in damageables)
             damageable.TakeDamage(attackDamage[currentAttack]);

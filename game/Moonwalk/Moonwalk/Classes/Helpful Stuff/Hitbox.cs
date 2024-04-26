@@ -30,6 +30,9 @@ namespace Moonwalk.Classes.Helpful_Stuff
 
         public event TargetEntered targetEntered;
 
+
+        private double delay;
+
         public Hitbox(double duration, Entity source, Point size, List<IDamageable> targets, Point offset) 
         {
             if (hitboxSprite == null)
@@ -43,6 +46,22 @@ namespace Moonwalk.Classes.Helpful_Stuff
             this.targets = targets;
             alreadyHit = new List<IDamageable>();
 
+        }
+
+        public Hitbox(double duration, Rectangle hitbox, Vector2 ownerPosition, List<IDamageable> targets, int direction = 0) {
+            if (hitboxSprite == null)
+                hitboxSprite = Loader.LoadTexture("../../../Content/Entities/hitbox");
+
+            this.duration = duration;
+            sourcePos = new Vector2(hitbox.X, hitbox.Y) + ownerPosition;
+            box = (direction == 0) ? hitbox : new Rectangle(hitbox.X * -1, hitbox.Y, hitbox.Width, hitbox.Height);
+            this.targets = targets;
+
+            this.source = null;
+            this.offset = Point.Zero;
+
+            activeHitboxes.Add(this);
+            alreadyHit = new List<IDamageable>();
         }
 
         public Hitbox(double duration, Vector2 sourceVector, Point size, List<IDamageable> targets, Point offset)
@@ -85,7 +104,7 @@ namespace Moonwalk.Classes.Helpful_Stuff
             }
 
             if (collisions.Count > 0)
-            targetEntered(collisions);
+                targetEntered(collisions);
 
             foreach (IDamageable target in collisions)
             {

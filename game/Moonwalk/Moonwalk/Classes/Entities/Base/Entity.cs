@@ -93,7 +93,7 @@ namespace Moonwalk.Classes.Entities.Base
 
         protected float spriteScale;
 
-        public Entity(Vector2 position, string directory, bool loadAnimations = true, bool loadProperties = true) {
+        public Entity(Vector2? position, string directory, bool loadAnimations = true, bool loadProperties = true) {
             // File data setup
             this.directory = directory;
             EntityData bufferedData = Loader.LoadEntity(directory, loadAnimations, loadProperties);
@@ -103,7 +103,7 @@ namespace Moonwalk.Classes.Entities.Base
 
             // Physics set up
             physicsState = PhysicsState.Linear;
-            vectorPosition = position;
+            vectorPosition = position == null ? new Vector2(0, 0) : (Vector2)position;
             velocity = Vector2.Zero;
             acceleration = Vector2.Zero;
             gravity = 0f;

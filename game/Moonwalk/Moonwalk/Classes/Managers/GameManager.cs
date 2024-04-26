@@ -355,12 +355,13 @@ namespace Moonwalk.Classes.Managers {
                     guiBuffers.Clear();
                     isPauseEnabled = true;
 
-                    Map.LoadMap("MoonwalkMap");
+                    Map.LoadMap("BloodKingArena");
 
-                    Player.Respawn();
+                    Player.Respawn(new Vector2(75, 10));
+                    
 
-                    WidowBoss.Start();
-                    //new BloodKing(new Vector2(231, 420), (Player)entities[typeof(Player)][0]);
+                    //WidowBoss.Start();
+                    new BloodKing(new Vector2(528, 559), (Player)entities[typeof(Player)][0]);
 
                     break;
             }
@@ -378,7 +379,7 @@ namespace Moonwalk.Classes.Managers {
         /// <summary>
         /// Handles any neccassray logic when spawning an entity
         /// </summary>
-        public static T SpawnEntity<T>(Object[] args = null) where T : Entity
+        public static T SpawnEntity<T>(params Object[] args) where T : Entity
         {
             Entity entity = (Entity)Activator.CreateInstance(typeof(T), args);
             entities.Add(entity);

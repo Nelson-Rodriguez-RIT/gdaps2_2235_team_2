@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Moonwalk.Classes.Entities.Base;
@@ -11,15 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Diagnostics;
-using System.Net.NetworkInformation;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml.Linq;
 
-namespace Moonwalk.Classes.Entities
-{
+namespace Moonwalk.Classes.Entities {
     public delegate Vector2 GetRobotPosition();
 
     /// <summary>
@@ -111,7 +104,41 @@ namespace Moonwalk.Classes.Entities
         }
 
         //Make private later
-        public Player() : base(MostRecentCheckpoint.Hitbox.Location.ToVector2(), "../../../Content/Entities/Player")
+        public Player(Point? initialPosition = null) : base(new Vector2(((Point)initialPosition).X, ((Point)initialPosition).Y), "../../../Content/Entities/Player") {
+            //Set initial checkpoint
+            if (MostRecentCheckpoint == null) {
+                MostRecentCheckpoint = (Checkpoint)Map.Geometry.First();
+                Respawn();
+            }
+
+            hurtbox = new Rectangle(
+                    (int)Math.Round(vectorPosition.X),
+                    (int)Math.Round(vectorPosition.Y),
+                    hurtbox.Width,
+                    hurtbox.Height);
+
+            gravity = 70f;
+            acceleration = new Vector2(0, gravity);
+            maxXVelocity = 40;
+            maxYVelocity = 60;
+            maxAngVelocity = 380;
+            health = int.Parse(properties["MaxHealth"]);
+
+            SwitchAnimation(Animations.Idle);
+            spriteScale = 1;
+
+
+            cooldowns = new AbilityCooldowns<Abilities>(properties);
+
+            //Player UI
+            if (playerStatusElement != null)
+                GUI.RemoveElement(playerStatusElement);
+
+            playerStatusElement = new GUIPlayerStatusElement(this);
+            GUI.AddElement(playerStatusElement);
+
+        }
+        public Player(Vector2? initialPosition = null) : base((Vector2)initialPosition, "../../../Content/Entities/Player")
         {
             //Set initial checkpoint
             if (MostRecentCheckpoint == null)
@@ -145,6 +172,7 @@ namespace Moonwalk.Classes.Entities
 
             playerStatusElement = new GUIPlayerStatusElement(this);
             GUI.AddElement(playerStatusElement);
+
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -1032,15 +1060,15 @@ namespace Moonwalk.Classes.Entities
             velocity *= 1.5f;
         }
 
-        public static void Respawn()
-        {
+        public static void Respawn(Vector2? location = null) {
             GameManager.entities[typeof(Player)].Clear();
-            Player player = GameManager.SpawnEntity<Player>();
+            Player player = GameManager.SpawnEntity<Player>(location == null ? MostRecentCheckpoint.Hitbox.Location : location);
+            Player.location = location == null ?
+                MostRecentCheckpoint.Hitbox.Location : 
+                new Point((int)((Vector2)location).X, (int)((Vector2)location).Y);
             Camera.SetTarget(player);
-            location = player.Hitbox.Center;
 
             Robot robot = Robot.Respawn();
-
             player.GetRobotPosition += robot.GetPosition;
 
             foreach (Entity entity in GameManager.entities)

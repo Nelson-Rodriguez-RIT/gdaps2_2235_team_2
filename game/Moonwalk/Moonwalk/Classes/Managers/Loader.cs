@@ -208,6 +208,10 @@ namespace Moonwalk.Classes.Managers
                                     )
                                 );
                             break;
+
+                        case "SPAWNTRIGGER":
+                            break;
+
                         default: //for enemies
                             //Get the type of the entity
                             string typeString = dataBlocks[0];

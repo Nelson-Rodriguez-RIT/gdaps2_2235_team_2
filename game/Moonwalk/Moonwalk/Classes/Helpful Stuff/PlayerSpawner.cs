@@ -10,14 +10,16 @@ using System.Diagnostics;
 
 namespace Moonwalk.Classes.Helpful_Stuff
 {
-    internal class PlayerSpawner
+    internal class OOB_Properties
     {
-        private static double oobDamage = 1;
+        //damage that oob areas do
+        private static double damage = 1;
 
-        public static int OOB_Damage 
+        //return that damage
+        public static int Damage 
         {
-            get { return (int)oobDamage; }
-            set { oobDamage = value; }
+            get { return (int)damage; }
+            set { damage = value; }
         }
     }
 }

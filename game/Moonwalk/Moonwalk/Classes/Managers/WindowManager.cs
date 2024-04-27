@@ -7,6 +7,8 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Moonwalk.Classes.Managers {
     internal class WindowManager {
+        // Works but remains usused and will likely break if attempted to be reimplemented
+
         private static WindowManager instance = null;
 
         private int defaultWidth;

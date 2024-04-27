@@ -22,6 +22,7 @@ namespace Moonwalk.Classes.Entities
         public WidowProjectile(Vector2 position, Vector2 direction, int damage) 
             : base(position, "", direction, 35f, damage, Color.Red)
         {
+            //starts with acceleration that stops it in 1 second
             acceleration = -velocity / 1f;
             spriteSheet = Loader.LoadTexture("particle");
         }
@@ -45,6 +46,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
+            //after the timer is low enoguh, stop movement
             if (timer < 4 && !hasShot)
             {
                 shoot = true;
@@ -52,6 +54,7 @@ namespace Moonwalk.Classes.Entities
                 acceleration = Vector2.Zero;
             }
 
+            //shoots towards player after 1 more second
             if (timer < 3  && shoot) 
             {
                 shoot = false;

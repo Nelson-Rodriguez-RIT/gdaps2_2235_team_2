@@ -54,6 +54,7 @@ namespace Moonwalk.Classes.Entities
                 acceleration.X = -Math.Sign(velocity.X) * 40;
             }
 
+            //stop if slow enough
             if (velocity.X != 0
                 && Math.Abs(velocity.X) < 1f)
             {
@@ -67,11 +68,13 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
+            //shoot at the player if cooldown is up
             if (cooldowns[Abilities.Shoot] == 0)
             {
                 GameManager.SpawnEntity<StandardProjectile>(
                     new object[] { hurtbox.Center.ToVector2() + new Vector2(0, -15),
-                VectorMath.Difference(vectorPosition, Player.Location.ToVector2()),
+                VectorMath.Difference(hurtbox.Center.ToVector2() + new Vector2(0, -15), 
+                Player.Location.ToVector2()),     //direction is from this to the player
                     Color.Red});
 
                 cooldowns.UseAbility(Abilities.Shoot);
@@ -84,7 +87,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void TakeDamage(int damage)
         {
-
+            //can't be damaged
         }
     }
 }

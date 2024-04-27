@@ -63,6 +63,7 @@ namespace Moonwalk.Classes.Entities.Base
             Movement(gameTime);
             base.Update(gameTime, input);
 
+            //despawn if health is 0
             if (health <= 0)
             {
                 if (Robot.Tether == this)

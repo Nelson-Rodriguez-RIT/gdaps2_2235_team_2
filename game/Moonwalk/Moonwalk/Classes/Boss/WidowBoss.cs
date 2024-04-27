@@ -17,14 +17,9 @@ namespace Moonwalk.Classes.Boss
 {
     internal class WidowBoss : BossFight
     {
-        private enum Abilities
-        {
-            Attack,
-            Shoot,
-            Jump,
-            Land,
-            Attack2
-        }
+        /// <summary>
+        /// Different behaviors the boss can exhibit
+        /// </summary>
         private enum Behavior
         {
             Idle,
@@ -38,6 +33,9 @@ namespace Moonwalk.Classes.Boss
             InAir
         }
 
+        /// <summary>
+        /// Attacks that are tied with a damage value
+        /// </summary>
         private enum Attacks
         {
             Collide,
@@ -51,10 +49,6 @@ namespace Moonwalk.Classes.Boss
         /// </summary>
         private Queue<Behavior> behaviorQueue;
 
-        /// <summary>
-        /// How long an ability lasts
-        /// </summary>
-        private AbilityCooldowns<Abilities> durations;
         /// <summary>
         /// How long a behavior lasts
         /// </summary>
@@ -73,7 +67,7 @@ namespace Moonwalk.Classes.Boss
         private WidowBoss() : base("../../../Content/WidowBoss")
         {
             
-
+            //tie durations of behaviors to the behaviors
             foreach (Behavior behavior in Enum.GetValues(typeof(Behavior))) 
             {
                 SwitchBehavior(behavior);
@@ -96,6 +90,9 @@ namespace Moonwalk.Classes.Boss
             
         }
 
+        /// <summary>
+        /// Begin the boss
+        /// </summary>
         public static void Start()
         {
             new WidowBoss();
@@ -110,12 +107,14 @@ namespace Moonwalk.Classes.Boss
                 timer -= gt.ElapsedGameTime.TotalSeconds;
             }
 
+            //determine behavior based on phase
             if (health > maxHealth / 2)
             {
                 PhaseOne(gt);
             }
             else if (health > 0)
             {
+                //phase change
                 if (!phaseChange)
                 {
                     //Particle effects
@@ -149,15 +148,20 @@ namespace Moonwalk.Classes.Boss
             }
             else
             {
+                //boss dies
                 Boss = null;
             }
 
             base.Update(gt);
         }
 
+        /// <summary>
+        /// Behavior during phase 1 (and currently phase 2)
+        /// </summary>
+        /// <param name="gt"></param>
         private void PhaseOne(GameTime gt)
         {
-            
+            //if behavior is done, choose a new one
             if (cooldowns[(Behavior)currentBehavior] == 0)
             {
                 SelectBehavior();
@@ -166,17 +170,20 @@ namespace Moonwalk.Classes.Boss
 
             cooldowns.Update(gt);
 
-
+            //based on current behavior, do actions
             switch (currentBehavior)
             {
                 case Behavior.Forward:
+                    //move forward
                     center.X += MoveSpeed * (float)gt.ElapsedGameTime.TotalSeconds
                         * (faceDirection == FaceDirection.Right ? 1 : -1);
                     break;
                 case Behavior.Attack:
+                    //spawn hitboxes
                     if (timer <= activeAnimation.AnimationLengthSeconds -0.5
                         && !actionHasBeenDone)
                     {
+                        //arm hitbox
                         Hitbox arm = new Hitbox(
                             0.4,
                             center,
@@ -188,6 +195,7 @@ namespace Moonwalk.Classes.Boss
                                 faceDirection == FaceDirection.Right ? 34 : -34 - 17,
                                 -5));
 
+                        //shockwave hitbbox
                         Hitbox shockwave = new Hitbox(
                             0.4,
                             center,
@@ -197,6 +205,7 @@ namespace Moonwalk.Classes.Boss
                                 faceDirection == FaceDirection.Right ? 37 : -37 - 51,
                                 11));
 
+                        //add subscribers
                         arm.targetEntered += this.DealDamage;
                         shockwave.targetEntered += this.DealDamage;
 
@@ -208,15 +217,20 @@ namespace Moonwalk.Classes.Boss
                     }
                     break;
                 case Behavior.Barrage:
+                    //shoot projectiles
                     if (timer <= activeAnimation.AnimationLengthSeconds - 0.5
                         && !actionHasBeenDone)
                     {
+                        //spawn in an arc above the boss, moving away from the center of the boss
                         for (int i = 1; i < 8; i+=2)
                         {
+                            //calculate angle
                             double angle = -i * 180 / 8f / 180 * Math.PI;
 
+                            //calculate direction
                             Vector2 direction = new Vector2((float)Math.Cos(angle), (float)Math.Sin(angle));
 
+                            //spawn projectile
                             GameManager.SpawnEntity<WidowProjectile>(
                                 new object[]
                                 {
@@ -231,6 +245,7 @@ namespace Moonwalk.Classes.Boss
                     break;
 
                 case Behavior.Jump:
+                    //add air and land after (they always have to come after jump)
                     if (!actionHasBeenDone && behaviorQueue.Count == 0)
                     {
                         behaviorQueue.Enqueue(Behavior.InAir);
@@ -240,13 +255,14 @@ namespace Moonwalk.Classes.Boss
                    
                     break;
                 case Behavior.InAir:
+                    //move to the player when jumping
                     if (!actionHasBeenDone)
                     {
                         center.X = Player.Location.X;
                         actionHasBeenDone = true;
                     }
                     
-
+                    //indicator for dropping location
                     if (timer < 1.5 && timer > 0.5)
                     {
                         for (int i = -80; i < 81; i+=4)
@@ -265,6 +281,7 @@ namespace Moonwalk.Classes.Boss
 
                     break;
                 case Behavior.Land:
+                    //create hitbox
                     if (timer < activeAnimation.AnimationLengthSeconds - 0.1
                         && !actionHasBeenDone)
                     {
@@ -306,12 +323,14 @@ namespace Moonwalk.Classes.Boss
 
             bool chosen = false;
 
+            //if there is queued behavior, use that
             if (behaviorQueue.Count > 0)
             {
                 currentBehavior = behaviorQueue.Dequeue();
                 chosen = true;
             }
 
+            //semi-randomly choose a new behavior
             while (!chosen)
             {
                 int random = rng.Next(0, 14);
@@ -335,7 +354,7 @@ namespace Moonwalk.Classes.Boss
                                 ) 
                             < 100)
                         {
-                            
+                            //higher chance to get claw attack if player is close
                             currentBehavior = Behavior.Attack;
                             currentAttack = Attacks.Claw;
 
@@ -366,6 +385,7 @@ namespace Moonwalk.Classes.Boss
 
         protected override void SwitchBehavior(Enum animationEnum, bool resetAnimation = true)
         {
+            //this is like switchanimation but for a boss
             currentBehavior = animationEnum;
             actionHasBeenDone = false;
            

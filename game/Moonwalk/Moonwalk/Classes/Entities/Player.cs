@@ -25,16 +25,26 @@ namespace Moonwalk.Classes.Entities {
         private static GUIElement playerStatusElement = null;
         private static Rectangle loadRange;
 
+        /// <summary>
+        /// Range in which entities load
+        /// </summary>
         public static Rectangle LoadRange
         {
             get { return loadRange; }
         }
 
+        /// <summary>
+        /// Location of the player publically available
+        /// </summary>
         public static Point Location
         {
             get { return location; }
             set { location = value; }
         }
+
+        /// <summary>
+        /// Center of the player's hitbox
+        /// </summary>
         public Vector2 Center {
             get { return new Vector2(
                 location.X + int.Parse(properties["HitboxX"]) / 2, 
@@ -42,6 +52,9 @@ namespace Moonwalk.Classes.Entities {
             }
         }
 
+        /// <summary>
+        /// The different animations the player has
+        /// </summary>
         protected enum Animations
         {
             Idle,
@@ -53,6 +66,9 @@ namespace Moonwalk.Classes.Entities {
             Jump
         }
 
+        /// <summary>
+        /// Different abilities with cooldowns
+        /// </summary>
         public enum Abilities
         {
             Tether,
@@ -92,18 +108,23 @@ namespace Moonwalk.Classes.Entities {
         private GUITextField textField;
         private Vector2 SpawnLocation;
 
+        /// <summary>
+        /// Health of the player
+        /// </summary>
         public int Health
         {
             get { return health; }
             set { health = value; }
         }
 
+        /// <summary>
+        /// Cooldowns of the player's abilities
+        /// </summary>
         public AbilityCooldowns<Abilities> Cooldowns
         {
             get { return cooldowns; }
         }
 
-        //Make private later
         public Player(Point? initialPosition = null) : base(new Vector2(((Point)initialPosition).X, ((Point)initialPosition).Y), "../../../Content/Entities/Player") {
             //Set initial checkpoint
             if (MostRecentCheckpoint == null) {
@@ -111,6 +132,7 @@ namespace Moonwalk.Classes.Entities {
                 Respawn();
             }
 
+            //Set initial values for fields
             hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
@@ -124,6 +146,7 @@ namespace Moonwalk.Classes.Entities {
             maxAngVelocity = 380;
             health = int.Parse(properties["MaxHealth"]);
 
+            //default idle animation
             SwitchAnimation(Animations.Idle);
             spriteScale = 1;
 
@@ -138,6 +161,7 @@ namespace Moonwalk.Classes.Entities {
             GUI.AddElement(playerStatusElement);
 
         }
+
         public Player(Vector2? initialPosition = null) : base((Vector2)initialPosition, "../../../Content/Entities/Player")
         {
             //Set initial checkpoint
@@ -147,6 +171,7 @@ namespace Moonwalk.Classes.Entities {
                 Respawn();
             }
 
+            //Set initial values for fields
             hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
@@ -174,6 +199,10 @@ namespace Moonwalk.Classes.Entities {
             GUI.AddElement(playerStatusElement);
 
         }
+
+        /// <summary>
+        /// Constructor that respawns at the last checkpoint
+        /// </summary>
         public Player() : base(MostRecentCheckpoint.Hitbox.Location.ToVector2(), "../../../Content/Entities/Player") {
             //Set initial checkpoint
             if (MostRecentCheckpoint == null) {
@@ -225,10 +254,12 @@ namespace Moonwalk.Classes.Entities {
             (Camera.GlobalOffset * 2).ToPoint() + new Point(100, 100));
             
 
-            Rectangle temp = Camera.RelativePosition(loadRange);
+            //Rectangle temp = Camera.RelativePosition(loadRange);
 
+            //dev mode logic
             #region Godmode
 
+            //press f5 to enter
             if (input.IsPressed(Keys.F5)
                 && !input.WasPressed(Keys.F5))
             {
@@ -243,19 +274,22 @@ namespace Moonwalk.Classes.Entities {
 
             if (GodMode)
             {
+                //spawn entities by clicking and typing
                 if (input.CurrentMouse.LeftButton == ButtonState.Pressed
                     && input.PreviousMouse.LeftButton == ButtonState.Released)
                 {
                     Spawning = true;
+                    //location to spawn is mouse location
                     SpawnLocation = Camera.WorldToScreen(input.CurrentMouse.Position.ToVector2() / 2) + Camera.GlobalOffset / 2;
 
+                    //add menu to gui
                     spawnMenu = new GUIGroup(input.CurrentMouse.Position.ToVector2());
 
                     object[] args = new object[] { new Vector2(0, 0), "MonogramRegular", Color.White };
 
                     textField = (GUITextField)spawnMenu.Add(args);
 
-
+                    //read spawn history from file
                     try
                     {
                         string[] lines = File.ReadAllLines("../../../Content/GUI/History.txt");
@@ -281,6 +315,7 @@ namespace Moonwalk.Classes.Entities {
 
                 if (Spawning)
                 {
+                    //text field logic (key inputs)
                     textField.Input(input);
 
                     Keys key = Keys.Escape;
@@ -309,6 +344,7 @@ namespace Moonwalk.Classes.Entities {
 
                     string typeName = null;
 
+                    //enter or shortcut pressed
                     switch (key)
                     {
                         case Keys.Enter:
@@ -325,7 +361,7 @@ namespace Moonwalk.Classes.Entities {
                     }
 
                    
-
+                    // if done spawning, spawn the entity and remove GUI
                     if (!Spawning)
                     {
                         GUI.RemoveElement(spawnMenu);
@@ -344,7 +380,7 @@ namespace Moonwalk.Classes.Entities {
                             MethodInfo spawn = typeof(GameManager).GetMethod("SpawnEntity");
                             MethodInfo spawnGeneric = spawn.MakeGenericMethod(type);
 
-
+                            //arguments for the spawning
                             object[] args = new object[] {SpawnLocation};
 
                             // This is a bit convoluted but if you ask me I can explain why we need an array 
@@ -353,6 +389,7 @@ namespace Moonwalk.Classes.Entities {
 
                             StreamWriter writer = null;
 
+                            //update spawn historyy in the file
                             try
                             {
                                 List<string> lines = File.ReadAllLines("../../../Content/GUI/History.txt").ToList();
@@ -418,6 +455,7 @@ namespace Moonwalk.Classes.Entities {
                 }
                 else
                 {
+                    //basic 4 way movement in dev mode
                     if (input.IsPressed(Keys.A))
                     {
                         vectorPosition.X -= GodModeSpeed;
@@ -450,16 +488,17 @@ namespace Moonwalk.Classes.Entities {
             //Decrease Iframes if the timer is running
             iFrames = iFrames > 0 ? iFrames - gameTime.ElapsedGameTime.TotalSeconds : 0;
 
+            //decrease cooldowns
             if (physicsState == PhysicsState.Linear)
             cooldowns.Update(gameTime);
 
+            //update animations
             ChangeAnimation(input, gameTime);
 
             base.Update(gameTime, input);
 
+            //Fine tuning movement
             int sign = 0;
-
-            
 
             //Slow down if not pressing anything
             if (!input.IsPressed(Keys.D) &&
@@ -487,7 +526,7 @@ namespace Moonwalk.Classes.Entities {
             }
 
           
-            //respawn the player
+            //respawn the player if R is pressed
             if (input.IsPressed(Keys.R)
                 && !input.WasPressed(Keys.R)) 
             {
@@ -624,6 +663,7 @@ namespace Moonwalk.Classes.Entities {
                 faceDirection = FaceDirection.Right;
             }
 
+            //change swing speed by pressing A and D
             if (physicsState == PhysicsState.Rotational)
             {
                 if (input.IsPressed(Keys.A) &&
@@ -647,11 +687,13 @@ namespace Moonwalk.Classes.Entities {
                 {
                     velocity.Y = -50;
 
+                    //remove any buffered jumps from the list
                     BufferedInput buffer = input.Buffered.Find(item => item.Key == Keys.Space);
                     input.Buffered.Remove(buffer);
                 }   
                 else
                 {
+                    //can buffer a jump, if they hit the ground while it is buffered they will immediately jump
                     input.Buffer(Keys.Space);
                 }
             }
@@ -677,18 +719,21 @@ namespace Moonwalk.Classes.Entities {
             {
                 Vector2 robotPos = GetRobotPosition();
 
+                //if entity is grounded and within range of the ability (player is prioritized)
                 if (VectorMath.Magnitude(
                         VectorMath.Difference(vectorPosition, robotPos)
                         )
                     < 125
                     && !Grounded)
                 {
+                    // set tether and use cooldowns
                     Robot.Tether = this;
                     cooldowns.UseAbility(Abilities.Tether);
                     SetRotationalVariables(robotPos);
                 }
                 else
                 {
+                    //do the same thing but for entities other than the player
                     List<ICollidable> list = GameManager.entities.GetAllOfType<ICollidable>();
                     list.Remove(list.Find(item => item is Robot));
                     list.Remove(list.Find(item => item is Player));
@@ -720,7 +765,7 @@ namespace Moonwalk.Classes.Entities {
                 && input.PreviousMouse.RightButton == ButtonState.Pressed
                 && Robot.Tether != null)
             {
-
+                    //end tether if RMB is released
                     Robot.Tether.SetLinearVariables();
             }
 
@@ -792,55 +837,6 @@ namespace Moonwalk.Classes.Entities {
             // What? why does this exist
             //batch.Draw(hitboxSprite, Camera.RelativePosition(loadRange), Color.White);
             
-        }
-
-        protected IHostile HostileCollision()
-        {
-            List<IHostile> list = GameManager.entities.GetAllOfType<IHostile>();
-
-            IHostile collision = list.Find(enemy => 
-            new Rectangle(
-                enemy.Position.X,
-                enemy.Position.Y,
-                enemy.Hitbox.Width,
-                enemy.Hitbox.Height)
-            .Intersects(
-                new Rectangle(
-                    Position.X,
-                    Position.Y,
-                    Hitbox.Width,
-                    Hitbox.Height)
-                )
-            );
-
-            return collision;
-        }
-
-        /// <summary>
-        /// Use this to see if an attack hits an enemy
-        /// </summary>
-        /// <param name="hitbox"></param>
-        /// <returns></returns>
-        protected IDamageable[] EnemyCollision(Rectangle hitbox)
-        {
-            List<IDamageable> list = GameManager.entities.GetAllOfType<IDamageable>();
-            list.Remove(this);
-
-            IDamageable[] collisions = list.FindAll(damageable =>
-            new Rectangle(
-                damageable.Position.X,
-                damageable.Position.Y,
-                damageable.Hitbox.Width,
-                damageable.Hitbox.Height)
-            .Intersects(new Rectangle(
-                    hitbox.X,
-                    hitbox.Y,
-                    hitbox.Width,
-                    hitbox.Height
-                    )))
-                .ToArray();
-
-            return collisions;
         }
 
         protected override void LinearMotion(GameTime gt)
@@ -980,6 +976,7 @@ namespace Moonwalk.Classes.Entities {
         {
             Hitbox attack = null;
 
+            //spawn hitbox based on facing direction
             if (faceDirection == FaceDirection.Right) 
             {
                 attack = new Hitbox(
@@ -1006,10 +1003,14 @@ namespace Moonwalk.Classes.Entities {
             }
 
             
-
+            // add subscribers to events
             attack.targetEntered += this.DealDamage;
         }
 
+        /// <summary>
+        /// Deal damage to everything in a list of damageables
+        /// </summary>
+        /// <param name="list"></param>
         private void DealDamage(List<IDamageable> list)
         {
             const int Knockback = 50;
@@ -1053,10 +1054,11 @@ namespace Moonwalk.Classes.Entities {
 
             }
 
-            //draw gravity effect
+            //draw gravity effect using particles
             const int Particles = 72;
             double slice = 360 / Particles;
 
+            //circle around the robot
             for (int i = 0; i < Particles; i++)
             {
                 Vector2 pos = new Vector2(
@@ -1078,10 +1080,14 @@ namespace Moonwalk.Classes.Entities {
         
         public void TakeDamage(int damage)
         {
+            //check if player is immune to damage
             if (!GodMode && iFrames <= 0)
             {
+                // if not, apply effects
                 Health -= damage;
+                //knockback
                 Impulse(new Vector2(0, 20 /*damage * -40 */)); //for oob purposes
+                //make player invulnerable temporarily
                 iFrames = 1;
                 prevHealth = Health;
             }
@@ -1091,20 +1097,28 @@ namespace Moonwalk.Classes.Entities {
         public override void SetLinearVariables()
         {
             base.SetLinearVariables();
+            //player jumps a bit extra
             velocity *= 1.5f;
         }
 
         public static void Respawn(Vector2? location = null) {
+            //despawn player
             GameManager.entities[typeof(Player)].Clear();
+
+            //respawn player. Same spot if checkpoint is null, otherwise last visited checkpoint
             Player player = GameManager.SpawnEntity<Player>(location == null ? MostRecentCheckpoint.Hitbox.Location : location);
+
+            //update static location
             Player.location = location == null ?
                 MostRecentCheckpoint.Hitbox.Location : 
                 new Point((int)((Vector2)location).X, (int)((Vector2)location).Y);
             Camera.SetTarget(player);
 
+            //respawn the robot and add event subscribers
             Robot robot = Robot.Respawn();
             player.GetRobotPosition += robot.GetPosition;
 
+            //reset pickups
             foreach (Entity entity in GameManager.entities)
             {
                 if (entity is KeyObject)
@@ -1113,20 +1127,18 @@ namespace Moonwalk.Classes.Entities {
                 }
             }
 
-            /*
-            while (GUI.GUIElementList.Exists(item => item is GUIPlayerStatusElement))
-            {
-                GUIElement remove = GUI.GUIElementList.Find(item => item is GUIPlayerStatusElement);
-                GUI.GUIElementList.Remove(remove);
-            }
-            */
         }
+
+        /// <summary>
+        /// Method that runs when player hits out-of-bounds area.
+        /// </summary>
         public static void HitBarrier()
         {
-            List<Player> list = (List<Player>)GameManager.entities[typeof(Player)];
+            //if there is a player, respawn it with full hp
             GameManager.entities[typeof(Player)].Clear();
             Player player = GameManager.SpawnPlayer(8) ;
 
+            //reset camera, player location, robot, and keyObjects
             Camera.SetTarget(player);
             location = player.Hitbox.Center;
 
@@ -1142,13 +1154,16 @@ namespace Moonwalk.Classes.Entities {
                 }
             }
 
-            if (Player.prevHealth == 8) player.TakeDamage(PlayerSpawner.OOB_Damage);
-            else player.TakeDamage(PlayerSpawner.OOB_Damage + (player.health - Player.prevHealth));
-            //PlayerSpawner.RespawnCounter();
+            //take damage according to Player.prevHealth value
+            if (Player.prevHealth == 8) player.TakeDamage(OOB_Properties.Damage);
+            else player.TakeDamage(OOB_Properties.Damage + (player.health - Player.prevHealth));
         }
 
     }
 
+    /// <summary>
+    /// GUI for the player's health and cooldowns
+    /// </summary>
     internal class GUIPlayerStatusElement : GUIElement {
         const int Size = 2;
 
@@ -1171,6 +1186,7 @@ namespace Moonwalk.Classes.Entities {
         public GUIPlayerStatusElement(Player player) {
             this.player = player;
 
+            // Get relevant Texture2D files
             healthBar = GUI.GetTexture("HealthBar");
             healthTick = GUI.GetTexture("HealthTick");
 
@@ -1260,7 +1276,9 @@ namespace Moonwalk.Classes.Entities {
             for (int index = 0; index < abilitiesOnCooldown; index++)
                 offset -= (gravIcon.Width - 3) * Size;
 
-            //Draw ability cooldowns
+            // Draw ability cooldowns
+            // These are spaced below the player, and is designed to adjust them based on how many
+            // abilities are on cooldown. Additionally, remaining duration is also shown
             if (player.Cooldowns[Player.Abilities.Gravity] != 0) {
                 batch.Draw(
                 gravIcon,

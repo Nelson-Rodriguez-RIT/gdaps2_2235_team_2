@@ -78,6 +78,7 @@ namespace Moonwalk.Classes
                 lists.Add(type, list);
             }
 
+            //add the base type at the end
             if (containsBaseType)
             {
                 Type listType = typeof(List<>).MakeGenericType(typeof(T));
@@ -221,6 +222,11 @@ namespace Moonwalk.Classes
             return list.GetEnumerator();
         }
 
+        /// <summary>
+        /// Gets all items of the given type as a list
+        /// </summary>
+        /// <typeparam name="T2"></typeparam>
+        /// <returns></returns>
         public List<T2> GetAllOfType<T2>()
         {
             List<T> list = new List<T>();

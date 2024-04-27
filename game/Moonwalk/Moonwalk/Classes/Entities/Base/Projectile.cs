@@ -85,30 +85,13 @@ namespace Moonwalk.Classes.Entities.Base
 
             timer -= gameTime.ElapsedGameTime.TotalSeconds;
 
+            //despawn if out of time or collisions
             if (timer <= 0 || collisions <= 0) 
             {
                 if (Robot.Tether == this)
                     Robot.Tether = null;
                 GameManager.DespawnEntity(this);
             }
-        }
-
-
-
-        /// <summary>
-        /// Determines if the entity collided with terrain
-        /// </summary>
-        /// <returns>True if a collision occurred</returns>
-        public virtual bool CheckCollision(Rectangle rectangle)
-        {
-            bool temp = Map.Geometry.ToList().Exists(terrain => terrain.Hitbox.Intersects(rectangle));
-
-            if (temp)
-            {
-                //for debugging
-            }
-
-            return temp;
         }
 
         protected override void LinearMotion(GameTime gt)

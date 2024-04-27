@@ -32,6 +32,7 @@ namespace Moonwalk.Classes.Entities
         {
             base.Update(gameTime, input);
 
+            //check if projectile hits an enemy
             if (CheckCollision<IDamageable>(out IDamageable collision))
             {
                 const int Knockback = 50;

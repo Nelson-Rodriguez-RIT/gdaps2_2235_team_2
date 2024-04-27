@@ -45,7 +45,7 @@ namespace Moonwalk.Classes.Entities
             spriteScale = 1;
             Tether = null;
             
-             GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
+             //GUI.AddElement(new GUIRobotDebugElement(new Vector2(400, 50), "File", this)); // Debug
         }
 
         public override void Update(GameTime gameTime, StoredInput input)
@@ -83,7 +83,7 @@ namespace Moonwalk.Classes.Entities
 
 
 
-            if (velocity.Y > 0 || velocity.X > 0)
+            if (velocity.Y != 0 || velocity.X != 0)
             {
                 SwitchAnimation(Animations.Move, false);
             }
@@ -92,6 +92,7 @@ namespace Moonwalk.Classes.Entities
                 SwitchAnimation(Animations.Idle, false);
             }
 
+            //draw tether
             if (Tether != null)
             {
                 locked = true;
@@ -130,13 +131,14 @@ namespace Moonwalk.Classes.Entities
         {
             mousepos = input.CurrentMouse.Position;
 
-            
+            //move towards mouse position
             Vector2 pos = Camera.WorldToScreen(mousepos.ToVector2() / 2);
 
 
             if (!locked)
             velocity = (pos + Camera.GlobalOffset / 2) - vectorPosition - (hurtbox.Center - hurtbox.Location).ToVector2();
 
+            //set position if it is close enough
             if (VectorMath.Magnitude(velocity) < 5)
             {
                 vectorPosition = (pos + Camera.GlobalOffset / 2) - (hurtbox.Center - hurtbox.Location).ToVector2();
@@ -168,6 +170,10 @@ namespace Moonwalk.Classes.Entities
             activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
         }
 
+        /// <summary>
+        /// Respawn the robot
+        /// </summary>
+        /// <returns></returns>
         public static Robot Respawn()
         {
             GameManager.entities[typeof(Robot)].Clear();
@@ -175,7 +181,9 @@ namespace Moonwalk.Classes.Entities
         }
     }
 
-
+    /// <summary>
+    /// Debugging GUI 
+    /// </summary>
     #region GUIElements
     internal class GUIRobotDebugElement : GUIElement {
         private Vector2 position;

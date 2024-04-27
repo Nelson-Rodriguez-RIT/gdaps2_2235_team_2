@@ -41,6 +41,7 @@ namespace Moonwalk.Classes.Entities
 
         public override void AI()
         {
+            //accelerates towards the player
             acceleration = (Player.Location - Position).ToVector2();
         }
 

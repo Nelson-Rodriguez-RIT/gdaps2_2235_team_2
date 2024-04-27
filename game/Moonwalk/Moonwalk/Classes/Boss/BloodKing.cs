@@ -12,16 +12,19 @@ namespace Moonwalk.Classes.Boss {
     internal class BloodKing : BossFight {
         private Player player;
 
+        // Timers to prevent further attacks/actions
         private double activeActionTimer = 0;
         private double attackCooldownTimer = 0;
 
+        // Time in seconds before the hitbox comes out
         private double hitboxDelayTimer = 0;
 
-        private bool enraged = false;
-        private bool charged = false;
-
+        // Flags
+        private bool enraged = false; // Enables Charge, Teleport(WIP), ChargeSlash, and Combo
+        private bool charged = false; // Enables ChargeSlash
         private bool activated = true;
 
+        // Maintains face direction when attacking
         private int bufferFaceDirectionWhenAttacking = -1;
 
         AbilityCooldowns<Abilities> abilities;
@@ -65,6 +68,7 @@ namespace Moonwalk.Classes.Boss {
         }
 
 
+        // Initialize Blood King
         public BloodKing(Vector2 initialPosition, Player player) : base("../../../Content/Entities/BloodKing") {
             SwitchBehavior(Animations.Idle);
 
@@ -73,13 +77,16 @@ namespace Moonwalk.Classes.Boss {
             this.player = player;
             center = initialPosition;
 
+            // Load hitboxes from file
             foreach (KeyValuePair<string, List<Rectangle>> hitbox in hitboxData)
                 hitboxes.Add(hitbox.Value[0]);
         }
 
         public override void Update(GameTime gameTime) {
-            player = (Player)GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList()[0];
             if (!activated) return;
+
+            // Update player reference in case of player death
+            player = (Player)GameManager.entities.GetAllOfType<Player>().Cast<IDamageable>().ToList()[0];
 
             // When activeActionTimer ends
             if (activeActionTimer != 0 && (activeActionTimer = activeActionTimer <= 0 ? 0 : activeActionTimer - gameTime.ElapsedGameTime.TotalSeconds) == 0) {
@@ -95,7 +102,7 @@ namespace Moonwalk.Classes.Boss {
             if (hitboxDelayTimer > 0 && (hitboxDelayTimer -= gameTime.ElapsedGameTime.TotalSeconds) <= 0) {
                 switch ((Animations)activeAnimation.TrueAnimationValue) {
                     case Animations.Execution:
-                        Hitbox attackExecution =
+                        Hitbox attackExecution = // Spawn hitbox (this one instakills)
                             new Hitbox(
                                 .2, // 12 frames
                                 hitboxes[(int)AttackHitboxs.Execution],
@@ -106,7 +113,7 @@ namespace Moonwalk.Classes.Boss {
                         break;
 
                     case Animations.DoubleSlash:
-                        Hitbox attackDoubleSlash =
+                        Hitbox attackDoubleSlash = // Spawn a hitbox and prepare to spawn another
                             new Hitbox(
                                 .1, // 12 frames
                                 hitboxes[(int)AttackHitboxs.DoubleSlash],
@@ -120,7 +127,7 @@ namespace Moonwalk.Classes.Boss {
 
                         break;
                     case Animations.DoubleSlashEnd:
-                        Hitbox attackDoubleSlashEnd =
+                        Hitbox attackDoubleSlashEnd = // Follow up hitbox
                             new Hitbox(
                                 .1, // 12 frames
                                 hitboxes[(int)AttackHitboxs.DoubleSlash],
@@ -133,18 +140,25 @@ namespace Moonwalk.Classes.Boss {
             }
 
            
-
+            // Update timers
             abilities.Update(gameTime);
             activeAnimation.UpdateAnimation(gameTime);
+            attackCooldownTimer = attackCooldownTimer <= 0 ? 0 : attackCooldownTimer - gameTime.ElapsedGameTime.TotalSeconds;
 
+
+
+            // Update direction if need be
             if (activeActionTimer != 0 && bufferFaceDirectionWhenAttacking == -1)
                 bufferFaceDirectionWhenAttacking = center.X - player.Position.X < 0 ? 0 : 1;
 
-            if (activeActionTimer == 0)
-                attackCooldownTimer = attackCooldownTimer <= 0 ? 0 : attackCooldownTimer - gameTime.ElapsedGameTime.TotalSeconds;
 
+            if (activeActionTimer != 0) // Ignore AI if in the middle of an action
+                return;
+
+            // Run AI process
             AI(gameTime);
 
+            // Update new activeAnimation.FaceDirection
             if (bufferFaceDirectionWhenAttacking == -1)
                 activeAnimation.FaceDirection = center.X - player.Position.X < 0 ? 0 : 1;
             else
@@ -153,13 +167,13 @@ namespace Moonwalk.Classes.Boss {
 
 
         private void AI(GameTime gameTime) {
+            // Absolute horizontal distance from the player
+            // FYI: This boss should only be fought at one Y level
             int playerDistance = (int)Math.Abs((center.X + int.Parse(properties["HitboxX"]) / 2) - player.Center.X);
 
-            if (activeActionTimer != 0) // Ignore AI if in the middle of an action
-                return;
-
-            
+            // Attack periodically to not over well the player, as well as allowing for movement options for the AI
             if (attackCooldownTimer == 0) {
+                // If on top of the player, perform a slow, but insta kill
                 if (playerDistance <= 8 && abilities.UseAbility(Abilities.Execution)) {
                     SwitchBehavior(Animations.Execution);
 
@@ -170,6 +184,7 @@ namespace Moonwalk.Classes.Boss {
                     return;
                 }
 
+                // If at close range, attack the player twice
                 if (playerDistance <= 25 && abilities.UseAbility(Abilities.DoubleSlash)) {
                     SwitchBehavior(Animations.DoubleSlash);
 
@@ -180,7 +195,10 @@ namespace Moonwalk.Classes.Boss {
                     return;
                 }
 
-                if (enraged && playerDistance % 2 == 0) {
+                
+                if (enraged && playerDistance % 2 == 0) { // Second phase moves, 50% chance to use them
+
+                    // If at medium range and charged, use a horziontal slash into another slash
                     if (playerDistance <= 60 && charged && abilities.UseAbility(Abilities.ChargedSlash)) {
                         SwitchBehavior(Animations.ChargeSlash);
                         activeActionTimer = abilities[Abilities.ChargedSlash, true];
@@ -191,6 +209,7 @@ namespace Moonwalk.Classes.Boss {
                 }
             }
 
+            // 30% chance while in phase 2 to charge
             if (playerDistance % 30 > 20 && enraged && !charged && abilities.UseAbility(Abilities.Charge)) {
                 SwitchBehavior(Animations.Charge);
                 activeActionTimer = abilities[Abilities.Charge, true];
@@ -198,18 +217,12 @@ namespace Moonwalk.Classes.Boss {
                 return;
             }
 
-            //if (enraged && playerDistance >= 60) {
-            //    SwitchBehavior(Animations.TeleportIn_Death);
-            //    return;
-            //}
-
+            // If further than 7 and no other moves are choosen, walk to the player
             if (playerDistance >= 7) {
                 center.X += int.Parse(properties["MoveSpeed"]) * activeAnimation.FaceDirection == 0 ? 1 : -1;
                 SwitchBehavior(Animations.Run, false);
                 return;
             }
-
-            
 
             SwitchBehavior(Animations.Idle, false);
         }
@@ -218,6 +231,7 @@ namespace Moonwalk.Classes.Boss {
         protected override void DealDamage(List<IDamageable> damageables) {
             Animations attack = (Animations)activeAnimation.AnimationValue;
 
+            // Get damage values from file
             foreach (IDamageable damageable in damageables)
                 damageable.TakeDamage(int.Parse(properties[$"{attack}Damage"]));
         }

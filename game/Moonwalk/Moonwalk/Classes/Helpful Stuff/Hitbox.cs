@@ -31,8 +31,6 @@ namespace Moonwalk.Classes.Helpful_Stuff
         public event TargetEntered targetEntered;
 
 
-        private double delay;
-
         #region Constructors
         public Hitbox(double duration, Entity source, Point size, List<IDamageable> targets, Point offset) 
         {

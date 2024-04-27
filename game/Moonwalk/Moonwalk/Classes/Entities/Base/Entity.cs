@@ -110,6 +110,7 @@ namespace Moonwalk.Classes.Entities.Base
             maxYVelocity = int.MaxValue;
             maxXVelocity = int.MaxValue;
 
+            // Entity files are expected values for hitboxes
             if (loadProperties) 
             {  
                 hurtbox = new Rectangle(
@@ -120,6 +121,7 @@ namespace Moonwalk.Classes.Entities.Base
                     );
             }
 
+            // Prepare hitbox functionality
             hurtbox = new Rectangle(
                     (int)Math.Round(vectorPosition.X),
                     (int)Math.Round(vectorPosition.Y),
@@ -162,7 +164,7 @@ namespace Moonwalk.Classes.Entities.Base
                 throw new Exception("You forgot to set the sprite scale");
             }
 
-            //apply offset
+            // Apply camera offset
             Vector2 temp = Camera.RelativePosition(Position);
 
             activeAnimation.Draw(batch, GameMain.ActiveScale, spritesheet, temp);
@@ -634,6 +636,7 @@ namespace Moonwalk.Classes.Entities.Base
         #endregion
     }
 
+    // Convient data structure for entity data files
     internal class EntityData {
         private Dictionary<string, string> properties;
         private List<Animation> animations;

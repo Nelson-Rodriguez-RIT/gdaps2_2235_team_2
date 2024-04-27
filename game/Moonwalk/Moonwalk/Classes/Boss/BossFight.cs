@@ -200,6 +200,7 @@ namespace Moonwalk.Classes.Boss
             
         }
 
+        // Convient handler for boss file data
         internal class BossData
         {
             private Dictionary<string, string> properties;

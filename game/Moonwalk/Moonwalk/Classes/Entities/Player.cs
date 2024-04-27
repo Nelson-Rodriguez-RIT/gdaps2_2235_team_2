@@ -1186,6 +1186,7 @@ namespace Moonwalk.Classes.Entities {
         public GUIPlayerStatusElement(Player player) {
             this.player = player;
 
+            // Get relevant Texture2D files
             healthBar = GUI.GetTexture("HealthBar");
             healthTick = GUI.GetTexture("HealthTick");
 
@@ -1275,7 +1276,9 @@ namespace Moonwalk.Classes.Entities {
             for (int index = 0; index < abilitiesOnCooldown; index++)
                 offset -= (gravIcon.Width - 3) * Size;
 
-            //Draw ability cooldowns
+            // Draw ability cooldowns
+            // These are spaced below the player, and is designed to adjust them based on how many
+            // abilities are on cooldown. Additionally, remaining duration is also shown
             if (player.Cooldowns[Player.Abilities.Gravity] != 0) {
                 batch.Draw(
                 gravIcon,

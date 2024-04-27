@@ -16,12 +16,15 @@ using System.Reflection;
 namespace Moonwalk.Classes.Managers {
 
     internal static class GUI {
+        // Defualt file paths
         private const string RootFontDirectory = "Fonts/";
         private const string RootGUISpriteDirectory = "GUI/";
 
+        // Stores file contents once loaded for easier access
         private static Dictionary<string, SpriteFont> fonts = new();
         private static Dictionary<string, Texture2D> textures = new();
 
+        // Break the Assortment of GUIElements into interactable and non inteactable
         private static Assortment<GUIElement> elements = new(new List<System.Type>() {typeof(GUIElement), typeof(GUIButtonElement)});
 
         public static List<GUIElement> GUIElementList { get { return elements.ToList(); } }

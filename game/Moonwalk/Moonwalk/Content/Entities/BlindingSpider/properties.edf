@@ -1,5 +1,5 @@
-HitboxX=16
-HitboxY=16
+HitboxX=4
+HitboxY=3
 HitboxXOrigin=0
 HitboxYOrigin=0
 Health=3

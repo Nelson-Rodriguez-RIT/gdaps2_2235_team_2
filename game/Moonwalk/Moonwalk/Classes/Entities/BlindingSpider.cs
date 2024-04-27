@@ -71,7 +71,7 @@ namespace Moonwalk.Classes.Entities
 
             if (distance < 200) // range of aggro
             {
-                SwitchAnimation(Animations.Walk, true);
+                /*SwitchAnimation(Animations.Walk, true);
                 float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
@@ -84,17 +84,21 @@ namespace Moonwalk.Classes.Entities
                     faceDirection = FaceDirection.Left;
                 }
 
+                if (physicsState == PhysicsState.Linear)
+                    //Enemy accelerates towards the player's x direction
+                    acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);*/
+
                 //activeAnimation.FaceDirection = (int)faceDirection;               
 
                 if (cooldowns[Abilities.Shoot] == 0)
                 {
                     //Stop moving to shoot
-                    velocity.X = 0;
+                    /*velocity.X = 0;
                     acceleration.X = 0;
 
                     //Change animations for shooting
-                    SwitchAnimation(Animations.PrepBlindAttack, false);
-                    SwitchAnimation(Animations.BlindAttack, false);
+                    SwitchAnimation(Animations.PrepBlindAttack, true);
+                    SwitchAnimation(Animations.BlindAttack, true);*/
 
                     //Shoot
                     GameManager.SpawnEntity<HomingProjectile>(new Object[] {
@@ -102,6 +106,14 @@ namespace Moonwalk.Classes.Entities
                     VectorMath.Difference(vectorPosition, Player.Location.ToVector2()),
                     Color.SlateGray});
                     cooldowns.UseAbility(Abilities.Shoot);
+                }
+
+                else
+                {
+                    if (physicsState == PhysicsState.Linear)
+                        //Enemy accelerates towards the player's x direction
+                        acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
+                    SwitchAnimation(Animations.Walk, true);
                 }
             }
             else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
@@ -134,7 +146,7 @@ namespace Moonwalk.Classes.Entities
                 XWalk();
             }*/
 
-            //velocity += acceleration /** time*/;                                   //Update velocity
+            velocity += acceleration * time;                                   //Update velocity
 
             //Vertical
             while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks

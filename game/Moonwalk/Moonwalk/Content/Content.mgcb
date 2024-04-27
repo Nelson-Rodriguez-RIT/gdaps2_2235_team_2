@@ -49,7 +49,7 @@
 /processorParam:TextureFormat=Color
 /build:Entities/BlindingSpider/spritesheet.png
 
-#begin Entities/BloodKing/spritesheet.png
+#begin Entities/BlindingSpider/spritesheet.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -59,7 +59,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Entities/BloodKing/spritesheet.png
+/build:Entities/BlindingSpider/spritesheet.png
 
 #begin Entities/BloodKing/spritesheet.png
 /importer:TextureImporter

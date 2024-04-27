@@ -221,7 +221,7 @@ namespace Moonwalk.Classes.Entities
 
             int iterationCounter = 1;
 
-            velocity += acceleration /** time*/;                                   //Update velocity
+            velocity += acceleration /** time;*/                                   //Update velocity
 
             //Vertical*/
             /*while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
@@ -293,7 +293,7 @@ namespace Moonwalk.Classes.Entities
 
             int iterationCounter = 1;
 
-            velocity += acceleration /** time*/;                                   //Update velocity
+            velocity += acceleration /** time;*/                                   //Update velocity
 
             //Vertical
             /*while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks

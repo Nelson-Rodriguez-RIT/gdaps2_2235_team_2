@@ -71,7 +71,7 @@ namespace Moonwalk.Classes.Entities
 
             if (distance < 200) // range of aggro
             {
-                /*SwitchAnimation(Animations.Walk, true);
+                SwitchAnimation(Animations.Walk, true);
                 float xDifference = VectorMath.Difference(vectorPosition, Player.Location.ToVector2()).X;
 
                 //Change the facing direction
@@ -86,7 +86,7 @@ namespace Moonwalk.Classes.Entities
 
                 if (physicsState == PhysicsState.Linear)
                     //Enemy accelerates towards the player's x direction
-                    acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);*/
+                    acceleration.X = 30 * (faceDirection == FaceDirection.Right ? 1 : -1);
 
                 //activeAnimation.FaceDirection = (int)faceDirection;               
 
@@ -108,13 +108,13 @@ namespace Moonwalk.Classes.Entities
                     cooldowns.UseAbility(Abilities.Shoot);
                 }
 
-                else
+                /*else
                 {
                     if (physicsState == PhysicsState.Linear)
                         //Enemy accelerates towards the player's x direction
                         acceleration.X = 60 * (faceDirection == FaceDirection.Right ? 1 : -1);
                     SwitchAnimation(Animations.Walk, true);
-                }
+                }*/
             }
             else if (activeAnimation.AnimationValue != (int)Animations.StaticIdle)
             {

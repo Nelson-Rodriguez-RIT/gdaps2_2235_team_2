@@ -17,6 +17,7 @@ namespace Moonwalk.Classes.Entities
 
     internal class Flower : Enemy
     {
+        //Animations
         private enum Animations
         {
             Move,
@@ -45,6 +46,7 @@ namespace Moonwalk.Classes.Entities
             }
         }
 
+        //Parameterized Constructor
         public Flower(Vector2 position) : base(position, "../../../Content/Entities/FlowerEnemy")
         {
             health = int.Parse(properties["Health"]);
@@ -66,6 +68,7 @@ namespace Moonwalk.Classes.Entities
 
             if (distance <= 200) // range of aggro
             {
+                //starts up the move animation
                 if (inactive)
                 {
                     SwitchAnimation(Animations.Move, true);
@@ -112,6 +115,7 @@ namespace Moonwalk.Classes.Entities
             activeAnimation.FaceDirection = (int)faceDirection;
         }
 
+        //Flower enemy movement
         public override void Movement(GameTime gameTime)
         {
             float time = (float)gameTime.ElapsedGameTime.TotalSeconds;

@@ -21,6 +21,7 @@ namespace Moonwalk.Classes.Entities
 
     internal class BlindingSpider : Enemy, IDamageable
     {
+        //Animations
         private enum Animations
         {
             StaticIdle,
@@ -49,6 +50,7 @@ namespace Moonwalk.Classes.Entities
             cooldowns.Update(gameTime);
         }
 
+        //Parameterized constructor
         public BlindingSpider(Vector2 position) : base(position, "../../../Content/Entities/BlindingSpider")
         {
             health = int.Parse(properties["Health"]);
@@ -125,6 +127,7 @@ namespace Moonwalk.Classes.Entities
             }
         }
 
+        //movement for the blinding spider enemy
         public override void Movement(GameTime gameTime)
         {
             float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -211,7 +214,8 @@ namespace Moonwalk.Classes.Entities
             }
         }
 
-        public void XWalk()
+        //future movement that could help the blinding spider enemy walk on walls
+        /*public void XWalk()
         {
             //float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -219,8 +223,8 @@ namespace Moonwalk.Classes.Entities
 
             velocity += acceleration /** time*/;                                   //Update velocity
 
-            //Vertical
-            while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
+            //Vertical*/
+            /*while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
             {
                 if (!CheckCollision<ISolid>())
                 {
@@ -280,9 +284,10 @@ namespace Moonwalk.Classes.Entities
                 iterationCounter++;
 
             }
-        }
+        }*/
 
-        public void YWalk()
+        //future movement that could help the blinding spider enemy walk on walls
+        /*public void YWalk()
         {
            // float time = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -291,7 +296,7 @@ namespace Moonwalk.Classes.Entities
             velocity += acceleration /** time*/;                                   //Update velocity
 
             //Vertical
-            while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
+            /*while (iterationCounter <= CollisionAccuracy)                      //Scaling number of checks
             {
                 if (!CheckCollision<ISolid>())
                 {
@@ -351,6 +356,6 @@ namespace Moonwalk.Classes.Entities
                 iterationCounter++;
 
             }
-        }
+        }*/
     }
 }

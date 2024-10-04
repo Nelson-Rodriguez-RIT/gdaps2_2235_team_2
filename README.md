@@ -10,9 +10,8 @@ _This README contains basic information about the project and its artifacts. If 
 - Nelson Rodriguez
 
 ## Repo Organization
-- [game/](game/) - Contains the main MonoGame project. Notes about how to run the game are in [game/README.md](game/README.md).
-- [resources/](resources/) - Contains any extra resources the team used/created during design & development (e.g. spreadsheets, notes, etc.) 
-See [resources/README.md](resources/README.md) for details.
+- [game/](game/) - Contains the main MonoGame project..
+- [resources/](resources/) - Contains any extra resources the team used/created during design & development (e.g. spreadsheets, notes, etc.)
 
 ## Other Resources
 - [Task management Board](https://app.milanote.com/1RB5Vv1lRZoZ6f?p=UqDENO9ue6r) - Link to the team's project board.
